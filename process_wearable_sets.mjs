@@ -4,10 +4,14 @@ import fs from "fs";
 
 
 console.log("Found ", items.data.itemTypes.length, "items");
-console.log("Found ", sets.data.wearableSets.length, "sets");
+console.log("Found ", sets.length, "sets");
 
 const itemTypes = items.data.itemTypes;
-const wearableSets = sets.data.wearableSets;
+const wearableSets = sets.map(([name, _ignore, wearableIds, traitBonuses]) => ({
+    name,
+    wearableIds,
+    traitBonuses
+}))
 
 const traitProfiles = [
   [0, 0, 0, 0],
@@ -99,6 +103,7 @@ wearableSets.forEach(set => {
 
 wearableSets.sort((setA, setB) => {
     if (setA.totalBRSBonus === setB.totalBRSBonus) {
+        if (setA.name === setB.name) { return 0; }
         return setA.name < setB.name ? -1 : 1;
     }
     return setA.totalBRSBonus < setB.totalBRSBonus ? -1 : 1;
