@@ -1,0 +1,34 @@
+[
+    {
+        "index": 0,
+        "label": "Body"
+    },
+    {
+        "index": 1,
+        "label": "Face"
+    },
+    {
+        "index": 2,
+        "label": "Eyes"
+    },
+    {
+        "index": 3,
+        "label": "Head"
+    },
+    {
+        "index": 4,
+        "label": "Left Hand"
+    },
+    {
+        "index": 5,
+        "label": "Right Hand"
+    },
+    {
+        "index": 6,
+        "label": "Pet"
+    },
+    {
+        "index": 7,
+        "label": "Background"
+    }
+]
