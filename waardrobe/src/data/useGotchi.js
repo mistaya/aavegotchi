@@ -4,14 +4,15 @@ import useDiamond from "@/data/diamond";
 
 // One gotchi is selected on the site at a time
 const gotchiId = ref(null);
+const customGotchi = ref(null);
 const gotchiDetails = ref(null);
 const gotchiSvg = ref(null);
 const previewWearables = ref(null);
 const previewSvg = ref(null);
 
-const { status: detailsStatus, setLoading: setDetailsLoading } = useStatus();
-const { status: svgStatus, setLoading: setSvgLoading } = useStatus();
-const { status: previewSvgStatus, setLoading: setPreviewSvgLoading } = useStatus();
+const { status: detailsStatus, setLoading: setDetailsLoading, reset: resetDetailsStatus } = useStatus();
+const { status: svgStatus, setLoading: setSvgLoading, reset: resetSvgStatus } = useStatus();
+const { status: previewSvgStatus, setLoading: setPreviewSvgLoading, reset: resetPreviewSvgStatus } = useStatus();
 
 let diamond = null;
 
@@ -41,18 +42,28 @@ const insertEyePettingSvg = function(svgText) {
 
 // Namespacing modifies the <style> rules inside the SVG with a prefix
 // so we can stop them affecting other gotchi SVGs on the same page
-const namespaceSvg = function(svgText, namespace) {
+const namespaceSvgText = function(svgText, namespace) {
     // simple hack, assumes the svgText only contains simple style selectors
     // This might break in future
     return svgText.replaceAll(".gotchi-", `.${namespace} .gotchi-`);
 };
 
+const clearGotchi = function () {
+    gotchiDetails.value = null;
+    gotchiSvg.value = null;
+    resetDetailsStatus();
+    resetSvgStatus();
+    resetPreviewSvgStatus();
+};
+
 watch(
     () => gotchiId.value,
     newGotchiId => {
+        clearGotchi();
+
+        if (!newGotchiId) { return; }
+
         const [isDetailsStale, setDetailsLoaded, setDetailsError] = setDetailsLoading();
-        gotchiDetails.value = null;
-        gotchiSvg.value = null;
         diamond.getAavegotchi(newGotchiId).then(result => {
             if (isDetailsStale()) { return; }
             gotchiDetails.value = {
@@ -86,6 +97,37 @@ watch(
     }
 );
 
+watch(
+    () => customGotchi.value,
+    newCustomGotchi => {
+        clearGotchi();
+
+        if (!newCustomGotchi) { return; }
+
+        // eslint-disable-next-line no-unused-vars
+        const [isDetailsStale, setDetailsLoaded, setDetailsError] = setDetailsLoading();
+        gotchiDetails.value = newCustomGotchi;
+        setDetailsLoaded();
+
+        const [isSvgStale, setSvgLoaded, setSvgError] = setSvgLoading();
+        diamond.getPreviewAavegotchiSideSvgs(
+            newCustomGotchi.hauntId,
+            newCustomGotchi.collateral,
+            newCustomGotchi.numericTraits,
+            newCustomGotchi.equippedWearables
+        ).then(result => {
+            if (isSvgStale()) { return; }
+            gotchiSvg.value = [insertEyePettingSvg(result[0]), result[1], result[3], result[2]];
+            setSvgLoaded();
+        }).catch(err => {
+            if (isSvgStale()) { return; }
+            gotchiSvg.value = null;
+            setSvgError(err.message);
+        });
+    },
+    { deep: true }
+);
+
 const gotchiStatus = computed(() => {
     const loading = detailsStatus.value.loading || svgStatus.value.loading;
     const error = detailsStatus.value.error || svgStatus.value.error;
@@ -98,11 +140,6 @@ const gotchiStatus = computed(() => {
         errorMessage
     };
 });
-
-const getNamespacedGotchiSvg = function (namespace) {
-    if (!gotchiSvg.value) { return null; }
-    return gotchiSvg.value.map(svgText => namespaceSvg(svgText, namespace));
-};
 
 const setPreviewWearables = function(wearables) {
     previewWearables.value = [...wearables];
@@ -130,11 +167,6 @@ watch(
     }
 );
 
-const getNamespacedPreviewSvg = function (namespace) {
-    if (!previewSvg.value) { return null; }
-    return previewSvg.value.map(svgText => namespaceSvg(svgText, namespace));
-};
-
 export default function useGotchi() {
     if (!diamond) {
         diamond = useDiamond();
@@ -142,13 +174,13 @@ export default function useGotchi() {
 
     return {
         gotchiId,
+        customGotchi,
         gotchiStatus,
         gotchiDetails,
         gotchiSvg,
-        getNamespacedGotchiSvg,
         setPreviewWearables,
         previewSvgStatus,
         previewSvg,
-        getNamespacedPreviewSvg
+        namespaceSvgText
     };
 }
