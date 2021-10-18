@@ -43,6 +43,37 @@
         previewWearables
         withControls
       />
+
+      <div class="traits-preview">
+        <div>
+          <b>Base traits:</b>
+          <div>
+            BRS: {{ baseRarityScore }}
+          </div>
+          <div
+            v-for="(trait, index) in traitsToDisplay"
+            :key="index"
+          >
+            {{ trait }}: {{ gotchiDetails.numericTraits[index] }}
+          </div>
+        </div>
+        <br>
+        <div>
+          <b>Preview traits:</b>
+          <div>
+            Set: {{ previewDetails.wearableSet ? previewDetails.wearableSet.name : "none" }}
+          </div>
+          <div>
+            BRS: {{ previewDetails.baseRarityScore }}
+          </div>
+          <div
+            v-for="(trait, index) in traitsToDisplay"
+            :key="index"
+          >
+            {{ trait }}: {{ previewDetails.numericTraits[index] }}
+          </div>
+        </div>
+      </div>
     </div>
 
     <br><br>
@@ -59,6 +90,7 @@ import useGotchi from "@/data/useGotchi";
 
 import wearableSlots from "@/data/wearableSlots";
 import wearablesBySlot from "@/data/wearablesBySlot";
+import traits from "@/data/traits.json";
 
 import GotchiImage from "./GotchiImage.vue";
 
@@ -67,7 +99,7 @@ export default {
     GotchiImage
   },
   setup () {
-    const { gotchiDetails, setPreviewWearables} = useGotchi();
+    const { gotchiDetails, baseRarityScore, setPreviewWearables, previewDetails } = useGotchi();
     if (!gotchiDetails.value) {
       const router = useRouter();
       router.push({ name: "GotchiPage" });
@@ -82,9 +114,12 @@ export default {
 
     return {
       gotchiDetails,
+      baseRarityScore,
       wearableSlots,
       wearablesBySlot,
-      formWearables
+      formWearables,
+      traitsToDisplay: traits.slice(0, 4),
+      previewDetails
     };
   }
 };

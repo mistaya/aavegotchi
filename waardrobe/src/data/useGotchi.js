@@ -2,6 +2,21 @@ import { ref, computed, watch } from 'vue';
 import useStatus from "@/data/useStatus";
 import useDiamond from "@/data/diamond";
 
+import wearables from "./wearables.json";
+import wearableSets from "./wearableSets.json";
+
+const wearablesById = Object.fromEntries(wearables.map(w => [w.id, { ...w, wearableSets: [] }]));
+
+for (let i = 0; i < wearableSets.length; i++) {
+    const wearableSet = wearableSets[i];
+    for (let wearableId of wearableSet.wearableIds) {
+        let wearable = wearablesById[wearableId];
+        if (wearable) {
+            wearable.wearableSets.push(i);
+        }
+    }
+}
+
 // One gotchi is selected on the site at a time
 const gotchiId = ref(null);
 const customGotchi = ref(null);
@@ -72,9 +87,6 @@ watch(
                 hauntId: result.hauntId,
                 collateral: result.collateral,
                 numericTraits: result.numericTraits,
-                baseRarityScore: result.baseRarityScore,
-                modifiedNumericTraits: result.modifiedNumericTraits,
-                modifiedRarityScore: result.modifiedRarityScore,
                 equippedWearables: result.equippedWearables,
             };
             setDetailsLoaded();
@@ -167,6 +179,79 @@ watch(
     }
 );
 
+const getBestWearableSet = function(wearableSetIndices) {
+    if (!wearableSetIndices?.length) { return null; }
+    const sortedSetIndices = [].concat(wearableSetIndices).sort((a, b) => {
+        const setA = wearableSets[a];
+        const setB = wearableSets[b];
+        if (setA.totalSetBonus === setB.totalSetBonus) {
+            if (setA.name === setB.name) {
+                return 0;
+            }
+            return setA.name < setB.name ? -1 : 1;
+        }
+        return setA.totalSetBonus > setB.totalSetBonus ? -1: 1;
+    });
+    return wearableSets[sortedSetIndices[0]];
+};
+
+const previewDetails = computed(() => {
+    const originalTraits = gotchiDetails.value?.numericTraits;
+    const newTraits = [...originalTraits].map(value => value - 0);
+    let additionalBrs = 0;
+    let possibleWearableSets = [];
+    for (const wearableId of previewWearables.value) {
+        const wearable = wearablesById[wearableId];
+        if (wearable && wearableId !== "0") {
+            additionalBrs += wearable.rarityScoreModifier - 0;
+            for (let i = 0; i < wearable.traitModifiers.length; i++) {
+                newTraits[i] += wearable.traitModifiers[i] - 0;
+            }
+            possibleWearableSets.push(...wearable.wearableSets)
+        }
+    }
+    // reduce to unique set indexes
+    possibleWearableSets = [...new Set(possibleWearableSets)];
+    // check each set to see if it's satisfied
+    const previewHasWearable = id => previewWearables.value.includes(id);
+    const matchingWearableSets = possibleWearableSets.filter(
+        setIndex => wearableSets[setIndex].wearableIds.every(previewHasWearable)
+    );
+    // only one set can be applied
+    const bestWearableSet = getBestWearableSet(matchingWearableSets);
+    if (bestWearableSet) {
+        additionalBrs += bestWearableSet.rarityScoreModifier;
+        for (let i = 0; i < bestWearableSet.traitModifiers.length; i++) {
+            newTraits[i] += bestWearableSet.traitModifiers[i];
+        }
+    }
+    const newBrs = calculateBaseRarityScore(newTraits) + additionalBrs;
+    return {
+        baseRarityScore: newBrs,
+        numericTraits: newTraits,
+        wearableSet: bestWearableSet
+    };
+});
+
+const calculateBaseRarityScore = function(traits) {
+    let rarityScore = 0;
+    for (let trait of traits) {
+        trait = trait - 0;
+        if (trait >= 50) {
+            rarityScore += trait + 1;
+        } else {
+            rarityScore += 100 - trait;
+        }
+    }
+    return rarityScore;
+};
+
+
+const baseRarityScore = computed(() => {
+    if (!gotchiDetails.value) { return null; }
+    return calculateBaseRarityScore(gotchiDetails.value.numericTraits);
+});
+
 export default function useGotchi() {
     if (!diamond) {
         diamond = useDiamond();
@@ -178,9 +263,11 @@ export default function useGotchi() {
         gotchiStatus,
         gotchiDetails,
         gotchiSvg,
+        baseRarityScore,
         setPreviewWearables,
         previewSvgStatus,
         previewSvg,
-        namespaceSvgText
+        namespaceSvgText,
+        previewDetails
     };
 }

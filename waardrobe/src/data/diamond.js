@@ -75,12 +75,34 @@ const diamond = {
             }));
             console.log(JSON.stringify(itemTypes));
         });
+    },
+
+    // call manually to get the latest wearableSets.json
+    getWearableSets () {
+        contract.methods.getWearableSets().call((error, result) => {
+            if (error) {
+                console.error("getWearableSets: Error calling contract function", error);
+                return;
+            }
+            console.log("getWearableSets: Result", result);
+            const wearableSets = result.map(item => {
+                const rarityScoreModifier = item.traitsBonuses[0] - 0;
+                const traitModifiers = item.traitsBonuses.slice(1).map(value => value - 0);
+                let totalSetBonus = rarityScoreModifier;
+                for (let modifier of traitModifiers) {
+                    totalSetBonus += Math.abs(modifier);
+                }
+                return {
+                    name: item.name,
+                    wearableIds: item.wearableIds,
+                    rarityScoreModifier,
+                    traitModifiers,
+                    totalSetBonus
+                };
+            });
+            console.log(JSON.stringify(wearableSets));
+        });
     }
-
-
-    // baseRarityScore(numericTraits) (array of 6)
-    // modifiedTraitsAndRarityScore(gotchiId) <-- look at implementation in facet
-    // equipped wearable sets seem to only be in the subgraph, need to reimplement
 };
 
 export default function useDiamond () {
