@@ -189,14 +189,44 @@ const html = `
         body {
             text-size-adjust: none;
             font-size: 16px;
+
+            --text-color: black;
+            --text-color-subtle: #777;
+            --text-color-match-1: #555;
+            --text-color-match-2: #333;
+            --background-color: white;
+            --background-color-transparent: rgba(255, 255, 255, 0.9);
+            --background-color-match-4: yellow;
+            --border-color: #ccc;
+
+            background: var(--background-color);
+            color: var(--text-color);
         }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                --text-color: white;
+                --text-color-subtle: #888;
+                --text-color-match-1: #aaa;
+                --text-color-match-2: #dedede;
+                --background-color: rgb(20, 20, 20);
+                --background-color-transparent: rgba(20, 20, 20, 0.9);
+                --background-color-match-4: rgba(255, 255, 0, 0.25);
+                --border-color: #555;
+            }
+        }
+
+        .sets-table {
+            margin-bottom: 50px;
+        }
+
         .sets-table__header {
             position: sticky;
             top: 0;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: var(--background-color-transparent);
         }
         .sets-table__cell {
-            border-bottom: 10px solid white;
+            border-bottom: 10px solid var(--background-color);
         }
         th {
             text-align: left;
@@ -229,7 +259,7 @@ const html = `
             }
             .sets-table__cell--wearables {
                 padding-bottom: 10px;
-                border-bottom: 1px solid #ccc;
+                border-bottom: 1px solid var(--border-color);
                 font-size: 0.9em;
             }
             .sets-table__cell--name {
@@ -239,7 +269,7 @@ const html = `
 
         .trait {
             white-space: nowrap;
-            border-bottom: 20px solid white;
+            border-bottom: 20px solid var(--background-color);
         }
         .trait--positive {
             background-color: rgba(106, 170, 150, 0.55);
@@ -263,20 +293,20 @@ const html = `
         }
         .trait-bonus-types {
             font-size: smaller;
-            color: #777;
+            color: var(--text-color-subtle);
         }
         .matching-set-with-types--1 {
-            color: #555;
+            color: var(--text-color-match-1);
         }
         .matching-set-with-types--2 {
-            color: #333;
+            color: var(--text-color-match-2);
         }
         .matching-set-with-types--3 {
             font-weight: bold;
         }
         .matching-set-with-types--4 {
             font-weight: bold;
-            background-color: yellow;
+            background-color: var(--background-color-match-4);
         }
         .rarity-markers {
             display: inline-flex;
@@ -344,7 +374,7 @@ const html = `
             }
             .matching-sets-table__cell--sets {
                 padding-bottom: 10px;
-                border-bottom: 1px solid #ccc;
+                border-bottom: 1px solid var(--border-color);
                 font-size: 0.9em;
             }
 
@@ -352,16 +382,16 @@ const html = `
                 padding-bottom: 0;
             }
             .matching-sets-table__cell {
-                border-top: 1px solid #ccc;
+                border-top: 1px solid var(--border-color);
             }
             .matching-sets-table__cell:first-child {
-                border-left: 1px solid #ccc;
+                border-left: 1px solid var(--border-color);
             }
             .matching-sets-table__cell:nth-child(4) {
-                border-right: 1px solid #ccc;
+                border-right: 1px solid var(--border-color);
             }
             .matching-sets-table__cell--sets {
-                border: 1px solid #ccc;
+                border: 1px solid var(--border-color);
                 border-top: none;
                 margin-bottom: 20px;
             }
