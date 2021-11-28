@@ -125,15 +125,15 @@ fs.writeFile('processedSets.json', JSON.stringify(wearableSets, null, 4), err =>
 
 const tableRows = wearableSets.map(set => `
     <tr>
-        <td>${set.name}</td>
-        <td>${set.traitBonusesText}</td>
-        <td>
-          <ul>
+        <td class="sets-table__cell sets-table__cell--name">${set.name}</td>
+        <td class="sets-table__cell">${set.traitBonusesText}</td>
+        <td class="sets-table__cell sets-table__cell--wearables">
+          <ul class="sets-table__wearables">
           	${set.wearables.map(wearable => "<li>" + wearable.name + " (" + wearable.rarity + "; " + wearable.traitModifiersText + ")</li>").join("")}
           </ul>
         </td>
-        <td>${set.totalTraitBonusesText}</td>
-        <td>${set.totalBRSBonus}</td>
+        <td class="sets-table__cell">${set.totalTraitBonusesText}</td>
+        <td class="sets-table__cell">${set.totalBRSBonus}</td>
     </tr>
 `);
 
@@ -145,33 +145,113 @@ const getMatchingSets = function(profile) {
             }
             return profile[index] ? set.totalTraitBonuses[trait] > 0 : set.totalTraitBonuses[trait] < 0;
         });
-    }).map(set => `<span class="matching-set-with-types--${set.totalTraitBonusTypesCount}">
-        <div class="rarity-markers">
+    }).map(set => `
+    <details class="matching-set-with-types--${set.totalTraitBonusTypesCount}">
+        <summary>
+            <span class="set-summary">
+                <span class="set-summary__rarity-markers rarity-markers">
+                    ${set.wearables.map(wearable => `
+                        <div class="rarity-marker" style="--rarity-marker-color: ${rarityColors[wearable.rarity]};" title="${wearable.name} (${wearable.rarity})"></div>
+                    `).join("")}
+                </span>
+                <span class="set-summary__total">
+                    [${set.totalBRSBonus}]
+                </span>
+                <span class="set-summary__text">
+                    ${set.name} <span class="trait-bonus-types">(${set.totalTraitBonusTypesText})
+                </span>
+            </span>
+        </summary>
+        <ul class="set-details">
             ${set.wearables.map(wearable => `
-                <div class="rarity-marker" style="--rarity-marker-color: ${rarityColors[wearable.rarity]};" title="${wearable.name} (${wearable.rarity})"></div>
+                <li class="set-details__wearable">
+                    <div
+                        class="set-details__wearable-rarity-marker rarity-marker"
+                        style="--rarity-marker-color: ${rarityColors[wearable.rarity]};">
+                    </div>
+                    <div class="set-details__wearable-desc">
+                        ${wearable.name} (${wearable.rarity}; ${wearable.traitModifiersText})
+                    </div>
+                </li>
             `).join("")}
-        </div>
-        <span class="set-total">[${set.totalBRSBonus}]</span>
-        ${set.name} <span class="trait-bonus-types">(${set.totalTraitBonusTypesText})</span>
-    </span><br>`);
+        </ul>
+    </details>`);
 };
 
 const html = `
 <html DOCTYPE="html">
+<head>
+    <title>Wearable Sets in Aavegotchi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <body>
     <style>
+        body {
+            text-size-adjust: none;
+            font-size: 16px;
+        }
+        .sets-table__header {
+            position: sticky;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .sets-table__cell {
+            border-bottom: 10px solid white;
+        }
+        th {
+            text-align: left;
+        }
         td {
             vertical-align: top;
         }
 
-        td.trait {
+        @media (max-width: 1000px) {
+            table.sets-table {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-auto-flow: row dense;
+            }
+            table.sets-table tbody,
+            table.sets-table thead,
+            table.sets-table tr {
+                display: contents;
+            }
+            /* make the items cell full width. With dense flow, this effectively pushes it below the main row. */
+            .sets-table__header--wearables {
+                display: none;
+            }
+            .sets-table__cell--wearables {
+                grid-column: 1 / 5;
+            }
+            .sets-table__cell {
+                margin-top: 10px;
+                border-bottom: none;
+            }
+            .sets-table__cell--wearables {
+                padding-bottom: 10px;
+                border-bottom: 1px solid #ccc;
+                font-size: 0.9em;
+            }
+            .sets-table__cell--name {
+                font-weight: bold;
+            }
+        }
+
+        .trait {
             white-space: nowrap;
+            border-bottom: 20px solid white;
         }
-        td.trait--positive {
-            background-color: #6aaa96;
+        .trait--positive {
+            background-color: rgba(106, 170, 150, 0.55);
         }
-        td.trait--negative {
-            background-color: #e67f83;
+        .trait--negative {
+            background-color: rgba(230, 127, 121, 0.35);
+        }
+        ul.sets-table__wearables,
+        ul.sets-table__wearables > li {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
         }
         .matching-sets {
             padding-bottom: 20px;
@@ -208,37 +288,117 @@ const html = `
             height: 15px;
             background-color: var(--rarity-marker-color);
         }
+        .matching-sets-table__header--sets,
+        .matching-sets-table__cell--sets {
+            padding-left: 5px;
+        }
+        .matching-sets summary::marker {
+            color: #bbb;
+        }
+        .matching-sets details {
+            break-inside: avoid;
+        }
+        .set-summary__rarity-markers {
+            position: relative;
+            top: 3px;
+        }
+        .set-details {
+            margin: 2px 0 6px 17px;
+            padding: 0;
+            font-size:  0.9em;
+        }
+        .set-details__wearable {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            font-weight: normal;
+        }
+        .set-details__wearable-rarity-marker {
+            flex: none;
+            margin-right: 3px;
+        }
+        .set-details__wearable-desc {
+            flex: 1 1 auto;
+        }
+
+        @media (max-width: 1000px) {
+            table.matching-sets-table {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                grid-auto-flow: row dense;
+            }
+            table.matching-sets-table tbody,
+            table.matching-sets-table tr {
+                display: contents;
+            }
+            .matching-sets-table thead {
+                display: none;
+            }
+            /* make the matching sets cell full width. With dense flow, this effectively pushes it below the main row. */
+            .matching-sets-table__cell--sets {
+                grid-column: 1 / 5;
+            }
+            .matching-sets-table__cell {
+                padding: 10px;
+                border-bottom: none;
+            }
+            .matching-sets-table__cell--sets {
+                padding-bottom: 10px;
+                border-bottom: 1px solid #ccc;
+                font-size: 0.9em;
+            }
+
+            .matching-sets {
+                padding-bottom: 0;
+            }
+            .matching-sets-table__cell {
+                border-top: 1px solid #ccc;
+            }
+            .matching-sets-table__cell:first-child {
+                border-left: 1px solid #ccc;
+            }
+            .matching-sets-table__cell:nth-child(4) {
+                border-right: 1px solid #ccc;
+            }
+            .matching-sets-table__cell--sets {
+                border: 1px solid #ccc;
+                border-top: none;
+                margin-bottom: 20px;
+            }
+        }
     </style>
-    <table>
+    <h2>All Wearable Sets</h2>
+    <table class="sets-table">
         <thead>
-            <th>Set Name</th>
-            <th>Set Bonus</th>
-            <th>Items</th>
-            <th>Total Modifiers</th>
-            <th>Total BRS bonus</th>
+            <th class="sets-table__header">Set Name</th>
+            <th class="sets-table__header">Set Bonus</th>
+            <th class="sets-table__header sets-table__header--wearables">Items</th>
+            <th class="sets-table__header">Total Modifiers</th>
+            <th class="sets-table__header">Total BRS bonus</th>
         </thead>
         <tbody>
             ${tableRows.join("\n")}
         </tbody>
     </table>
-    <hr />
-    <table>
+
+    <h2>Matching sets for different types of gotchi</h2>
+    <table class="matching-sets-table">
         <thead>
             <th>${individualTraitsByIndex[0]}</th>
             <th>${individualTraitsByIndex[1]}</th>
             <th>${individualTraitsByIndex[2]}</th>
             <th>${individualTraitsByIndex[3]}</th>
-            <th>Matching Sets</th>
+            <th class="matching-sets-table__header matching-sets-table__header--sets">Matching Sets</th>
         </thead>
         <tbody>
             ${traitProfiles.map(profile => `
                 <tr class="trait-profile">
                     ${profile.map((direction, index) => `
-                        <td class="trait ${ direction ? "trait--positive" : "trait--negative" }">
+                        <td class="matching-sets-table__cell trait ${ direction ? "trait--positive" : "trait--negative" }">
                             ${direction ? "+" : "-"} ${individualTraitsByIndex[index]}
                         </td>
                     `).join("")}
-                    <td>
+                    <td class="matching-sets-table__cell matching-sets-table__cell--sets">
                         <div class="matching-sets">
                             ${getMatchingSets(profile).join("")}
                         </div>
