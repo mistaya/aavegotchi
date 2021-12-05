@@ -9,14 +9,14 @@
 
           <h3>Auction Data</h3>
 
-          <div style="font-style: italic">
-            Latest auction fetched:
+          <div style="font-style: italic; margin-bottom: 20px">
+            Last auction fetched:
             <br>
             #{{ mostRecentAuction.tokenId }}
             at {{ mostRecentAuctionDate }}
           </div>
 
-          <div style="margin: 10px 0 20px 0">
+          <div style="margin: 10px 0 20px 0; display: none;">
             <button
               type="button"
               :disabled="!canSubmitAuctionsFetch"
