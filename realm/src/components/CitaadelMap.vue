@@ -20,9 +20,10 @@
             <button
               type="button"
               :disabled="!canSubmitAuctionsFetch"
+              class="fetch-auctions"
               @click="fetchAuctions"
             >
-              Fetch
+              Fetch Latest
             </button>
             <span v-if="auctionsFetchStatus.loading">
               loading...
@@ -314,32 +315,78 @@
         </section>
 
       </div>
-      <svg
-        ref="svgRef"
-        xmlns="http://www.w3.org/2000/svg"
-        :viewBox="INITIAL_DISPLAY_VIEWBOX"
-        class="map-svg"
-        :style="{
-          'aspect-ratio': INITIAL_DISPLAY_ASPECT_RATIO
-        }"
-      >
-        <a
-          v-for="parcel in parcelsToDisplay"
-          :key="parcel.id"
-          xlink:href="#"
-          @click.prevent="onClickParcel(parcel)"
+      <div>
+        <div class="view-modes">
+          <button
+            type="button"
+            class="view-mode"
+            :aria-pressed="`${viewMode === 'map'}`"
+            @click="viewMode = 'map'"
+          >
+            Map View
+          </button>
+          <button
+            type="button"
+            class="view-mode"
+            :aria-pressed="`${viewMode === 'list'}`"
+            @click="viewMode = 'list'"
+          >
+            List View
+          </button>
+        </div>
+        <svg
+          v-show="viewMode === 'map'"
+          ref="svgRef"
+          xmlns="http://www.w3.org/2000/svg"
+          :viewBox="INITIAL_DISPLAY_VIEWBOX"
+          class="map-svg"
+          :style="{
+            'aspect-ratio': INITIAL_DISPLAY_ASPECT_RATIO
+          }"
         >
-          <rect
-            v-show="parcel.show"
-            :x="parcel.coordinateX"
-            :y="parcel.coordinateY"
-            :width="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 32 : 64"
-            :height="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 64 : 32"
-            stroke="#777"
-            :fill="parcel.color"
-          />
-        </a>
-      </svg>
+          <a
+            v-for="parcel in parcelsToDisplay"
+            :key="parcel.id"
+            xlink:href="#"
+            @click.prevent="onClickParcel(parcel)"
+          >
+            <rect
+              v-show="parcel.show"
+              :x="parcel.coordinateX"
+              :y="parcel.coordinateY"
+              :width="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 32 : 64"
+              :height="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 64 : 32"
+              stroke="#777"
+              :fill="parcel.color"
+            />
+          </a>
+        </svg>
+        <div v-if="viewMode === 'list'">
+          <template v-if="!listParcelsToDisplay.length">
+            No parcels found.
+          </template>
+          <template v-else>
+            {{ listParcelsToDisplay.length }} parcels found. Cheapest first:
+            <ul class="parcels-list">
+              <li
+                v-for="parcel in listParcelsToDisplay"
+                :key="parcel.id"
+              >
+                {{ parcel.id }}
+                {{ parcel.parcelHash }}
+                {{ parcel.sizeLabel }}
+                district {{ parcel.district }}
+                <a
+                  :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
+                  target="_blank"
+                >
+                  Current bid: {{ parcel.highestBidGhst }} GHST
+                </a>
+              </li>
+            </ul>
+          </template>
+        </div>
+      </div>
     </div>
 
     <div style="display: none">
@@ -430,6 +477,7 @@ export default {
     const svgRef = ref(null)
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
+    const viewMode = ref('map') // or 'list'
     const filters = ref({
       size: {
         humble: true,
@@ -537,6 +585,7 @@ export default {
     const getParcelDetails = function (parcel) {
       if (!parcel) { return null }
       const auction = auctionsByParcelId.value[parcel.id]
+      const highestBid = auction.highestBid - 0
       const highestBidGhst = auction?.highestBidGhst || ''
       const sizeLabel = sizeLabels[parcel.size]
       const vertical = parcel.size === '2'
@@ -545,6 +594,7 @@ export default {
         sizeLabel,
         vertical,
         hasAuction: !!auction,
+        highestBid,
         highestBidGhst,
         color: auction ? getColorForPrice(highestBidGhst, sizeLabel) : 'white',
         hasBoost: parcel.fudBoost !== '0' || parcel.fomoBoost !== '0' || parcel.alphaBoost !== '0' || parcel.kekBoost !== '0',
@@ -624,6 +674,15 @@ export default {
       })
     })
 
+    const listParcelsToDisplay = computed(() => {
+      const parcels = filteredParcelsToDisplay.value.filter(parcel => parcel.show && parcel.hasAuction)
+      parcels.sort((a, b) => {
+        if (a.highestBid === b.highestBid) { return 0 }
+        return a.highestBid < b.highestBid ? -1 : 1
+      })
+      return parcels
+    })
+
     const onClickParcel = function (parcel) {
       selectedParcelId.value = parcel.id
       parcelDetailsRef.value.scrollIntoView(false)
@@ -644,7 +703,9 @@ export default {
       INITIAL_DISPLAY_ASPECT_RATIO,
       svgRef,
       parcelDetailsRef,
+      viewMode,
       parcelsToDisplay: filteredParcelsToDisplay,
+      listParcelsToDisplay,
       onClickParcel,
       selectedParcel,
       mostRecentAuction,
@@ -670,6 +731,35 @@ export default {
     .layout-container {
       grid-template-columns: 1fr;
     }
+  }
+
+  .fetch-auctions{
+    background: var(--purple);
+    color: white;
+    font-weight: bold;
+    padding: 5px 10px;
+  }
+
+  .view-modes {
+    margin-bottom: 10px;
+  }
+  .view-mode {
+    margin-right: 10px;
+    padding: 5px 10px;
+  }
+  .view-mode[aria-pressed=true] {
+    background: var(--purple);
+    color: white;
+    font-weight: bold;
+  }
+
+  .parcels-list {
+    margin: 15px 0 0 0;
+    padding: 0 0 0 15px;
+  }
+  .parcels-list > li {
+    margin: 0 0 8px 0;
+    padding: 0;
   }
 
   .config-details {

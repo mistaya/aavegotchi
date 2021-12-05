@@ -12,6 +12,10 @@ export default {
 </script>
 
 <style>
+  body {
+    --purple: #FA34F3;
+  }
+
   h1 {
     margin: 0 0 10px 0;
     font-size: 1.4em;
@@ -40,6 +44,6 @@ export default {
   }
 
   input[type="checkbox"] {
-    accent-color: #FA34F3;
+    accent-color: var(--purple);
   }
 </style>
