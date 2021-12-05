@@ -428,7 +428,7 @@ const sizeLabels = ['humble', 'reasonable', 'spacious', 'spacious']
 
 // select parcels in land auction #2
 const DISTRICTS_TO_DISPLAY = ['1', '7', '8', '9', '10', '11', '12', '27', '28', '29', '30']
-const X_MIN_TO_DISPLAY = 5280
+const X_MIN_TO_DISPLAY = 5200
 // const INITIAL_DISPLAY_VIEWBOX = '0 0 9000 6000'
 const INITIAL_DISPLAY_VIEWBOX = '6600 1000 2500 4400'
 // const INITIAL_DISPLAY_ASPECT_RATIO = '9 / 6'
