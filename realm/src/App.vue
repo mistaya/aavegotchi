@@ -38,4 +38,8 @@ export default {
   main {
     padding: 10px;
   }
+
+  input[type="checkbox"] {
+    accent-color: #FA34F3;
+  }
 </style>

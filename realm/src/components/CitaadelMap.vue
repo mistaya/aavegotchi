@@ -32,55 +32,242 @@
             </span>
           </div>
 
-          <h3>Color by Bid (GHST)</h3>
+          <details open class="config-details">
+            <summary>
+              <h3>Filter by Size</h3>
+            </summary>
 
-          <div
-            v-for="size in ['humble', 'reasonable', 'spacious']"
-            :key="size"
-            style="margin-bottom: 20px;"
-          >
-            <h4 style="text-transform: capitalize;">
-              {{ size }}:
-            </h4>
-            <div style="margin-bottom: 10px">
+            <div
+              v-for="sizeLabel in ['humble', 'reasonable', 'spacious']"
+              :key="sizeLabel"
+            >
               <label>
-                Color Scheme:
-                <select v-model="scaleConfigBySize[size].scaleName">
+                <input
+                  v-model="filters.size[sizeLabel]"
+                  type="checkbox"
+                />
+                <span style="text-transform: capitalize;">
+                  {{ sizeLabel }}
+                </span>
+              </label>
+            </div>
+          </details>
+
+          <details open class="config-details">
+            <summary>
+              <h3>Filter by Walls</h3>
+            </summary>
+
+            <div
+              v-for="wallEntry in Object.values(filters.wall)"
+              :key="wallEntry.id"
+            >
+              <label>
+                <input
+                  v-model="wallEntry.enabled"
+                  type="checkbox"
+                />
+                <span style="text-transform: capitalize;">
+                  {{ wallEntry.id }}
+                </span>
+              </label>
+            </div>
+          </details>
+
+          <details class="config-details">
+            <summary>
+              <h3>Filter by District</h3>
+            </summary>
+
+            <div style="margin-bottom: 8px">
+              <div>
+                <label>
+                  <input
+                    v-model="filters.district.selectionMode"
+                    type="radio"
+                    name="selectionMode"
+                    value="single"
+                  />
+                    Single District
+                </label>
+              </div>
+              <div>
+                <label>
+                  <input
+                    v-model="filters.district.selectionMode"
+                    type="radio"
+                    name="selectionMode"
+                    value="multiple"
+                  />
+                    Multiple Districts
+                </label>
+              </div>
+            </div>
+
+            <div
+              v-if="filters.district.selectionMode === 'single'"
+              style="margin-left: 25px;"
+            >
+              <label>
+                District:
+                <select v-model="filters.district.selectSingle">
                   <option
-                    v-for="scaleName in availableScales"
-                    :key="scaleName"
-                    :value="scaleName"
+                    v-for="district in filters.district.districts"
+                    :key="district"
+                    :value="district"
                   >
-                    {{ scaleName }}
+                    {{ district }}
                   </option>
                 </select>
               </label>
+            </div>
+
+            <div
+              v-if="filters.district.selectionMode === 'multiple'"
+              style="margin-left: 20px;"
+            >
+              <span
+                v-for="districtEntry in filters.district.selectMultiple"
+                :key="districtEntry.id"
+                class="config-details__district-entry"
+              >
+                <label>
+                  <input
+                    v-model="districtEntry.enabled"
+                    type="checkbox"
+                  />
+                    {{ districtEntry.id }}
+                </label>
+              </span>
+            </div>
+          </details>
+
+          <details class="config-details">
+            <summary>
+              <h3>Filter by Alchemica Boost</h3>
+            </summary>
+
+            <div
+              v-for="[type, typeEntry] in Object.entries(filters.boost)"
+              :key="type"
+            >
+              <h4 style="text-transform: uppercase;">
+                {{ type }}
+              </h4>
+
+              <div>
+                <div>
+                  <label>
+                    <input
+                      v-model="typeEntry.selectionMode"
+                      type="radio"
+                      :name="`${type}_selectionMode`"
+                      value="ignore"
+                    />
+                      Don't care, show all
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      v-model="typeEntry.selectionMode"
+                      type="radio"
+                      :name="`${type}_selectionMode`"
+                      value="some"
+                    />
+                      With boost, any amount
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      v-model="typeEntry.selectionMode"
+                      type="radio"
+                      :name="`${type}_selectionMode`"
+                      value="range"
+                    />
+                      Specific range of boost
+                  </label>
+                </div>
+              </div>
+
               <div
-                class="scale-color-display"
-                :style="{
-                  'background': scaleGradientsByName[scaleConfigBySize[size].scaleName]
-                }"
-              />
+                v-if="typeEntry.selectionMode === 'range'"
+                style="margin-top: 8px"
+              >
+                <label>
+                  Min:
+                  <input
+                    v-model="typeEntry.selectRange.min"
+                    type="number"
+                    class="boost-range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="typeEntry.selectRange.max"
+                    type="number"
+                    class="boost-range-input"
+                  />
+                </label>
+              </div>
             </div>
-            <div>
-              <label>
-                Min:
-                <input
-                  v-model="scaleConfigBySize[size].min"
-                  type="number"
-                  class="scale-range-input"
+          </details>
+
+          <details open class="config-details">
+            <summary>
+              <h3>Color by Bid (GHST)</h3>
+            </summary>
+
+            <div
+              v-for="size in ['humble', 'reasonable', 'spacious']"
+              :key="size"
+              style="margin-bottom: 20px;"
+            >
+              <h4 style="text-transform: capitalize;">
+                {{ size }}:
+              </h4>
+              <div style="margin-bottom: 10px">
+                <label>
+                  Color Scheme:
+                  <select v-model="scaleConfigBySize[size].scaleName">
+                    <option
+                      v-for="scaleName in AVAILABLE_SCALES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
+                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': scaleGradientsByName[scaleConfigBySize[size].scaleName]
+                  }"
                 />
-              </label>
-              <label>
-                Max:
-                <input
-                  v-model="scaleConfigBySize[size].max"
-                  type="number"
-                  class="scale-range-input"
-                />
-              </label>
+              </div>
+              <div>
+                <label>
+                  Min:
+                  <input
+                    v-model="scaleConfigBySize[size].min"
+                    type="number"
+                    class="scale-range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="scaleConfigBySize[size].max"
+                    type="number"
+                    class="scale-range-input"
+                  />
+                </label>
+              </div>
             </div>
-          </div>
+          </details>
         </section>
 
         <section ref="parcelDetailsRef">
@@ -130,8 +317,11 @@
       <svg
         ref="svgRef"
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 9000 6000"
+        :viewBox="INITIAL_DISPLAY_VIEWBOX"
         class="map-svg"
+        :style="{
+          'aspect-ratio': INITIAL_DISPLAY_ASPECT_RATIO
+        }"
       >
         <a
           v-for="parcel in parcelsToDisplay"
@@ -140,6 +330,7 @@
           @click.prevent="onClickParcel(parcel)"
         >
           <rect
+            v-show="parcel.show"
             :x="parcel.coordinateX"
             :y="parcel.coordinateY"
             :width="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 32 : 64"
@@ -188,13 +379,92 @@ const scaleGradientsByName = Object.fromEntries(
 )
 const sizeLabels = ['humble', 'reasonable', 'spacious', 'spacious']
 
+// select parcels in land auction #2
 const DISTRICTS_TO_DISPLAY = ['1', '7', '8', '9', '10', '11', '12', '27', '28', '29', '30']
+const X_MIN_TO_DISPLAY = 5280
+// const INITIAL_DISPLAY_VIEWBOX = '0 0 9000 6000'
+const INITIAL_DISPLAY_VIEWBOX = '6600 1000 2500 4400'
+// const INITIAL_DISPLAY_ASPECT_RATIO = '9 / 6'
+const INITIAL_DISPLAY_ASPECT_RATIO = '10 / 8'
+
+const ALCHEMICA_TYPES = ['fud', 'fomo', 'alpha', 'kek']
+
+const WALL_INNER = {
+  id: 'inner',
+  innerBounds: null,
+  outerBounds: {
+    minX: 5200,
+    maxX: 5650,
+    minY: 2400,
+    maxY: 3900
+  }
+}
+const WALL_MIDDLE = {
+  id: 'middle',
+  innerBounds: WALL_INNER.outerBounds,
+  outerBounds: {
+    minX: 5200,
+    maxX: 7100,
+    minY: 1500,
+    maxY: 4800
+  }
+}
+const WALL_OUTER = {
+  id: 'outer',
+  innerBounds: WALL_MIDDLE.outerBounds,
+  outerBounds: {
+    minX: 5200,
+    maxX: 9000,
+    minY: 0,
+    maxY: 6000
+  }
+}
+const WALLS = [
+  WALL_INNER,
+  WALL_MIDDLE,
+  WALL_OUTER
+]
 
 export default {
   setup () {
     const svgRef = ref(null)
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
+    const filters = ref({
+      size: {
+        humble: true,
+        reasonable: true,
+        spacious: true
+      },
+      district: {
+        districts: DISTRICTS_TO_DISPLAY,
+        selectionMode: 'multiple', // or 'multiple'
+        selectSingle: DISTRICTS_TO_DISPLAY[0],
+        selectMultiple: DISTRICTS_TO_DISPLAY.map(district => ({
+          id: district,
+          enabled: true
+        }))
+      },
+      wall: Object.fromEntries(WALLS.map(entry =>
+        [
+          entry.id,
+          {
+            ...entry,
+            enabled: true
+          }
+        ]
+      )),
+      boost: Object.fromEntries(ALCHEMICA_TYPES.map(id =>
+        [
+          id,
+          {
+            id,
+            selectionMode: 'ignore', // or 'some' or 'range'
+            selectRange: { min: 1, max: 30 }
+          }
+        ]
+      ))
+    })
     const { parcelsById } = useParcels()
     const {
       auctionsByParcelId,
@@ -239,6 +509,31 @@ export default {
       return scale(price)
     }
 
+    const getParcelWall = function (parcel) {
+      const parcelX = parcel.coordinateX - 0
+      const parcelY = parcel.coordinateY - 0
+      for (const wallEntry of WALLS) {
+        if (
+          // parcel is inside this wall's outerBounds
+          (
+            (parcelX > wallEntry.outerBounds.minX && parcelX < wallEntry.outerBounds.maxX) &&
+            (parcelY > wallEntry.outerBounds.minY && parcelY < wallEntry.outerBounds.maxY)
+          ) &&
+          // parcel is not inside this wall's innerBounds, if specified
+          (
+            !wallEntry.innerBounds ||
+            !(
+              (parcelX > wallEntry.innerBounds.minX && parcelX < wallEntry.innerBounds.maxX) &&
+              (parcelY > wallEntry.innerBounds.minY && parcelY < wallEntry.innerBounds.maxY)
+            )
+          )
+        ) {
+          return wallEntry.id
+        }
+      }
+      return null
+    }
+
     const getParcelDetails = function (parcel) {
       if (!parcel) { return null }
       const auction = auctionsByParcelId.value[parcel.id]
@@ -252,14 +547,81 @@ export default {
         hasAuction: !!auction,
         highestBidGhst,
         color: auction ? getColorForPrice(highestBidGhst, sizeLabel) : 'white',
-        hasBoost: parcel.fudBoost !== '0' || parcel.fomoBoost !== '0' || parcel.alphaBoost !== '0' || parcel.kekBoost !== '0'
+        hasBoost: parcel.fudBoost !== '0' || parcel.fomoBoost !== '0' || parcel.alphaBoost !== '0' || parcel.kekBoost !== '0',
+        wall: getParcelWall(parcel)
       }
     }
 
-    const parcelsToDisplay = computed(() => {
+    const allParcelsToDisplay = computed(() => {
       return Object.values(parcelsById.value).filter(parcel =>
-        DISTRICTS_TO_DISPLAY.includes(parcel.district)
+        DISTRICTS_TO_DISPLAY.includes(parcel.district) &&
+        (parcel.coordinateX - 0) > X_MIN_TO_DISPLAY
       ).map(getParcelDetails)
+    })
+
+    const filteredParcelsToDisplay = computed(() => {
+      const wallsToExclude = Object.values(filters.value.wall)
+        .filter(entry => !entry.enabled)
+        .map(entry => entry.id)
+      const districtSelectionMode = filters.value.district.selectionMode
+      const districtsToExclude = filters.value.district.selectMultiple
+        .filter(entry => !entry.enabled)
+        .map(entry => entry.id)
+
+      return allParcelsToDisplay.value.map(parcel => {
+        let show = true
+        // size filters
+        if (!filters.value.size.humble && parcel.sizeLabel === 'humble') {
+          show = false
+        }
+        if (!filters.value.size.reasonable && parcel.sizeLabel === 'reasonable') {
+          show = false
+        }
+        if (!filters.value.size.spacious && parcel.sizeLabel === 'spacious') {
+          show = false
+        }
+        if (show) {
+          // wall filters
+          if (wallsToExclude.length && wallsToExclude.includes(parcel.wall)) {
+            show = false
+          }
+        }
+        if (show) {
+          // district filters
+          if (districtSelectionMode === 'single') {
+            if (parcel.district !== filters.value.district.selectSingle) {
+              show = false
+            }
+          } else if (districtsToExclude.includes(parcel.district)) {
+            show = false
+          }
+        }
+        if (show) {
+          // boost filters
+          for (const typeEntry of Object.values(filters.value.boost)) {
+            if (typeEntry.selectionMode === 'ignore') {
+              // do nothing
+            } else {
+              const boost = parcel[`${typeEntry.id}Boost`] - 0
+              if (typeEntry.selectionMode === 'some') {
+                if (boost <= 0) {
+                  show = false
+                }
+              } else {
+                const min = typeEntry.selectRange.min - 0
+                const max = typeEntry.selectRange.max - 0
+                if (boost < min || boost > max) {
+                  show = false
+                }
+              }
+            }
+          }
+        }
+        return {
+          ...parcel,
+          show
+        }
+      })
     })
 
     const onClickParcel = function (parcel) {
@@ -278,9 +640,11 @@ export default {
       })
     })
     return {
+      INITIAL_DISPLAY_VIEWBOX,
+      INITIAL_DISPLAY_ASPECT_RATIO,
       svgRef,
       parcelDetailsRef,
-      parcelsToDisplay,
+      parcelsToDisplay: filteredParcelsToDisplay,
       onClickParcel,
       selectedParcel,
       mostRecentAuction,
@@ -289,8 +653,9 @@ export default {
       fetchAuctions,
       auctionsFetchStatus,
       scaleConfigBySize,
-      availableScales: AVAILABLE_SCALES,
-      scaleGradientsByName
+      AVAILABLE_SCALES,
+      scaleGradientsByName,
+      filters
     }
   }
 }
@@ -307,6 +672,26 @@ export default {
     }
   }
 
+  .config-details {
+    margin-bottom: 15px;
+  }
+
+  .config-details[open] {
+    margin-bottom: 30px;
+  }
+  .config-details summary {
+    margin-bottom: 5px;
+  }
+  .config-details summary h3 {
+    display: inline;
+  }
+
+  .config-details__district-entry {
+    display: inline-block;
+    margin-right: 15px;
+    white-space: nowrap;
+  }
+
   .scale-color-display {
     margin-top: 5px;
     width: 80%;
@@ -316,14 +701,17 @@ export default {
     width: 60px;
   }
 
+  .boost-range-input {
+    width: 60px;
+  }
+
   .map-svg {
     border: 1px solid #ccc;
     width: 100%;
-    aspect-ratio: 9 / 6
   }
 
   .selected-parcel-details {
-    margin: 20px 10px 0 0;
+    margin: 0 10px 20px 0;
     border: 1px solid #ccc;
     padding: 10px;
   }
