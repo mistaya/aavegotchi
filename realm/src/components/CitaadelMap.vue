@@ -33,6 +33,31 @@
             </span>
           </div>
 
+          <details class="config-details">
+            <summary>
+              <h3>Filter Style</h3>
+            </summary>
+
+            <label>
+              <input
+                v-model="filters.displayMode"
+                type="radio"
+                name="displayMode"
+                value="outline"
+              />
+              Show outline
+            </label>
+            <label>
+              <input
+                v-model="filters.displayMode"
+                type="radio"
+                name="displayMode"
+                value="hide"
+              />
+              Hide
+            </label>
+          </details>
+
           <details open class="config-details">
             <summary>
               <h3>Filter by Size</h3>
@@ -218,6 +243,22 @@
 
           <details open class="config-details">
             <summary>
+              <h3>Filter by Bidder</h3>
+            </summary>
+
+            <label>
+              <textarea
+                v-model="filters.bidders"
+                class="config-bidders"
+              />
+              <div>
+                Bidder addresses. Separate multiple addresses by space or newline.
+              </div>
+            </label>
+          </details>
+
+          <details open class="config-details">
+            <summary>
               <h3>Color by Bid (GHST)</h3>
             </summary>
 
@@ -288,6 +329,11 @@
               >
                 Current bid: {{ selectedParcel.highestBidGhst }} GHST
               </a>
+              <br>Bidder:
+              <span class="eth-address" :title="selectedParcel.highestBidder">
+                {{ selectedParcel.highestBidder.substring(0, 5) }}...{{ selectedParcel.highestBidder.substring(selectedParcel.highestBidder.length - 5) }}
+              </span>
+              <CopyToClipboard :text="selectedParcel.highestBidder" />
             </div>
             <div>
               Boosts:
@@ -340,6 +386,10 @@
           xmlns="http://www.w3.org/2000/svg"
           :viewBox="INITIAL_DISPLAY_VIEWBOX"
           class="map-svg"
+          :class="{
+            'map-svg--filter-hide': filters.displayMode === 'hide',
+            'map-svg--filter-outline': filters.displayMode === 'outline'
+          }"
           :style="{
             'aspect-ratio': INITIAL_DISPLAY_ASPECT_RATIO
           }"
@@ -351,7 +401,10 @@
             @click.prevent="onClickParcel(parcel)"
           >
             <rect
-              v-show="parcel.show"
+              class="parcel"
+              :class="{
+                'parcel--hidden-by-filter': !parcel.show
+              }"
               :x="parcel.coordinateX"
               :y="parcel.coordinateY"
               :width="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 32 : 64"
@@ -405,6 +458,7 @@ import svgPanZoom from 'svg-pan-zoom'
 import { scaleSequential } from 'd3-scale'
 import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo } from 'd3-scale-chromatic'
 import { format } from 'date-fns'
+import CopyToClipboard from './CopyToClipboard.vue'
 
 const scalesByName = {
   grey: () => '#eee',
@@ -473,12 +527,16 @@ const WALLS = [
 ]
 
 export default {
+  components: {
+    CopyToClipboard
+  },
   setup () {
     const svgRef = ref(null)
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
     const viewMode = ref('map') // or 'list'
     const filters = ref({
+      displayMode: 'outline', // or 'hide'
       size: {
         humble: true,
         reasonable: true,
@@ -511,7 +569,8 @@ export default {
             selectRange: { min: 1, max: 30 }
           }
         ]
-      ))
+      )),
+      bidders: ''
     })
     const { parcelsById } = useParcels()
     const {
@@ -585,7 +644,7 @@ export default {
     const getParcelDetails = function (parcel) {
       if (!parcel) { return null }
       const auction = auctionsByParcelId.value[parcel.id]
-      const highestBid = auction.highestBid - 0
+      const highestBid = auction?.highestBid - 0
       const highestBidGhst = auction?.highestBidGhst || ''
       const sizeLabel = sizeLabels[parcel.size]
       const vertical = parcel.size === '2'
@@ -596,6 +655,7 @@ export default {
         hasAuction: !!auction,
         highestBid,
         highestBidGhst,
+        highestBidder: auction?.highestBidder,
         color: auction ? getColorForPrice(highestBidGhst, sizeLabel) : 'white',
         hasBoost: parcel.fudBoost !== '0' || parcel.fomoBoost !== '0' || parcel.alphaBoost !== '0' || parcel.kekBoost !== '0',
         wall: getParcelWall(parcel)
@@ -617,6 +677,7 @@ export default {
       const districtsToExclude = filters.value.district.selectMultiple
         .filter(entry => !entry.enabled)
         .map(entry => entry.id)
+      const bidders = (filters.value.bidders && filters.value.bidders.trim()) ? filters.value.bidders.split(/\s+/) : null
 
       return allParcelsToDisplay.value.map(parcel => {
         let show = true
@@ -644,6 +705,14 @@ export default {
             }
           } else if (districtsToExclude.includes(parcel.district)) {
             show = false
+          }
+        }
+        if (show) {
+          // bidder filters
+          if (bidders?.length) {
+            if (!bidders.includes(parcel.highestBidder)) {
+              show = false
+            }
           }
         }
         if (show) {
@@ -782,6 +851,11 @@ export default {
     white-space: nowrap;
   }
 
+  .config-bidders {
+    width: 90%;
+    height: 70px;
+  }
+
   .scale-color-display {
     margin-top: 5px;
     width: 80%;
@@ -800,9 +874,21 @@ export default {
     width: 100%;
   }
 
+  .map-svg--filter-hide .parcel--hidden-by-filter {
+    display: none;
+  }
+  .map-svg--filter-outline .parcel--hidden-by-filter {
+    stroke: #ccc;
+    fill: white;
+  }
+
   .selected-parcel-details {
     margin: 0 10px 20px 0;
     border: 1px solid #ccc;
     padding: 10px;
+  }
+
+  .eth-address {
+    font-family: monospace;
   }
 </style>
