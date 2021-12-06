@@ -1032,6 +1032,8 @@ export default {
       // limit panning example code https://bumbu.me/svg-pan-zoom/demo/limit-pan.html
       panZoom.value = svgPanZoom(svgRef.value, {
         dblClickZoomEnabled: false,
+        // TODO this example code doesn't calculate the limits correctly on mobile when zoomed
+        /*
         beforePan: function (oldPan, newPan) {
           const gutterWidth = 100
           const gutterHeight = 100
@@ -1048,6 +1050,7 @@ export default {
           }
           return customPan
         },
+        */
         customEventsHandler: {
           haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel'],
           init: function (options) {
