@@ -58,7 +58,7 @@
             </label>
           </details>
 
-          <details open class="config-details">
+          <details class="config-details">
             <summary>
               <h3>Filter by Size</h3>
             </summary>
@@ -79,7 +79,7 @@
             </div>
           </details>
 
-          <details open class="config-details">
+          <details class="config-details">
             <summary>
               <h3>Filter by Walls</h3>
             </summary>
@@ -241,7 +241,7 @@
             </div>
           </details>
 
-          <details open class="config-details">
+          <details class="config-details">
             <summary>
               <h3>Filter by Bidder</h3>
             </summary>
@@ -257,23 +257,90 @@
             </label>
           </details>
 
-          <details open class="config-details">
+          <details class="config-details">
             <summary>
-              <h3>Color by Bid (GHST)</h3>
+              <h3>Color Scheme</h3>
             </summary>
 
-            <div
-              v-for="size in ['humble', 'reasonable', 'spacious']"
-              :key="size"
-              style="margin-bottom: 20px;"
-            >
-              <h4 style="text-transform: capitalize;">
-                {{ size }}:
-              </h4>
-              <div style="margin-bottom: 10px">
+            <div style="margin-bottom: 10px">
+              Color by:
+              <br>
+              <label class="color-by-option">
+                <input
+                  v-model="colorScheme.colorBy"
+                  type="radio"
+                  name="colorBy"
+                  value="price"
+                />
+                Bid Price (GHST)
+              </label>
+
+              <label class="color-by-option">
+                <input
+                  v-model="colorScheme.colorBy"
+                  type="radio"
+                  name="colorBy"
+                  value="bidder"
+                />
+                Bidder Address
+              </label>
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'price'">
+              <div
+                v-for="size in ['humble', 'reasonable', 'spacious']"
+                :key="size"
+                style="margin-bottom: 20px;"
+              >
+                <h4 style="text-transform: capitalize;">
+                  {{ size }}:
+                </h4>
+                <div style="margin-bottom: 10px">
+                  <label>
+                    Color Scheme:
+                    <select v-model="colorScheme.priceScaleConfigBySize[size].scaleName">
+                      <option
+                        v-for="scaleName in AVAILABLE_SCALES"
+                        :key="scaleName"
+                        :value="scaleName"
+                      >
+                        {{ scaleName }}
+                      </option>
+                    </select>
+                  </label>
+                  <div
+                    class="scale-color-display"
+                    :style="{
+                      'background': scaleGradientsByName[colorScheme.priceScaleConfigBySize[size].scaleName]
+                    }"
+                  />
+                </div>
+                <div>
+                  <label>
+                    Min:
+                    <input
+                      v-model="colorScheme.priceScaleConfigBySize[size].min"
+                      type="number"
+                      class="scale-range-input"
+                    />
+                  </label>
+                  <label>
+                    Max:
+                    <input
+                      v-model="colorScheme.priceScaleConfigBySize[size].max"
+                      type="number"
+                      class="scale-range-input"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'bidder'">
+              <div>
                 <label>
                   Color Scheme:
-                  <select v-model="scaleConfigBySize[size].scaleName">
+                  <select v-model="colorScheme.bidderScaleName">
                     <option
                       v-for="scaleName in AVAILABLE_SCALES"
                       :key="scaleName"
@@ -286,27 +353,9 @@
                 <div
                   class="scale-color-display"
                   :style="{
-                    'background': scaleGradientsByName[scaleConfigBySize[size].scaleName]
+                    'background': scaleGradientsByName[colorScheme.bidderScaleName]
                   }"
                 />
-              </div>
-              <div>
-                <label>
-                  Min:
-                  <input
-                    v-model="scaleConfigBySize[size].min"
-                    type="number"
-                    class="scale-range-input"
-                  />
-                </label>
-                <label>
-                  Max:
-                  <input
-                    v-model="scaleConfigBySize[size].max"
-                    type="number"
-                    class="scale-range-input"
-                  />
-                </label>
               </div>
             </div>
           </details>
@@ -320,8 +369,9 @@
             <h2>Selected Parcel details:</h2>
 
             ID: {{ selectedParcel.id }}
-            <br>Size: {{ selectedParcel.sizeLabel }}
             <br>Name: {{ selectedParcel.parcelHash }}
+            <br>Size: {{ selectedParcel.sizeLabel }}
+            <br>District: {{ selectedParcel.district }}
             <div v-if="selectedParcel.hasAuction">
               <a
                 :href="`https://gotchiverse.io/auction?tokenId=${selectedParcel.id}`"
@@ -456,7 +506,7 @@ import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import svgPanZoom from 'svg-pan-zoom'
 import { scaleSequential } from 'd3-scale'
-import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo } from 'd3-scale-chromatic'
+import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
 import { format } from 'date-fns'
 import CopyToClipboard from './CopyToClipboard.vue'
 
@@ -467,7 +517,8 @@ const scalesByName = {
   inferno: interpolateInferno,
   cividis: interpolateCividis,
   spectral: interpolateSpectral,
-  turbo: interpolateTurbo
+  turbo: interpolateTurbo,
+  rainbow: interpolateRainbow
 }
 const AVAILABLE_SCALES = Object.keys(scalesByName)
 const steps = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
@@ -584,37 +635,43 @@ export default {
       if (!mostRecentAuction.value) { return }
       return format(new Date(mostRecentAuction.value.lastBidTime * 1000), 'yyyy/MM/dd HH:mm:ss')
     })
-    const scaleConfigBySize = ref({
-      humble: {
-        min: 88,
-        max: 500,
-        scaleName: 'viridis'
+
+    const colorScheme = ref({
+      colorBy: 'price', // or 'bidder'
+      priceScaleConfigBySize: {
+        humble: {
+          min: 88,
+          max: 500,
+          scaleName: 'viridis'
+        },
+        reasonable: {
+          min: 180,
+          max: 1000,
+          scaleName: 'viridis'
+        },
+        spacious: {
+          min: 1025,
+          max: 3000,
+          scaleName: 'viridis'
+        }
       },
-      reasonable: {
-        min: 180,
-        max: 1000,
-        scaleName: 'viridis'
-      },
-      spacious: {
-        min: 1025,
-        max: 3000,
-        scaleName: 'viridis'
-      }
+      bidderScaleName: 'rainbow'
     })
-    const scalesBySize = computed(() => {
+
+    const priceScalesBySize = computed(() => {
       const scales = {}
-      for (const key in scaleConfigBySize.value) {
-        const config = scaleConfigBySize.value[key]
+      const configBySize = colorScheme.value.priceScaleConfigBySize
+      for (const key in configBySize) {
+        const config = configBySize[key]
         scales[key] = scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
       }
       return scales
     })
 
-    const getColorForPrice = function (price, sizeLabel) {
-      const scale = scalesBySize.value[sizeLabel]
-      if (!scale) { return 'white' }
-      return scale(price)
-    }
+    const bidderScale = computed(() => {
+      const maxAddress = parseInt('0xffffffffffffffffffffffffffffffffffffffff', 16)
+      return scaleSequential(scalesByName[colorScheme.value.bidderScaleName]).domain([0, maxAddress])
+    })
 
     const getParcelWall = function (parcel) {
       const parcelX = parcel.coordinateX - 0
@@ -656,7 +713,6 @@ export default {
         highestBid,
         highestBidGhst,
         highestBidder: auction?.highestBidder,
-        color: auction ? getColorForPrice(highestBidGhst, sizeLabel) : 'white',
         hasBoost: parcel.fudBoost !== '0' || parcel.fomoBoost !== '0' || parcel.alphaBoost !== '0' || parcel.kekBoost !== '0',
         wall: getParcelWall(parcel)
       }
@@ -669,6 +725,26 @@ export default {
       ).map(getParcelDetails)
     })
 
+    const coloredParcelsToDisplay = computed(() => {
+      const colorBy = colorScheme.value.colorBy
+      let getColor = () => 'white'
+      if (colorBy === 'price') {
+        getColor = parcel => {
+          const scale = priceScalesBySize.value[parcel.sizeLabel]
+          if (!scale) { return 'white' }
+          return scale(parcel.highestBidGhst)
+        }
+      } else if (colorBy === 'bidder') {
+        getColor = parcel => {
+          return bidderScale.value(parseInt(parcel.highestBidder, 16))
+        }
+      }
+      return allParcelsToDisplay.value.map(parcel => ({
+        ...parcel,
+        color: parcel.hasAuction ? getColor(parcel) : 'white'
+      }))
+    })
+
     const filteredParcelsToDisplay = computed(() => {
       const wallsToExclude = Object.values(filters.value.wall)
         .filter(entry => !entry.enabled)
@@ -679,7 +755,7 @@ export default {
         .map(entry => entry.id)
       const bidders = (filters.value.bidders && filters.value.bidders.trim()) ? filters.value.bidders.split(/\s+/) : null
 
-      return allParcelsToDisplay.value.map(parcel => {
+      return coloredParcelsToDisplay.value.map(parcel => {
         let show = true
         // size filters
         if (!filters.value.size.humble && parcel.sizeLabel === 'humble') {
@@ -782,10 +858,10 @@ export default {
       canSubmitAuctionsFetch,
       fetchAuctions,
       auctionsFetchStatus,
-      scaleConfigBySize,
       AVAILABLE_SCALES,
       scaleGradientsByName,
-      filters
+      filters,
+      colorScheme
     }
   }
 }
@@ -851,6 +927,12 @@ export default {
     white-space: nowrap;
   }
 
+  .color-by-option {
+    display: inline-block;
+    margin-right: 15px;
+    white-space: nowrap;
+  }
+
   .config-bidders {
     width: 90%;
     height: 70px;
@@ -878,7 +960,7 @@ export default {
     display: none;
   }
   .map-svg--filter-outline .parcel--hidden-by-filter {
-    stroke: #ccc;
+    stroke: #aaa;
     fill: white;
   }
 
