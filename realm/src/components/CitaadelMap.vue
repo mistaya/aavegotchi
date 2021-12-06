@@ -226,7 +226,7 @@
                   <input
                     v-model="typeEntry.selectRange.min"
                     type="number"
-                    class="boost-range-input"
+                    class="range-input"
                   />
                 </label>
                 <label>
@@ -234,7 +234,7 @@
                   <input
                     v-model="typeEntry.selectRange.max"
                     type="number"
-                    class="boost-range-input"
+                    class="range-input"
                   />
                 </label>
               </div>
@@ -272,7 +272,7 @@
                   name="colorBy"
                   value="price"
                 />
-                Bid Price (GHST)
+                Parcel Price (GHST)
               </label>
 
               <label class="color-by-option">
@@ -283,6 +283,26 @@
                   value="bidder"
                 />
                 Bidder Address
+              </label>
+
+              <label class="color-by-option">
+                <input
+                  v-model="colorScheme.colorBy"
+                  type="radio"
+                  name="colorBy"
+                  value="whaleGhst"
+                />
+                Whales (total GHST spent)
+              </label>
+
+              <label class="color-by-option">
+                <input
+                  v-model="colorScheme.colorBy"
+                  type="radio"
+                  name="colorBy"
+                  value="whalePx"
+                />
+                Whales (total pixel area)
               </label>
             </div>
 
@@ -321,7 +341,7 @@
                     <input
                       v-model="colorScheme.priceScaleConfigBySize[size].min"
                       type="number"
-                      class="scale-range-input"
+                      class="range-input"
                     />
                   </label>
                   <label>
@@ -329,7 +349,7 @@
                     <input
                       v-model="colorScheme.priceScaleConfigBySize[size].max"
                       type="number"
-                      class="scale-range-input"
+                      class="range-input"
                     />
                   </label>
                 </div>
@@ -356,6 +376,92 @@
                     'background': scaleGradientsByName[colorScheme.bidderScaleName]
                   }"
                 />
+              </div>
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'whaleGhst'">
+              <div>
+                <label>
+                  Color Scheme:
+                  <select v-model="colorScheme.whaleGhst.scaleName">
+                    <option
+                      v-for="scaleName in AVAILABLE_SCALES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
+                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': scaleGradientsByName[colorScheme.whaleGhst.scaleName]
+                  }"
+                />
+                <div
+                  style="margin-top: 8px"
+                >
+                  <label>
+                    Min:
+                    <input
+                      v-model="colorScheme.whaleGhst.min"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                  <label>
+                    Max:
+                    <input
+                      v-model="colorScheme.whaleGhst.max"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'whalePx'">
+              <div>
+                <label>
+                  Color Scheme:
+                  <select v-model="colorScheme.whalePx.scaleName">
+                    <option
+                      v-for="scaleName in AVAILABLE_SCALES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
+                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': scaleGradientsByName[colorScheme.whalePx.scaleName]
+                  }"
+                />
+                <div
+                  style="margin-top: 8px"
+                >
+                  <label>
+                    Min:
+                    <input
+                      v-model="colorScheme.whalePx.min"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                  <label>
+                    Max:
+                    <input
+                      v-model="colorScheme.whalePx.max"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                </div>
               </div>
             </div>
           </details>
@@ -509,6 +615,7 @@ import { scaleSequential } from 'd3-scale'
 import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
 import { format } from 'date-fns'
 import CopyToClipboard from './CopyToClipboard.vue'
+import BigNumber from 'bignumber.js'
 
 const scalesByName = {
   grey: () => '#eee',
@@ -655,7 +762,17 @@ export default {
           scaleName: 'viridis'
         }
       },
-      bidderScaleName: 'rainbow'
+      bidderScaleName: 'rainbow',
+      whaleGhst: {
+        scaleName: 'inferno',
+        min: 0,
+        max: 100_000
+      },
+      whalePx: {
+        scaleName: 'inferno',
+        min: 0,
+        max: 75_000
+      }
     })
 
     const priceScalesBySize = computed(() => {
@@ -671,6 +788,16 @@ export default {
     const bidderScale = computed(() => {
       const maxAddress = parseInt('0xffffffffffffffffffffffffffffffffffffffff', 16)
       return scaleSequential(scalesByName[colorScheme.value.bidderScaleName]).domain([0, maxAddress])
+    })
+
+    const whaleGhstScale = computed(() => {
+      const config = colorScheme.value.whaleGhst
+      return scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
+    })
+
+    const whalePxScale = computed(() => {
+      const config = colorScheme.value.whalePx
+      return scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
     })
 
     const getParcelWall = function (parcel) {
@@ -737,6 +864,14 @@ export default {
       } else if (colorBy === 'bidder') {
         getColor = parcel => {
           return bidderScale.value(parseInt(parcel.highestBidder, 16))
+        }
+      } else if (colorBy === 'whaleGhst') {
+        getColor = parcel => {
+          return whaleGhstScale.value(whalesGhst.value[parcel.highestBidder] || 0)
+        }
+      } else if (colorBy === 'whalePx') {
+        getColor = parcel => {
+          return whalePxScale.value(whalesPx.value[parcel.highestBidder] || 0)
         }
       }
       return allParcelsToDisplay.value.map(parcel => ({
@@ -837,6 +972,45 @@ export default {
         parcelsById.value[selectedParcelId.value]
       )
     )
+
+    const whalesGhst = computed(() => {
+      const totalPerBidder = {}
+      for (const parcel of allParcelsToDisplay.value) {
+        const bidder = parcel.highestBidder
+        if (!totalPerBidder[bidder]) {
+          totalPerBidder[bidder] = new BigNumber(0)
+        }
+        totalPerBidder[bidder] = totalPerBidder[bidder].plus(new BigNumber(parcel.highestBidGhst))
+      }
+      // console.log('GHST whales sorted:', Object.values(totalPerBidder).sort((a, b) => {
+      //   if (a.isEqualTo(b)) { return 0 }
+      //   return a.isLessThan(b) ? 1 : -1
+      // }).map(n => n.toString()))
+      return Object.fromEntries(
+        Object.entries(totalPerBidder).map(([key, bigNum]) => [key, bigNum.toNumber()])
+      )
+    })
+
+    const whalesPx = computed(() => {
+      const totalPerBidder = {}
+      const pxBySizeLabel = {
+        humble: 8 * 8,
+        reasonable: 16 * 16,
+        spacious: 32 * 64
+      }
+      for (const parcel of allParcelsToDisplay.value) {
+        const bidder = parcel.highestBidder
+        if (!totalPerBidder[bidder]) {
+          totalPerBidder[bidder] = 0
+        }
+        totalPerBidder[bidder] += (pxBySizeLabel[parcel.sizeLabel] || 0)
+      }
+      // console.log('Pixel whales sorted:', Object.values(totalPerBidder).sort((a, b) => {
+      //   if (a === b) { return 0 }
+      //   return a < b ? 1 : -1
+      // }))
+      return totalPerBidder
+    })
 
     onMounted(() => {
       svgPanZoom(svgRef.value, {
@@ -943,11 +1117,7 @@ export default {
     width: 80%;
     height: 20px;
   }
-  .scale-range-input {
-    width: 60px;
-  }
-
-  .boost-range-input {
+  .range-input {
     width: 60px;
   }
 
