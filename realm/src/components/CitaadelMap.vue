@@ -483,7 +483,7 @@
                 :href="`https://gotchiverse.io/auction?tokenId=${selectedParcel.id}`"
                 target="_blank"
               >
-                Current bid: {{ selectedParcel.highestBidGhst }} GHST
+                Last bid: {{ selectedParcel.highestBidGhst }} GHST
               </a>
               <br>Bidder:
               <span class="eth-address" :title="selectedParcel.highestBidder">
@@ -599,7 +599,7 @@
                   :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
                   target="_blank"
                 >
-                  Current bid: {{ parcel.highestBidGhst }} GHST
+                  Last bid: {{ parcel.highestBidGhst }} GHST
                 </a>
               </li>
             </ul>
@@ -700,6 +700,7 @@ export default {
     CopyToClipboard
   },
   setup () {
+    // console.time('setup')
     const svgRef = ref(null)
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
@@ -857,20 +858,24 @@ export default {
     }
 
     const allParcelsToDisplay = computed(() => {
-      return Object.values(parcelsById.value).filter(parcel =>
+      // console.time('allParcelsToDisplay')
+      const result = Object.values(parcelsById.value).filter(parcel =>
         DISTRICTS_TO_DISPLAY.includes(parcel.district) &&
         (parcel.coordinateX - 0) > X_MIN_TO_DISPLAY
       ).map(getParcelDetails)
+      // console.timeEnd('allParcelsToDisplay')
+      return result
     })
 
     const coloredParcelsToDisplay = computed(() => {
+      // console.time('coloredParcelsToDisplay')
       const colorBy = colorScheme.value.colorBy
       let getColor = () => 'white'
       if (colorBy === 'price') {
         getColor = parcel => {
           const scale = priceScalesBySize.value[parcel.sizeLabel]
           if (!scale) { return 'white' }
-          return scale(parcel.highestBidGhst)
+          return scale(parcel.highestBidGhst - 0)
         }
       } else if (colorBy === 'bidder') {
         getColor = parcel => {
@@ -885,13 +890,16 @@ export default {
           return whalePxScale.value(whalesPx.value[parcel.highestBidder] || 0)
         }
       }
-      return allParcelsToDisplay.value.map(parcel => ({
+      const result = allParcelsToDisplay.value.map(parcel => ({
         ...parcel,
         color: parcel.hasAuction ? getColor(parcel) : 'white'
       }))
+      // console.timeEnd('coloredParcelsToDisplay')
+      return result
     })
 
     const filteredParcelsToDisplay = computed(() => {
+      // console.time('filteredParcelsToDisplay')
       const wallsToExclude = Object.values(filters.value.wall)
         .filter(entry => !entry.enabled)
         .map(entry => entry.id)
@@ -899,9 +907,9 @@ export default {
       const districtsToExclude = filters.value.district.selectMultiple
         .filter(entry => !entry.enabled)
         .map(entry => entry.id)
-      const bidders = (filters.value.bidders && filters.value.bidders.trim()) ? filters.value.bidders.split(/\s+/) : null
+      const bidders = (filters.value.bidders && filters.value.bidders.trim()) ? filters.value.bidders.toLowerCase().split(/\s+/) : null
 
-      return coloredParcelsToDisplay.value.map(parcel => {
+      const result = coloredParcelsToDisplay.value.map(parcel => {
         let show = true
         // size filters
         if (!filters.value.size.humble && parcel.sizeLabel === 'humble') {
@@ -963,14 +971,18 @@ export default {
           show
         }
       })
+      // console.timeEnd('filteredParcelsToDisplay')
+      return result
     })
 
     const listParcelsToDisplay = computed(() => {
+      // console.time('listParcelsToDisplay')
       const parcels = filteredParcelsToDisplay.value.filter(parcel => parcel.show && parcel.hasAuction)
       parcels.sort((a, b) => {
         if (a.highestBid === b.highestBid) { return 0 }
         return a.highestBid < b.highestBid ? -1 : 1
       })
+      // console.timeEnd('listParcelsToDisplay')
       return parcels
     })
 
@@ -1028,11 +1040,12 @@ export default {
       panZoom.value.reset()
     }
     onMounted(() => {
+      // console.timeLog('mount')
       // mobile example code https://bumbu.me/svg-pan-zoom/demo/mobile.html
       // limit panning example code https://bumbu.me/svg-pan-zoom/demo/limit-pan.html
       panZoom.value = svgPanZoom(svgRef.value, {
         dblClickZoomEnabled: false,
-        // TODO this example code doesn't calculate the limits correctly on mobile when zoomed
+        // TODO this example code doesn't calculate the limits correctly at high zoom
         /*
         beforePan: function (oldPan, newPan) {
           const gutterWidth = 100
@@ -1106,7 +1119,10 @@ export default {
           }
         }
       })
+      // console.timeEnd('mount')
     })
+    // console.timeEnd('setup')
+    // console.time('mount')
     return {
       INITIAL_DISPLAY_VIEWBOX,
       INITIAL_DISPLAY_ASPECT_RATIO,
