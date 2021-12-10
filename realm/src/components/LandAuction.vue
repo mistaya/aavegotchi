@@ -244,13 +244,46 @@
           </summary>
 
           <label>
+            <div class="config-textarea-label">
+              Bidder addresses
+            </div>
             <textarea
               v-model="filters.bidders"
               class="config-bidders"
             />
-            <div>
-              Bidder addresses. Separate multiple addresses by space or newline.
+          </label>
+        </details>
+
+        <details class="config-details">
+          <summary>
+            <h3>Filter by Parcel ID</h3>
+          </summary>
+
+          <label>
+            <div class="config-textarea-label">
+              Parcel IDs, e.g. <kbd>12345</kbd>. (Exact match)
             </div>
+            <textarea
+              v-model="filters.parcelIds"
+              class="config-parcel-ids"
+            />
+          </label>
+        </details>
+
+        <details class="config-details">
+          <summary>
+            <h3>Filter by Parcel Name</h3>
+          </summary>
+
+          <label>
+            <div class="config-textarea-label">
+              Parcel Names, e.g. <kbd>accurate-mystical-shall</kbd>.
+              <br>Partial matches will be displayed if you don't provide a full name.
+            </div>
+            <textarea
+              v-model="filters.parcelNames"
+              class="config-parcel-names"
+            />
           </label>
         </details>
 
@@ -608,6 +641,7 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue'
+import useDebouncedRef from '../utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import svgPanZoom from 'svg-pan-zoom'
@@ -738,7 +772,9 @@ export default {
           }
         ]
       )),
-      bidders: ''
+      bidders: '',
+      parcelIds: '',
+      parcelNames: ''
     })
 
     const colorScheme = ref({
@@ -854,7 +890,7 @@ export default {
             (parcel.coordinateX - 0) < auctionInfo.district1Bounds.maxX
           )
         )
-      ).map(getParcelDetails)
+      ).map(getParcelDetails).filter(parcel => parcel.hasAuction)
       // console.timeEnd('allParcelsToDisplay')
       return result
     })
@@ -890,6 +926,29 @@ export default {
       return result
     })
 
+    const { debouncedRef: debouncedFilterBidders } = useDebouncedRef(() => filters.value.bidders, 500)
+    const filterBidders = computed(
+      () => (debouncedFilterBidders.value && debouncedFilterBidders.value.trim())
+        ? debouncedFilterBidders.value.toLowerCase().split(/[^x0-9a-f]+/).filter(bidder => bidder.length)
+        : null
+    )
+
+    const { debouncedRef: debouncedFilterParcelIds } = useDebouncedRef(() => filters.value.parcelIds, 500)
+    const filterParcelIds = computed(
+      () => (debouncedFilterParcelIds.value && debouncedFilterParcelIds.value.trim())
+        ? debouncedFilterParcelIds.value.split(/[^0-9]+/).filter(id => id.length)
+        : null
+    )
+
+    const { debouncedRef: debouncedFilterParcelNames } = useDebouncedRef(() => filters.value.parcelNames, 500)
+    const filterParcelNames = computed(
+      () => (debouncedFilterParcelNames.value && debouncedFilterParcelNames.value.trim())
+        ? debouncedFilterParcelNames.value.toLowerCase().split(/[^\-a-z]+/)
+          .filter(name => name.trim().length)
+          .map(name => ({ name, full: name.split('-').length === 3 }))
+        : null
+    )
+
     const filteredParcelsToDisplay = computed(() => {
       // console.time('filteredParcelsToDisplay')
       const wallsToExclude = Object.values(filters.value.wall)
@@ -899,24 +958,57 @@ export default {
       const districtsToExclude = filters.value.district.selectMultiple
         .filter(entry => !entry.enabled)
         .map(entry => entry.id)
-      const bidders = (filters.value.bidders && filters.value.bidders.trim()) ? filters.value.bidders.toLowerCase().split(/\s+/) : null
+      const bidders = filterBidders.value
+      const parcelIds = filterParcelIds.value
+      const parcelNames = filterParcelNames.value
 
       const result = coloredParcelsToDisplay.value.map(parcel => {
         let show = true
-        // size filters
-        if (!filters.value.size.humble && parcel.sizeLabel === 'humble') {
-          show = false
-        }
-        if (!filters.value.size.reasonable && parcel.sizeLabel === 'reasonable') {
-          show = false
-        }
-        if (!filters.value.size.spacious && parcel.sizeLabel === 'spacious') {
-          show = false
+        if (show) {
+          // parcel ID filters
+          if (parcelIds?.length) {
+            if (!parcelIds.includes(parcel.tokenId)) {
+              show = false
+            }
+          }
         }
         if (show) {
-          // wall filters
-          if (wallsToExclude.length && wallsToExclude.includes(parcel.wall)) {
+          // parcel name filters
+          if (parcelNames?.length) {
+            // show parcel if it matches any of the provided names (or partial names)
+            let hasAnyName = false
+            for (const name of parcelNames) {
+              if (name.full) {
+                if (parcel.parcelHash === name.name) {
+                  hasAnyName = true
+                }
+              } else {
+                if (parcel.parcelHash.includes(name.name)) {
+                  hasAnyName = true
+                }
+              }
+            }
+            if (!hasAnyName) {
+              show = false
+            }
+          }
+        }
+        if (show) {
+          // size filters
+          if (!filters.value.size.humble && parcel.sizeLabel === 'humble') {
             show = false
+          }
+          if (!filters.value.size.reasonable && parcel.sizeLabel === 'reasonable') {
+            show = false
+          }
+          if (!filters.value.size.spacious && parcel.sizeLabel === 'spacious') {
+            show = false
+          }
+          if (show) {
+            // wall filters
+            if (wallsToExclude.length && wallsToExclude.includes(parcel.wall)) {
+              show = false
+            }
           }
         }
         if (show) {
@@ -1209,7 +1301,22 @@ export default {
     white-space: nowrap;
   }
 
+  .config-textarea-label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
   .config-bidders {
+    width: 90%;
+    height: 70px;
+  }
+
+  .config-parcel-ids {
+    width: 90%;
+    height: 40px;
+  }
+
+  .config-parcel-names {
     width: 90%;
     height: 70px;
   }
