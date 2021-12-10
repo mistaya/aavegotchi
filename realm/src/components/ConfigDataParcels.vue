@@ -52,6 +52,18 @@
       :value="parcelsJson"
       style="width: 100%; min-height: 100px;"
     />
+
+    <div style="margin-top: 10px">
+      Fetched:
+      <div style="columns: 4">
+        <div
+          v-for="num in 43"
+          :key="num"
+        >
+          D{{ num }}: {{ parcelsByDistrict[num]?.length }}
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -59,8 +71,9 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import useParcels from '@/data/useParcels'
+import groupBy from 'lodash.groupby'
 
-const REALM_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 const FETCH_PAGE_SIZE = 1000
 
 export default {
@@ -71,6 +84,7 @@ export default {
     const { parcelsById, setParcels } = useParcels()
     const showParcelsJson = ref(false)
     const parcelsJson = computed(() => JSON.stringify(parcelsById.value, null, 4))
+    const parcelsByDistrict = computed(() => groupBy(Object.values(parcelsById.value), parcel => parcel.district))
 
     const canSubmit = computed(() => district.value && !status.value.loading)
     const fetchParcels = function (evt) {
@@ -79,7 +93,7 @@ export default {
       requestSkip.value = 0
 
       const fetchParcelsFromSubgraph = function () {
-        fetch(REALM_SUBGRAPH_URL, {
+        fetch(SUBGRAPH_URL, {
           method: 'POST',
           body: JSON.stringify({
             query: `{
@@ -90,16 +104,15 @@ export default {
                 coordinateX
                 coordinateY
                 district
-                size,
-                fudBoost,
-                fomoBoost,
-                alphaBoost,
+                size
+                fudBoost
+                fomoBoost
+                alphaBoost
                 kekBoost
               }
             }`
           })
         })
-          // .then(response => response.json())
           .then(async response => {
             if (isStale()) { console.log('Stale request, ignoring'); return }
             if (!response.ok) {
@@ -136,7 +149,8 @@ export default {
       fetchParcels,
       status,
       showParcelsJson,
-      parcelsJson
+      parcelsJson,
+      parcelsByDistrict
     }
   }
 }
