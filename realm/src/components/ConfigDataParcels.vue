@@ -1,6 +1,6 @@
 <template>
-  <section>
-    <h2>Fetch parcels</h2>
+  <section style="margin: 15px; border: 1px solid #ccc; padding: 5px 10px">
+    <h2 style="margin-bottom: 10px">Parcel data</h2>
 
     <form @submit="fetchParcels">
       <label>
@@ -37,7 +37,18 @@
 
     <h3>All Parcel Data</h3>
 
+    <div style="margin-bottom: 10px;">
+      <button
+        type="button"
+        :aria-pressed="`${showParcelsJson}`"
+        @click="showParcelsJson = !showParcelsJson"
+      >
+        {{ showParcelsJson ? 'Hide' : 'Show' }}
+        JSON
+      </button>
+    </div>
     <textarea
+      v-if="showParcelsJson"
       :value="parcelsJson"
       style="width: 100%; min-height: 100px;"
     />
@@ -58,6 +69,7 @@ export default {
     const requestSkip = ref(0)
     const { status, setLoading } = useStatus()
     const { parcelsById, setParcels } = useParcels()
+    const showParcelsJson = ref(false)
     const parcelsJson = computed(() => JSON.stringify(parcelsById.value, null, 4))
 
     const canSubmit = computed(() => district.value && !status.value.loading)
@@ -123,6 +135,7 @@ export default {
       canSubmit,
       fetchParcels,
       status,
+      showParcelsJson,
       parcelsJson
     }
   }

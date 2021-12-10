@@ -1,7 +1,18 @@
 <template>
-  <main>
-    <router-view />
-  </main>
+  <div>
+    <nav>
+      <router-link :to="{ name: 'land-auction', params: { auctionId: '1' } }">Land Auction 1</router-link>
+      <router-link :to="{ name: 'land-auction', params: { auctionId: '2' } }">Land Auction 2</router-link>
+
+      <!--
+      <router-link :to="{ name: 'config-data' }">Config Data</router-link>
+      <router-link :to="{ name: 'config-parcels' }">Config Parcels</router-link>
+      -->
+    </nav>
+    <main>
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <script>
@@ -14,6 +25,8 @@ export default {
 <style>
   body {
     --purple: #FA34F3;
+    margin: 0;
+    padding: 0;
   }
 
   h1 {
@@ -45,5 +58,23 @@ export default {
 
   input[type="checkbox"] {
     accent-color: var(--purple);
+  }
+</style>
+
+<style scoped>
+  nav {
+    padding: 10px;
+    background: #f7eaf7;
+  }
+  nav a {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  nav a + a::before {
+    content: '|';
+    margin-right: 10px;
+  }
+  nav a[aria-current=page] {
+    font-weight: bold;
   }
 </style>
