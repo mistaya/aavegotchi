@@ -1,7 +1,5 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
-import initialAuctions1 from './auctions1.json'
-import initialAuctions2 from './auctions2.json'
 import BigNumber from 'bignumber.js'
 
 const REALM_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
@@ -14,7 +12,6 @@ const AUCTIONS = {
     days: '28 - 31 Oct 2021',
     startTime: 1635418800000, // before auction start time
     endTime: 1635710400000, // after last hammer-time parcel auction ends
-    initialAuctions: initialAuctions1,
     districts: ['1', '2', '3', '4', '5', '14', '15', '16', '17', '18', '19', '20', '21', '22', '39', '40', '41', '42', '43'],
     district1Bounds: {
       minX: 3160,
@@ -30,7 +27,6 @@ const AUCTIONS = {
     days: '2-5 Dec 2021',
     startTime: 1638446400000, // before auction start time
     endTime: 1638734400000, // after last hammer-time parcel auction ends
-    initialAuctions: initialAuctions2,
     districts: ['1', '7', '8', '9', '10', '11', '12', '27', '28', '29', '30'],
     district1Bounds: {
       minX: 5200,
@@ -43,14 +39,18 @@ const AUCTIONS = {
   }
 }
 
+const resultByAuctionId = {}
+
 export default function useAuctions (auctionId) {
+  if (resultByAuctionId[auctionId]) { return resultByAuctionId[auctionId] }
+
   const auctionInfo = AUCTIONS[auctionId]
   if (!auctionInfo) {
     console.error('Invalid auctionId provided to useAuctions')
     return
   }
 
-  const auctionsByParcelId = ref(auctionInfo.initialAuctions)
+  const auctionsByParcelId = ref({})
 
   const setAuctions = function (auctions) {
     for (const auction of auctions) {
@@ -78,6 +78,20 @@ export default function useAuctions (auctionId) {
   const { status: fetchStatus, setLoading } = useStatus()
 
   const canSubmitFetch = computed(() => !fetchStatus.value.loading)
+
+  const fetchInitialAuctions = function () {
+    const [isStale, setLoaded, setError] = setLoading()
+    import('./auctions/auction' + auctionId + '.json')
+      .then(({ default: json }) => {
+        if (isStale()) { console.log('Stale request, ignoring'); return }
+        auctionsByParcelId.value = json
+        setLoaded()
+      }).catch(error => {
+        console.error(error)
+        setError('There was an error fetching parcels')
+      })
+  }
+
   const fetchAuctions = function () {
     const [isStale, setLoaded, setError] = setLoading()
 
@@ -131,7 +145,8 @@ export default function useAuctions (auctionId) {
 
     fetchAuctionsFromSubgraph()
   }
-  return {
+
+  resultByAuctionId[auctionId] = {
     auctionInfo,
     auctionsByParcelId,
     mostRecentAuction,
@@ -139,4 +154,8 @@ export default function useAuctions (auctionId) {
     fetchStatus,
     fetchAuctions
   }
+
+  fetchInitialAuctions()
+
+  return resultByAuctionId[auctionId]
 }

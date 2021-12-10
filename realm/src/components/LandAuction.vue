@@ -2,31 +2,35 @@
   <div class="layout-container">
     <div class="map-sidebar-container">
       <section>
-        <h2>Map Config</h2>
+        <h2 style="margin-bottom: 10px">
+          Auction {{ auctionId }} ({{ auctionInfo.days }})
+        </h2>
 
-        <h3>Auction {{ auctionId }} Data</h3>
-
-        <div style="font-style: italic; margin-bottom: 20px">
-          Last auction fetched:
+        <div
+          v-if="mostRecentAuction"
+          style="margin-bottom: 20px; font-style: italic; font-size: 0.95em;"
+        >
+          Last auction data fetched:
           <br>
-          #{{ mostRecentAuction.tokenId }}
+          parcel #{{ mostRecentAuction.tokenId }}
           at {{ mostRecentAuctionDate }}
         </div>
 
-        <div style="margin: 10px 0 20px 0; display: none;">
+        <div style="margin: 10px 0 20px 0;">
           <button
             type="button"
             :disabled="!canSubmitAuctionsFetch"
             class="fetch-auctions"
+            style="display: none;"
             @click="fetchAuctions"
           >
             Fetch Latest
           </button>
           <span v-if="auctionsFetchStatus.loading">
-            loading...
+            loading auctions...
           </span>
           <span v-if="auctionsFetchStatus.error">
-            Error: {{ auctionsFetchStatus.errorMessage }}
+            Error loading auctions: {{ auctionsFetchStatus.errorMessage }}
           </span>
         </div>
 
