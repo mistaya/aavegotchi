@@ -1,6 +1,6 @@
 <template>
-  <div class="layout-container">
-    <div class="map-sidebar-container">
+  <LayoutMapWithFilters>
+    <template #sidebar>
       <section>
         <h2 style="margin-bottom: 10px">
           Auction {{ auctionId }} ({{ auctionInfo.days }})
@@ -550,26 +550,8 @@
         </div>
       </section>
 
-    </div>
-    <div>
-      <div class="view-modes">
-        <button
-          type="button"
-          class="view-mode"
-          :aria-pressed="`${viewMode === 'map'}`"
-          @click="viewMode = 'map'"
-        >
-          Map View
-        </button>
-        <button
-          type="button"
-          class="view-mode"
-          :aria-pressed="`${viewMode === 'list'}`"
-          @click="viewMode = 'list'"
-        >
-          List View
-        </button>
-      </div>
+    </template>
+    <template #main="{ viewMode }">
       <CitaadelMap
         v-show="viewMode === 'map'"
         :viewBox="auctionInfo.display.viewBox"
@@ -603,8 +585,8 @@
           </ul>
         </template>
       </div>
-    </div>
-  </div>
+    </template>
+  </LayoutMapWithFilters>
 </template>
 
 <script>
@@ -617,6 +599,7 @@ import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCi
 import { format } from 'date-fns'
 import CopyToClipboard from './CopyToClipboard.vue'
 import BigNumber from 'bignumber.js'
+import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import CitaadelMap from './CitaadelMap.vue'
 
 const scalesByName = {
@@ -641,6 +624,7 @@ const scaleGradientsByName = Object.fromEntries(
 
 export default {
   components: {
+    LayoutMapWithFilters,
     CitaadelMap,
     CopyToClipboard
   },
@@ -651,7 +635,6 @@ export default {
     // console.time('setup')
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
-    const viewMode = ref('map') // or 'list'
     const { parcelsById, WALLS, ALCHEMICA_TYPES } = useParcels()
     const {
       auctionInfo,
@@ -1024,7 +1007,6 @@ export default {
     return {
       auctionInfo,
       parcelDetailsRef,
-      viewMode,
       parcelsToDisplay: filteredParcelsToDisplay,
       listParcelsToDisplay,
       onClickParcel,
@@ -1044,34 +1026,11 @@ export default {
 </script>
 
 <style scoped>
-  .layout-container {
-    display: grid;
-    grid-template-columns: 250px 1fr;
-  }
-  @media (max-width: 800px) {
-    .layout-container {
-      grid-template-columns: 1fr;
-    }
-  }
-
   .fetch-auctions{
     background: var(--purple);
     color: white;
     font-weight: bold;
     padding: 5px 10px;
-  }
-
-  .view-modes {
-    margin-bottom: 10px;
-  }
-  .view-mode {
-    margin-right: 10px;
-    padding: 5px 10px;
-  }
-  .view-mode[aria-pressed=true] {
-    background: var(--purple);
-    color: white;
-    font-weight: bold;
   }
 
   .parcels-list {
