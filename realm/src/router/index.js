@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import CitaadelPage from '@/components/CitaadelPage.vue'
 import LandAuctionPage from '@/components/LandAuctionPage.vue'
 import ConfigData from '@/components/ConfigData.vue'
 import ConfigParcels from '@/components/ConfigParcels.vue'
@@ -8,9 +9,13 @@ const routes = [
     path: '/',
     name: 'home',
     redirect: {
-      name: 'land-auction',
-      params: { auctionId: '2' }
+      name: 'citaadel'
     }
+  },
+  {
+    path: '/citaadel',
+    name: 'citaadel',
+    component: CitaadelPage
   },
   {
     path: '/land-auction/:auctionId',

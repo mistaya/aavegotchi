@@ -570,50 +570,14 @@
           List View
         </button>
       </div>
-      <div v-show="viewMode === 'map'">
-        <svg
-          ref="svgRef"
-          xmlns="http://www.w3.org/2000/svg"
-          :viewBox="auctionInfo.display.viewBox"
-          class="map-svg"
-          :class="{
-            'map-svg--filter-hide': filters.displayMode === 'hide',
-            'map-svg--filter-outline': filters.displayMode === 'outline'
-          }"
-          :style="{
-            'aspect-ratio': auctionInfo.display.aspectRatio
-          }"
-        >
-          <g>
-            <a
-              v-for="parcel in parcelsToDisplay"
-              :key="parcel.id"
-              xlink:href="#"
-              @click.prevent="onClickParcel(parcel)"
-            >
-              <rect
-                class="parcel"
-                :class="{
-                  'parcel--hidden-by-filter': !parcel.show
-                }"
-                :x="parcel.coordinateX"
-                :y="parcel.coordinateY"
-                :width="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 32 : 64"
-                :height="parcel.sizeLabel === 'humble' ? 8 : parcel.sizeLabel === 'reasonable' ? 16 : parcel.vertical ? 64 : 32"
-                stroke="#777"
-                :fill="parcel.color"
-              />
-            </a>
-          </g>
-        </svg>
-        <button
-          type="button"
-          style="margin-top: 8px"
-          @click="resetZoom"
-        >
-          Reset map zoom
-        </button>
-      </div>
+      <CitaadelMap
+        v-show="viewMode === 'map'"
+        :viewBox="auctionInfo.display.viewBox"
+        :aspectRatio="auctionInfo.display.aspectRatio"
+        :filterDisplayMode="filters.displayMode"
+        :parcels="parcelsToDisplay"
+        @click:parcel="onClickParcel"
+      />
       <div v-if="viewMode === 'list'">
         <template v-if="!listParcelsToDisplay.length">
           No parcels found.
@@ -644,17 +608,16 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import useDebouncedRef from '../utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
-import svgPanZoom from 'svg-pan-zoom'
-import Hammer from 'hammerjs'
 import { scaleSequential } from 'd3-scale'
 import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
 import { format } from 'date-fns'
 import CopyToClipboard from './CopyToClipboard.vue'
 import BigNumber from 'bignumber.js'
+import CitaadelMap from './CitaadelMap.vue'
 
 const scalesByName = {
   grey: () => '#eee',
@@ -675,48 +638,10 @@ const generateGradient = function (scale) {
 const scaleGradientsByName = Object.fromEntries(
   AVAILABLE_SCALES.map(name => [name, generateGradient(scalesByName[name])])
 )
-const sizeLabels = ['humble', 'reasonable', 'spacious', 'spacious']
-
-const ALCHEMICA_TYPES = ['fud', 'fomo', 'alpha', 'kek']
-
-const WALL_INNER = {
-  id: 'inner',
-  innerBounds: null,
-  outerBounds: {
-    minX: 3875,
-    maxX: 5650,
-    minY: 2400,
-    maxY: 3900
-  }
-}
-const WALL_MIDDLE = {
-  id: 'middle',
-  innerBounds: WALL_INNER.outerBounds,
-  outerBounds: {
-    minX: 2430,
-    maxX: 7100,
-    minY: 1500,
-    maxY: 4800
-  }
-}
-const WALL_OUTER = {
-  id: 'outer',
-  innerBounds: WALL_MIDDLE.outerBounds,
-  outerBounds: {
-    minX: 0,
-    maxX: 9000,
-    minY: 0,
-    maxY: 6000
-  }
-}
-const WALLS = [
-  WALL_INNER,
-  WALL_MIDDLE,
-  WALL_OUTER
-]
 
 export default {
   components: {
+    CitaadelMap,
     CopyToClipboard
   },
   props: {
@@ -724,11 +649,10 @@ export default {
   },
   setup (props) {
     // console.time('setup')
-    const svgRef = ref(null)
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
     const viewMode = ref('map') // or 'list'
-    const { parcelsById } = useParcels()
+    const { parcelsById, WALLS, ALCHEMICA_TYPES } = useParcels()
     const {
       auctionInfo,
       auctionsByParcelId,
@@ -838,48 +762,17 @@ export default {
       return scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
     })
 
-    const getParcelWall = function (parcel) {
-      const parcelX = parcel.coordinateX - 0
-      const parcelY = parcel.coordinateY - 0
-      for (const wallEntry of WALLS) {
-        if (
-          // parcel is inside this wall's outerBounds
-          (
-            (parcelX > wallEntry.outerBounds.minX && parcelX < wallEntry.outerBounds.maxX) &&
-            (parcelY > wallEntry.outerBounds.minY && parcelY < wallEntry.outerBounds.maxY)
-          ) &&
-          // parcel is not inside this wall's innerBounds, if specified
-          (
-            !wallEntry.innerBounds ||
-            !(
-              (parcelX > wallEntry.innerBounds.minX && parcelX < wallEntry.innerBounds.maxX) &&
-              (parcelY > wallEntry.innerBounds.minY && parcelY < wallEntry.innerBounds.maxY)
-            )
-          )
-        ) {
-          return wallEntry.id
-        }
-      }
-      return null
-    }
-
     const getParcelDetails = function (parcel) {
       if (!parcel) { return null }
       const auction = auctionsByParcelId.value[parcel.id]
       const highestBid = auction?.highestBid - 0
       const highestBidGhst = auction?.highestBidGhst || ''
-      const sizeLabel = sizeLabels[parcel.size]
-      const vertical = parcel.size === '2'
       return {
         ...parcel,
-        sizeLabel,
-        vertical,
         hasAuction: !!auction,
         highestBid,
         highestBidGhst,
-        highestBidder: auction?.highestBidder,
-        hasBoost: parcel.fudBoost !== '0' || parcel.fomoBoost !== '0' || parcel.alphaBoost !== '0' || parcel.kekBoost !== '0',
-        wall: getParcelWall(parcel)
+        highestBidder: auction?.highestBidder
       }
     }
 
@@ -1126,99 +1019,10 @@ export default {
       return totalPerBidder
     })
 
-    const panZoom = ref(null)
-    const resetZoom = function () {
-      if (!panZoom.value) { return }
-      panZoom.value.reset()
-    }
-    onMounted(() => {
-      // console.timeLog('mount')
-      // mobile example code https://bumbu.me/svg-pan-zoom/demo/mobile.html
-      // limit panning example code https://bumbu.me/svg-pan-zoom/demo/limit-pan.html
-      panZoom.value = svgPanZoom(svgRef.value, {
-        dblClickZoomEnabled: false,
-        // TODO this example code doesn't calculate the limits correctly at high zoom
-        /*
-        beforePan: function (oldPan, newPan) {
-          const gutterWidth = 100
-          const gutterHeight = 100
-          // Computed variables
-          const sizes = this.getSizes()
-          const leftLimit = -((sizes.viewBox.x + sizes.viewBox.width) * sizes.realZoom) + gutterWidth
-          const rightLimit = sizes.width - gutterWidth - (sizes.viewBox.x * sizes.realZoom)
-          const topLimit = -((sizes.viewBox.y + sizes.viewBox.height) * sizes.realZoom) + gutterHeight
-          const bottomLimit = sizes.height - gutterHeight - (sizes.viewBox.y * sizes.realZoom)
-
-          const customPan = {
-            x: Math.max(leftLimit, Math.min(rightLimit, newPan.x)),
-            y: Math.max(topLimit, Math.min(bottomLimit, newPan.y))
-          }
-          return customPan
-        },
-        */
-        customEventsHandler: {
-          haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel'],
-          init: function (options) {
-            const instance = options.instance
-            let initialScale = 1
-            let pannedX = 0
-            let pannedY = 0
-
-            // Init Hammer
-            // Listen only for pointer and touch events
-            this.hammer = Hammer(options.svgElement, {
-              inputClass: Hammer.SUPPORT_POINTER_EVENTS ? Hammer.PointerEventInput : Hammer.TouchInput
-            })
-
-            // Enable pinch
-            this.hammer.get('pinch').set({ enable: true })
-
-            // Handle double tap
-            this.hammer.on('doubletap', function (ev) {
-              instance.zoomIn()
-            })
-
-            // Handle pan
-            this.hammer.on('panstart panmove', function (ev) {
-              // On pan start reset panned variables
-              if (ev.type === 'panstart') {
-                pannedX = 0
-                pannedY = 0
-              }
-
-              // Pan only the difference
-              instance.panBy({ x: ev.deltaX - pannedX, y: ev.deltaY - pannedY })
-              pannedX = ev.deltaX
-              pannedY = ev.deltaY
-            })
-
-            // Handle pinch
-            this.hammer.on('pinchstart pinchmove', function (ev) {
-              // On pinch start remember initial zoom
-              if (ev.type === 'pinchstart') {
-                initialScale = instance.getZoom()
-                instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
-              }
-
-              instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
-            })
-
-            // Prevent moving the page on some devices when panning over SVG
-            options.svgElement.addEventListener('touchmove', function (e) { e.preventDefault() })
-          },
-          destroy: function () {
-            this.hammer.destroy()
-          }
-        }
-      })
-      // console.timeEnd('mount')
-    })
     // console.timeEnd('setup')
     // console.time('mount')
     return {
       auctionInfo,
-      svgRef,
-      resetZoom,
       parcelDetailsRef,
       viewMode,
       parcelsToDisplay: filteredParcelsToDisplay,
@@ -1332,19 +1136,6 @@ export default {
   }
   .range-input {
     width: 60px;
-  }
-
-  .map-svg {
-    border: 1px solid #ccc;
-    width: 100%;
-  }
-
-  .map-svg--filter-hide .parcel--hidden-by-filter {
-    display: none;
-  }
-  .map-svg--filter-outline .parcel--hidden-by-filter {
-    stroke: #aaa;
-    fill: white;
   }
 
   .selected-parcel-details {
