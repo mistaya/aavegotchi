@@ -1,47 +1,10 @@
 import { ref } from 'vue'
 import initialParcels from './parcels.json'
+import { WALLS } from './walls'
 
 const SIZE_LABELS_BY_ID = ['humble', 'reasonable', 'spacious', 'spacious']
 const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64]
 const SIZE_HEIGHTS_BY_ID = [8, 16, 64, 32]
-
-const WALL_INNER = {
-  id: 'inner',
-  innerBounds: null,
-  outerBounds: {
-    minX: 3875,
-    maxX: 5650,
-    minY: 2400,
-    maxY: 3900
-  }
-}
-const WALL_MIDDLE = {
-  id: 'middle',
-  innerBounds: WALL_INNER.outerBounds,
-  outerBounds: {
-    minX: 2430,
-    maxX: 7100,
-    minY: 1500,
-    maxY: 4800
-  }
-}
-const WALL_OUTER = {
-  id: 'outer',
-  innerBounds: WALL_MIDDLE.outerBounds,
-  outerBounds: {
-    minX: 0,
-    maxX: 9000,
-    minY: 0,
-    maxY: 6000
-  }
-}
-const WALLS = [
-  WALL_INNER,
-  WALL_MIDDLE,
-  WALL_OUTER
-]
-
-const ALCHEMICA_TYPES = ['fud', 'fomo', 'alpha', 'kek']
 
 const parcelsById = ref(initialParcels)
 
@@ -86,8 +49,6 @@ const setParcels = function (parcels) {
 export default function useParcels () {
   return {
     parcelsById,
-    setParcels,
-    WALLS,
-    ALCHEMICA_TYPES
+    setParcels
   }
 }

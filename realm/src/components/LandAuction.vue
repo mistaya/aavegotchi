@@ -34,213 +34,14 @@
           </span>
         </div>
 
-        <details class="config-details">
-          <summary>
-            <h3>Filter Style</h3>
-          </summary>
-
-          <label>
-            <input
-              v-model="filters.displayMode"
-              type="radio"
-              name="displayMode"
-              value="outline"
-            />
-            Show outline
-          </label>
-          <label>
-            <input
-              v-model="filters.displayMode"
-              type="radio"
-              name="displayMode"
-              value="hide"
-            />
-            Hide
-          </label>
-        </details>
-
-        <details class="config-details">
-          <summary>
-            <h3>Filter by Size</h3>
-          </summary>
-
-          <div
-            v-for="sizeLabel in ['humble', 'reasonable', 'spacious']"
-            :key="sizeLabel"
-          >
-            <label>
-              <input
-                v-model="filters.size[sizeLabel]"
-                type="checkbox"
-              />
-              <span style="text-transform: capitalize;">
-                {{ sizeLabel }}
-              </span>
-            </label>
-          </div>
-        </details>
-
-        <details class="config-details">
-          <summary>
-            <h3>Filter by Walls</h3>
-          </summary>
-
-          <div
-            v-for="wallEntry in Object.values(filters.wall)"
-            :key="wallEntry.id"
-          >
-            <label>
-              <input
-                v-model="wallEntry.enabled"
-                type="checkbox"
-              />
-              <span style="text-transform: capitalize;">
-                {{ wallEntry.id }}
-              </span>
-            </label>
-          </div>
-        </details>
-
-        <details class="config-details">
-          <summary>
-            <h3>Filter by District</h3>
-          </summary>
-
-          <div style="margin-bottom: 8px">
-            <div>
-              <label>
-                <input
-                  v-model="filters.district.selectionMode"
-                  type="radio"
-                  name="selectionMode"
-                  value="single"
-                />
-                  Single District
-              </label>
-            </div>
-            <div>
-              <label>
-                <input
-                  v-model="filters.district.selectionMode"
-                  type="radio"
-                  name="selectionMode"
-                  value="multiple"
-                />
-                  Multiple Districts
-              </label>
-            </div>
-          </div>
-
-          <div
-            v-if="filters.district.selectionMode === 'single'"
-            style="margin-left: 25px;"
-          >
-            <label>
-              District:
-              <select v-model="filters.district.selectSingle">
-                <option
-                  v-for="district in filters.district.districts"
-                  :key="district"
-                  :value="district"
-                >
-                  {{ district }}
-                </option>
-              </select>
-            </label>
-          </div>
-
-          <div
-            v-if="filters.district.selectionMode === 'multiple'"
-            style="margin-left: 20px;"
-          >
-            <span
-              v-for="districtEntry in filters.district.selectMultiple"
-              :key="districtEntry.id"
-              class="config-details__district-entry"
-            >
-              <label>
-                <input
-                  v-model="districtEntry.enabled"
-                  type="checkbox"
-                />
-                  {{ districtEntry.id }}
-              </label>
-            </span>
-          </div>
-        </details>
-
-        <details class="config-details">
-          <summary>
-            <h3>Filter by Alchemica Boost</h3>
-          </summary>
-
-          <div
-            v-for="[type, typeEntry] in Object.entries(filters.boost)"
-            :key="type"
-          >
-            <h4 style="text-transform: uppercase;">
-              {{ type }}
-            </h4>
-
-            <div>
-              <div>
-                <label>
-                  <input
-                    v-model="typeEntry.selectionMode"
-                    type="radio"
-                    :name="`${type}_selectionMode`"
-                    value="ignore"
-                  />
-                    Don't care, show all
-                </label>
-              </div>
-              <div>
-                <label>
-                  <input
-                    v-model="typeEntry.selectionMode"
-                    type="radio"
-                    :name="`${type}_selectionMode`"
-                    value="some"
-                  />
-                    With boost, any amount
-                </label>
-              </div>
-              <div>
-                <label>
-                  <input
-                    v-model="typeEntry.selectionMode"
-                    type="radio"
-                    :name="`${type}_selectionMode`"
-                    value="range"
-                  />
-                    Specific range of boost
-                </label>
-              </div>
-            </div>
-
-            <div
-              v-if="typeEntry.selectionMode === 'range'"
-              style="margin-top: 8px"
-            >
-              <label>
-                Min:
-                <input
-                  v-model="typeEntry.selectRange.min"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-              <label>
-                Max:
-                <input
-                  v-model="typeEntry.selectRange.max"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-            </div>
-          </div>
-        </details>
+        <MapConfigDisplayMode v-model="mapConfig.displayMode" />
+        <FilterSize v-model="filters.size" />
+        <FilterWalls v-model="filters.walls" />
+        <FilterDistricts
+          :districts="auctionInfo.districts"
+          v-model="filters.districts"
+        />
+        <FilterBoosts v-model="filters.boosts" />
 
         <details class="config-details">
           <summary>
@@ -258,38 +59,8 @@
           </label>
         </details>
 
-        <details class="config-details">
-          <summary>
-            <h3>Filter by Parcel ID</h3>
-          </summary>
-
-          <label>
-            <div class="config-textarea-label">
-              Parcel IDs, e.g. <kbd>12345</kbd>. (Exact match)
-            </div>
-            <textarea
-              v-model="filters.parcelIds"
-              class="config-parcel-ids"
-            />
-          </label>
-        </details>
-
-        <details class="config-details">
-          <summary>
-            <h3>Filter by Parcel Name</h3>
-          </summary>
-
-          <label>
-            <div class="config-textarea-label">
-              Parcel Names, e.g. <kbd>accurate-mystical-shall</kbd>.
-              <br>Partial matches will be displayed if you don't provide a full name.
-            </div>
-            <textarea
-              v-model="filters.parcelNames"
-              class="config-parcel-names"
-            />
-          </label>
-        </details>
+        <FilterParcelIds v-model="filters.parcelIds" />
+        <FilterParcelNames v-model="filters.parcelNames" />
 
         <details class="config-details">
           <summary>
@@ -556,7 +327,7 @@
         v-show="viewMode === 'map'"
         :viewBox="auctionInfo.display.viewBox"
         :aspectRatio="auctionInfo.display.aspectRatio"
-        :filterDisplayMode="filters.displayMode"
+        :filterDisplayMode="mapConfig.displayMode"
         :parcels="parcelsToDisplay"
         @click:parcel="onClickParcel"
       />
@@ -591,9 +362,10 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useDebouncedRef from '../utils/useDebouncedRef'
+import useDebouncedRef from '@/utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
+import { WALLS } from '@/data/walls'
 import { scaleSequential } from 'd3-scale'
 import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
 import { format } from 'date-fns'
@@ -601,6 +373,13 @@ import CopyToClipboard from './CopyToClipboard.vue'
 import BigNumber from 'bignumber.js'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import CitaadelMap from './CitaadelMap.vue'
+import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
+import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
+import FilterWalls, { getFilter as getWallsFilter } from './FilterWalls.vue'
+import FilterDistricts, { getDefaultValue as getDefaultDistrictsValue, getFilter as getDistrictsFilter } from './FilterDistricts.vue'
+import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
+import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
+import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 
 const scalesByName = {
   grey: () => '#eee',
@@ -626,7 +405,14 @@ export default {
   components: {
     LayoutMapWithFilters,
     CitaadelMap,
-    CopyToClipboard
+    CopyToClipboard,
+    MapConfigDisplayMode,
+    FilterSize,
+    FilterWalls,
+    FilterDistricts,
+    FilterParcelIds,
+    FilterParcelNames,
+    FilterBoosts
   },
   props: {
     auctionId: { type: String, default: '1' }
@@ -635,7 +421,7 @@ export default {
     // console.time('setup')
     const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
-    const { parcelsById, WALLS, ALCHEMICA_TYPES } = useParcels()
+    const { parcelsById } = useParcels()
     const {
       auctionInfo,
       auctionsByParcelId,
@@ -648,44 +434,17 @@ export default {
       if (!mostRecentAuction.value) { return }
       return format(new Date(mostRecentAuction.value.lastBidTime * 1000), 'yyyy/MM/dd HH:mm:ss')
     })
+    const mapConfig = ref({
+      displayMode: 'outline' // or 'hide'
+    })
     const filters = ref({
-      displayMode: 'outline', // or 'hide'
-      size: {
-        humble: true,
-        reasonable: true,
-        spacious: true
-      },
-      district: {
-        districts: auctionInfo.districts,
-        selectionMode: 'multiple', // or 'multiple'
-        selectSingle: auctionInfo.districts[0],
-        selectMultiple: auctionInfo.districts.map(district => ({
-          id: district,
-          enabled: true
-        }))
-      },
-      wall: Object.fromEntries(WALLS.map(entry =>
-        [
-          entry.id,
-          {
-            ...entry,
-            enabled: true
-          }
-        ]
-      )),
-      boost: Object.fromEntries(ALCHEMICA_TYPES.map(id =>
-        [
-          id,
-          {
-            id,
-            selectionMode: 'ignore', // or 'some' or 'range'
-            selectRange: { min: 1, max: 30 }
-          }
-        ]
-      )),
+      size: [...SIZES],
+      districts: getDefaultDistrictsValue(auctionInfo.districts),
+      walls: WALLS.map(wall => wall.id),
+      boosts: getDefaultBoostsValue(),
       bidders: '',
-      parcelIds: '',
-      parcelNames: ''
+      parcelIds: [],
+      parcelNames: []
     })
 
     const colorScheme = ref({
@@ -813,121 +572,32 @@ export default {
         : null
     )
 
-    const { debouncedRef: debouncedFilterParcelIds } = useDebouncedRef(() => filters.value.parcelIds, 500)
-    const filterParcelIds = computed(
-      () => (debouncedFilterParcelIds.value && debouncedFilterParcelIds.value.trim())
-        ? debouncedFilterParcelIds.value.split(/[^0-9]+/).filter(id => id.length)
-        : null
-    )
-
-    const { debouncedRef: debouncedFilterParcelNames } = useDebouncedRef(() => filters.value.parcelNames, 500)
-    const filterParcelNames = computed(
-      () => (debouncedFilterParcelNames.value && debouncedFilterParcelNames.value.trim())
-        ? debouncedFilterParcelNames.value.toLowerCase().split(/[^\-a-z]+/)
-          .filter(name => name.trim().length)
-          .map(name => ({ name, full: name.split('-').length === 3 }))
-        : null
-    )
-
     const filteredParcelsToDisplay = computed(() => {
       // console.time('filteredParcelsToDisplay')
-      const wallsToExclude = Object.values(filters.value.wall)
-        .filter(entry => !entry.enabled)
-        .map(entry => entry.id)
-      const districtSelectionMode = filters.value.district.selectionMode
-      const districtsToExclude = filters.value.district.selectMultiple
-        .filter(entry => !entry.enabled)
-        .map(entry => entry.id)
+      const idFilter = getParcelIdsFilter(filters.value.parcelIds)
+      const nameFilter = getParcelNamesFilter(filters.value.parcelNames)
+      const sizesFilter = getSizesFilter(filters.value.size)
+      const wallsFilter = getWallsFilter(filters.value.walls)
+      const districtsFilter = getDistrictsFilter(auctionInfo.districts, filters.value.districts)
+      const boostsFilter = getBoostsFilter(filters.value.boosts)
+
       const bidders = filterBidders.value
-      const parcelIds = filterParcelIds.value
-      const parcelNames = filterParcelNames.value
+      const bidderFilter = function (parcel) {
+        if (bidders?.length) {
+          if (!bidders.includes(parcel.highestBidder)) {
+            return false
+          }
+        }
+        return true
+      }
+
+      const applyFilters = [idFilter, nameFilter, sizesFilter, wallsFilter, districtsFilter, bidderFilter, boostsFilter]
 
       const result = coloredParcelsToDisplay.value.map(parcel => {
         let show = true
-        if (show) {
-          // parcel ID filters
-          if (parcelIds?.length) {
-            if (!parcelIds.includes(parcel.tokenId)) {
-              show = false
-            }
-          }
-        }
-        if (show) {
-          // parcel name filters
-          if (parcelNames?.length) {
-            // show parcel if it matches any of the provided names (or partial names)
-            let hasAnyName = false
-            for (const name of parcelNames) {
-              if (name.full) {
-                if (parcel.parcelHash === name.name) {
-                  hasAnyName = true
-                }
-              } else {
-                if (parcel.parcelHash.includes(name.name)) {
-                  hasAnyName = true
-                }
-              }
-            }
-            if (!hasAnyName) {
-              show = false
-            }
-          }
-        }
-        if (show) {
-          // size filters
-          if (!filters.value.size.humble && parcel.sizeLabel === 'humble') {
+        for (let i = 0; show && i < applyFilters.length; i++) {
+          if (!applyFilters[i](parcel)) {
             show = false
-          }
-          if (!filters.value.size.reasonable && parcel.sizeLabel === 'reasonable') {
-            show = false
-          }
-          if (!filters.value.size.spacious && parcel.sizeLabel === 'spacious') {
-            show = false
-          }
-          if (show) {
-            // wall filters
-            if (wallsToExclude.length && wallsToExclude.includes(parcel.wall)) {
-              show = false
-            }
-          }
-        }
-        if (show) {
-          // district filters
-          if (districtSelectionMode === 'single') {
-            if (parcel.district !== filters.value.district.selectSingle) {
-              show = false
-            }
-          } else if (districtsToExclude.includes(parcel.district)) {
-            show = false
-          }
-        }
-        if (show) {
-          // bidder filters
-          if (bidders?.length) {
-            if (!bidders.includes(parcel.highestBidder)) {
-              show = false
-            }
-          }
-        }
-        if (show) {
-          // boost filters
-          for (const typeEntry of Object.values(filters.value.boost)) {
-            if (typeEntry.selectionMode === 'ignore') {
-              // do nothing
-            } else {
-              const boost = parcel[`${typeEntry.id}Boost`] - 0
-              if (typeEntry.selectionMode === 'some') {
-                if (boost <= 0) {
-                  show = false
-                }
-              } else {
-                const min = typeEntry.selectRange.min - 0
-                const max = typeEntry.selectRange.max - 0
-                if (boost < min || boost > max) {
-                  show = false
-                }
-              }
-            }
           }
         }
         return {
@@ -1018,6 +688,7 @@ export default {
       auctionsFetchStatus,
       AVAILABLE_SCALES,
       scaleGradientsByName,
+      mapConfig,
       filters,
       colorScheme
     }
@@ -1056,12 +727,6 @@ export default {
     display: inline;
   }
 
-  .config-details__district-entry {
-    display: inline-block;
-    margin-right: 15px;
-    white-space: nowrap;
-  }
-
   .color-by-option {
     display: inline-block;
     margin-right: 15px;
@@ -1078,23 +743,10 @@ export default {
     height: 70px;
   }
 
-  .config-parcel-ids {
-    width: 90%;
-    height: 40px;
-  }
-
-  .config-parcel-names {
-    width: 90%;
-    height: 70px;
-  }
-
   .scale-color-display {
     margin-top: 5px;
     width: 80%;
     height: 20px;
-  }
-  .range-input {
-    width: 60px;
   }
 
   .selected-parcel-details {
