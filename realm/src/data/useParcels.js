@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import initialParcels from './parcels.json'
+import initialParcels from './parcels/parcels.json'
 import { WALLS } from './walls'
 
 const SIZE_LABELS_BY_ID = ['humble', 'reasonable', 'spacious', 'spacious']

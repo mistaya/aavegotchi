@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>Parcel Prices</h1>
+  <section style="margin: 15px; border: 1px solid #ccc; padding: 5px 10px">
+    <h2>Parcel Prices</h2>
     <p>
       Prices for {{ numParcels }} parcels are derived from
       the cached auction records (1: {{ numAuction1 }}, 2: {{ numAuction2 }}),
@@ -23,7 +23,7 @@
       :value="pricesJson"
       style="width: 100%; min-height: 100px;"
     />
-  </div>
+  </section>
 </template>
 
 <script>

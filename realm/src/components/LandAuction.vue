@@ -273,10 +273,7 @@
               Last bid: {{ selectedParcel.auction.highestBidGhst }} GHST
             </a>
             <br>Bidder:
-            <span class="eth-address" :title="selectedParcel.auction.highestBidder">
-              {{ selectedParcel.auction.highestBidder.substring(0, 5) }}...{{ selectedParcel.auction.highestBidder.substring(selectedParcel.auction.highestBidder.length - 5) }}
-            </span>
-            <CopyToClipboard :text="selectedParcel.auction.highestBidder" />
+            <EthAddress :address="selectedParcel.auction.highestBidder" />
           </div>
           <div>
             Boosts:
@@ -358,7 +355,7 @@ import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import { format } from 'date-fns'
-import CopyToClipboard from './CopyToClipboard.vue'
+import EthAddress from './EthAddress.vue'
 import BigNumber from 'bignumber.js'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import CitaadelMap from './CitaadelMap.vue'
@@ -374,7 +371,7 @@ export default {
   components: {
     LayoutMapWithFilters,
     CitaadelMap,
-    CopyToClipboard,
+    EthAddress,
     MapConfigDisplayMode,
     FilterSize,
     FilterWalls,
@@ -753,9 +750,5 @@ export default {
     margin: 0 10px 20px 0;
     border: 1px solid #ccc;
     padding: 10px;
-  }
-
-  .eth-address {
-    font-family: monospace;
   }
 </style>

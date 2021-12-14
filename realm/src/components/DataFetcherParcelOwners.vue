@@ -4,23 +4,23 @@
       v-if="fetchStatus.loaded"
       style="margin-bottom: 10px; font-style: italic; font-size: 0.95em;"
     >
-      Baazaar listings fetched at {{ lastFetchDate }}
+      Parcel owners fetched at {{ lastFetchDate }}
     </div>
 
     <div>
       <button
         type="button"
         :disabled="!canSubmitFetch"
-        @click="fetchListings"
+        @click="fetchOwners"
       >
-        Get Latest Baazaar Listings
+        Get Latest Parcel Owners
       </button>
       <div style="margin-top: 5px;">
         <span v-if="fetchStatus.loading">
-          loading listings...
+          loading owners...
         </span>
         <span v-if="fetchStatus.error">
-          Error loading listings: {{ fetchStatus.errorMessage }}
+          Error loading owners: {{ fetchStatus.errorMessage }}
         </span>
       </div>
     </div>
@@ -28,21 +28,21 @@
 </template>
 
 <script>
-import useBaazaarListings from '@/data/useBaazaarListings'
+import useParcelOwners from '@/data/useParcelOwners'
 
 export default {
   setup (props) {
     const {
       canSubmitFetch,
       fetchStatus,
-      fetchListings,
+      fetchOwners,
       lastFetchDate
-    } = useBaazaarListings()
+    } = useParcelOwners()
 
     return {
       canSubmitFetch,
       fetchStatus,
-      fetchListings,
+      fetchOwners,
       lastFetchDate
     }
   }

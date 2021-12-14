@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section style="margin-left: 20px;">
     <h2>Auction data</h2>
 
     <ConfigDataAuction

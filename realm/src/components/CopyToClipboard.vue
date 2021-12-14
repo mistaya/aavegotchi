@@ -59,8 +59,9 @@ export default {
   }
   .copy-to-clipboard__button {
     position: relative;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
     border: none;
     padding: 0;
     background: white;

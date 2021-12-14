@@ -5,7 +5,7 @@
 
       <div style="margin-bottom: 20px;">
         <DataFetcherBaazaarListings style="margin-bottom: 20px;" />
-        <br>TODO: fetch parcel owners
+        <DataFetcherParcelOwners style="margin-bottom: 20px;" />
       </div>
 
       <details class="filter-container">
@@ -183,6 +183,10 @@
           <br>Name: {{ selectedParcel.parcelHash }}
           <br>Size: {{ selectedParcel.sizeLabel }}
           <br>District: {{ selectedParcel.district }}
+          <div v-if="selectedParcel.owner">
+            Owner:
+            <EthAddress :address="selectedParcel.owner" />
+          </div>
           <div v-if="selectedParcel.currentListing">
             <a
               :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.currentListing.id}`"
@@ -301,6 +305,8 @@
 import { ref, computed, watch } from 'vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
+import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
+import EthAddress from './EthAddress.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
 import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
@@ -314,6 +320,7 @@ import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import useParcels from '@/data/useParcels'
 import useBaazaarListings from '@/data/useBaazaarListings'
 import useParcelPrices from '@/data/useParcelPrices'
+import useParcelOwners from '@/data/useParcelOwners'
 import { WALLS } from '@/data/walls'
 import { format } from 'date-fns'
 
@@ -321,6 +328,8 @@ export default {
   components: {
     LayoutMapWithFilters,
     DataFetcherBaazaarListings,
+    DataFetcherParcelOwners,
+    EthAddress,
     CitaadelMap,
     MapConfigDisplayMode,
     FilterBaazaar,
@@ -340,6 +349,11 @@ export default {
     } = useBaazaarListings()
 
     const { pricesByParcelId } = useParcelPrices()
+    const {
+      ownersByParcelId,
+      fetchStatus: ownersFetchStatus,
+      fetchOwners
+    } = useParcelOwners()
 
     const mapConfig = ref({
       displayMode: 'outline',
@@ -413,13 +427,20 @@ export default {
         fetchBaazaarListings()
       }
     }
+    const prereqOwners = function () {
+      if (!ownersFetchStatus.value.loaded && !ownersFetchStatus.value.loading) {
+        fetchOwners()
+      }
+    }
     watch(
       () => colorScheme.value.colorBy,
       colorBy => {
-        if (colorBy === 'baazaarPrice' || colorBy === 'lastPrice') {
+        if (['baazaarPrice', 'lastPrice'].includes(colorBy)) {
           // these color schemes require baazaar listings
           // make sure it's fetched at least once
           prereqBaazaarListings()
+        } else if (['owner', 'whaleGhst', 'whalePx'].includes(colorBy)) {
+          prereqOwners()
         }
       },
       { immediate: true }
@@ -495,8 +516,7 @@ export default {
         }
       } else if (colorBy === 'owner') {
         getColor = parcel => {
-          return ownerScale.value(0)
-          // return ownerScale.value(parseInt(parcelAuctions.value[parcel.id].highestBidder, 16))
+          return ownerScale.value(parseInt(ownersByParcelId.value[parcel.id], 16))
         }
       }
       const result = Object.fromEntries(
@@ -546,11 +566,13 @@ export default {
         lastSale.formattedDate = format(lastSale.datePurchased, 'yyyy/MM/dd HH:mm:ss')
       }
       const auctionPrice = pricesByParcelId.value[parcelId]?.auctionPrice
+      const owner = ownersByParcelId.value[parcelId]
       return {
         ...parcelsById.value[parcelId],
         currentListing,
         lastSale,
-        auctionPrice
+        auctionPrice,
+        owner
       }
     })
     const onClickParcel = (parcel) => {

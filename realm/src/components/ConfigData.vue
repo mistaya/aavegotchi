@@ -8,6 +8,7 @@
     <ConfigDataAuctions />
     <ConfigDataBaazaarListings />
     <ConfigDataParcelPrices />
+    <ConfigDataParcelOwners />
   </div>
 </template>
 
@@ -16,13 +17,15 @@ import ConfigDataParcels from './ConfigDataParcels.vue'
 import ConfigDataAuctions from './ConfigDataAuctions.vue'
 import ConfigDataBaazaarListings from './ConfigDataBaazaarListings.vue'
 import ConfigDataParcelPrices from './ConfigDataParcelPrices.vue'
+import ConfigDataParcelOwners from './ConfigDataParcelOwners.vue'
 
 export default {
   components: {
     ConfigDataParcels,
     ConfigDataAuctions,
     ConfigDataBaazaarListings,
-    ConfigDataParcelPrices
+    ConfigDataParcelPrices,
+    ConfigDataParcelOwners
   }
 }
 </script>
