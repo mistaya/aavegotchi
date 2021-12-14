@@ -41,20 +41,21 @@
 
           <div style="margin-bottom: 10px">
             Color by:
-            <br>
-            <label
+            <div
               v-for="option in colorSchemeOptions"
               :key="option.id"
-              class="color-by-option"
             >
-              <input
-                v-model="colorScheme.colorBy"
-                type="radio"
-                name="colorBy"
-                :value="option.id"
-              />
-              {{ option.label }}
-            </label>
+              <label>
+                <input
+                  v-model="colorScheme.colorBy"
+                  type="radio"
+                  name="colorBy"
+                  :value="option.id"
+                />
+                {{ option.label }}
+              </label>
+            </div>
+
           </div>
 
           <div v-if="colorScheme.colorBy === 'price'">
@@ -719,12 +720,6 @@ export default {
   }
   .config-details summary h3 {
     display: inline;
-  }
-
-  .color-by-option {
-    display: inline-block;
-    margin-right: 15px;
-    white-space: nowrap;
   }
 
   .config-textarea-label {

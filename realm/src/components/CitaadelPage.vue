@@ -15,20 +15,21 @@
 
         <div style="margin-bottom: 10px">
           Color by:
-          <br>
-          <label
+
+          <div
             v-for="option in colorSchemeOptions"
             :key="option.id"
-            class="color-by-option"
           >
-            <input
-              v-model="colorScheme.colorBy"
-              type="radio"
-              name="colorBy"
-              :value="option.id"
-            />
-            {{ option.label }}
-          </label>
+            <label>
+              <input
+                v-model="colorScheme.colorBy"
+                type="radio"
+                name="colorBy"
+                :value="option.id"
+              />
+              {{ option.label }}
+            </label>
+          </div>
         </div>
 
         <div v-if="colorScheme.colorBy === 'lastPrice'">
@@ -151,6 +152,92 @@
                 'background': SCALE_GRADIENTS[colorScheme.owner.scaleName]
               }"
             />
+          </div>
+        </div>
+
+        <div v-if="colorScheme.colorBy === 'whaleGhst'">
+          <div>
+            <label>
+              Color Scheme:
+              <select v-model="colorScheme.whaleGhst.scaleName">
+                <option
+                  v-for="scaleName in SCALE_NAMES"
+                  :key="scaleName"
+                  :value="scaleName"
+                >
+                  {{ scaleName }}
+                </option>
+              </select>
+            </label>
+            <div
+              class="scale-color-display"
+              :style="{
+                'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
+              }"
+            />
+            <div
+              style="margin-top: 8px"
+            >
+              <label>
+                Min:
+                <input
+                  v-model="colorScheme.whaleGhst.min"
+                  type="number"
+                  class="range-input"
+                />
+              </label>
+              <label>
+                Max:
+                <input
+                  v-model="colorScheme.whaleGhst.max"
+                  type="number"
+                  class="range-input"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="colorScheme.colorBy === 'whalePx'">
+          <div>
+            <label>
+              Color Scheme:
+              <select v-model="colorScheme.whalePx.scaleName">
+                <option
+                  v-for="scaleName in SCALE_NAMES"
+                  :key="scaleName"
+                  :value="scaleName"
+                >
+                  {{ scaleName }}
+                </option>
+              </select>
+            </label>
+            <div
+              class="scale-color-display"
+              :style="{
+                'background': SCALE_GRADIENTS[colorScheme.whalePx.scaleName]
+              }"
+            />
+            <div
+              style="margin-top: 8px"
+            >
+              <label>
+                Min:
+                <input
+                  v-model="colorScheme.whalePx.min"
+                  type="number"
+                  class="range-input"
+                />
+              </label>
+              <label>
+                Max:
+                <input
+                  v-model="colorScheme.whalePx.max"
+                  type="number"
+                  class="range-input"
+                />
+              </label>
+            </div>
           </div>
         </div>
       </details>
@@ -373,7 +460,7 @@ export default {
       { id: 'lastPrice', label: 'Last Sold Price (GHST)' },
       { id: 'baazaarPrice', label: 'Baazaar Listing Price (GHST)' },
       { id: 'owner', label: 'Owner Address' },
-      { id: 'whaleGhst', label: 'Whales (total GHST spent)' },
+      { id: 'whaleGhst', label: 'Whales (total GHST spent, excl. raffles)' },
       { id: 'whalePx', label: 'Whales (total pixel area)' }
     ]
     const colorScheme = ref({
@@ -416,6 +503,16 @@ export default {
         scaleName: 'rainbow',
         min: 0,
         max: parseInt('0xffffffffffffffffffffffffffffffffffffffff', 16)
+      },
+      whaleGhst: {
+        scaleName: 'inferno',
+        min: 0,
+        max: 140_000
+      },
+      whalePx: {
+        scaleName: 'inferno',
+        min: 0,
+        max: 150_000
       }
     })
     const colorSchemeLabel = computed(() => colorSchemeOptions.find(option => option.id === colorScheme.value.colorBy)?.label)
@@ -435,11 +532,12 @@ export default {
     watch(
       () => colorScheme.value.colorBy,
       colorBy => {
-        if (['baazaarPrice', 'lastPrice'].includes(colorBy)) {
+        if (['baazaarPrice', 'lastPrice', 'whaleGhst'].includes(colorBy)) {
           // these color schemes require baazaar listings
           // make sure it's fetched at least once
           prereqBaazaarListings()
-        } else if (['owner', 'whaleGhst', 'whalePx'].includes(colorBy)) {
+        }
+        if (['owner', 'whaleGhst', 'whalePx'].includes(colorBy)) {
           prereqOwners()
         }
       },
@@ -476,6 +574,59 @@ export default {
 
     const ownerScale = computed(() => {
       return getSequentialScale(colorScheme.value.owner)
+    })
+
+    const whaleGhstScale = computed(() => {
+      return getSequentialScale(colorScheme.value.whaleGhst)
+    })
+
+    const whalePxScale = computed(() => {
+      return getSequentialScale(colorScheme.value.whalePx)
+    })
+
+    const whalesGhst = computed(() => {
+      const totalPerOwner = {}
+      for (const parcelId in pricesByParcelId.value) {
+        const owner = ownersByParcelId.value[parcelId]
+        if (owner) {
+          if (!totalPerOwner[owner]) {
+            totalPerOwner[owner] = 0
+          }
+          const price = pricesByParcelId.value[parcelId]
+          if (price?.lastPrice) {
+            totalPerOwner[owner] += price.lastPrice
+          }
+        }
+      }
+      // console.log('GHST whales sorted:', Object.entries(totalPerOwner).sort((a, b) => {
+      //   if (a[1] === b[1]) { return 0 }
+      //   return a[1] < b[1] ? 1 : -1
+      // }))
+      return totalPerOwner
+    })
+
+    const whalesPx = computed(() => {
+      const totalPerOwner = {}
+      const pxBySizeLabel = {
+        humble: 8 * 8,
+        reasonable: 16 * 16,
+        spacious: 32 * 64
+      }
+      for (const parcelId in ownersByParcelId.value) {
+        const owner = ownersByParcelId.value[parcelId]
+        if (!totalPerOwner[owner]) {
+          totalPerOwner[owner] = 0
+        }
+        const parcel = parcelsById.value[parcelId]
+        if (parcel) {
+          totalPerOwner[owner] += (pxBySizeLabel[parcel.sizeLabel] || 0)
+        }
+      }
+      // console.log('Pixel whales sorted:', Object.entries(totalPerOwner).sort((a, b) => {
+      //   if (a[1] === b[1]) { return 0 }
+      //   return a[1] < b[1] ? 1 : -1
+      // }))
+      return totalPerOwner
     })
 
     const { parcelsById } = useParcels()
@@ -517,6 +668,16 @@ export default {
       } else if (colorBy === 'owner') {
         getColor = parcel => {
           return ownerScale.value(parseInt(ownersByParcelId.value[parcel.id], 16))
+        }
+      } else if (colorBy === 'whaleGhst') {
+        getColor = parcel => {
+          const owner = ownersByParcelId.value[parcel.id]
+          return whaleGhstScale.value(whalesGhst.value[owner] || 0)
+        }
+      } else if (colorBy === 'whalePx') {
+        getColor = parcel => {
+          const owner = ownersByParcelId.value[parcel.id]
+          return whalePxScale.value(whalesPx.value[owner] || 0)
         }
       }
       const result = Object.fromEntries(
@@ -664,11 +825,6 @@ export default {
 </script>
 
 <style scoped>
-  .color-by-option {
-    display: inline-block;
-    margin-right: 15px;
-    white-space: nowrap;
-  }
   .scale-color-display {
     margin-top: 5px;
     width: 80%;
