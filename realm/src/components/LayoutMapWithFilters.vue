@@ -70,16 +70,16 @@ export default {
   }
 
   /* common styles for filters inside this layout */
-  ::v-deep details.filter-container {
+  :deep(details.filter-container) {
     margin-bottom: 15px;
   }
-  ::v-deep details.filter-container[open] {
+  :deep(details.filter-container[open]) {
     margin-bottom: 30px;
   }
-  ::v-deep details.filter-container summary {
+  :deep(details.filter-container summary) {
     margin-bottom: 5px;
   }
-  ::v-deep details.filter-container summary h3 {
+  :deep(details.filter-container summary h3) {
     display: inline;
   }
 </style>

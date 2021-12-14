@@ -1,8 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import CitaadelPage from '@/components/CitaadelPage.vue'
-import LandAuctionPage from '@/components/LandAuctionPage.vue'
-import ConfigData from '@/components/ConfigData.vue'
-import ConfigParcels from '@/components/ConfigParcels.vue'
+import usePageLoading from './usePageLoading'
+
+const { pageLoading } = usePageLoading()
+
+const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/components/CitaadelPage.vue')
+const LandAuctionPage = () => import(/* webpackChunkName: "land-auction" */'@/components/LandAuctionPage.vue')
+const ConfigData = () => import(/* webpackChunkName: "config" */ '@/components/ConfigData.vue')
+const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/components/ConfigParcels.vue')
 
 const routes = [
   {
@@ -38,6 +42,18 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
+})
+
+// Globally record loading state for lazy-loaded routes
+router.beforeEach((to, from, next) => {
+  if (typeof to.matched[0]?.components.default === 'function') {
+    pageLoading.value = true
+  }
+  next()
+})
+router.beforeResolve((to, from, next) => {
+  pageLoading.value = false
+  next()
 })
 
 export default router

@@ -17,6 +17,7 @@
       </button>
       <div style="margin-top: 5px;">
         <span v-if="fetchStatus.loading">
+          <LoadingSpinner style="position: relative; top: 2px; margin-right: 2px;" />
           loading listings...
         </span>
         <span v-if="fetchStatus.error">
@@ -29,8 +30,12 @@
 
 <script>
 import useBaazaarListings from '@/data/useBaazaarListings'
+import LoadingSpinner from './LoadingSpinner.vue'
 
 export default {
+  components: {
+    LoadingSpinner
+  },
   setup (props) {
     const {
       canSubmitFetch,

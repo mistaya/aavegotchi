@@ -1,76 +1,120 @@
 <template>
-  <LayoutMapWithFilters>
-    <template #sidebar>
-      <section>
-        <h2 style="margin-bottom: 10px">
-          Auction {{ auctionId }} ({{ auctionInfo.days }})
-        </h2>
+  <PrereqParcels>
+    <LayoutMapWithFilters>
+      <template #sidebar>
+        <section>
+          <h2 style="margin-bottom: 10px">
+            Auction {{ auctionId }} ({{ auctionInfo.days }})
+          </h2>
 
-        <div
-          v-if="mostRecentAuction"
-          style="margin-bottom: 20px; font-style: italic; font-size: 0.95em;"
-        >
-          Last auction data fetched:
-          <br>
-          parcel #{{ mostRecentAuction.tokenId }}
-          at {{ mostRecentAuctionDate }}
-        </div>
-
-        <div style="margin: 10px 0 20px 0;">
-          <button
-            type="button"
-            :disabled="!canSubmitAuctionsFetch"
-            class="fetch-auctions"
-            style="display: none;"
-            @click="fetchAuctions"
+          <div
+            v-if="mostRecentAuction"
+            style="margin-bottom: 20px; font-style: italic; font-size: 0.95em;"
           >
-            Fetch Latest
-          </button>
-          <span v-if="auctionsFetchStatus.loading">
-            loading auctions...
-          </span>
-          <span v-if="auctionsFetchStatus.error">
-            Error loading auctions: {{ auctionsFetchStatus.errorMessage }}
-          </span>
-        </div>
-
-        <details class="config-details">
-          <summary>
-            <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
-          </summary>
-
-          <div style="margin-bottom: 10px">
-            Color by:
-            <div
-              v-for="option in colorSchemeOptions"
-              :key="option.id"
-            >
-              <label>
-                <input
-                  v-model="colorScheme.colorBy"
-                  type="radio"
-                  name="colorBy"
-                  :value="option.id"
-                />
-                {{ option.label }}
-              </label>
-            </div>
-
+            Last auction data fetched:
+            <br>
+            parcel #{{ mostRecentAuction.tokenId }}
+            at {{ mostRecentAuctionDate }}
           </div>
 
-          <div v-if="colorScheme.colorBy === 'price'">
-            <div
-              v-for="size in ['humble', 'reasonable', 'spacious']"
-              :key="size"
-              style="margin-bottom: 20px;"
+          <div style="margin: 10px 0 20px 0;">
+            <button
+              type="button"
+              :disabled="!canSubmitAuctionsFetch"
+              class="fetch-auctions"
+              style="display: none;"
+              @click="fetchAuctions"
             >
-              <h4 style="text-transform: capitalize;">
-                {{ size }}:
-              </h4>
-              <div style="margin-bottom: 10px">
+              Fetch Latest
+            </button>
+            <span v-if="auctionsFetchStatus.loading">
+              <LoadingSpinner style="position: relative; top: 2px; margin-right: 2px;" />
+              loading auctions...
+            </span>
+            <span v-if="auctionsFetchStatus.error">
+              Error loading auctions: {{ auctionsFetchStatus.errorMessage }}
+            </span>
+          </div>
+
+          <details class="config-details">
+            <summary>
+              <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
+            </summary>
+
+            <div style="margin-bottom: 10px">
+              Color by:
+              <div
+                v-for="option in colorSchemeOptions"
+                :key="option.id"
+              >
+                <label>
+                  <input
+                    v-model="colorScheme.colorBy"
+                    type="radio"
+                    name="colorBy"
+                    :value="option.id"
+                  />
+                  {{ option.label }}
+                </label>
+              </div>
+
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'price'">
+              <div
+                v-for="size in ['humble', 'reasonable', 'spacious']"
+                :key="size"
+                style="margin-bottom: 20px;"
+              >
+                <h4 style="text-transform: capitalize;">
+                  {{ size }}:
+                </h4>
+                <div style="margin-bottom: 10px">
+                  <label>
+                    Color Scheme:
+                    <select v-model="colorScheme.priceScaleConfigBySize[size].scaleName">
+                      <option
+                        v-for="scaleName in SCALE_NAMES"
+                        :key="scaleName"
+                        :value="scaleName"
+                      >
+                        {{ scaleName }}
+                      </option>
+                    </select>
+                  </label>
+                  <div
+                    class="scale-color-display"
+                    :style="{
+                      'background': SCALE_GRADIENTS[colorScheme.priceScaleConfigBySize[size].scaleName]
+                    }"
+                  />
+                </div>
+                <div>
+                  <label>
+                    Min:
+                    <input
+                      v-model="colorScheme.priceScaleConfigBySize[size].min"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                  <label>
+                    Max:
+                    <input
+                      v-model="colorScheme.priceScaleConfigBySize[size].max"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'bidder'">
+              <div>
                 <label>
                   Color Scheme:
-                  <select v-model="colorScheme.priceScaleConfigBySize[size].scaleName">
+                  <select v-model="colorScheme.bidder.scaleName">
                     <option
                       v-for="scaleName in SCALE_NAMES"
                       :key="scaleName"
@@ -83,282 +127,243 @@
                 <div
                   class="scale-color-display"
                   :style="{
-                    'background': SCALE_GRADIENTS[colorScheme.priceScaleConfigBySize[size].scaleName]
+                    'background': SCALE_GRADIENTS[colorScheme.bidder.scaleName]
                   }"
                 />
               </div>
+            </div>
+
+            <div v-if="colorScheme.colorBy === 'whaleGhst'">
               <div>
                 <label>
-                  Min:
-                  <input
-                    v-model="colorScheme.priceScaleConfigBySize[size].min"
-                    type="number"
-                    class="range-input"
-                  />
+                  Color Scheme:
+                  <select v-model="colorScheme.whaleGhst.scaleName">
+                    <option
+                      v-for="scaleName in SCALE_NAMES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
                 </label>
-                <label>
-                  Max:
-                  <input
-                    v-model="colorScheme.priceScaleConfigBySize[size].max"
-                    type="number"
-                    class="range-input"
-                  />
-                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
+                  }"
+                />
+                <div
+                  style="margin-top: 8px"
+                >
+                  <label>
+                    Min:
+                    <input
+                      v-model="colorScheme.whaleGhst.min"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                  <label>
+                    Max:
+                    <input
+                      v-model="colorScheme.whaleGhst.max"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div v-if="colorScheme.colorBy === 'bidder'">
-            <div>
-              <label>
-                Color Scheme:
-                <select v-model="colorScheme.bidder.scaleName">
-                  <option
-                    v-for="scaleName in SCALE_NAMES"
-                    :key="scaleName"
-                    :value="scaleName"
-                  >
-                    {{ scaleName }}
-                  </option>
-                </select>
-              </label>
-              <div
-                class="scale-color-display"
-                :style="{
-                  'background': SCALE_GRADIENTS[colorScheme.bidder.scaleName]
-                }"
-              />
-            </div>
-          </div>
-
-          <div v-if="colorScheme.colorBy === 'whaleGhst'">
-            <div>
-              <label>
-                Color Scheme:
-                <select v-model="colorScheme.whaleGhst.scaleName">
-                  <option
-                    v-for="scaleName in SCALE_NAMES"
-                    :key="scaleName"
-                    :value="scaleName"
-                  >
-                    {{ scaleName }}
-                  </option>
-                </select>
-              </label>
-              <div
-                class="scale-color-display"
-                :style="{
-                  'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
-                }"
-              />
-              <div
-                style="margin-top: 8px"
-              >
+            <div v-if="colorScheme.colorBy === 'whalePx'">
+              <div>
                 <label>
-                  Min:
-                  <input
-                    v-model="colorScheme.whaleGhst.min"
-                    type="number"
-                    class="range-input"
-                  />
+                  Color Scheme:
+                  <select v-model="colorScheme.whalePx.scaleName">
+                    <option
+                      v-for="scaleName in SCALE_NAMES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
                 </label>
-                <label>
-                  Max:
-                  <input
-                    v-model="colorScheme.whaleGhst.max"
-                    type="number"
-                    class="range-input"
-                  />
-                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': SCALE_GRADIENTS[colorScheme.whalePx.scaleName]
+                  }"
+                />
+                <div
+                  style="margin-top: 8px"
+                >
+                  <label>
+                    Min:
+                    <input
+                      v-model="colorScheme.whalePx.min"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                  <label>
+                    Max:
+                    <input
+                      v-model="colorScheme.whalePx.max"
+                      type="number"
+                      class="range-input"
+                    />
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
+          </details>
 
-          <div v-if="colorScheme.colorBy === 'whalePx'">
-            <div>
-              <label>
-                Color Scheme:
-                <select v-model="colorScheme.whalePx.scaleName">
-                  <option
-                    v-for="scaleName in SCALE_NAMES"
-                    :key="scaleName"
-                    :value="scaleName"
-                  >
-                    {{ scaleName }}
-                  </option>
-                </select>
-              </label>
-              <div
-                class="scale-color-display"
-                :style="{
-                  'background': SCALE_GRADIENTS[colorScheme.whalePx.scaleName]
-                }"
-              />
-              <div
-                style="margin-top: 8px"
-              >
-                <label>
-                  Min:
-                  <input
-                    v-model="colorScheme.whalePx.min"
-                    type="number"
-                    class="range-input"
-                  />
-                </label>
-                <label>
-                  Max:
-                  <input
-                    v-model="colorScheme.whalePx.max"
-                    type="number"
-                    class="range-input"
-                  />
-                </label>
+          <MapConfigDisplayMode v-model="mapConfig.displayMode" />
+          <FilterSize v-model="filters.size" />
+          <FilterWalls v-model="filters.walls" />
+          <FilterDistricts
+            :districts="auctionInfo.districts"
+            v-model="filters.districts"
+          />
+          <FilterBoosts v-model="filters.boosts" />
+
+          <details class="config-details">
+            <summary>
+              <h3>Filter by Bidder</h3>
+            </summary>
+
+            <label>
+              <div class="config-textarea-label">
+                Bidder addresses
               </div>
-            </div>
-          </div>
-        </details>
+              <textarea
+                v-model="filters.bidders"
+                class="config-bidders"
+              />
+            </label>
+          </details>
 
-        <MapConfigDisplayMode v-model="mapConfig.displayMode" />
-        <FilterSize v-model="filters.size" />
-        <FilterWalls v-model="filters.walls" />
-        <FilterDistricts
-          :districts="auctionInfo.districts"
-          v-model="filters.districts"
-        />
-        <FilterBoosts v-model="filters.boosts" />
+          <FilterParcelIds v-model="filters.parcelIds" />
+          <FilterParcelNames v-model="filters.parcelNames" />
+        </section>
 
-        <details class="config-details">
-          <summary>
-            <h3>Filter by Bidder</h3>
-          </summary>
-
-          <label>
-            <div class="config-textarea-label">
-              Bidder addresses
-            </div>
-            <textarea
-              v-model="filters.bidders"
-              class="config-bidders"
-            />
-          </label>
-        </details>
-
-        <FilterParcelIds v-model="filters.parcelIds" />
-        <FilterParcelNames v-model="filters.parcelNames" />
-      </section>
-
-      <section ref="parcelDetailsRef">
-        <div
-          v-if="selectedParcel"
-          class="selected-parcel-details"
-        >
-          <button
-            type="button"
-            style="float: right"
-            @click="selectedParcelId = null"
+        <section ref="parcelDetailsRef">
+          <div
+            v-if="selectedParcel"
+            class="selected-parcel-details"
           >
-            Close
-          </button>
-
-          <h2>Selected Parcel details:</h2>
-
-          ID: {{ selectedParcel.id }}
-          <br>Name: {{ selectedParcel.parcelHash }}
-          <br>Size: {{ selectedParcel.sizeLabel }}
-          <br>District: {{ selectedParcel.district }}
-          <div v-if="selectedParcel.auction?.hasAuction">
-            <a
-              :href="`https://gotchiverse.io/auction?tokenId=${selectedParcel.id}`"
-              target="_blank"
+            <button
+              type="button"
+              style="float: right"
+              @click="selectedParcelId = null"
             >
-              Last bid: {{ selectedParcel.auction.highestBidGhst }} GHST
-            </a>
-            <br>Bidder:
-            <EthAddress :address="selectedParcel.auction.highestBidder" />
-          </div>
-          <div>
-            Boosts:
-            <div style="margin-left: 10px">
-              <template v-if="selectedParcel.hasBoost">
-                <div v-if="selectedParcel.fudBoost !== '0'">
-                  FUD: {{ selectedParcel.fudBoost }}
-                </div>
-                <div v-if="selectedParcel.fomoBoost !== '0'">
-                  FOMO: {{ selectedParcel.fomoBoost }}
-                </div>
-                <div v-if="selectedParcel.alphaBoost !== '0'">
-                  ALPHA: {{ selectedParcel.alphaBoost }}
-                </div>
-                <div v-if="selectedParcel.kekBoost !== '0'">
-                  KEK: {{ selectedParcel.kekBoost }}
-                </div>
-              </template>
-              <template v-else>
-                None
-              </template>
-            </div>
-          </div>
-        </div>
-      </section>
+              Close
+            </button>
 
-    </template>
-    <template #main="{ viewMode }">
-      <CitaadelMap
-        v-show="viewMode === 'map'"
-        :viewBox="auctionInfo.display.viewBox"
-        :aspectRatio="auctionInfo.display.aspectRatio"
-        :filterDisplayMode="mapConfig.displayMode"
-        :parcels="parcelsToDisplay"
-        :parcelsMatchingFilters="parcelsMatchingFilters"
-        :parcelColors="parcelColors"
-        :selectedParcel="selectedParcel"
-        @click:parcel="onClickParcel"
-      />
-      <div v-if="viewMode === 'list'">
-        <template v-if="!listParcelsToDisplay.length">
-          No parcels found.
-        </template>
-        <template v-else>
-          {{ listParcelsToDisplay.length }} parcels found. Cheapest first:
-          <ul class="parcels-list">
-            <li
-              v-for="parcel in listParcelsToDisplay"
-              :key="parcel.id"
-            >
+            <h2>Selected Parcel details:</h2>
+
+            ID: {{ selectedParcel.id }}
+            <br>Name: {{ selectedParcel.parcelHash }}
+            <br>Size: {{ selectedParcel.sizeLabel }}
+            <br>District: {{ selectedParcel.district }}
+            <div v-if="selectedParcel.auction?.hasAuction">
               <a
-                href="#"
-                @click.prevent="onClickParcel(parcel)"
-              >
-                {{ parcel.id }}
-              </a>
-              {{ parcel.parcelHash }}
-              {{ parcel.sizeLabel }}
-              district {{ parcel.district }}
-              <a
-                :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
+                :href="`https://gotchiverse.io/auction?tokenId=${selectedParcel.id}`"
                 target="_blank"
               >
-                Last bid: {{ parcelAuctions[parcel.id].highestBidGhst }} GHST
+                Last bid: {{ selectedParcel.auction.highestBidGhst }} GHST
               </a>
-            </li>
-          </ul>
-        </template>
-      </div>
-    </template>
-  </LayoutMapWithFilters>
+              <br>Bidder:
+              <EthAddress :address="selectedParcel.auction.highestBidder" />
+            </div>
+            <div>
+              Boosts:
+              <div style="margin-left: 10px">
+                <template v-if="selectedParcel.hasBoost">
+                  <div v-if="selectedParcel.fudBoost !== '0'">
+                    FUD: {{ selectedParcel.fudBoost }}
+                  </div>
+                  <div v-if="selectedParcel.fomoBoost !== '0'">
+                    FOMO: {{ selectedParcel.fomoBoost }}
+                  </div>
+                  <div v-if="selectedParcel.alphaBoost !== '0'">
+                    ALPHA: {{ selectedParcel.alphaBoost }}
+                  </div>
+                  <div v-if="selectedParcel.kekBoost !== '0'">
+                    KEK: {{ selectedParcel.kekBoost }}
+                  </div>
+                </template>
+                <template v-else>
+                  None
+                </template>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </template>
+      <template #main="{ viewMode }">
+        <CitaadelMap
+          v-show="viewMode === 'map'"
+          :viewBox="auctionInfo.display.viewBox"
+          :aspectRatio="auctionInfo.display.aspectRatio"
+          :filterDisplayMode="mapConfig.displayMode"
+          :parcels="parcelsToDisplay"
+          :parcelsMatchingFilters="parcelsMatchingFilters"
+          :parcelColors="parcelColors"
+          :selectedParcel="selectedParcel"
+          @click:parcel="onClickParcel"
+        />
+        <div v-if="viewMode === 'list'">
+          <template v-if="!listParcelsToDisplay.length">
+            No parcels found.
+          </template>
+          <template v-else>
+            {{ listParcelsToDisplay.length }} parcels found. Cheapest first:
+            <ul class="parcels-list">
+              <li
+                v-for="parcel in listParcelsToDisplay"
+                :key="parcel.id"
+              >
+                <a
+                  href="#"
+                  @click.prevent="onClickParcel(parcel)"
+                >
+                  {{ parcel.id }}
+                </a>
+                {{ parcel.parcelHash }}
+                {{ parcel.sizeLabel }}
+                district {{ parcel.district }}
+                <a
+                  :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
+                  target="_blank"
+                >
+                  Last bid: {{ parcelAuctions[parcel.id].highestBidGhst }} GHST
+                </a>
+              </li>
+            </ul>
+          </template>
+        </div>
+      </template>
+    </LayoutMapWithFilters>
+  </PrereqParcels>
 </template>
 
 <script>
 import { ref, computed } from 'vue'
+import { format } from 'date-fns'
+import BigNumber from 'bignumber.js'
 import useDebouncedRef from '@/utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
-import { format } from 'date-fns'
-import EthAddress from './EthAddress.vue'
-import BigNumber from 'bignumber.js'
+import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
+import EthAddress from './EthAddress.vue'
+import LoadingSpinner from './LoadingSpinner.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
@@ -370,9 +375,11 @@ import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as ge
 
 export default {
   components: {
+    PrereqParcels,
     LayoutMapWithFilters,
     CitaadelMap,
     EthAddress,
+    LoadingSpinner,
     MapConfigDisplayMode,
     FilterSize,
     FilterWalls,

@@ -81,7 +81,7 @@ export default function useAuctions (auctionId) {
 
   const fetchInitialAuctions = function () {
     const [isStale, setLoaded, setError] = setLoading()
-    import('./auctions/auction' + auctionId + '.json')
+    import(/* webpackChunkName: "auctionjson" */ './auctions/auction' + auctionId + '.json')
       .then(({ default: json }) => {
         if (isStale()) { console.log('Stale request, ignoring'); return }
         auctionsByParcelId.value = json

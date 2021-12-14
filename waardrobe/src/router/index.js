@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import GotchiPage from "@/components/GotchiPage.vue";
+import WaardrobeEntrance from "@/components/WaardrobeEntrance.vue";
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     // this generates a separate chunk (waardrobe.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "waardrobe" */ '@/components/WaardrobePage.vue')
+  },
+  {
+    path: '/entrance',
+    name: 'WaardrobeEntrance',
+    component: WaardrobeEntrance
   }
 ]
 

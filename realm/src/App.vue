@@ -11,15 +11,25 @@
       -->
     </nav>
     <main>
-      <router-view />
+      <div v-if="pageLoading">
+        Loading...
+      </div>
+      <router-view v-else />
     </main>
   </div>
 </template>
 
 <script>
+import usePageLoading from '@/router/usePageLoading'
 
 export default {
-  name: 'App'
+  name: 'App',
+  setup: function () {
+    const { pageLoading } = usePageLoading()
+    return {
+      pageLoading
+    }
+  }
 }
 </script>
 

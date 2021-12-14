@@ -1,50 +1,143 @@
 <template>
-  <LayoutMapWithFilters>
-    <template #sidebar>
-      <h1>The Citaadel</h1>
+  <PrereqParcels>
+    <LayoutMapWithFilters>
+      <template #sidebar>
+        <h1>The Citaadel</h1>
 
-      <div style="margin-bottom: 20px;">
-        <DataFetcherBaazaarListings style="margin-bottom: 20px;" />
-        <DataFetcherParcelOwners style="margin-bottom: 20px;" />
-      </div>
-
-      <details class="filter-container">
-        <summary>
-          <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
-        </summary>
-
-        <div style="margin-bottom: 10px">
-          Color by:
-
-          <div
-            v-for="option in colorSchemeOptions"
-            :key="option.id"
-          >
-            <label>
-              <input
-                v-model="colorScheme.colorBy"
-                type="radio"
-                name="colorBy"
-                :value="option.id"
-              />
-              {{ option.label }}
-            </label>
-          </div>
+        <div style="margin-bottom: 20px;">
+          <DataFetcherBaazaarListings style="margin-bottom: 20px;" />
+          <DataFetcherParcelOwners style="margin-bottom: 20px;" />
         </div>
 
-        <div v-if="colorScheme.colorBy === 'lastPrice'">
-          <div
-            v-for="size in ['humble', 'reasonable', 'spacious']"
-            :key="size"
-            style="margin-bottom: 20px;"
-          >
-            <h4 style="text-transform: capitalize;">
-              {{ size }}:
-            </h4>
-            <div style="margin-bottom: 10px">
+        <details class="filter-container">
+          <summary>
+            <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
+          </summary>
+
+          <div style="margin-bottom: 10px">
+            Color by:
+
+            <div
+              v-for="option in colorSchemeOptions"
+              :key="option.id"
+            >
+              <label>
+                <input
+                  v-model="colorScheme.colorBy"
+                  type="radio"
+                  name="colorBy"
+                  :value="option.id"
+                />
+                {{ option.label }}
+              </label>
+            </div>
+          </div>
+
+          <div v-if="colorScheme.colorBy === 'lastPrice'">
+            <div
+              v-for="size in ['humble', 'reasonable', 'spacious']"
+              :key="size"
+              style="margin-bottom: 20px;"
+            >
+              <h4 style="text-transform: capitalize;">
+                {{ size }}:
+              </h4>
+              <div style="margin-bottom: 10px">
+                <label>
+                  Color Scheme:
+                  <select v-model="colorScheme.lastPrice[size].scaleName">
+                    <option
+                      v-for="scaleName in SCALE_NAMES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
+                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': SCALE_GRADIENTS[colorScheme.lastPrice[size].scaleName]
+                  }"
+                />
+              </div>
+              <div>
+                <label>
+                  Min:
+                  <input
+                    v-model="colorScheme.lastPrice[size].min"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="colorScheme.lastPrice[size].max"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="colorScheme.colorBy === 'baazaarPrice'">
+            <div
+              v-for="size in ['humble', 'reasonable', 'spacious']"
+              :key="size"
+              style="margin-bottom: 20px;"
+            >
+              <h4 style="text-transform: capitalize;">
+                {{ size }}:
+              </h4>
+              <div style="margin-bottom: 10px">
+                <label>
+                  Color Scheme:
+                  <select v-model="colorScheme.baazaarPrice[size].scaleName">
+                    <option
+                      v-for="scaleName in SCALE_NAMES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
+                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': SCALE_GRADIENTS[colorScheme.baazaarPrice[size].scaleName]
+                  }"
+                />
+              </div>
+              <div>
+                <label>
+                  Min:
+                  <input
+                    v-model="colorScheme.baazaarPrice[size].min"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="colorScheme.baazaarPrice[size].max"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="colorScheme.colorBy === 'owner'">
+            <div>
               <label>
                 Color Scheme:
-                <select v-model="colorScheme.lastPrice[size].scaleName">
+                <select v-model="colorScheme.owner.scaleName">
                   <option
                     v-for="scaleName in SCALE_NAMES"
                     :key="scaleName"
@@ -57,44 +150,17 @@
               <div
                 class="scale-color-display"
                 :style="{
-                  'background': SCALE_GRADIENTS[colorScheme.lastPrice[size].scaleName]
+                  'background': SCALE_GRADIENTS[colorScheme.owner.scaleName]
                 }"
               />
             </div>
+          </div>
+
+          <div v-if="colorScheme.colorBy === 'whaleGhst'">
             <div>
               <label>
-                Min:
-                <input
-                  v-model="colorScheme.lastPrice[size].min"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-              <label>
-                Max:
-                <input
-                  v-model="colorScheme.lastPrice[size].max"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="colorScheme.colorBy === 'baazaarPrice'">
-          <div
-            v-for="size in ['humble', 'reasonable', 'spacious']"
-            :key="size"
-            style="margin-bottom: 20px;"
-          >
-            <h4 style="text-transform: capitalize;">
-              {{ size }}:
-            </h4>
-            <div style="margin-bottom: 10px">
-              <label>
                 Color Scheme:
-                <select v-model="colorScheme.baazaarPrice[size].scaleName">
+                <select v-model="colorScheme.whaleGhst.scaleName">
                   <option
                     v-for="scaleName in SCALE_NAMES"
                     :key="scaleName"
@@ -107,292 +173,236 @@
               <div
                 class="scale-color-display"
                 :style="{
-                  'background': SCALE_GRADIENTS[colorScheme.baazaarPrice[size].scaleName]
+                  'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
                 }"
               />
+              <div
+                style="margin-top: 8px"
+              >
+                <label>
+                  Min:
+                  <input
+                    v-model="colorScheme.whaleGhst.min"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="colorScheme.whaleGhst.max"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+              </div>
             </div>
+          </div>
+
+          <div v-if="colorScheme.colorBy === 'whalePx'">
             <div>
               <label>
-                Min:
-                <input
-                  v-model="colorScheme.baazaarPrice[size].min"
-                  type="number"
-                  class="range-input"
-                />
+                Color Scheme:
+                <select v-model="colorScheme.whalePx.scaleName">
+                  <option
+                    v-for="scaleName in SCALE_NAMES"
+                    :key="scaleName"
+                    :value="scaleName"
+                  >
+                    {{ scaleName }}
+                  </option>
+                </select>
               </label>
-              <label>
-                Max:
-                <input
-                  v-model="colorScheme.baazaarPrice[size].max"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
+              <div
+                class="scale-color-display"
+                :style="{
+                  'background': SCALE_GRADIENTS[colorScheme.whalePx.scaleName]
+                }"
+              />
+              <div
+                style="margin-top: 8px"
+              >
+                <label>
+                  Min:
+                  <input
+                    v-model="colorScheme.whalePx.min"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="colorScheme.whalePx.max"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+              </div>
             </div>
           </div>
-        </div>
+        </details>
 
-        <div v-if="colorScheme.colorBy === 'owner'">
-          <div>
-            <label>
-              Color Scheme:
-              <select v-model="colorScheme.owner.scaleName">
-                <option
-                  v-for="scaleName in SCALE_NAMES"
-                  :key="scaleName"
-                  :value="scaleName"
-                >
-                  {{ scaleName }}
-                </option>
-              </select>
-            </label>
-            <div
-              class="scale-color-display"
-              :style="{
-                'background': SCALE_GRADIENTS[colorScheme.owner.scaleName]
-              }"
-            />
-          </div>
-        </div>
+        <MapConfigDisplayMode v-model="mapConfig.displayMode" />
+        <FilterBaazaar v-model="filters.baazaar" />
+        <FilterSize v-model="filters.size" />
+        <FilterWalls v-model="filters.walls" />
+        <FilterDistricts v-model="filters.districts" />
+        <FilterParcelIds v-model="filters.parcelIds" />
+        <FilterParcelNames v-model="filters.parcelNames" />
+        <FilterBoosts v-model="filters.boosts" />
 
-        <div v-if="colorScheme.colorBy === 'whaleGhst'">
-          <div>
-            <label>
-              Color Scheme:
-              <select v-model="colorScheme.whaleGhst.scaleName">
-                <option
-                  v-for="scaleName in SCALE_NAMES"
-                  :key="scaleName"
-                  :value="scaleName"
-                >
-                  {{ scaleName }}
-                </option>
-              </select>
-            </label>
-            <div
-              class="scale-color-display"
-              :style="{
-                'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
-              }"
-            />
-            <div
-              style="margin-top: 8px"
-            >
-              <label>
-                Min:
-                <input
-                  v-model="colorScheme.whaleGhst.min"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-              <label>
-                Max:
-                <input
-                  v-model="colorScheme.whaleGhst.max"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="colorScheme.colorBy === 'whalePx'">
-          <div>
-            <label>
-              Color Scheme:
-              <select v-model="colorScheme.whalePx.scaleName">
-                <option
-                  v-for="scaleName in SCALE_NAMES"
-                  :key="scaleName"
-                  :value="scaleName"
-                >
-                  {{ scaleName }}
-                </option>
-              </select>
-            </label>
-            <div
-              class="scale-color-display"
-              :style="{
-                'background': SCALE_GRADIENTS[colorScheme.whalePx.scaleName]
-              }"
-            />
-            <div
-              style="margin-top: 8px"
-            >
-              <label>
-                Min:
-                <input
-                  v-model="colorScheme.whalePx.min"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-              <label>
-                Max:
-                <input
-                  v-model="colorScheme.whalePx.max"
-                  type="number"
-                  class="range-input"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <MapConfigDisplayMode v-model="mapConfig.displayMode" />
-      <FilterBaazaar v-model="filters.baazaar" />
-      <FilterSize v-model="filters.size" />
-      <FilterWalls v-model="filters.walls" />
-      <FilterDistricts v-model="filters.districts" />
-      <FilterParcelIds v-model="filters.parcelIds" />
-      <FilterParcelNames v-model="filters.parcelNames" />
-      <FilterBoosts v-model="filters.boosts" />
-
-      <section>
-        <div
-          v-if="selectedParcel"
-          class="selected-parcel-details"
-        >
-          <button
-            type="button"
-            style="float: right"
-            @click="selectedParcelId = null"
+        <section>
+          <div
+            v-if="selectedParcel"
+            class="selected-parcel-details"
           >
-            Close
-          </button>
-
-          <h2>Selected Parcel details:</h2>
-
-          ID: {{ selectedParcel.id }}
-          <br>Name: {{ selectedParcel.parcelHash }}
-          <br>Size: {{ selectedParcel.sizeLabel }}
-          <br>District: {{ selectedParcel.district }}
-          <div v-if="selectedParcel.owner">
-            Owner:
-            <EthAddress :address="selectedParcel.owner" />
-          </div>
-          <div v-if="selectedParcel.currentListing">
-            <a
-              :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.currentListing.id}`"
-              target="_blank"
+            <button
+              type="button"
+              style="float: right"
+              @click="selectedParcelId = null"
             >
-              Currently listed on Baazaar for: {{ selectedParcel.currentListing.priceInGhst.toString() }} GHST
-            </a>
-          </div>
-          <div v-if="selectedParcel.lastSale">
-            <a
-              :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.lastSale.id}`"
-              target="_blank"
-            >
-              Last sold on Baazaar on {{ selectedParcel.lastSale.formattedDate }}
-              for: {{ selectedParcel.lastSale.priceInGhst.toString() }} GHST
-            </a>
-          </div>
-          <div v-if="selectedParcel.auctionPrice">
-            Auction price: {{ selectedParcel.auctionPrice }} GHST
-          </div>
-          <div>
-            Boosts:
-            <div style="margin-left: 10px">
-              <template v-if="selectedParcel.hasBoost">
-                <div v-if="selectedParcel.fudBoost !== '0'">
-                  FUD: {{ selectedParcel.fudBoost }}
-                </div>
-                <div v-if="selectedParcel.fomoBoost !== '0'">
-                  FOMO: {{ selectedParcel.fomoBoost }}
-                </div>
-                <div v-if="selectedParcel.alphaBoost !== '0'">
-                  ALPHA: {{ selectedParcel.alphaBoost }}
-                </div>
-                <div v-if="selectedParcel.kekBoost !== '0'">
-                  KEK: {{ selectedParcel.kekBoost }}
-                </div>
-              </template>
-              <template v-else>
-                None
-              </template>
+              Close
+            </button>
+
+            <h2>Selected Parcel details:</h2>
+
+            ID: {{ selectedParcel.id }}
+            <br>Name: {{ selectedParcel.parcelHash }}
+            <br>Size: {{ selectedParcel.sizeLabel }}
+            <br>District: {{ selectedParcel.district }}
+            <div v-if="selectedParcel.owner">
+              Owner:
+              <EthAddress :address="selectedParcel.owner" />
             </div>
-          </div>
-        </div>
-      </section>
-    </template>
-    <template #main="{ viewMode }">
-      <CitaadelMap
-        v-show="viewMode === 'map'"
-        :viewBox="mapConfig.viewBox"
-        :aspectRatio="mapConfig.aspectRatio"
-        :filterDisplayMode="mapConfig.displayMode"
-        :parcels="parcelsToDisplay"
-        :parcelsMatchingFilters="parcelsMatchingFilters"
-        :parcelColors="parcelColors"
-        :selectedParcel="selectedParcel"
-        @click:parcel="onClickParcel"
-      />
-      <div v-if="viewMode === 'list'">
-        <template v-if="!listParcelsToDisplay.length">
-          No parcels found.
-        </template>
-        <template v-else>
-          {{ listParcelsTotal }} parcels found.
-          <ul class="parcels-list">
-            <li
-              v-for="parcel in listParcelsToDisplay"
-              :key="parcel.id"
-            >
+            <div v-if="selectedParcel.currentListing">
               <a
-                href="#"
-                @click.prevent="onClickParcel(parcel)"
+                :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.currentListing.id}`"
+                target="_blank"
               >
-                {{ parcel.id }}
+                Currently listed on Baazaar for: {{ selectedParcel.currentListing.priceInGhst.toString() }} GHST
               </a>
-              {{ parcel.parcelHash }}
-              {{ parcel.sizeLabel }}
-              district {{ parcel.district }}
-              <span
-                v-if="listingsByParcelId[parcel.id]"
-                style="margin: 0 10px;"
+            </div>
+            <div v-if="selectedParcel.lastSale">
+              <a
+                :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.lastSale.id}`"
+                target="_blank"
+              >
+                Last sold on Baazaar on {{ selectedParcel.lastSale.formattedDate }}
+                for: {{ selectedParcel.lastSale.priceInGhst.toString() }} GHST
+              </a>
+            </div>
+            <div v-if="selectedParcel.auctionPrice">
+              Auction price: {{ selectedParcel.auctionPrice }} GHST
+            </div>
+            <div>
+              Boosts:
+              <div style="margin-left: 10px">
+                <template v-if="selectedParcel.hasBoost">
+                  <div v-if="selectedParcel.fudBoost !== '0'">
+                    FUD: {{ selectedParcel.fudBoost }}
+                  </div>
+                  <div v-if="selectedParcel.fomoBoost !== '0'">
+                    FOMO: {{ selectedParcel.fomoBoost }}
+                  </div>
+                  <div v-if="selectedParcel.alphaBoost !== '0'">
+                    ALPHA: {{ selectedParcel.alphaBoost }}
+                  </div>
+                  <div v-if="selectedParcel.kekBoost !== '0'">
+                    KEK: {{ selectedParcel.kekBoost }}
+                  </div>
+                </template>
+                <template v-else>
+                  None
+                </template>
+              </div>
+            </div>
+          </div>
+        </section>
+      </template>
+      <template #main="{ viewMode }">
+        <CitaadelMap
+          v-show="viewMode === 'map'"
+          :viewBox="mapConfig.viewBox"
+          :aspectRatio="mapConfig.aspectRatio"
+          :filterDisplayMode="mapConfig.displayMode"
+          :parcels="parcelsToDisplay"
+          :parcelsMatchingFilters="parcelsMatchingFilters"
+          :parcelColors="parcelColors"
+          :selectedParcel="selectedParcel"
+          @click:parcel="onClickParcel"
+        />
+        <div v-if="viewMode === 'list'">
+          <template v-if="!listParcelsToDisplay.length">
+            No parcels found.
+          </template>
+          <template v-else>
+            {{ listParcelsTotal }} parcels found.
+            <ul class="parcels-list">
+              <li
+                v-for="parcel in listParcelsToDisplay"
+                :key="parcel.id"
               >
                 <a
-                  :href="`https://aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
-                  target="_blank"
+                  href="#"
+                  @click.prevent="onClickParcel(parcel)"
                 >
-                  Baazaar {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                  {{ parcel.id }}
                 </a>
-              </span>
-              <span v-if="salesByParcelId[parcel.id]">
-                Last sold on Baazaar on
-                <a
-                  :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
-                  target="_blank"
+                {{ parcel.parcelHash }}
+                {{ parcel.sizeLabel }}
+                district {{ parcel.district }}
+                <span
+                  v-if="listingsByParcelId[parcel.id]"
+                  style="margin: 0 10px;"
                 >
-                  {{ salesByParcelId[parcel.id].formattedDate }}
-                  for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
-                </a>
-              </span>
-            </li>
-          </ul>
-        </template>
-        <div v-if="listParcelsTotal > listParcelsToDisplay.length && !listParcelsShowAll">
-          <button
-            type="button"
-            @click="listParcelsShowAll = true"
-          >
-            Show all {{ listParcelsTotal }} parcels
-          </button>
+                  <a
+                    :href="`https://aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
+                    target="_blank"
+                  >
+                    Baazaar {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                  </a>
+                </span>
+                <span v-if="salesByParcelId[parcel.id]">
+                  Last sold on Baazaar on
+                  <a
+                    :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
+                    target="_blank"
+                  >
+                    {{ salesByParcelId[parcel.id].formattedDate }}
+                    for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                  </a>
+                </span>
+              </li>
+            </ul>
+          </template>
+          <div v-if="listParcelsTotal > listParcelsToDisplay.length && !listParcelsShowAll">
+            <button
+              type="button"
+              @click="listParcelsShowAll = true"
+            >
+              Show all {{ listParcelsTotal }} parcels
+            </button>
+          </div>
         </div>
-      </div>
-    </template>
-  </LayoutMapWithFilters>
+      </template>
+    </LayoutMapWithFilters>
+  </PrereqParcels>
 </template>
 
 <script>
 import { ref, computed, watch } from 'vue'
-import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
+import { format } from 'date-fns'
+import useParcels from '@/data/useParcels'
+import useBaazaarListings from '@/data/useBaazaarListings'
+import useParcelPrices from '@/data/useParcelPrices'
+import useParcelOwners from '@/data/useParcelOwners'
+import { WALLS } from '@/data/walls'
+import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
 import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
+import PrereqParcels from './PrereqParcels.vue'
+import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import EthAddress from './EthAddress.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
@@ -403,16 +413,10 @@ import FilterDistricts, { DISTRICTS, getDefaultValue as getDefaultDistrictsValue
 import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
-import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
-import useParcels from '@/data/useParcels'
-import useBaazaarListings from '@/data/useBaazaarListings'
-import useParcelPrices from '@/data/useParcelPrices'
-import useParcelOwners from '@/data/useParcelOwners'
-import { WALLS } from '@/data/walls'
-import { format } from 'date-fns'
 
 export default {
   components: {
+    PrereqParcels,
     LayoutMapWithFilters,
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
@@ -629,7 +633,7 @@ export default {
       return totalPerOwner
     })
 
-    const { parcelsById } = useParcels()
+    const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
 
     const parcelsToDisplay = computed(() =>
       Object.values(parcelsById.value)
@@ -800,6 +804,7 @@ export default {
     })
 
     return {
+      parcelsFetchStatus,
       mapConfig,
       filters,
       colorScheme,
