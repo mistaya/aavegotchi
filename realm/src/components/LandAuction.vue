@@ -34,80 +34,26 @@
           </span>
         </div>
 
-        <MapConfigDisplayMode v-model="mapConfig.displayMode" />
-        <FilterSize v-model="filters.size" />
-        <FilterWalls v-model="filters.walls" />
-        <FilterDistricts
-          :districts="auctionInfo.districts"
-          v-model="filters.districts"
-        />
-        <FilterBoosts v-model="filters.boosts" />
-
         <details class="config-details">
           <summary>
-            <h3>Filter by Bidder</h3>
-          </summary>
-
-          <label>
-            <div class="config-textarea-label">
-              Bidder addresses
-            </div>
-            <textarea
-              v-model="filters.bidders"
-              class="config-bidders"
-            />
-          </label>
-        </details>
-
-        <FilterParcelIds v-model="filters.parcelIds" />
-        <FilterParcelNames v-model="filters.parcelNames" />
-
-        <details class="config-details">
-          <summary>
-            <h3>Color Scheme</h3>
+            <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
           </summary>
 
           <div style="margin-bottom: 10px">
             Color by:
             <br>
-            <label class="color-by-option">
+            <label
+              v-for="option in colorSchemeOptions"
+              :key="option.id"
+              class="color-by-option"
+            >
               <input
                 v-model="colorScheme.colorBy"
                 type="radio"
                 name="colorBy"
-                value="price"
+                :value="option.id"
               />
-              Parcel Price (GHST)
-            </label>
-
-            <label class="color-by-option">
-              <input
-                v-model="colorScheme.colorBy"
-                type="radio"
-                name="colorBy"
-                value="bidder"
-              />
-              Bidder Address
-            </label>
-
-            <label class="color-by-option">
-              <input
-                v-model="colorScheme.colorBy"
-                type="radio"
-                name="colorBy"
-                value="whaleGhst"
-              />
-              Whales (total GHST spent)
-            </label>
-
-            <label class="color-by-option">
-              <input
-                v-model="colorScheme.colorBy"
-                type="radio"
-                name="colorBy"
-                value="whalePx"
-              />
-              Whales (total pixel area)
+              {{ option.label }}
             </label>
           </div>
 
@@ -125,7 +71,7 @@
                   Color Scheme:
                   <select v-model="colorScheme.priceScaleConfigBySize[size].scaleName">
                     <option
-                      v-for="scaleName in AVAILABLE_SCALES"
+                      v-for="scaleName in SCALE_NAMES"
                       :key="scaleName"
                       :value="scaleName"
                     >
@@ -136,7 +82,7 @@
                 <div
                   class="scale-color-display"
                   :style="{
-                    'background': scaleGradientsByName[colorScheme.priceScaleConfigBySize[size].scaleName]
+                    'background': SCALE_GRADIENTS[colorScheme.priceScaleConfigBySize[size].scaleName]
                   }"
                 />
               </div>
@@ -165,9 +111,9 @@
             <div>
               <label>
                 Color Scheme:
-                <select v-model="colorScheme.bidderScaleName">
+                <select v-model="colorScheme.bidder.scaleName">
                   <option
-                    v-for="scaleName in AVAILABLE_SCALES"
+                    v-for="scaleName in SCALE_NAMES"
                     :key="scaleName"
                     :value="scaleName"
                   >
@@ -178,7 +124,7 @@
               <div
                 class="scale-color-display"
                 :style="{
-                  'background': scaleGradientsByName[colorScheme.bidderScaleName]
+                  'background': SCALE_GRADIENTS[colorScheme.bidder.scaleName]
                 }"
               />
             </div>
@@ -190,7 +136,7 @@
                 Color Scheme:
                 <select v-model="colorScheme.whaleGhst.scaleName">
                   <option
-                    v-for="scaleName in AVAILABLE_SCALES"
+                    v-for="scaleName in SCALE_NAMES"
                     :key="scaleName"
                     :value="scaleName"
                   >
@@ -201,7 +147,7 @@
               <div
                 class="scale-color-display"
                 :style="{
-                  'background': scaleGradientsByName[colorScheme.whaleGhst.scaleName]
+                  'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
                 }"
               />
               <div
@@ -233,7 +179,7 @@
                 Color Scheme:
                 <select v-model="colorScheme.whalePx.scaleName">
                   <option
-                    v-for="scaleName in AVAILABLE_SCALES"
+                    v-for="scaleName in SCALE_NAMES"
                     :key="scaleName"
                     :value="scaleName"
                   >
@@ -244,7 +190,7 @@
               <div
                 class="scale-color-display"
                 :style="{
-                  'background': scaleGradientsByName[colorScheme.whalePx.scaleName]
+                  'background': SCALE_GRADIENTS[colorScheme.whalePx.scaleName]
                 }"
               />
               <div
@@ -270,6 +216,34 @@
             </div>
           </div>
         </details>
+
+        <MapConfigDisplayMode v-model="mapConfig.displayMode" />
+        <FilterSize v-model="filters.size" />
+        <FilterWalls v-model="filters.walls" />
+        <FilterDistricts
+          :districts="auctionInfo.districts"
+          v-model="filters.districts"
+        />
+        <FilterBoosts v-model="filters.boosts" />
+
+        <details class="config-details">
+          <summary>
+            <h3>Filter by Bidder</h3>
+          </summary>
+
+          <label>
+            <div class="config-textarea-label">
+              Bidder addresses
+            </div>
+            <textarea
+              v-model="filters.bidders"
+              class="config-bidders"
+            />
+          </label>
+        </details>
+
+        <FilterParcelIds v-model="filters.parcelIds" />
+        <FilterParcelNames v-model="filters.parcelNames" />
       </section>
 
       <section ref="parcelDetailsRef">
@@ -277,24 +251,32 @@
           v-if="selectedParcel"
           class="selected-parcel-details"
         >
+          <button
+            type="button"
+            style="float: right"
+            @click="selectedParcelId = null"
+          >
+            Close
+          </button>
+
           <h2>Selected Parcel details:</h2>
 
           ID: {{ selectedParcel.id }}
           <br>Name: {{ selectedParcel.parcelHash }}
           <br>Size: {{ selectedParcel.sizeLabel }}
           <br>District: {{ selectedParcel.district }}
-          <div v-if="selectedParcel.hasAuction">
+          <div v-if="selectedParcel.auction?.hasAuction">
             <a
               :href="`https://gotchiverse.io/auction?tokenId=${selectedParcel.id}`"
               target="_blank"
             >
-              Last bid: {{ selectedParcel.highestBidGhst }} GHST
+              Last bid: {{ selectedParcel.auction.highestBidGhst }} GHST
             </a>
             <br>Bidder:
-            <span class="eth-address" :title="selectedParcel.highestBidder">
-              {{ selectedParcel.highestBidder.substring(0, 5) }}...{{ selectedParcel.highestBidder.substring(selectedParcel.highestBidder.length - 5) }}
+            <span class="eth-address" :title="selectedParcel.auction.highestBidder">
+              {{ selectedParcel.auction.highestBidder.substring(0, 5) }}...{{ selectedParcel.auction.highestBidder.substring(selectedParcel.auction.highestBidder.length - 5) }}
             </span>
-            <CopyToClipboard :text="selectedParcel.highestBidder" />
+            <CopyToClipboard :text="selectedParcel.auction.highestBidder" />
           </div>
           <div>
             Boosts:
@@ -329,6 +311,9 @@
         :aspectRatio="auctionInfo.display.aspectRatio"
         :filterDisplayMode="mapConfig.displayMode"
         :parcels="parcelsToDisplay"
+        :parcelsMatchingFilters="parcelsMatchingFilters"
+        :parcelColors="parcelColors"
+        :selectedParcel="selectedParcel"
         @click:parcel="onClickParcel"
       />
       <div v-if="viewMode === 'list'">
@@ -342,7 +327,12 @@
               v-for="parcel in listParcelsToDisplay"
               :key="parcel.id"
             >
-              {{ parcel.id }}
+              <a
+                href="#"
+                @click.prevent="onClickParcel(parcel)"
+              >
+                {{ parcel.id }}
+              </a>
               {{ parcel.parcelHash }}
               {{ parcel.sizeLabel }}
               district {{ parcel.district }}
@@ -350,7 +340,7 @@
                 :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
                 target="_blank"
               >
-                Last bid: {{ parcel.highestBidGhst }} GHST
+                Last bid: {{ parcelAuctions[parcel.id].highestBidGhst }} GHST
               </a>
             </li>
           </ul>
@@ -366,8 +356,7 @@ import useDebouncedRef from '@/utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
-import { scaleSequential } from 'd3-scale'
-import { interpolateViridis, interpolateBlues, interpolateInferno, interpolateCividis, interpolateSpectral, interpolateTurbo, interpolateRainbow } from 'd3-scale-chromatic'
+import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import { format } from 'date-fns'
 import CopyToClipboard from './CopyToClipboard.vue'
 import BigNumber from 'bignumber.js'
@@ -380,26 +369,6 @@ import FilterDistricts, { getDefaultValue as getDefaultDistrictsValue, getFilter
 import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
-
-const scalesByName = {
-  grey: () => '#eee',
-  viridis: interpolateViridis,
-  blues: interpolateBlues,
-  inferno: interpolateInferno,
-  cividis: interpolateCividis,
-  spectral: interpolateSpectral,
-  turbo: interpolateTurbo,
-  rainbow: interpolateRainbow
-}
-const AVAILABLE_SCALES = Object.keys(scalesByName)
-const steps = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
-const generateGradient = function (scale) {
-  const colors = steps.map(value => scale(value))
-  return `linear-gradient(90deg, ${colors.join(', ')})`
-}
-const scaleGradientsByName = Object.fromEntries(
-  AVAILABLE_SCALES.map(name => [name, generateGradient(scalesByName[name])])
-)
 
 export default {
   components: {
@@ -447,6 +416,12 @@ export default {
       parcelNames: []
     })
 
+    const colorSchemeOptions = [
+      { id: 'price', label: 'Parcel Price (GHST)' },
+      { id: 'bidder', label: 'Bidder Address' },
+      { id: 'whaleGhst', label: 'Whales (total GHST spent)' },
+      { id: 'whalePx', label: 'Whales (total pixel area)' }
+    ]
     const colorScheme = ref({
       colorBy: 'price', // or 'bidder'
       priceScaleConfigBySize: {
@@ -466,7 +441,11 @@ export default {
           scaleName: 'viridis'
         }
       },
-      bidderScaleName: 'rainbow',
+      bidder: {
+        scaleName: 'rainbow',
+        min: 0,
+        max: parseInt('0xffffffffffffffffffffffffffffffffffffffff', 16)
+      },
       whaleGhst: {
         scaleName: 'inferno',
         min: 0,
@@ -478,49 +457,32 @@ export default {
         max: 75_000
       }
     })
+    const colorSchemeLabel = computed(() => colorSchemeOptions.find(option => option.id === colorScheme.value.colorBy)?.label)
 
     const priceScalesBySize = computed(() => {
       const scales = {}
       const configBySize = colorScheme.value.priceScaleConfigBySize
       for (const key in configBySize) {
         const config = configBySize[key]
-        scales[key] = scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
+        scales[key] = getSequentialScale(config)
       }
       return scales
     })
 
     const bidderScale = computed(() => {
-      const maxAddress = parseInt('0xffffffffffffffffffffffffffffffffffffffff', 16)
-      return scaleSequential(scalesByName[colorScheme.value.bidderScaleName]).domain([0, maxAddress])
+      return getSequentialScale(colorScheme.value.bidder)
     })
 
     const whaleGhstScale = computed(() => {
-      const config = colorScheme.value.whaleGhst
-      return scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
+      return getSequentialScale(colorScheme.value.whaleGhst)
     })
 
     const whalePxScale = computed(() => {
-      const config = colorScheme.value.whalePx
-      return scaleSequential(scalesByName[config.scaleName]).domain([config.min, config.max])
+      return getSequentialScale(colorScheme.value.whalePx)
     })
 
-    const getParcelDetails = function (parcel) {
-      if (!parcel) { return null }
-      const auction = auctionsByParcelId.value[parcel.id]
-      const highestBid = auction?.highestBid - 0
-      const highestBidGhst = auction?.highestBidGhst || ''
-      return {
-        ...parcel,
-        hasAuction: !!auction,
-        highestBid,
-        highestBidGhst,
-        highestBidder: auction?.highestBidder
-      }
-    }
-
-    const allParcelsToDisplay = computed(() => {
-      // console.time('allParcelsToDisplay')
-      const result = Object.values(parcelsById.value).filter(parcel =>
+    const parcelAuctions = computed(() => {
+      const parcelsInAuctionDistricts = Object.values(parcelsById.value).filter(parcel =>
         auctionInfo.districts.includes(parcel.district) &&
         (
           parcel.district !== '1' ||
@@ -529,39 +491,62 @@ export default {
             (parcel.coordinateX - 0) < auctionInfo.district1Bounds.maxX
           )
         )
-      ).map(getParcelDetails).filter(parcel => parcel.hasAuction)
-      // console.timeEnd('allParcelsToDisplay')
+      )
+      return Object.fromEntries(
+        parcelsInAuctionDistricts.map(parcel => {
+          const auction = auctionsByParcelId.value[parcel.id]
+          const highestBid = auction?.highestBid - 0
+          const highestBidGhst = auction?.highestBidGhst || ''
+          return [
+            parcel.id,
+            {
+              hasAuction: !!auction,
+              highestBid,
+              highestBidGhst,
+              highestBidder: auction?.highestBidder
+            }
+          ]
+        })
+      )
+    })
+
+    const parcelsToDisplay = computed(() => {
+      // console.time('parcelsToDisplay')
+      const result = Object.values(parcelsById.value).filter(parcel => parcelAuctions.value[parcel.id]?.hasAuction)
+      // console.timeEnd('parcelsToDisplay')
       return result
     })
 
-    const coloredParcelsToDisplay = computed(() => {
-      // console.time('coloredParcelsToDisplay')
+    const parcelColors = computed(() => {
+      // console.time('parcelColors')
       const colorBy = colorScheme.value.colorBy
       let getColor = () => 'white'
       if (colorBy === 'price') {
         getColor = parcel => {
           const scale = priceScalesBySize.value[parcel.sizeLabel]
           if (!scale) { return 'white' }
-          return scale(parcel.highestBidGhst - 0)
+          return scale(parcelAuctions.value[parcel.id].highestBidGhst - 0)
         }
       } else if (colorBy === 'bidder') {
         getColor = parcel => {
-          return bidderScale.value(parseInt(parcel.highestBidder, 16))
+          return bidderScale.value(parseInt(parcelAuctions.value[parcel.id].highestBidder, 16))
         }
       } else if (colorBy === 'whaleGhst') {
         getColor = parcel => {
-          return whaleGhstScale.value(whalesGhst.value[parcel.highestBidder] || 0)
+          return whaleGhstScale.value(whalesGhst.value[parcelAuctions.value[parcel.id].highestBidder] || 0)
         }
       } else if (colorBy === 'whalePx') {
         getColor = parcel => {
-          return whalePxScale.value(whalesPx.value[parcel.highestBidder] || 0)
+          return whalePxScale.value(whalesPx.value[parcelAuctions.value[parcel.id].highestBidder] || 0)
         }
       }
-      const result = allParcelsToDisplay.value.map(parcel => ({
-        ...parcel,
-        color: parcel.hasAuction ? getColor(parcel) : 'white'
-      }))
-      // console.timeEnd('coloredParcelsToDisplay')
+      const result = Object.fromEntries(
+        parcelsToDisplay.value.map(parcel => [
+          parcel.id,
+          parcelAuctions.value[parcel.id].hasAuction ? getColor(parcel) : 'white'
+        ])
+      )
+      // console.timeEnd('parcelColors')
       return result
     })
 
@@ -572,8 +557,8 @@ export default {
         : null
     )
 
-    const filteredParcelsToDisplay = computed(() => {
-      // console.time('filteredParcelsToDisplay')
+    const parcelsMatchingFilters = computed(() => {
+      // console.time('parcelsMatchingFilters')
       const idFilter = getParcelIdsFilter(filters.value.parcelIds)
       const nameFilter = getParcelNamesFilter(filters.value.parcelNames)
       const sizesFilter = getSizesFilter(filters.value.size)
@@ -584,7 +569,7 @@ export default {
       const bidders = filterBidders.value
       const bidderFilter = function (parcel) {
         if (bidders?.length) {
-          if (!bidders.includes(parcel.highestBidder)) {
+          if (!bidders.includes(parcelAuctions.value[parcel.id].highestBidder)) {
             return false
           }
         }
@@ -593,28 +578,29 @@ export default {
 
       const applyFilters = [idFilter, nameFilter, sizesFilter, wallsFilter, districtsFilter, bidderFilter, boostsFilter]
 
-      const result = coloredParcelsToDisplay.value.map(parcel => {
-        let show = true
-        for (let i = 0; show && i < applyFilters.length; i++) {
-          if (!applyFilters[i](parcel)) {
-            show = false
+      const result = Object.fromEntries(
+        parcelsToDisplay.value.map(parcel => {
+          let show = true
+          for (let i = 0; show && i < applyFilters.length; i++) {
+            if (!applyFilters[i](parcel)) {
+              show = false
+            }
           }
-        }
-        return {
-          ...parcel,
-          show
-        }
-      })
-      // console.timeEnd('filteredParcelsToDisplay')
+          return [parcel.id, show]
+        })
+      )
+      // console.timeEnd('parcelsMatchingFilters')
       return result
     })
 
     const listParcelsToDisplay = computed(() => {
       // console.time('listParcelsToDisplay')
-      const parcels = filteredParcelsToDisplay.value.filter(parcel => parcel.show && parcel.hasAuction)
+      const parcels = parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
       parcels.sort((a, b) => {
-        if (a.highestBid === b.highestBid) { return 0 }
-        return a.highestBid < b.highestBid ? -1 : 1
+        const auctionA = parcelAuctions.value[a.id]
+        const auctionB = parcelAuctions.value[b.id]
+        if (auctionA.highestBid === auctionB.highestBid) { return 0 }
+        return auctionA.highestBid < auctionB.highestBid ? -1 : 1
       })
       // console.timeEnd('listParcelsToDisplay')
       return parcels
@@ -623,20 +609,24 @@ export default {
     const onClickParcel = function (parcel) {
       selectedParcelId.value = parcel.id
     }
-    const selectedParcel = computed(() =>
-      getParcelDetails(
-        parcelsById.value[selectedParcelId.value]
-      )
-    )
+    const selectedParcel = computed(() => {
+      if (!selectedParcelId.value) { return null }
+      return {
+        ...parcelsById.value[selectedParcelId.value],
+        auction: parcelAuctions.value[selectedParcelId.value]
+      }
+    })
 
     const whalesGhst = computed(() => {
       const totalPerBidder = {}
-      for (const parcel of allParcelsToDisplay.value) {
-        const bidder = parcel.highestBidder
-        if (!totalPerBidder[bidder]) {
-          totalPerBidder[bidder] = new BigNumber(0)
+      for (const auction of Object.values(parcelAuctions.value)) {
+        if (auction.hasAuction) {
+          const bidder = auction.highestBidder
+          if (!totalPerBidder[bidder]) {
+            totalPerBidder[bidder] = new BigNumber(0)
+          }
+          totalPerBidder[bidder] = totalPerBidder[bidder].plus(new BigNumber(auction.highestBidGhst))
         }
-        totalPerBidder[bidder] = totalPerBidder[bidder].plus(new BigNumber(parcel.highestBidGhst))
       }
       // non-auction parcels have 'undefined' bidder, ignore them
       totalPerBidder.undefined = new BigNumber(0)
@@ -656,8 +646,9 @@ export default {
         reasonable: 16 * 16,
         spacious: 32 * 64
       }
-      for (const parcel of allParcelsToDisplay.value) {
-        const bidder = parcel.highestBidder
+      for (const parcel of parcelsToDisplay.value) {
+        const auction = parcelAuctions.value[parcel.id]
+        const bidder = auction.highestBidder
         if (!totalPerBidder[bidder]) {
           totalPerBidder[bidder] = 0
         }
@@ -677,20 +668,26 @@ export default {
     return {
       auctionInfo,
       parcelDetailsRef,
-      parcelsToDisplay: filteredParcelsToDisplay,
+      parcelsToDisplay,
+      parcelsMatchingFilters,
+      parcelColors,
+      parcelAuctions,
       listParcelsToDisplay,
       onClickParcel,
+      selectedParcelId,
       selectedParcel,
       mostRecentAuction,
       mostRecentAuctionDate,
       canSubmitAuctionsFetch,
       fetchAuctions,
       auctionsFetchStatus,
-      AVAILABLE_SCALES,
-      scaleGradientsByName,
+      SCALE_NAMES,
+      SCALE_GRADIENTS,
       mapConfig,
       filters,
-      colorScheme
+      colorSchemeOptions,
+      colorScheme,
+      colorSchemeLabel
     }
   }
 }
@@ -747,6 +744,9 @@ export default {
     margin-top: 5px;
     width: 80%;
     height: 20px;
+  }
+  .range-input {
+    width: 60px;
   }
 
   .selected-parcel-details {

@@ -5,19 +5,24 @@
     <router-link :to="{ name: 'home' }">Back to Home</router-link>
 
     <ConfigDataParcels />
-
     <ConfigDataAuctions />
+    <ConfigDataBaazaarListings />
+    <ConfigDataParcelPrices />
   </div>
 </template>
 
 <script>
 import ConfigDataParcels from './ConfigDataParcels.vue'
 import ConfigDataAuctions from './ConfigDataAuctions.vue'
+import ConfigDataBaazaarListings from './ConfigDataBaazaarListings.vue'
+import ConfigDataParcelPrices from './ConfigDataParcelPrices.vue'
 
 export default {
   components: {
     ConfigDataParcels,
-    ConfigDataAuctions
+    ConfigDataAuctions,
+    ConfigDataBaazaarListings,
+    ConfigDataParcelPrices
   }
 }
 </script>

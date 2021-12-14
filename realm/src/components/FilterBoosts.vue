@@ -82,6 +82,10 @@ const getFilter = function (filterBoosts) {
           if (boost <= 0) {
             return false
           }
+        } else if (typeEntry.selectionMode === 'none') {
+          if (boost > 0) {
+            return false
+          }
         } else {
           const min = typeEntry.selectRange.min - 0
           const max = typeEntry.selectRange.max - 0
@@ -105,7 +109,8 @@ export default {
       return [
         { id: 'ignore', label: "Don't care, show all" },
         { id: 'some', label: 'With boost, any amount' },
-        { id: 'range', label: 'Specific range of boost' }
+        { id: 'range', label: 'Specific range of boost' },
+        { id: 'none', label: 'No boost' }
       ]
     }
   },

@@ -23,16 +23,27 @@
           <rect
             class="parcel"
             :class="{
-              'parcel--hidden-by-filter': !parcel.show
+              'parcel--hidden-by-filter': !parcelsMatchingFilters[parcel.id]
             }"
             :x="parcel.coordinateX"
             :y="parcel.coordinateY"
             :width="parcel.width"
             :height="parcel.height"
-            stroke="#777"
-            :fill="parcel.color"
+            stroke="#555"
+            :fill="parcelColors[parcel.id] || '#eee'"
           />
         </a>
+        <rect
+          v-if="selectedParcel"
+          class="selected-parcel"
+          :x="selectedParcel.coordinateX"
+          :y="selectedParcel.coordinateY"
+          :width="selectedParcel.width"
+          :height="selectedParcel.height"
+          stroke="#FA34F3"
+          stroke-width="6px"
+          fill="none"
+        />
       </g>
     </svg>
     <button
@@ -58,7 +69,10 @@ export default {
     viewBox: { type: String, default: '0 0 10000 10000' },
     aspectRatio: { type: String, default: '1 / 1' },
     filterDisplayMode: { type: String, default: 'outline' /* or 'hide' */ },
-    parcels: { type: Array, default: () => [] }
+    parcels: { type: Array, default: () => [] },
+    parcelsMatchingFilters: { type: Object, default: () => ({}) }, /* parcel Id => boolean show */
+    parcelColors: { type: Object, default: () => ({}) }, /* parcel Id => color */
+    selectedParcel: { type: Object, default: null }
   },
   setup (props, { emit }) {
     // console.time('setup CitaadelMap')
