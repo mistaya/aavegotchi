@@ -5,8 +5,8 @@
         <h1>The Citaadel</h1>
 
         <div style="margin-bottom: 20px;">
-          <DataFetcherBaazaarListings style="margin-bottom: 20px;" />
-          <DataFetcherParcelOwners style="margin-bottom: 20px;" />
+          <DataFetcherBaazaarListings style="margin-bottom: 10px;" />
+          <DataFetcherParcelOwners style="margin-bottom: 10px;" />
         </div>
 
         <details class="filter-container">
@@ -208,6 +208,7 @@
         <FilterParcelIds v-model="filters.parcelIds" />
         <FilterParcelNames v-model="filters.parcelNames" />
         <FilterBoosts v-model="filters.boosts" />
+        <FilterOwners v-model="filters.owners" />
 
         <section>
           <div
@@ -370,6 +371,7 @@ import FilterDistricts, { DISTRICTS, getDefaultValue as getDefaultDistrictsValue
 import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
+import FilterOwners, { getFilter as getOwnersFilter } from './FilterOwners.vue'
 
 export default {
   components: {
@@ -386,7 +388,8 @@ export default {
     FilterDistricts,
     FilterParcelIds,
     FilterParcelNames,
-    FilterBoosts
+    FilterBoosts,
+    FilterOwners
   },
   setup () {
     const {
@@ -415,7 +418,8 @@ export default {
       districts: getDefaultDistrictsValue([...DISTRICTS]),
       parcelIds: [],
       parcelNames: [],
-      boosts: getDefaultBoostsValue()
+      boosts: getDefaultBoostsValue(),
+      owners: []
     })
     const colorSchemeOptions = [
       { id: 'lastPrice', label: 'Last Sold Price (GHST)' },
@@ -506,6 +510,14 @@ export default {
         }
       }
     )
+    watch(
+      () => filters.value.owners,
+      ownersFilter => {
+        if (ownersFilter?.length) {
+          prereqOwners()
+        }
+      }
+    )
 
     const lastPriceScalesBySize = computed(() => {
       const scales = {}
@@ -530,6 +542,14 @@ export default {
     const ownerScale = computed(() => {
       return getSequentialScale(colorScheme.value.owner)
     })
+    const TOP_OWNERS_N = 10
+    const topOwnerScale = computed(() => {
+      return getSequentialScale({
+        scaleName: colorScheme.value.owner.scaleName,
+        min: 0,
+        max: TOP_OWNERS_N
+      })
+    })
 
     const whalePxScale = computed(() => {
       return getSequentialScale(colorScheme.value.whalePx)
@@ -552,12 +572,16 @@ export default {
           totalPerOwner[owner] += (pxBySizeLabel[parcel.sizeLabel] || 0)
         }
       }
-      // console.log('Pixel whales sorted:', Object.entries(totalPerOwner).sort((a, b) => {
-      //   if (a[1] === b[1]) { return 0 }
-      //   return a[1] < b[1] ? 1 : -1
-      // }))
+
       return totalPerOwner
     })
+
+    const sortedWhalePx = computed(() =>
+      Object.entries(whalesPx.value).sort((a, b) => {
+        if (a[1] === b[1]) { return 0 }
+        return a[1] < b[1] ? 1 : -1
+      })
+    )
 
     const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
 
@@ -579,7 +603,7 @@ export default {
         getColor = parcel => {
           const scale = lastPriceScalesBySize.value[parcel.sizeLabel]
           if (!scale) { return null }
-          const lastPrice = pricesByParcelId.value[parcel.id].lastPrice
+          const lastPrice = pricesByParcelId.value[parcel.id]?.lastPrice
           if (lastPrice) {
             return scale(lastPrice - 0)
           }
@@ -596,8 +620,16 @@ export default {
           return null
         }
       } else if (colorBy === 'owner') {
+        const topOwners = sortedWhalePx.value.slice(0, TOP_OWNERS_N).map(item => item[0])
         getColor = parcel => {
-          return ownerScale.value(parseInt(ownersByParcelId.value[parcel.id], 16))
+          const owner = ownersByParcelId.value[parcel.id]
+          const topIndex = topOwners.indexOf(owner)
+          if (topIndex !== -1) {
+            // try to ensure the top px owners have different colors from each other,
+            // as they cover more of the map
+            return topOwnerScale.value(topIndex)
+          }
+          return ownerScale.value(parseInt(owner, 16))
         }
       } else if (colorBy === 'whalePx') {
         getColor = parcel => {
@@ -624,8 +656,9 @@ export default {
       const wallsFilter = getWallsFilter(filters.value.walls)
       const districtsFilter = getDistrictsFilter(DISTRICTS, filters.value.districts)
       const boostsFilter = getBoostsFilter(filters.value.boosts)
+      const ownersFilter = getOwnersFilter(ownersByParcelId.value, filters.value.owners)
 
-      const applyFilters = [idFilter, nameFilter, baazaarFilter, sizesFilter, wallsFilter, districtsFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, baazaarFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, boostsFilter]
 
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {

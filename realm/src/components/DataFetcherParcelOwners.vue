@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="fetchStatus.loaded"
-      style="margin-bottom: 10px; font-style: italic; font-size: 0.95em;"
+      style="margin-bottom: 5px; font-style: italic; font-size: 0.95em;"
     >
       Parcel owners fetched
       <DateFriendly :date="lastFetchDate" />

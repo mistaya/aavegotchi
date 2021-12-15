@@ -228,23 +228,7 @@
             v-model="filters.districts"
           />
           <FilterBoosts v-model="filters.boosts" />
-
-          <details class="config-details">
-            <summary>
-              <h3>Filter by Bidder</h3>
-            </summary>
-
-            <label>
-              <div class="config-textarea-label">
-                Bidder addresses
-              </div>
-              <textarea
-                v-model="filters.bidders"
-                class="config-bidders"
-              />
-            </label>
-          </details>
-
+          <FilterBidders v-model="filters.bidders" />
           <FilterParcelIds v-model="filters.parcelIds" />
           <FilterParcelNames v-model="filters.parcelNames" />
         </section>
@@ -354,7 +338,6 @@
 <script>
 import { ref, computed } from 'vue'
 import BigNumber from 'bignumber.js'
-import useDebouncedRef from '@/utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
@@ -372,6 +355,7 @@ import FilterDistricts, { getDefaultValue as getDefaultDistrictsValue, getFilter
 import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
+import FilterBidders, { getFilter as getBiddersFilter } from './FilterBidders.vue'
 
 export default {
   components: {
@@ -387,7 +371,8 @@ export default {
     FilterDistricts,
     FilterParcelIds,
     FilterParcelNames,
-    FilterBoosts
+    FilterBoosts,
+    FilterBidders
   },
   props: {
     auctionId: { type: String, default: '1' }
@@ -417,7 +402,7 @@ export default {
       districts: getDefaultDistrictsValue(auctionInfo.districts),
       walls: WALLS.map(wall => wall.id),
       boosts: getDefaultBoostsValue(),
-      bidders: '',
+      bidders: [],
       parcelIds: [],
       parcelNames: []
     })
@@ -556,13 +541,6 @@ export default {
       return result
     })
 
-    const { debouncedRef: debouncedFilterBidders } = useDebouncedRef(() => filters.value.bidders, 500)
-    const filterBidders = computed(
-      () => (debouncedFilterBidders.value && debouncedFilterBidders.value.trim())
-        ? debouncedFilterBidders.value.toLowerCase().split(/[^x0-9a-f]+/).filter(bidder => bidder.length)
-        : null
-    )
-
     const parcelsMatchingFilters = computed(() => {
       // console.time('parcelsMatchingFilters')
       const idFilter = getParcelIdsFilter(filters.value.parcelIds)
@@ -571,18 +549,9 @@ export default {
       const wallsFilter = getWallsFilter(filters.value.walls)
       const districtsFilter = getDistrictsFilter(auctionInfo.districts, filters.value.districts)
       const boostsFilter = getBoostsFilter(filters.value.boosts)
+      const biddersFilter = getBiddersFilter(parcelAuctions.value, filters.value.bidders)
 
-      const bidders = filterBidders.value
-      const bidderFilter = function (parcel) {
-        if (bidders?.length) {
-          if (!bidders.includes(parcelAuctions.value[parcel.id].highestBidder)) {
-            return false
-          }
-        }
-        return true
-      }
-
-      const applyFilters = [idFilter, nameFilter, sizesFilter, wallsFilter, districtsFilter, bidderFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, boostsFilter]
 
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {
@@ -728,16 +697,6 @@ export default {
   }
   .config-details summary h3 {
     display: inline;
-  }
-
-  .config-textarea-label {
-    margin-top: 10px;
-    margin-bottom: 5px;
-  }
-
-  .config-bidders {
-    width: 90%;
-    height: 70px;
   }
 
   .scale-color-display {
