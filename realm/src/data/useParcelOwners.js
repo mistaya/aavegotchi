@@ -32,7 +32,6 @@ const fetchOwners = function () {
   let lastIdNum = 0
   let parcels = []
   const fetchOwnersFromSubgraph = function () {
-    const fetchDate = new Date()
     fetch(SUBGRAPH_URL, {
       method: 'POST',
       body: JSON.stringify({
@@ -58,7 +57,7 @@ const fetchOwners = function () {
           // finished fetching all pages
           resetOwners()
           setOwners(parcels)
-          lastFetchDate.value = fetchDate
+          lastFetchDate.value = new Date()
           setLoaded()
           return
         }

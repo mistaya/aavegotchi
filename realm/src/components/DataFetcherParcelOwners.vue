@@ -4,7 +4,8 @@
       v-if="fetchStatus.loaded"
       style="margin-bottom: 10px; font-style: italic; font-size: 0.95em;"
     >
-      Parcel owners fetched at {{ lastFetchDate }}
+      Parcel owners fetched
+      <DateFriendly :date="lastFetchDate" />
     </div>
 
     <div>
@@ -30,10 +31,12 @@
 
 <script>
 import useParcelOwners from '@/data/useParcelOwners'
+import DateFriendly from './DateFriendly'
 import LoadingSpinner from './LoadingSpinner.vue'
 
 export default {
   components: {
+    DateFriendly,
     LoadingSpinner
   },
   setup (props) {

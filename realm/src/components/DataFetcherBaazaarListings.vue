@@ -4,7 +4,8 @@
       v-if="fetchStatus.loaded"
       style="margin-bottom: 10px; font-style: italic; font-size: 0.95em;"
     >
-      Baazaar listings fetched at {{ lastFetchDate }}
+      Baazaar listings fetched
+      <DateFriendly :date="lastFetchDate" />
     </div>
 
     <div>
@@ -30,10 +31,12 @@
 
 <script>
 import useBaazaarListings from '@/data/useBaazaarListings'
+import DateFriendly from './DateFriendly'
 import LoadingSpinner from './LoadingSpinner.vue'
 
 export default {
   components: {
+    DateFriendly,
     LoadingSpinner
   },
   setup (props) {

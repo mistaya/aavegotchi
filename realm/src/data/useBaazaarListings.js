@@ -58,7 +58,6 @@ const fetchListings = function () {
   let skip = 0
   let listings = []
   const fetchListingsFromSubgraph = function () {
-    const fetchDate = new Date()
     fetch(SUBGRAPH_URL, {
       method: 'POST',
       body: JSON.stringify({
@@ -85,7 +84,7 @@ const fetchListings = function () {
           // finished fetching all pages
           resetListings()
           setListings(listings)
-          lastFetchDate.value = fetchDate
+          lastFetchDate.value = new Date()
           setLoaded()
           return
         }

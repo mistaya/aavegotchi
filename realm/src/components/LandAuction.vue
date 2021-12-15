@@ -13,8 +13,8 @@
           >
             Last auction data fetched:
             <br>
-            parcel #{{ mostRecentAuction.tokenId }}
-            at {{ mostRecentAuctionDate }}
+            parcel #{{ mostRecentAuction.tokenId }},
+            <DatePrecise :date="mostRecentAuctionDate" />
           </div>
 
           <div style="margin: 10px 0 20px 0;">
@@ -353,7 +353,6 @@
 
 <script>
 import { ref, computed } from 'vue'
-import { format } from 'date-fns'
 import BigNumber from 'bignumber.js'
 import useDebouncedRef from '@/utils/useDebouncedRef'
 import useParcels from '@/data/useParcels'
@@ -363,6 +362,7 @@ import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import EthAddress from './EthAddress.vue'
+import DatePrecise from './DatePrecise.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
@@ -379,6 +379,7 @@ export default {
     LayoutMapWithFilters,
     CitaadelMap,
     EthAddress,
+    DatePrecise,
     LoadingSpinner,
     MapConfigDisplayMode,
     FilterSize,
@@ -405,8 +406,8 @@ export default {
       fetchAuctions
     } = useAuctions(props.auctionId)
     const mostRecentAuctionDate = computed(() => {
-      if (!mostRecentAuction.value) { return }
-      return format(new Date(mostRecentAuction.value.lastBidTime * 1000), 'yyyy/MM/dd HH:mm:ss')
+      if (!mostRecentAuction.value) { return null }
+      return new Date(mostRecentAuction.value.lastBidTime * 1000)
     })
     const mapConfig = ref({
       displayMode: 'outline' // or 'hide'
