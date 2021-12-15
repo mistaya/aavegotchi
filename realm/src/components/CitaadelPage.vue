@@ -156,49 +156,6 @@
             </div>
           </div>
 
-          <div v-if="colorScheme.colorBy === 'whaleGhst'">
-            <div>
-              <label>
-                Color Scheme:
-                <select v-model="colorScheme.whaleGhst.scaleName">
-                  <option
-                    v-for="scaleName in SCALE_NAMES"
-                    :key="scaleName"
-                    :value="scaleName"
-                  >
-                    {{ scaleName }}
-                  </option>
-                </select>
-              </label>
-              <div
-                class="scale-color-display"
-                :style="{
-                  'background': SCALE_GRADIENTS[colorScheme.whaleGhst.scaleName]
-                }"
-              />
-              <div
-                style="margin-top: 8px"
-              >
-                <label>
-                  Min:
-                  <input
-                    v-model="colorScheme.whaleGhst.min"
-                    type="number"
-                    class="range-input"
-                  />
-                </label>
-                <label>
-                  Max:
-                  <input
-                    v-model="colorScheme.whaleGhst.max"
-                    type="number"
-                    class="range-input"
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-
           <div v-if="colorScheme.colorBy === 'whalePx'">
             <div>
               <label>
@@ -464,7 +421,6 @@ export default {
       { id: 'lastPrice', label: 'Last Sold Price (GHST)' },
       { id: 'baazaarPrice', label: 'Baazaar Listing Price (GHST)' },
       { id: 'owner', label: 'Owner Address' },
-      { id: 'whaleGhst', label: 'Whales (total GHST spent, excl. raffles)' },
       { id: 'whalePx', label: 'Whales (total pixel area)' }
     ]
     const colorScheme = ref({
@@ -508,11 +464,6 @@ export default {
         min: 0,
         max: parseInt('0xffffffffffffffffffffffffffffffffffffffff', 16)
       },
-      whaleGhst: {
-        scaleName: 'inferno',
-        min: 0,
-        max: 140_000
-      },
       whalePx: {
         scaleName: 'inferno',
         min: 0,
@@ -536,12 +487,12 @@ export default {
     watch(
       () => colorScheme.value.colorBy,
       colorBy => {
-        if (['baazaarPrice', 'lastPrice', 'whaleGhst'].includes(colorBy)) {
+        if (['baazaarPrice', 'lastPrice'].includes(colorBy)) {
           // these color schemes require baazaar listings
           // make sure it's fetched at least once
           prereqBaazaarListings()
         }
-        if (['owner', 'whaleGhst', 'whalePx'].includes(colorBy)) {
+        if (['owner', 'whalePx'].includes(colorBy)) {
           prereqOwners()
         }
       },
@@ -580,33 +531,8 @@ export default {
       return getSequentialScale(colorScheme.value.owner)
     })
 
-    const whaleGhstScale = computed(() => {
-      return getSequentialScale(colorScheme.value.whaleGhst)
-    })
-
     const whalePxScale = computed(() => {
       return getSequentialScale(colorScheme.value.whalePx)
-    })
-
-    const whalesGhst = computed(() => {
-      const totalPerOwner = {}
-      for (const parcelId in pricesByParcelId.value) {
-        const owner = ownersByParcelId.value[parcelId]
-        if (owner) {
-          if (!totalPerOwner[owner]) {
-            totalPerOwner[owner] = 0
-          }
-          const price = pricesByParcelId.value[parcelId]
-          if (price?.lastPrice) {
-            totalPerOwner[owner] += price.lastPrice
-          }
-        }
-      }
-      // console.log('GHST whales sorted:', Object.entries(totalPerOwner).sort((a, b) => {
-      //   if (a[1] === b[1]) { return 0 }
-      //   return a[1] < b[1] ? 1 : -1
-      // }))
-      return totalPerOwner
     })
 
     const whalesPx = computed(() => {
@@ -672,11 +598,6 @@ export default {
       } else if (colorBy === 'owner') {
         getColor = parcel => {
           return ownerScale.value(parseInt(ownersByParcelId.value[parcel.id], 16))
-        }
-      } else if (colorBy === 'whaleGhst') {
-        getColor = parcel => {
-          const owner = ownersByParcelId.value[parcel.id]
-          return whaleGhstScale.value(whalesGhst.value[owner] || 0)
         }
       } else if (colorBy === 'whalePx') {
         getColor = parcel => {
