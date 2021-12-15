@@ -9,16 +9,18 @@
         Parcel Names, e.g. <kbd>accurate-mystical-shall</kbd>.
         <br>Partial matches will be displayed if you don't provide a full name.
       </div>
-      <textarea
-        v-model="namesString"
-        @input="onInput"
+      <TextareaList
+        class="names-textarea"
+        :modelValue="modelValue"
+        :delimiterRegexp="/[^\-a-z]+/"
+        @update:modelValue="$emit('update:modelValue', $event)"
       />
     </label>
   </details>
 </template>
 
 <script>
-import debounce from 'lodash.debounce'
+import TextareaList from './TextareaList.vue'
 
 const getFilter = function (namesArray) {
   if (namesArray?.length) {
@@ -45,34 +47,11 @@ const getFilter = function (namesArray) {
 export { getFilter }
 
 export default {
+  components: {
+    TextareaList
+  },
   props: {
     modelValue: { type: Array, default: () => [] }
-  },
-  // make a local copy of modelValue as a string for the textarea
-  data () {
-    return {
-      namesString: ''
-    }
-  },
-  watch: {
-    modelValue: {
-      immediate: true,
-      handler (newVal, oldVal) {
-        this.namesString = this.modelValue?.join(',') || ''
-      }
-    }
-  },
-  methods: {
-    onInput: debounce(function () {
-      const namesArray = (this.namesString && this.namesString.trim())
-        ? this.namesString.toLowerCase().split(/[^\-a-z]+/)
-          .filter(name => name.trim().length)
-        : null
-      // avoid emitting event early when user has typed a delimiter
-      if (namesArray?.join(',') !== this.modelValue?.join(',')) {
-        this.$emit('update:modelValue', namesArray)
-      }
-    }, 500)
   }
 }
 </script>
@@ -81,7 +60,7 @@ export default {
   label {
     margin-top: 10px;
   }
-  textarea {
+  .names-textarea {
     width: 90%;
     height: 70px;
     margin-top: 5px;
