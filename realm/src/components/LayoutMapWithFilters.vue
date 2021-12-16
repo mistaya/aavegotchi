@@ -21,6 +21,7 @@
         >
           List View
         </button>
+        <slot name="top"></slot>
       </div>
       <div>
         <slot

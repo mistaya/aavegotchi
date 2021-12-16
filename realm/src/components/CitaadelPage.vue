@@ -278,6 +278,17 @@
           </div>
         </section>
       </template>
+      <template #top>
+        <template v-if="percentParcelsMatchingFilters === 100">
+          Matched all {{ numParcelsMatchingFilters }} parcels
+        </template>
+        <template v-else-if="percentParcelsMatchingFilters === 0">
+          No parcels matched your filters, out of {{ numParcelsToDisplay }} parcels
+        </template>
+        <template v-else>
+          Matched {{ numParcelsMatchingFilters }} parcels ({{ percentParcelsMatchingFilters }}% of {{ numParcelsToDisplay }} currently available)
+        </template>
+      </template>
       <template #main="{ viewMode }">
         <CitaadelMap
           v-show="viewMode === 'map'"
@@ -295,7 +306,6 @@
             No parcels found.
           </template>
           <template v-else>
-            {{ listParcelsTotal }} parcels found.
             <ul class="parcels-list">
               <li
                 v-for="parcel in listParcelsToDisplay"
@@ -339,7 +349,7 @@
               type="button"
               @click="listParcelsShowAll = true"
             >
-              Show all {{ listParcelsTotal }} parcels
+              Show all {{ listParcelsTotal }} matching parcels
             </button>
           </div>
         </div>
@@ -585,15 +595,8 @@ export default {
 
     const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
 
-    const parcelsToDisplay = computed(() =>
-      Object.values(parcelsById.value)
-        .map(
-          parcel => ({
-            ...parcel,
-            color: null
-          })
-        )
-    )
+    const parcelsToDisplay = computed(() => Object.values(parcelsById.value))
+    const numParcelsToDisplay = computed(() => parcelsToDisplay.value.length)
 
     const parcelColors = computed(() => {
       // console.time('parcelColors')
@@ -673,6 +676,17 @@ export default {
       )
       // console.timeEnd('parcelsMatchingFilters')
       return result
+    })
+
+    const numParcelsMatchingFilters = computed(() => Object.values(parcelsMatchingFilters.value).filter(show => show).length)
+    const percentParcelsMatchingFilters = computed(() => {
+      const percent = (numParcelsMatchingFilters.value / numParcelsToDisplay.value) * 100
+      const rounded = Math.round(percent)
+      if (rounded > 5) {
+        return rounded
+      }
+      // add more decimals if percent is small
+      return Math.round(100 * percent) / 100
     })
 
     const selectedParcelId = ref(null)
@@ -769,6 +783,9 @@ export default {
       baazaarListingsFetchStatus,
       parcelsToDisplay,
       parcelsMatchingFilters,
+      numParcelsToDisplay,
+      numParcelsMatchingFilters,
+      percentParcelsMatchingFilters,
       parcelColors,
       onClickParcel,
       selectedParcelId,
