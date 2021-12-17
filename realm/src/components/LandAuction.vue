@@ -221,7 +221,6 @@
           </details>
 
           <MapConfig v-model="mapConfig" />
-          {{ mapConfig }}
           <FilterSize v-model="filters.size" />
           <FilterWalls v-model="filters.walls" />
           <FilterDistricts
