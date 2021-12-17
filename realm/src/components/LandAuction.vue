@@ -220,13 +220,15 @@
             </div>
           </details>
 
-          <MapConfigDisplayMode v-model="mapConfig.displayMode" />
+          <MapConfig v-model="mapConfig" />
+          {{ mapConfig }}
           <FilterSize v-model="filters.size" />
           <FilterWalls v-model="filters.walls" />
           <FilterDistricts
             :districts="auctionInfo.districts"
             v-model="filters.districts"
           />
+          <FilterRoads v-model="filters.roads" />
           <FilterBoosts v-model="filters.boosts" />
           <FilterBidders v-model="filters.bidders" />
           <FilterParcelIds v-model="filters.parcelIds" />
@@ -293,7 +295,7 @@
           v-show="viewMode === 'map'"
           :viewBox="auctionInfo.display.viewBox"
           :aspectRatio="auctionInfo.display.aspectRatio"
-          :filterDisplayMode="mapConfig.displayMode"
+          :mapConfig="mapConfig"
           :parcels="parcelsToDisplay"
           :parcelsMatchingFilters="parcelsMatchingFilters"
           :parcelColors="parcelColors"
@@ -348,10 +350,11 @@ import EthAddress from './EthAddress.vue'
 import DatePrecise from './DatePrecise.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
 import CitaadelMap from './CitaadelMap.vue'
-import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
+import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
 import FilterWalls, { getFilter as getWallsFilter } from './FilterWalls.vue'
 import FilterDistricts, { getDefaultValue as getDefaultDistrictsValue, getFilter as getDistrictsFilter } from './FilterDistricts.vue'
+import FilterRoads, { getDefaultValue as getDefaultRoadsValue, getFilter as getRoadsFilter } from './FilterRoads.vue'
 import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
@@ -365,10 +368,11 @@ export default {
     EthAddress,
     DatePrecise,
     LoadingSpinner,
-    MapConfigDisplayMode,
+    MapConfig,
     FilterSize,
     FilterWalls,
     FilterDistricts,
+    FilterRoads,
     FilterParcelIds,
     FilterParcelNames,
     FilterBoosts,
@@ -394,12 +398,11 @@ export default {
       if (!mostRecentAuction.value) { return null }
       return new Date(mostRecentAuction.value.lastBidTime * 1000)
     })
-    const mapConfig = ref({
-      displayMode: 'outline' // or 'hide'
-    })
+    const mapConfig = ref(getDefaultMapConfigValue())
     const filters = ref({
       size: [...SIZES],
       districts: getDefaultDistrictsValue(auctionInfo.districts),
+      roads: getDefaultRoadsValue(),
       walls: WALLS.map(wall => wall.id),
       boosts: getDefaultBoostsValue(),
       bidders: [],
@@ -548,10 +551,11 @@ export default {
       const sizesFilter = getSizesFilter(filters.value.size)
       const wallsFilter = getWallsFilter(filters.value.walls)
       const districtsFilter = getDistrictsFilter(auctionInfo.districts, filters.value.districts)
+      const roadsFilter = getRoadsFilter(filters.value.roads)
       const boostsFilter = getBoostsFilter(filters.value.boosts)
       const biddersFilter = getBiddersFilter(parcelAuctions.value, filters.value.bidders)
 
-      const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter]
 
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {

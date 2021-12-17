@@ -36,12 +36,14 @@ const setListings = function (listings) {
       salesByParcelId.value[listing.tokenId] = {
         id: listing.id,
         priceInGhst,
+        priceInGhstJsNum: priceInGhst.toNumber(),
         datePurchased: new Date(listing.timePurchased * 1000)
       }
     } else {
       listingsByParcelId.value[listing.tokenId] = {
         id: listing.id,
         priceInGhst,
+        priceInGhstJsNum: priceInGhst.toNumber(),
         dateCreated: new Date(listing.timeCreated * 1000)
       }
     }
@@ -55,14 +57,14 @@ const lastFetchDate = ref(null)
 
 const fetchListings = function () {
   const [isStale, setLoaded, setError] = setLoading()
-  let skip = 0
   let listings = []
+  let lastTimeCreated = 0
   const fetchListingsFromSubgraph = function () {
     fetch(SUBGRAPH_URL, {
       method: 'POST',
       body: JSON.stringify({
         query: `{
-          erc721Listings(first: ${FETCH_PAGE_SIZE}, skip: ${skip}, orderBy: timeCreated, where: { category: "4", cancelled: false }) {
+          erc721Listings(first: ${FETCH_PAGE_SIZE}, orderBy: timeCreated, where: { timeCreated_gte: ${lastTimeCreated}, category: "4", cancelled: false }) {
             id
             tokenId
             timeCreated
@@ -89,7 +91,7 @@ const fetchListings = function () {
           return
         }
         // fetch the next page of results
-        skip += FETCH_PAGE_SIZE
+        lastTimeCreated = listings[listings.length - 1].timeCreated
         fetchListingsFromSubgraph()
       } else {
         setError('Unexpected response')

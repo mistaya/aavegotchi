@@ -31,6 +31,7 @@ export default {
   watch: {
     modelValue: {
       immediate: true,
+      deep: true,
       handler (newVal, oldVal) {
         if (!isEqual(this.modelValue, this.myArray)) {
           this.myString = this.modelValue?.join(',') || ''

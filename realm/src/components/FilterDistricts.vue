@@ -13,7 +13,7 @@
           <input
             :checked="modelValue.selectionMode === option.id"
             type="radio"
-            name="selectionMode"
+            name="filterDistrictsSelectionMode"
             :value="option.id"
             @change="selectionModeChanged(option.id)"
           />

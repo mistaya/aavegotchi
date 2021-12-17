@@ -198,13 +198,25 @@
               </div>
             </div>
           </div>
+
+          <div v-if="colorScheme.colorBy === 'highlight'">
+            <label>
+              Parcel color:
+              <input
+                type="color"
+                :value="colorScheme.highlight"
+                @input="debouncedSetHighlight($event.target.value)"
+              >
+            </label>
+          </div>
         </details>
 
-        <MapConfigDisplayMode v-model="mapConfig.displayMode" />
+        <MapConfig v-model="mapConfig" />
         <FilterBaazaar v-model="filters.baazaar" />
         <FilterSize v-model="filters.size" />
         <FilterWalls v-model="filters.walls" />
         <FilterDistricts v-model="filters.districts" />
+        <FilterRoads v-model="filters.roads" />
         <FilterParcelIds v-model="filters.parcelIds" />
         <FilterParcelNames v-model="filters.parcelNames" />
         <FilterBoosts v-model="filters.boosts" />
@@ -292,11 +304,9 @@
       <template #main="{ viewMode }">
         <CitaadelMap
           v-show="viewMode === 'map'"
-          :viewBox="mapConfig.viewBox"
-          :aspectRatio="mapConfig.aspectRatio"
-          :filterDisplayMode="mapConfig.displayMode"
+          :mapConfig="mapConfig"
           :parcels="parcelsToDisplay"
-          :parcelsMatchingFilters="parcelsMatchingFilters"
+          :parcelsMatchingFilters="parcelsMatchingFilters.result"
           :parcelColors="parcelColors"
           :selectedParcel="selectedParcel"
           @click:parcel="onClickParcel"
@@ -344,12 +354,12 @@
               </li>
             </ul>
           </template>
-          <div v-if="listParcelsTotal > listParcelsToDisplay.length && !listParcelsShowAll">
+          <div v-if="numParcelsMatchingFilters > listParcelsToDisplay.length && !listParcelsShowAll">
             <button
               type="button"
               @click="listParcelsShowAll = true"
             >
-              Show all {{ listParcelsTotal }} matching parcels
+              Show all {{ numParcelsMatchingFilters }} matching parcels
             </button>
           </div>
         </div>
@@ -361,6 +371,8 @@
 <script>
 import { ref, computed, watch } from 'vue'
 import { format } from 'date-fns'
+import { inPlaceSort } from 'fast-sort'
+import debounce from 'lodash.debounce'
 import useParcels from '@/data/useParcels'
 import useBaazaarListings from '@/data/useBaazaarListings'
 import useParcelPrices from '@/data/useParcelPrices'
@@ -373,11 +385,12 @@ import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import EthAddress from './EthAddress.vue'
 import CitaadelMap from './CitaadelMap.vue'
-import MapConfigDisplayMode from './MapConfigDisplayMode.vue'
+import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
 import FilterWalls, { getFilter as getWallsFilter } from './FilterWalls.vue'
 import FilterDistricts, { DISTRICTS, getDefaultValue as getDefaultDistrictsValue, getFilter as getDistrictsFilter } from './FilterDistricts.vue'
+import FilterRoads, { getDefaultValue as getDefaultRoadsValue, getFilter as getRoadsFilter } from './FilterRoads.vue'
 import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcelIds.vue'
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
@@ -391,11 +404,12 @@ export default {
     DataFetcherParcelOwners,
     EthAddress,
     CitaadelMap,
-    MapConfigDisplayMode,
+    MapConfig,
     FilterBaazaar,
     FilterSize,
     FilterWalls,
     FilterDistricts,
+    FilterRoads,
     FilterParcelIds,
     FilterParcelNames,
     FilterBoosts,
@@ -416,16 +430,13 @@ export default {
       fetchOwners
     } = useParcelOwners()
 
-    const mapConfig = ref({
-      displayMode: 'outline',
-      viewBox: '0 0 9000 6000',
-      aspectRatio: '9 / 6'
-    })
+    const mapConfig = ref(getDefaultMapConfigValue())
     const filters = ref({
       baazaar: getDefaultBaazarValue(),
       size: [...SIZES],
       walls: WALLS.map(wall => wall.id),
       districts: getDefaultDistrictsValue([...DISTRICTS]),
+      roads: getDefaultRoadsValue(),
       parcelIds: [],
       parcelNames: [],
       boosts: getDefaultBoostsValue(),
@@ -435,7 +446,8 @@ export default {
       { id: 'lastPrice', label: 'Last Sold Price (GHST)' },
       { id: 'baazaarPrice', label: 'Baazaar Listing Price (GHST)' },
       { id: 'owner', label: 'Owner Address' },
-      { id: 'whalePx', label: 'Whales (total pixel area)' }
+      { id: 'whalePx', label: 'Whales (total pixel area)' },
+      { id: 'highlight', label: 'Simple highlight' }
     ]
     const colorScheme = ref({
       colorBy: 'lastPrice',
@@ -482,9 +494,13 @@ export default {
         scaleName: 'inferno',
         min: 0,
         max: 150_000
-      }
+      },
+      highlight: '#ffa500'
     })
     const colorSchemeLabel = computed(() => colorSchemeOptions.find(option => option.id === colorScheme.value.colorBy)?.label)
+    const debouncedSetHighlight = debounce((color) => {
+      colorScheme.value.highlight = color
+    }, 300)
 
     // Watch for settings that require extra data to be fetched,
     // and fetch that data if necessary
@@ -639,6 +655,8 @@ export default {
           const owner = ownersByParcelId.value[parcel.id]
           return whalePxScale.value(whalesPx.value[owner] || 0)
         }
+      } else if (colorBy === 'highlight') {
+        getColor = parcel => colorScheme.value.highlight
       }
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => [
@@ -652,17 +670,20 @@ export default {
 
     const parcelsMatchingFilters = computed(() => {
       // console.time('parcelsMatchingFilters')
+      // console.log('start parcelsMatchingFilters')
       const idFilter = getParcelIdsFilter(filters.value.parcelIds)
       const nameFilter = getParcelNamesFilter(filters.value.parcelNames)
       const baazaarFilter = getBaazaarFilter(listingsByParcelId.value, filters.value.baazaar)
       const sizesFilter = getSizesFilter(filters.value.size)
       const wallsFilter = getWallsFilter(filters.value.walls)
       const districtsFilter = getDistrictsFilter(DISTRICTS, filters.value.districts)
+      const roadsFilter = getRoadsFilter(filters.value.roads)
       const boostsFilter = getBoostsFilter(filters.value.boosts)
       const ownersFilter = getOwnersFilter(ownersByParcelId.value, filters.value.owners)
 
-      const applyFilters = [idFilter, nameFilter, baazaarFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, baazaarFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter]
 
+      let numMatches = 0
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {
           let show = true
@@ -671,14 +692,15 @@ export default {
               show = false
             }
           }
+          if (show) { numMatches++ }
           return [parcel.id, show]
         })
       )
       // console.timeEnd('parcelsMatchingFilters')
-      return result
+      return { result, numMatches }
     })
 
-    const numParcelsMatchingFilters = computed(() => Object.values(parcelsMatchingFilters.value).filter(show => show).length)
+    const numParcelsMatchingFilters = computed(() => parcelsMatchingFilters.value.numMatches)
     const percentParcelsMatchingFilters = computed(() => {
       const percent = (numParcelsMatchingFilters.value / numParcelsToDisplay.value) * 100
       const rounded = Math.round(percent)
@@ -712,55 +734,24 @@ export default {
       selectedParcelId.value = parcel.id
     }
 
-    const compareIds = function (parcelA, parcelB) {
-      if (parcelA.id === parcelB.id) {
-        return 0
-      }
-      return (parcelA.id - 0) < (parcelB.id - 0) ? -1 : 1
-    }
-
-    const compareDistricts = function (parcelA, parcelB, fallbackComparison) {
-      if (parcelA.district === parcelB.district) {
-        if (fallbackComparison) {
-          return fallbackComparison(parcelA, parcelB)
-        }
-        return 0
-      }
-      return (parcelA.district - 0) < (parcelB.district - 0) ? -1 : 1
-    }
-
     const listParcels = computed(() => {
       // console.time('listParcels')
-      const parcels = parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value[parcel.id])
-      parcels.sort((a, b) => {
-        const listingA = listingsByParcelId.value[a.id]
-        const listingB = listingsByParcelId.value[b.id]
-        if (!listingA && !listingB) {
-          // fallback with districts, then ids
-          return compareDistricts(a, b, compareIds)
-        }
-        if (listingA && !listingB) {
-          return -1
-        }
-        if (listingB && !listingA) {
-          return 1
-        }
-        if (listingA.priceInGhst.isEqualTo(listingB.priceInGhst)) {
-          // fallback with districts, then ids
-          return compareDistricts(a, b, compareIds)
-        }
-        return listingA.priceInGhst.isLessThan(listingB.priceInGhst) ? -1 : 1
-      })
+      // console.log('start listParcels')
+      const parcels = parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id])
+      // console.timeLog('listParcels')
+      inPlaceSort(parcels).by([
+        { asc: p => listingsByParcelId.value[p.id]?.priceInGhstJsNum },
+        { asc: p => p.district - 0 },
+        { asc: p => p.id - 0 }
+      ])
       // console.timeEnd('listParcels')
       return parcels
     })
 
     const listParcelsShowAll = ref(false)
 
-    const listParcelsTotal = computed(() => listParcels.value.length)
-
     watch(
-      () => listParcelsTotal.value,
+      () => numParcelsMatchingFilters.value,
       () => { listParcelsShowAll.value = false }
     )
 
@@ -778,6 +769,7 @@ export default {
       colorScheme,
       colorSchemeLabel,
       colorSchemeOptions,
+      debouncedSetHighlight,
       SCALE_NAMES,
       SCALE_GRADIENTS,
       baazaarListingsFetchStatus,
@@ -792,7 +784,6 @@ export default {
       selectedParcel,
       listParcelsShowAll,
       listParcelsToDisplay,
-      listParcelsTotal,
       listingsByParcelId,
       salesByParcelId
     }
