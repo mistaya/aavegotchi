@@ -291,10 +291,10 @@
         </section>
       </template>
       <template #top>
-        <template v-if="percentParcelsMatchingFilters === 100">
+        <template v-if="numParcelsMatchingFilters === numParcelsToDisplay">
           Matched all {{ numParcelsMatchingFilters }} parcels
         </template>
-        <template v-else-if="percentParcelsMatchingFilters === 0">
+        <template v-else-if="numParcelsMatchingFilters === 0">
           No parcels matched your filters, out of {{ numParcelsToDisplay }} parcels
         </template>
         <template v-else>
