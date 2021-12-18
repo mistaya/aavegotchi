@@ -352,7 +352,7 @@ export default {
     display: none;
   }
   .map-svg--unmatched-outline .parcel--hidden-by-filter {
-    stroke: #aaa;
+    stroke: #ddd;
     fill: white;
   }
 </style>
