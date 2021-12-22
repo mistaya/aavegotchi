@@ -1,5 +1,6 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import usePageLoading from './usePageLoading'
+import NotFoundPage from './NotFoundPage.vue'
 
 const { pageLoading } = usePageLoading()
 
@@ -36,11 +37,15 @@ const routes = [
     path: '/config-parcels',
     name: 'config-parcels',
     component: ConfigParcels
+  },
+  {
+    path: '/:pathMatch(.*)',
+    component: NotFoundPage
   }
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
