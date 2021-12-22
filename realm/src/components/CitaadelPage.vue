@@ -453,34 +453,34 @@ export default {
       colorBy: 'lastPrice',
       lastPrice: {
         humble: {
-          min: 88,
+          min: 70,
           max: 500,
           scaleName: 'viridis'
         },
         reasonable: {
-          min: 180,
+          min: 170,
           max: 1000,
           scaleName: 'viridis'
         },
         spacious: {
-          min: 1025,
+          min: 1000,
           max: 3000,
           scaleName: 'viridis'
         }
       },
       baazaarPrice: {
         humble: {
-          min: 88,
+          min: 70,
           max: 500,
           scaleName: 'viridis'
         },
         reasonable: {
-          min: 180,
+          min: 170,
           max: 1000,
           scaleName: 'viridis'
         },
         spacious: {
-          min: 1025,
+          min: 1000,
           max: 3000,
           scaleName: 'viridis'
         }
