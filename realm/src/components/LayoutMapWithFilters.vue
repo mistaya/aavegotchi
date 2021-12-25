@@ -65,8 +65,8 @@ export default {
     padding: 5px 10px;
   }
   .view-mode[aria-pressed=true] {
-    background: var(--purple);
-    color: white;
+    background: var(--purple--contrast-black);
+    color: black;
     font-weight: bold;
   }
 

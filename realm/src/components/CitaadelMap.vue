@@ -208,7 +208,7 @@
     >
       Reset map zoom
     </button>
-    <span style="margin-left: 20px; font-size: 0.9em; font-style: italic; color: #888">
+    <span style="margin-left: 20px; font-size: 0.9em; font-style: italic; color: #595959">
       {{ parcels.length }} parcels total
     </span>
   </div>

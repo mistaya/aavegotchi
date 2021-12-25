@@ -673,8 +673,8 @@ export default {
 
 <style scoped>
   .fetch-auctions{
-    background: var(--purple);
-    color: white;
+    background: var(--purple--contrast-black);
+    color: black;
     font-weight: bold;
     padding: 5px 10px;
   }

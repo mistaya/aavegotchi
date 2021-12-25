@@ -36,6 +36,7 @@ export default {
 <style>
   body {
     --purple: #FA34F3;
+    --purple--contrast-black: #fa3ef4;
     margin: 0;
     padding: 0;
   }
