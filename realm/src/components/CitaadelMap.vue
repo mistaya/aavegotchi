@@ -318,13 +318,20 @@ export default {
 
             // Handle pinch
             this.hammer.on('pinchstart pinchmove', function (ev) {
+              // apply center calculation fix from https://github.com/bumbu/svg-pan-zoom/issues/350#issuecomment-560509636
+              const el = ev.target
+              const rect = el.getBoundingClientRect()
+              const pos = {
+                x: (ev.center.x - rect.left),
+                y: (ev.center.y - rect.top)
+              }
               // On pinch start remember initial zoom
               if (ev.type === 'pinchstart') {
                 initialScale = instance.getZoom()
-                instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+                instance.zoomAtPoint(initialScale * ev.scale, pos)
               }
 
-              instance.zoomAtPoint(initialScale * ev.scale, { x: ev.center.x, y: ev.center.y })
+              instance.zoomAtPoint(initialScale * ev.scale, pos)
             })
 
             // Prevent moving the page on some devices when panning over SVG
