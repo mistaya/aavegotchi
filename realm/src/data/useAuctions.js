@@ -1,6 +1,8 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
+import auction1JsonUrl from './auctions/assetAuction1.json'
+import auction2JsonUrl from './auctions/assetAuction2.json'
 
 const REALM_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
 const FETCH_PAGE_SIZE = 1000
@@ -9,6 +11,7 @@ const FETCH_PAGE_SIZE = 1000
 const AUCTIONS = {
   '1': {
     id: 1,
+    jsonUrl: auction1JsonUrl,
     days: '28 - 31 Oct 2021',
     startTime: 1635418800000, // before auction start time
     endTime: 1635710400000, // after last hammer-time parcel auction ends
@@ -24,6 +27,7 @@ const AUCTIONS = {
   },
   '2': {
     id: 2,
+    jsonUrl: auction2JsonUrl,
     days: '2-5 Dec 2021',
     startTime: 1638446400000, // before auction start time
     endTime: 1638734400000, // after last hammer-time parcel auction ends
@@ -81,14 +85,15 @@ export default function useAuctions (auctionId) {
 
   const fetchInitialAuctions = function () {
     const [isStale, setLoaded, setError] = setLoading()
-    import(/* webpackChunkName: "auctionjson" */ './auctions/auction' + auctionId + '.json')
-      .then(({ default: json }) => {
+    fetch(auctionInfo.jsonUrl)
+      .then(response => response.json())
+      .then(json => {
         if (isStale()) { console.log('Stale request, ignoring'); return }
         auctionsByParcelId.value = json
         setLoaded()
       }).catch(error => {
         console.error(error)
-        setError('There was an error fetching parcels')
+        setError('There was an error fetching auction parcels')
       })
   }
 

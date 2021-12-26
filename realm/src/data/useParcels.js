@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import useStatus from '@/data/useStatus'
 import { WALLS } from './walls'
+import parcelsUrl from './parcels/assetParcels.json'
 
 const SIZE_LABELS_BY_ID = ['humble', 'reasonable', 'spacious', 'spacious']
 const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64]
@@ -10,17 +11,17 @@ const { status: fetchStatus, setLoading } = useStatus()
 
 const parcelsById = ref({})
 const [isStale, setLoaded, setError] = setLoading()
-import(
-  /* webpackChunkName: "parcelsjson" */
-  './parcels/parcels.json'
-).then(({ default: json }) => {
-  if (isStale()) { return }
-  parcelsById.value = json
-  setLoaded()
-}).catch(error => {
-  console.error(error)
-  setError('Error loading parcels')
-})
+
+fetch(parcelsUrl)
+  .then(response => response.json())
+  .then(json => {
+    if (isStale()) { return }
+    parcelsById.value = json
+    setLoaded()
+  }).catch(error => {
+    console.error(error)
+    setError('Error loading parcels')
+  })
 
 const getParcelWall = function (parcel) {
   const parcelX = parcel.coordinateX - 0
