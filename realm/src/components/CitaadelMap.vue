@@ -173,7 +173,8 @@
           v-for="parcel in parcels"
           :key="parcel.id"
           xlink:href="#"
-          @click.prevent="onClickParcel(parcel)"
+          @mousedown="onMouseDownParcel"
+          @click.prevent="onClickParcel($event, parcel)"
         >
           <rect
             class="parcel"
@@ -238,20 +239,27 @@ export default {
     // console.time('setup CitaadelMap')
     const svgRef = ref(null)
 
-    const onClickParcel = function (parcel) {
-      emit('click:parcel', parcel)
+    // Workaround to avoid click-selections while dragging to pan
+    let lastMousedown = null
+    const onMouseDownParcel = function (evt) {
+      lastMousedown = { x: evt.clientX, y: evt.clientY }
+    }
+    const onClickParcel = function (evt, parcel) {
+      if (lastMousedown && evt.clientX === lastMousedown.x && evt.clientY === lastMousedown.y) {
+        emit('click:parcel', parcel)
+      }
     }
 
-    const panZoom = ref(null)
+    let panZoom = null
     const resetZoom = function () {
-      if (!panZoom.value) { return }
-      panZoom.value.reset()
+      if (!panZoom) { return }
+      panZoom.reset()
     }
     onMounted(() => {
       // console.timeLog('mount CitaadelMap')
       // mobile example code https://bumbu.me/svg-pan-zoom/demo/mobile.html
       // limit panning example code https://bumbu.me/svg-pan-zoom/demo/limit-pan.html
-      panZoom.value = svgPanZoom(svgRef.value, {
+      panZoom = svgPanZoom(svgRef.value, {
         dblClickZoomEnabled: false,
         // TODO this example code doesn't calculate the limits correctly at high zoom
         /*
@@ -336,6 +344,7 @@ export default {
       CITAADEL_HEIGHT,
       svgRef,
       resetZoom,
+      onMouseDownParcel,
       onClickParcel
     }
   }
