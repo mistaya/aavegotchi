@@ -7,7 +7,8 @@
       class="map-svg"
       :class="{
         'map-svg--unmatched-hide': mapConfig.unmatchedDisplay === 'hide',
-        'map-svg--unmatched-outline': mapConfig.unmatchedDisplay === 'outline'
+        'map-svg--unmatched-outline': mapConfig.unmatchedDisplay === 'outline',
+        'map-svg--flag-selected': mapConfig.flagSelected
       }"
       :style="{
         'aspect-ratio': aspectRatio
@@ -169,6 +170,15 @@
           style="opacity: 0.2; filter: invert(26%) sepia(70%) saturate(2804%) hue-rotate(286deg) brightness(112%) contrast(96%)"
         />
         -->
+        <!-- this needs some radius so it works in FF -->
+        <circle
+          ref="zoomCircleRef"
+          cx="0"
+          cy="0"
+          r="1"
+          stroke="none"
+          fill="none"
+        />
         <a
           v-for="parcel in parcels"
           :key="parcel.id"
@@ -189,17 +199,30 @@
             :fill="parcelColors[parcel.id] || '#eee'"
           />
         </a>
-        <rect
-          v-if="selectedParcel"
-          class="selected-parcel"
-          :x="selectedParcel.coordinateX"
-          :y="selectedParcel.coordinateY"
-          :width="selectedParcel.width"
-          :height="selectedParcel.height"
-          stroke="#FA34F3"
-          stroke-width="6px"
-          fill="none"
-        />
+        <template v-if="selectedParcel">
+          <rect
+            class="selected-parcel"
+            :x="selectedParcel.coordinateX"
+            :y="selectedParcel.coordinateY"
+            :width="selectedParcel.width"
+            :height="selectedParcel.height"
+            stroke="#FA34F3"
+            stroke-width="4px"
+            fill="none"
+          />
+          <circle
+            class="selected-parcel-flag"
+            :cx="selectedParcel.coordinateX - 0 + selectedParcel.width / 2"
+            :cy="selectedParcel.coordinateY - 0 + selectedParcel.height / 2"
+            r="4"
+            stroke="none"
+            stroke-width="2px"
+            fill="none"
+            :style="{
+              'transform-origin': `${selectedParcel.coordinateX - 0 + selectedParcel.width / 2}px ${selectedParcel.coordinateY - 0 + selectedParcel.height / 2}px`
+            }"
+          />
+        </template>
       </g>
     </svg>
     <button
@@ -238,6 +261,7 @@ export default {
   setup (props, { emit }) {
     // console.time('setup CitaadelMap')
     const svgRef = ref(null)
+    const zoomCircleRef = ref(null)
 
     // Workaround to avoid click-selections while dragging to pan
     let lastMousedown = null
@@ -255,6 +279,31 @@ export default {
       if (!panZoom) { return }
       panZoom.reset()
     }
+    // Provide x and y in the original SVG coordinates
+    const zoomToPoint = async function ({ x, y, zoom = 4 }) {
+      if (!panZoom || !svgRef.value || !zoomCircleRef.value) { return }
+      // console.log('zoomToPoint', x, y, zoom)
+      // Place the SVG circle at the requested point
+      zoomCircleRef.value.setAttribute('cx', x)
+      zoomCircleRef.value.setAttribute('cy', y)
+      // Get the rendered (top-left corner) positions of the container SVG and the circle
+      const svgRect = svgRef.value.getBoundingClientRect()
+      const circleRect = zoomCircleRef.value.getBoundingClientRect()
+      // Calculate the relative position of the circle compared to
+      // the svg's top-left corner
+      const top = circleRect.top - svgRect.top
+      const left = circleRect.left - svgRect.left
+      // console.log({ svgRect, circleRect, top, left })
+      // Calculate the amount to move in each direction,
+      // to put the circle in the middle of the svg rect area
+      const panX = -left + (svgRect.width / 2)
+      const panY = -top + (svgRect.height / 2)
+      // console.log({ panX, panY })
+      // First pan to put the circle in the centre, then zoom
+      panZoom.panBy({ x: panX, y: panY })
+      panZoom.zoom(zoom)
+    }
+
     onMounted(() => {
       // console.timeLog('mount CitaadelMap')
       // mobile example code https://bumbu.me/svg-pan-zoom/demo/mobile.html
@@ -342,6 +391,9 @@ export default {
           }
         }
       })
+
+      // panZoom instance needs notifying when its container size changes
+      window.addEventListener('resize', function () { panZoom.resize() })
       // console.timeEnd('mount CitaadelMap')
     })
     // console.timeEnd('setup CitaadelMap')
@@ -350,9 +402,11 @@ export default {
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
       svgRef,
+      zoomCircleRef,
       resetZoom,
       onMouseDownParcel,
-      onClickParcel
+      onClickParcel,
+      zoomToPoint // public method
     }
   }
 }
@@ -370,5 +424,36 @@ export default {
   .map-svg--unmatched-outline .parcel--hidden-by-filter {
     stroke: #ddd;
     fill: white;
+  }
+  .selected-parcel,
+  .selected-parcel-flag {
+    pointer-events: none;
+  }
+  .map-svg--flag-selected .selected-parcel-flag {
+    stroke: var(--purple);
+    animation: pulse 2s normal infinite cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .map-svg--flag-selected .selected-parcel-flag {
+      animation:  none;
+      transform: scale(32);
+      stroke-width: 1px;
+    }
+  }
+
+  @keyframes pulse {
+    0%   {
+      transform: scale(1);
+      opacity: 1;
+    }
+    80% {
+      transform: scale(32);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(32);
+      opacity: 0;
+    }
   }
 </style>

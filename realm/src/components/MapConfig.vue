@@ -66,7 +66,8 @@ const getDefaultValue = function () {
     colorRoads: '#bbbbbb',
     colorWalls: '#000000',
     colorPaartners: '#bf91ff',
-    colorLandmarks: '#FA34F3'
+    colorLandmarks: '#FA34F3',
+    flagSelected: false
   }
 }
 export { getDefaultValue }

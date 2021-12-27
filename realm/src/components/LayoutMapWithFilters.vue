@@ -1,7 +1,12 @@
 <template>
   <div class="layout-container">
     <div>
-      <slot name="sidebar"></slot>
+      <slot
+        name="sidebar"
+        :viewMode="viewMode"
+        :setViewModeMap="setViewModeMap"
+        :setViewModeList="setViewModeList"
+      ></slot>
     </div>
     <div>
       <div class="view-modes">
@@ -27,6 +32,8 @@
         <slot
           name="main"
           :viewMode="viewMode"
+          :setViewModeMap="setViewModeMap"
+          :setViewModeList="setViewModeList"
         ></slot>
       </div>
     </div>
@@ -39,8 +46,12 @@ import { ref } from 'vue'
 export default {
   setup (props) {
     const viewMode = ref('map') // or 'list'
+    const setViewModeMap = () => { viewMode.value = 'map' }
+    const setViewModeList = () => { viewMode.value = 'list' }
     return {
-      viewMode
+      viewMode,
+      setViewModeMap,
+      setViewModeList
     }
   }
 }
@@ -66,7 +77,6 @@ export default {
   }
   .view-mode[aria-pressed=true] {
     background: var(--purple--contrast-black);
-    color: black;
     font-weight: bold;
   }
 

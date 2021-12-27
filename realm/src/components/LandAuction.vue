@@ -1,7 +1,7 @@
 <template>
   <PrereqParcels>
     <LayoutMapWithFilters>
-      <template #sidebar>
+      <template #sidebar="{ viewMode, setViewModeMap }">
         <section>
           <h2 style="margin-bottom: 10px">
             Auction {{ auctionId }} ({{ auctionInfo.days }})
@@ -234,63 +234,22 @@
           <FilterParcelNames v-model="filters.parcelNames" />
         </section>
 
-        <section ref="parcelDetailsRef">
-          <div
+        <section>
+          <ParcelDetails
             v-if="selectedParcel"
-            class="selected-parcel-details"
-          >
-            <button
-              type="button"
-              style="float: right"
-              @click="selectedParcelId = null"
-            >
-              Close
-            </button>
-
-            <h2>Selected Parcel details:</h2>
-
-            ID: {{ selectedParcel.id }}
-            <br>Name: {{ selectedParcel.parcelHash }}
-            <br>Size: {{ selectedParcel.sizeLabel }}
-            <br>District: {{ selectedParcel.district }}
-            <div v-if="selectedParcel.auction?.hasAuction">
-              <a
-                :href="`https://gotchiverse.io/auction?tokenId=${selectedParcel.id}`"
-                target="_blank"
-              >
-                Last bid: {{ selectedParcel.auction.highestBidGhst }} GHST
-              </a>
-              <br>Bidder:
-              <EthAddress :address="selectedParcel.auction.highestBidder" />
-            </div>
-            <div>
-              Boosts:
-              <div style="margin-left: 10px">
-                <template v-if="selectedParcel.hasBoost">
-                  <div v-if="selectedParcel.fudBoost !== '0'">
-                    FUD: {{ selectedParcel.fudBoost }}
-                  </div>
-                  <div v-if="selectedParcel.fomoBoost !== '0'">
-                    FOMO: {{ selectedParcel.fomoBoost }}
-                  </div>
-                  <div v-if="selectedParcel.alphaBoost !== '0'">
-                    ALPHA: {{ selectedParcel.alphaBoost }}
-                  </div>
-                  <div v-if="selectedParcel.kekBoost !== '0'">
-                    KEK: {{ selectedParcel.kekBoost }}
-                  </div>
-                </template>
-                <template v-else>
-                  None
-                </template>
-              </div>
-            </div>
-          </div>
+            :parcel="selectedParcel.parcel"
+            :auction="selectedParcel.auction"
+            v-model:flagSelected="mapConfig.flagSelected"
+            style="margin: 0 10px 20px 0;"
+            @close="selectedParcelId = null"
+            @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeMap })"
+          />
         </section>
 
       </template>
       <template #main="{ viewMode }">
         <CitaadelMap
+          ref="mapRef"
           v-show="viewMode === 'map'"
           :viewBox="auctionInfo.display.viewBox"
           :aspectRatio="auctionInfo.display.aspectRatio"
@@ -298,7 +257,7 @@
           :parcels="parcelsToDisplay"
           :parcelsMatchingFilters="parcelsMatchingFilters"
           :parcelColors="parcelColors"
-          :selectedParcel="selectedParcel"
+          :selectedParcel="selectedParcel?.parcel"
           @click:parcel="onClickParcel"
         />
         <div v-if="viewMode === 'list'">
@@ -337,7 +296,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import BigNumber from 'bignumber.js'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
@@ -345,9 +304,9 @@ import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
-import EthAddress from './EthAddress.vue'
 import DatePrecise from './DatePrecise.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
+import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
@@ -363,8 +322,8 @@ export default {
   components: {
     PrereqParcels,
     LayoutMapWithFilters,
+    ParcelDetails,
     CitaadelMap,
-    EthAddress,
     DatePrecise,
     LoadingSpinner,
     MapConfig,
@@ -382,7 +341,6 @@ export default {
   },
   setup (props) {
     // console.time('setup')
-    const parcelDetailsRef = ref(null)
     const selectedParcelId = ref(null)
     const { parcelsById } = useParcels()
     const {
@@ -590,7 +548,7 @@ export default {
     const selectedParcel = computed(() => {
       if (!selectedParcelId.value) { return null }
       return {
-        ...parcelsById.value[selectedParcelId.value],
+        parcel: parcelsById.value[selectedParcelId.value],
         auction: parcelAuctions.value[selectedParcelId.value]
       }
     })
@@ -641,11 +599,30 @@ export default {
       return totalPerBidder
     })
 
+    const mapRef = ref(null)
+
+    const zoomToParcel = async function (parcelId, { viewMode, setViewModeMap }) {
+      const doZoom = () => {
+        const parcel = parcelsById.value[parcelId]
+        if (parcel && mapRef.value?.zoomToPoint) {
+          mapRef.value.zoomToPoint({
+            x: parcel.coordinateX - 0,
+            y: parcel.coordinateY - 0
+          })
+        }
+      }
+      if (viewMode === 'list') {
+        setViewModeMap()
+        nextTick(doZoom)
+      } else {
+        doZoom()
+      }
+    }
+
     // console.timeEnd('setup')
     // console.time('mount')
     return {
       auctionInfo,
-      parcelDetailsRef,
       parcelsToDisplay,
       parcelsMatchingFilters,
       parcelColors,
@@ -665,7 +642,9 @@ export default {
       filters,
       colorSchemeOptions,
       colorScheme,
-      colorSchemeLabel
+      colorSchemeLabel,
+      mapRef,
+      zoomToParcel
     }
   }
 }
@@ -709,11 +688,5 @@ export default {
   }
   .range-input {
     width: 60px;
-  }
-
-  .selected-parcel-details {
-    margin: 0 10px 20px 0;
-    border: 1px solid #ccc;
-    padding: 10px;
   }
 </style>

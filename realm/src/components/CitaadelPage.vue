@@ -1,7 +1,7 @@
 <template>
   <PrereqParcels>
     <LayoutMapWithFilters>
-      <template #sidebar>
+      <template #sidebar="{ viewMode, setViewModeMap }">
         <h1>The Citaadel</h1>
 
         <div style="margin-bottom: 20px;">
@@ -223,71 +223,18 @@
         <FilterOwners v-model="filters.owners" />
 
         <section>
-          <div
+          <ParcelDetails
             v-if="selectedParcel"
-            class="selected-parcel-details"
-          >
-            <button
-              type="button"
-              style="float: right"
-              @click="selectedParcelId = null"
-            >
-              Close
-            </button>
-
-            <h2>Selected Parcel details:</h2>
-
-            ID: {{ selectedParcel.id }}
-            <br>Name: {{ selectedParcel.parcelHash }}
-            <br>Size: {{ selectedParcel.sizeLabel }}
-            <br>District: {{ selectedParcel.district }}
-            <div v-if="selectedParcel.owner">
-              Owner:
-              <EthAddress :address="selectedParcel.owner" />
-            </div>
-            <div v-if="selectedParcel.currentListing">
-              <a
-                :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.currentListing.id}`"
-                target="_blank"
-              >
-                Currently listed on Baazaar for: {{ selectedParcel.currentListing.priceInGhst.toString() }} GHST
-              </a>
-            </div>
-            <div v-if="selectedParcel.lastSale">
-              <a
-                :href="`https://aavegotchi.com/baazaar/erc721/${selectedParcel.lastSale.id}`"
-                target="_blank"
-              >
-                Last sold on Baazaar on {{ selectedParcel.lastSale.formattedDate }}
-                for: {{ selectedParcel.lastSale.priceInGhst.toString() }} GHST
-              </a>
-            </div>
-            <div v-if="selectedParcel.auctionPrice">
-              Auction price: {{ selectedParcel.auctionPrice }} GHST
-            </div>
-            <div>
-              Boosts:
-              <div style="margin-left: 10px">
-                <template v-if="selectedParcel.hasBoost">
-                  <div v-if="selectedParcel.fudBoost !== '0'">
-                    FUD: {{ selectedParcel.fudBoost }}
-                  </div>
-                  <div v-if="selectedParcel.fomoBoost !== '0'">
-                    FOMO: {{ selectedParcel.fomoBoost }}
-                  </div>
-                  <div v-if="selectedParcel.alphaBoost !== '0'">
-                    ALPHA: {{ selectedParcel.alphaBoost }}
-                  </div>
-                  <div v-if="selectedParcel.kekBoost !== '0'">
-                    KEK: {{ selectedParcel.kekBoost }}
-                  </div>
-                </template>
-                <template v-else>
-                  None
-                </template>
-              </div>
-            </div>
-          </div>
+            :parcel="selectedParcel.parcel"
+            :listing="selectedParcel.currentListing"
+            :lastSale="selectedParcel.lastSale"
+            :auctionPrice="selectedParcel.auctionPrice"
+            :owner="selectedParcel.owner"
+            v-model:flagSelected="mapConfig.flagSelected"
+            style="margin: 0 10px 20px 0;"
+            @close="selectedParcelId = null"
+            @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeMap })"
+          />
         </section>
       </template>
       <template #top>
@@ -303,12 +250,13 @@
       </template>
       <template #main="{ viewMode }">
         <CitaadelMap
+          ref="mapRef"
           v-show="viewMode === 'map'"
           :mapConfig="mapConfig"
           :parcels="parcelsToDisplay"
           :parcelsMatchingFilters="parcelsMatchingFilters.result"
           :parcelColors="parcelColors"
-          :selectedParcel="selectedParcel"
+          :selectedParcel="selectedParcel?.parcel"
           @click:parcel="onClickParcel"
         />
         <div v-if="viewMode === 'list'">
@@ -342,12 +290,12 @@
                   </a>
                 </span>
                 <span v-if="salesByParcelId[parcel.id]">
-                  Last sold on Baazaar on
+                  Last sold on Baazaar
                   <a
                     :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
                     target="_blank"
                   >
-                    {{ salesByParcelId[parcel.id].formattedDate }}
+                    <DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />
                     for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
                   </a>
                 </span>
@@ -369,8 +317,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue'
-import { format } from 'date-fns'
+import { ref, computed, watch, nextTick } from 'vue'
 import { inPlaceSort } from 'fast-sort'
 import debounce from 'lodash.debounce'
 import useParcels from '@/data/useParcels'
@@ -383,7 +330,8 @@ import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
 import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
-import EthAddress from './EthAddress.vue'
+import DateFriendly from './DateFriendly.vue'
+import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
@@ -400,9 +348,10 @@ export default {
   components: {
     PrereqParcels,
     LayoutMapWithFilters,
+    DateFriendly,
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
-    EthAddress,
+    ParcelDetails,
     CitaadelMap,
     MapConfig,
     FilterBaazaar,
@@ -717,13 +666,10 @@ export default {
       if (!parcelId) { return null }
       const currentListing = listingsByParcelId.value[parcelId]
       const lastSale = salesByParcelId.value[parcelId]
-      if (lastSale) {
-        lastSale.formattedDate = format(lastSale.datePurchased, 'yyyy/MM/dd HH:mm:ss')
-      }
       const auctionPrice = pricesByParcelId.value[parcelId]?.auctionPrice
       const owner = ownersByParcelId.value[parcelId]
       return {
-        ...parcelsById.value[parcelId],
+        parcel: parcelsById.value[parcelId],
         currentListing,
         lastSale,
         auctionPrice,
@@ -762,6 +708,26 @@ export default {
       return listParcels.value.slice(0, 100)
     })
 
+    const mapRef = ref(null)
+
+    const zoomToParcel = async function (parcelId, { viewMode, setViewModeMap }) {
+      const doZoom = () => {
+        const parcel = parcelsById.value[parcelId]
+        if (parcel && mapRef.value?.zoomToPoint) {
+          mapRef.value.zoomToPoint({
+            x: parcel.coordinateX - 0,
+            y: parcel.coordinateY - 0
+          })
+        }
+      }
+      if (viewMode === 'list') {
+        setViewModeMap()
+        nextTick(doZoom)
+      } else {
+        doZoom()
+      }
+    }
+
     return {
       parcelsFetchStatus,
       mapConfig,
@@ -785,7 +751,9 @@ export default {
       listParcelsShowAll,
       listParcelsToDisplay,
       listingsByParcelId,
-      salesByParcelId
+      salesByParcelId,
+      mapRef,
+      zoomToParcel
     }
   }
 }
@@ -799,11 +767,5 @@ export default {
   }
   .range-input {
     width: 60px;
-  }
-
-  .selected-parcel-details {
-    margin: 0 10px 20px 0;
-    border: 1px solid #ccc;
-    padding: 10px;
   }
 </style>
