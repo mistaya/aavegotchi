@@ -84,8 +84,9 @@ watch(
             gotchiDetails.value = {
                 id: gotchiId,
                 name: result.name,
-                hauntId: result.hauntId,
+                hauntId: result.hauntId.toString(),
                 collateral: result.collateral,
+                escrow: result.escrow,
                 numericTraits: result.numericTraits,
                 equippedWearables: result.equippedWearables,
             };
