@@ -1,5 +1,10 @@
 <template>
-  <div class="entrance">
+  <div
+    class="entrance"
+    :class="{
+      'entrance--leaving': leaving
+    }"
+  >
     <!-- TODO see if moving svgs out here makes any difference to performance - with use or url(#id)? -->
     <div
       class="stockroom"
@@ -22,13 +27,14 @@
 
       <template v-if="entered">
         <!-- The xyz animation library solves 2 problems:
-          1) animating opacity and preserve-3d are incompatible https://css-tricks.com/things-watch-working-css-3d/
+          1) animating opacity and preserve-3d are incompatible https://css-tricks.com/things-watch-working-css-3d/#3-opacity
              but the xyz implementation works without awkward workarounds
           2) chrome has bad performance for the very fast shelf/glow appearance and skips a lot of frames,
              but the xyz implementation (involving adding/removing CSS classes to trigger appearances)
              has a better result than simple timed transitions/animations
          -->
         <XyzTransitionGroup
+          ref="shelvesRef"
           appear
           class="shelves"
           xyz="fade appear-stagger-rev"
@@ -63,6 +69,7 @@
                 <GotchiImage
                   hideBackground
                   floating
+                  :happy="happy"
                 />
               </div>
             </template>
@@ -86,7 +93,9 @@ export default {
   },
   data () {
     return {
-      entered: false,
+      entered: true,
+      happy: false,
+      leaving: false,
       numShelves: 24,
       perShelfDuration: 0.02
       //perShelfDuration: 1
@@ -110,12 +119,52 @@ export default {
       return randoms.map(index => escape(wearableSvgs[index]));
     }
   },
+  watch: {
+    entered: {
+      immediate: true,
+      handler () {
+        if (this.entered) {
+          this.$nextTick(() => {
+            if (this.$refs.shelvesRef && document.fish) {
+              const animation = this.$refs.shelvesRef.getAnimations().find(anim => anim.animationName.includes("faceSide"))
+              if (animation) {
+                animation.onfinish = () => {
+                  setTimeout(() => this.makeGotchiHappy(), 1000)
+                }
+                return;
+              }
+            }
+          })
+          // if we got here, then we didn't manage to set up an end-animation handler
+          // so set up one manually for after the zoom finishes
+          setTimeout(() => this.makeGotchiHappy(), 1000 * (this.shelvesDuration + 2 + 1) )
+        }
+      }
+    }
+  },
+  unmounted () {
+    this.isDestroyed = true
+  },
   methods: {
     isLeftShelf (i) {
       return i <= this.numShelves/2;
     },
     isTargetShelf (i) {
       return i == this.numShelves/2;
+    },
+    makeGotchiHappy () {
+      this.happy = true
+      setTimeout(() => this.happy = false, 500);
+      setTimeout(() => this.happy = true, 1200);
+      setTimeout(() => this.happy = false, 1700);
+      setTimeout(() => this.leave(), 3200);
+    },
+    leave () {
+      this.leaving = true;
+      setTimeout(() => {
+        if (this.isDestroyed) { return; }
+        this.$router.push({ name: "WaardrobePage" });
+      }, 700);
     }
   }
 }
@@ -128,6 +177,11 @@ export default {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+  }
+
+  .entrance--leaving {
+    opacity: 0;
+    transition: opacity 0.7s;
   }
 
   .stockroom {

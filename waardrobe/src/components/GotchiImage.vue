@@ -28,22 +28,6 @@
           v-html="svg"
         />
       </div>
-      <div v-if="withControls">
-        <label>
-          <input
-            type="checkbox"
-            v-model="spinning"
-          />
-          Spin
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            v-model="happy"
-          />
-          Happy
-        </label>
-      </div>
     </div>
   </div>
 </template>
@@ -56,17 +40,15 @@ import useGotchi from "@/data/useGotchi";
 export default {
   props: {
     previewWearables: { type: Boolean, default: false },
-    // TODO extract controls, make spinning and happy into props
-    withControls: { type: Boolean, default: false },
     floating: { type: Boolean, default: false },
+    spinning: { type: Boolean, default: false },
+    happy: { type: Boolean, default: false },
     hideBackground: { type: Boolean, default: false }
   },
   setup (props) {
     const { gotchiStatus, gotchiSvg, previewSvgStatus, previewSvg, namespaceSvgText } = useGotchi();
 
     const instanceNamespace = ref(uniqueId('gotchi-image__'));
-    const spinning = ref(false);
-    const happy = ref(false);
     const previousSvgs = ref(null);
 
     const svgStatus = computed(() => {
@@ -92,9 +74,7 @@ export default {
       instanceNamespace,
       svgStatus,
       svgs,
-      previousSvgs,
-      spinning,
-      happy
+      previousSvgs
     };
   }
 };

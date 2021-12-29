@@ -39,10 +39,27 @@
         </div>
       </div>
 
-      <GotchiImage
-        previewWearables
-        withControls
-      />
+      <div>
+        <GotchiImage
+          previewWearables
+          :happy="previewHappy"
+          :spinning="previewSpinning"
+        />
+        <label>
+          <input
+            type="checkbox"
+            v-model="previewSpinning"
+          />
+          Spin
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            v-model="previewHappy"
+          />
+          Happy
+        </label>
+      </div>
 
       <div class="traits-preview">
         <div>
@@ -112,6 +129,9 @@ export default {
       setPreviewWearables(formWearables.value);
     });
 
+    const previewSpinning = ref(false);
+    const previewHappy = ref(false);
+
     return {
       gotchiDetails,
       baseRarityScore,
@@ -119,7 +139,9 @@ export default {
       wearablesBySlot,
       formWearables,
       traitsToDisplay: traits.slice(0, 4),
-      previewDetails
+      previewDetails,
+      previewSpinning,
+      previewHappy
     };
   }
 };

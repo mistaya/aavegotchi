@@ -134,7 +134,7 @@
       style="margin-top: 30px;"
     >
       <div class="enter">
-        <router-link :to="{ name: 'WaardrobePage' }">
+        <router-link :to="{ name: prefersReducedMotion ? 'WaardrobePage' : 'WaardrobeEntrance' }">
           Enter the Waardrobe
         </router-link>
       </div>
@@ -199,7 +199,11 @@ export default {
       return gotchiId.value || customGotchi.value;
     });
 
+    const motionMediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const prefersReducedMotion = motionMediaQuery.matches;
+
     return {
+      prefersReducedMotion,
       choiceMethod,
       formGotchiId,
       setGotchiId,
