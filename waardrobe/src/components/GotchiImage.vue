@@ -16,7 +16,9 @@
         :class="{
           'gotchi-images--loading': svgStatus.loading,
           'gotchi-images--spinning': spinning,
-          'gotchi-images--happy': happy
+          'gotchi-images--happy': happy,
+          'gotchi-images--floating': floating,
+          'gotchi-images--hide-background': hideBackground
         }"
       >
         <div
@@ -48,17 +50,21 @@
 
 <script>
 import { ref, computed, watch } from 'vue';
+import uniqueId from 'lodash.uniqueid'
 import useGotchi from "@/data/useGotchi";
 
 export default {
   props: {
     previewWearables: { type: Boolean, default: false },
-    withControls: { type: Boolean, default: false }
+    // TODO extract controls, make spinning and happy into props
+    withControls: { type: Boolean, default: false },
+    floating: { type: Boolean, default: false },
+    hideBackground: { type: Boolean, default: false }
   },
   setup (props) {
     const { gotchiStatus, gotchiSvg, previewSvgStatus, previewSvg, namespaceSvgText } = useGotchi();
 
-    const instanceNamespace = ref(`gotchi-image__${(Math.random() + '').replace(".", "")}`);
+    const instanceNamespace = ref(uniqueId('gotchi-image__'));
     const spinning = ref(false);
     const happy = ref(false);
     const previousSvgs = ref(null);
@@ -102,6 +108,8 @@ export default {
   .gotchi-image {
     width: 200px;
     height: 200px;
+    max-width: 100%;
+    max-height: 100%;
   }
 
   .gotchi-images .gotchi-image:not(:first-child) {
@@ -154,17 +162,28 @@ export default {
     animation-delay: 0s;
   }
 
+  .gotchi-images--floating .gotchi-image {
+    animation-name: floating;
+    animation-duration: 0.7s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+  @keyframes floating {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(1%); }
+  }
 
   .gotchi-images--happy :deep(.gotchi-handsUp),
   .gotchi-images--happy :deep(.gotchi-sleeves-up),
   .gotchi-images--happy :deep(.gotchi-image:first-child .gotchi-eyeColor--CUSTOM-petting) {
-    display:  block;
+    display: block;
   }
   .gotchi-images--happy :deep(.gotchi-handsDownClosed),
   .gotchi-images--happy :deep(.gotchi-handsDownOpen),
   .gotchi-images--happy :deep(.gotchi-sleeves-down),
   .gotchi-images--happy :deep(.gotchi-image:first-child .gotchi-eyeColor:not(.gotchi-eyeColor--CUSTOM-petting)) {
-    display:  none;
+    display: none;
   }
   /* raise wearables higher - different amount on side views */
   .gotchi-images--happy :deep(.gotchi-wearable.wearable-hand) {
@@ -172,5 +191,10 @@ export default {
   }
   .gotchi-images--happy .gotchi-image:nth-child(2n) :deep(.gotchi-wearable.wearable-hand) {
     transform: translate(0, -10px);
+  }
+
+  .gotchi-images--hide-background :deep(.gotchi-bg),
+  .gotchi-images--hide-background :deep(.wearable-bg) {
+    display: none;
   }
 </style>

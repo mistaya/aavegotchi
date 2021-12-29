@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
-//import VueAnimXyz from '@animxyz/vue3'
-//import '@animxyz/core' // Import css here if you haven't elsewhere
+import VueAnimXyz from '@animxyz/vue3'
+import '@animxyz/core' // Import css here if you haven't elsewhere
 import App from './App.vue'
 
 import detectEthereumProvider from '@metamask/detect-provider';
@@ -9,7 +9,7 @@ detectEthereumProvider().then(() => {
     // from now on, the provider should be available at window.ethereum
 
     const app = createApp(App).use(router)
-    //app.use(VueAnimXyz)
+    app.use(VueAnimXyz)
 
     app.mount('#app')
 }).catch(err => {

@@ -1,11 +1,20 @@
 <template>
-  <div v-if="!hasWeb3">
+  <div
+    v-if="!hasWeb3"
+    class="message"
+  >
     Please enable Metamask and reload the page
   </div>
-  <div v-else-if="chainStatus.error">
+  <div
+    v-else-if="chainStatus.error"
+    class="message"
+  >
     Error finding chain ({{ chainStatus.errorMessage }})
   </div>
-  <div v-else-if="chainStatus.loading">
+  <div
+    v-else-if="chainStatus.loading"
+    class="message"
+  >
     Connecting...
   </div>
   <router-view v-else-if="isPolygon" />
@@ -23,7 +32,8 @@ export default {
     const { status: chainStatus, setLoading: setChainLoading } = useStatus();
 
     if (hasWeb3) {
-      window.ethereum.on('chainChanged', () => window.location.reload());
+      // can cause repeated refresh
+      //window.ethereum.on('chainChanged', () => window.location.reload());
 
       const [isStale, setLoaded, setError] = setChainLoading();
       window.ethereum.request({ method: 'eth_chainId' }).then(chainId => {
@@ -52,6 +62,13 @@ export default {
 </script>
 
 <style>
+  html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+
   body {
     margin: 0;
     padding: 0;
@@ -59,7 +76,7 @@ export default {
 </style>
 
 <style scoped>
-  div {
-    margin: 30px;
+  .message {
+    padding: 30px;
   }
 </style>
