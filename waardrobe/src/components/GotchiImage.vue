@@ -86,8 +86,11 @@ export default {
   }
 
   .gotchi-image {
-    width: 200px;
-    height: 200px;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: 100%;
+    min-width: 200px;
+    min-height: 200px;
     max-width: 100%;
     max-height: 100%;
     image-rendering: crisp-edges;

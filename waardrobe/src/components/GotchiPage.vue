@@ -47,7 +47,7 @@
         <h2 v-if="gotchiStatus.loaded">
           {{ gotchiDetails.name }}
         </h2>
-        <GotchiImage />
+        <GotchiImage style="width: 200px; height: 200px" />
       </div>
 
     </form>
@@ -124,7 +124,7 @@
         <h2>
           {{ gotchiDetails.name }}
         </h2>
-        <GotchiImage />
+        <GotchiImage style="width: 200px; height: 200px" />
       </div>
 
     </form>

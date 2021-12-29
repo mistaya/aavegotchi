@@ -41,6 +41,7 @@
 
       <div>
         <GotchiImage
+          style="width: 200px; height: 200px"
           previewWearables
           :happy="previewHappy"
           :spinning="previewSpinning"

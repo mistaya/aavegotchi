@@ -2,16 +2,17 @@
   <div
     class="entrance"
     :class="{
+      'entrance--entered': entered,
       'entrance--leaving': leaving
+    }"
+    :style="{
+      '--num-shelves': numShelves,
+      '--shelves-delay': `${shelvesDuration}s`
     }"
   >
     <!-- TODO see if moving svgs out here makes any difference to performance - with use or url(#id)? -->
     <div
       class="stockroom"
-      :style="{
-        '--num-shelves': numShelves,
-        '--shelves-delay': `${shelvesDuration}s`
-      }"
       :class="{
         'stockroom--entered': entered
       }"
@@ -65,20 +66,29 @@
             <div class="shelf-extension" />
             <template v-if="isTargetShelf(i)">
               <div class="shelf-gotchi-bg" />
-              <div class="shelf-gotchi">
-                <GotchiImage
-                  hideBackground
-                  floating
-                  :happy="happy"
-                />
-              </div>
             </template>
           </div>
         </XyzTransitionGroup>
-        <div class="creation-point">
-          <div class="creation-point-inner" />
-        </div>
+        <XyzTransition
+          appear
+          xyz="ease-linear"
+          :style="{
+            '--xyz-duration': `${shelvesDuration}s`,
+            '--xyz-translate-x': '100vw'
+          }"
+        >
+          <div class="creation-point">
+            <div class="creation-point-inner" />
+          </div>
+        </XyzTransition>
       </template>
+    </div>
+    <div class="shelf-gotchi">
+      <GotchiImage
+        hideBackground
+        :floating="floating"
+        :happy="happy"
+      />
     </div>
   </div>
 </template>
@@ -95,6 +105,7 @@ export default {
     return {
       entered: true,
       happy: false,
+      floating: true,
       leaving: false,
       numShelves: 24,
       perShelfDuration: 0.02
@@ -153,11 +164,23 @@ export default {
       return i == this.numShelves/2;
     },
     makeGotchiHappy () {
+      // The 'happy' animation gets out of sync with the 'floating' animation
+      // so only enable one at a time
       this.happy = true
-      setTimeout(() => this.happy = false, 500);
-      setTimeout(() => this.happy = true, 1200);
-      setTimeout(() => this.happy = false, 1700);
-      setTimeout(() => this.leave(), 3200);
+      this.floating = false
+      setTimeout(() => {
+        this.happy = false
+      }, 500);
+      setTimeout(() => {
+        this.happy = true
+      }, 1200);
+      setTimeout(() => {
+        this.happy = false
+        this.floating = true
+      }, 1700);
+      setTimeout(() => {
+        this.leave()
+      }, 3200);
     },
     leave () {
       this.leaving = true;
@@ -177,6 +200,18 @@ export default {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+
+    --creation-point-glow: rgba(223, 0, 169, 0.5);
+    --shelf-depth: 40px;
+    --shelf-height: 200px;
+    --shelf-length: 6000px;
+    --shelf-gap: calc(100vw / var(--num-shelves));
+    --gotchi-size: min(70vw, 80vh, 500px);
+    --gotchi-bg-width: 2000px;
+    --shelves-target-position: 200px;
+    --initial-stockroom-scale: 0.1;
+    --target-stockroom-scale: 12;
+    --zoom-duration: 2s;
   }
 
   .entrance--leaving {
@@ -186,18 +221,6 @@ export default {
 
   .stockroom {
     transform-style: preserve-3d;
-
-    --creation-point-glow: rgba(223, 0, 169, 0.5);
-    --shelf-depth: 40px;
-    --shelf-height: 200px;
-    --shelf-length: 6000px;
-    --shelf-gap: calc(100vw / var(--num-shelves));
-    --gotchi-size: 150px;
-    --gotchi-bg-width: 2000px;
-    --shelves-target-position: 200px;
-    --initial-stockroom-scale: 0.1;
-    --target-stockroom-scale: 12;
-    --zoom-duration: 2s;
 
     z-index: -1;
     width: 100vw;
@@ -328,8 +351,7 @@ export default {
     justify-items: center;
   }
   .shelf,
-  .shelf-extension,
-  .shelf-gotchi {
+  .shelf-extension {
     transform: scale(var(--initial-stockroom-scale));
   }
 
@@ -407,37 +429,8 @@ export default {
 
     filter: saturate(0.7);
   }
-
-  .shelf-gotchi {
-    position: absolute;
-    bottom: 0;
-    left: 100%;
-    transform:
-      /* move the gotchi down (y) to make it look like it's further in front of the shelves - this is easier than using translateX */
-      translateY(calc(0.1 * var(--gotchi-size)))
-      /* move the gotchi to the final 'camera' perspective, centered by offsetting by half the gotchi width */
-      translateZ(calc(-1 * (var(--shelves-target-position) - 0.5 * var(--initial-stockroom-scale) * var(--gotchi-size))))
-      /* rotate the gotchi so its back is to the shelves */
-      rotateY(90deg)
-      /* the gotchi width will be stretched with the perspective along the shelves: reverse this effect so it appears normal */
-      scaleX(var(--initial-stockroom-scale));
-    transform-origin: left;
-    width: var(--gotchi-size);
-    height: var(--gotchi-size);
-    Xbackground-color: pink;
-    opacity: 0;
-  }
-  .stockroom--entered .shelf-gotchi,
   .stockroom--entered .shelf-gotchi-bg {
     animation: appear 0s step-end calc(var(--zoom-duration) + var(--shelves-delay)) forwards;
-  }
-  @keyframes appear {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
   }
 
   .creation-point {
@@ -466,5 +459,29 @@ export default {
     width: var(--creation-point-width);
     border-radius: 20px;
     box-shadow: inset 0px 0px 25px var(--creation-point-glow), 0px 0px 40px 1px var(--creation-point-glow);
+  }
+
+  /* The gotchi is rendered outside/over the 3D context,
+   * to avoid Chrome's bad rendering quality for the floating effect there.
+   */
+  .shelf-gotchi {
+    position: absolute;
+    top: calc(60% - var(--gotchi-size) / 2);
+    left: calc(50% - var(--gotchi-size) / 2);
+    width: var(--gotchi-size);
+    height: var(--gotchi-size);
+    Xbackground-color: pink;
+    opacity: 0;
+  }
+  .entrance--entered .shelf-gotchi {
+    animation: appear 0s step-end calc(var(--zoom-duration) + var(--shelves-delay)) forwards;
+  }
+  @keyframes appear {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>
