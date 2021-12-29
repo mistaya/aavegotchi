@@ -90,6 +90,7 @@ export default {
     height: 200px;
     max-width: 100%;
     max-height: 100%;
+    image-rendering: crisp-edges;
   }
 
   .gotchi-images .gotchi-image:not(:first-child) {
@@ -149,9 +150,79 @@ export default {
     animation-iteration-count: infinite;
     animation-direction: alternate;
   }
-  @keyframes floating {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(1%); }
+
+  /* floating animation rules taken from aavegotchi site */
+  .gotchi-images--floating :deep(svg) {
+    animation-name:down;
+    animation-duration:0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-timing-function: steps(1);
+  }
+
+  .gotchi-images--floating :deep(.gotchi-shadow) {
+    animation: up 0.5s infinite linear steps(2);
+     animation-name:up;
+     animation-duration:0.5s;
+     animation-iteration-count: infinite;
+     animation-timing-function: linear;
+     animation-timing-function: steps(2);
+  }
+
+  .gotchi-images--floating :deep(.gotchi-wearable){
+    animation-name:down;
+    animation-duration:0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-timing-function: steps(1);
+  }
+
+  .gotchi-images--floating :deep(.gotchi-handsDownClosed),
+  .gotchi-images--floating :deep(.gotchi-handsUp),
+  .gotchi-images--floating :deep(.gotchi-handsDownOpen),
+  .gotchi-images--floating :deep(.gotchi-handsDownClosed),
+  .gotchi-images--floating :deep(.gotchi-body),
+  .gotchi-images--floating :deep(.gotchi-eyeColor),
+  .gotchi-images--floating :deep(.gotchi-collateral),
+  .gotchi-images--floating :deep(.gotchi-cheek),
+  .gotchi-images--floating :deep(.gotchi-primary-mouth),
+  .gotchi-images--floating :deep(.gotchi-wearable),
+  .gotchi-images--floating :deep(.gotchi-sleeves)   {
+     animation-name:down;
+     animation-duration:0.5s;
+     animation-iteration-count: infinite;
+     animation-timing-function: linear;
+     animation-timing-function: steps(2);
+  }
+
+  .gotchi-images--floating :deep(.wearable-hand) {
+    animation-name:down !important;
+    animation-duration:0.5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-timing-function: steps(2);
+  }
+
+  .gotchi-images--floating :deep(.wearable-bg) {
+    animation-name:none !important;
+  }
+
+  @keyframes up {
+    from {
+      transform: translate(0px, 0);
+    }
+   to {
+      transform: translate(0px, -1px);
+    }
+  }
+
+  @keyframes down {
+   from {
+     transform: translate(0px, 0);
+      }
+   to {
+        transform: translate(0px, 1px);
+      }
   }
 
   .gotchi-images--happy :deep(.gotchi-handsUp),
