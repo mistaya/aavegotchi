@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Config Parcels</h1>
-    <router-link :to="{ name: 'home' }">Back to Home</router-link>
     <PrereqParcels>
       <LayoutMapWithFilters>
         <template #sidebar>
@@ -116,10 +115,8 @@
           </section>
         </template>
         <template #top>
-          Top
         </template>
         <template #main>
-          Main
           <CitaadelMap
             :parcels="parcelsToDisplay"
             :parcelsMatchingFilters="parcelsMatchingFilters"
