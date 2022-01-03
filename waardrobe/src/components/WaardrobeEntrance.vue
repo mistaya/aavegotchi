@@ -10,7 +10,6 @@
       '--shelves-delay': `${shelvesDuration}s`
     }"
   >
-    <!-- TODO see if moving svgs out here makes any difference to performance - with use or url(#id)? -->
     <div class="stockroom">
       <button
         v-if="!entered"
