@@ -4,11 +4,11 @@
     :class="instanceNamespace"
   >
     <div v-if="svgStatus.error">
-      Error fetching gotchi image ({{ svgStatus.errorMessage }})
+      Error: {{ svgStatus.errorMessage }}
     </div>
     <div v-if="svgStatus.loading || svgStatus.loaded">
       <div v-if="svgStatus.loading && !previousSvgs">
-        Fetching gotchi image...
+        Fetching...
       </div>
       <div
         v-else

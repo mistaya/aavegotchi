@@ -94,7 +94,12 @@ watch(
         }).catch(err => {
             if (isDetailsStale()) { return; }
             gotchiDetails.value = null;
-            setDetailsError(err.message);
+            let message = err.message
+            const responseCode = err.code
+            if (responseCode === "INVALID_ARGUMENT") {
+                message = "Please provide a numeric gotchi ID."
+            }
+            setDetailsError(message);
         });
 
         const [isSvgStale, setSvgLoaded, setSvgError] = setSvgLoading();
@@ -105,7 +110,17 @@ watch(
         }).catch(err => {
             if (isSvgStale()) { return; }
             gotchiSvg.value = null;
-            setSvgError(err.message);
+            let message = err.message
+            const responseCode = err.code
+            if (responseCode === "INVALID_ARGUMENT") {
+                message = "Please provide a numeric gotchi ID."
+            } else {
+                const responseMessage = err.errorArgs?.[0]
+                if (responseMessage?.includes("Aavegotchi not claimed")) {
+                    message = "That gotchi doesn't seem to exist."
+                }
+            }
+            setSvgError(message);
         });
     }
 );
@@ -135,7 +150,12 @@ watch(
         }).catch(err => {
             if (isSvgStale()) { return; }
             gotchiSvg.value = null;
-            setSvgError(err.message);
+            let message = err.message
+            const responseCode = err.code
+            if (responseCode === "INVALID_ARGUMENT") {
+                message = "Please provide numeric traits."
+            }
+            setSvgError(message);
         });
     },
     { deep: true }
