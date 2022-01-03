@@ -66,6 +66,7 @@ const namespaceSvgText = function(svgText, namespace) {
 const clearGotchi = function () {
     gotchiDetails.value = null;
     gotchiSvg.value = null;
+    previewSvg.value = null;
     resetDetailsStatus();
     resetSvgStatus();
     resetPreviewSvgStatus();

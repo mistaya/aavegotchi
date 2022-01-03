@@ -46,7 +46,7 @@ export default {
     hideBackground: { type: Boolean, default: false }
   },
   setup (props) {
-    const { gotchiStatus, gotchiSvg, previewSvgStatus, previewSvg, namespaceSvgText } = useGotchi();
+    const { gotchiId, gotchiStatus, gotchiSvg, previewSvgStatus, previewSvg, namespaceSvgText } = useGotchi();
 
     const instanceNamespace = ref(uniqueId('gotchi-image__'));
     const previousSvgs = ref(null);
@@ -68,6 +68,12 @@ export default {
           previousSvgs.value = svgs;
         }
       }
+    );
+
+    // When gotchi ID changes, clear any cached svgs
+    watch(
+      () => gotchiId.value,
+      () => previousSvgs.value = null
     );
 
     return {
