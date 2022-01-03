@@ -11,12 +11,7 @@
     }"
   >
     <!-- TODO see if moving svgs out here makes any difference to performance - with use or url(#id)? -->
-    <div
-      class="stockroom"
-      :class="{
-        'stockroom--entered': entered
-      }"
-    >
+    <div class="stockroom">
       <button
         v-if="!entered"
         type="button"
@@ -26,62 +21,40 @@
         Enter
       </button>
 
-      <template v-if="entered">
-        <!-- The xyz animation library solves 2 problems:
-          1) animating opacity and preserve-3d are incompatible https://css-tricks.com/things-watch-working-css-3d/#3-opacity
-             but the xyz implementation works without awkward workarounds
-          2) chrome has bad performance for the very fast shelf/glow appearance and skips a lot of frames,
-             but the xyz implementation (involving adding/removing CSS classes to trigger appearances)
-             has a better result than simple timed transitions/animations
-         -->
-        <XyzTransitionGroup
-          ref="shelvesRef"
-          appear
-          class="shelves"
-          xyz="fade appear-stagger-rev"
-          :style="{
-            '--xyz-appear-stagger-rev': `${perShelfDuration}s`,
+      <div
+        ref="shelvesRef"
+        class="shelves"
+        :style="{
+          '--per-shelf-duration': `${perShelfDuration}s`,
+        }"
+      >
+        <div
+          v-for="i in numShelves"
+          :key="i"
+          class="shelf"
+          :class="{
+            'shelf--left': isLeftShelf(i),
+            'shelf--target': isTargetShelf(i)
           }"
-        >
-          <div
-            v-for="i in numShelves"
-            :key="i"
-            class="shelf"
-            :class="{
-              'shelf--left': isLeftShelf(i),
-              'shelf--target': isTargetShelf(i)
-            }"
-            :style="{
-              '--shelf-num': i-1,
-              '--xyz-index-rev': numShelves - i + 1,
-              '--xyz-transform': 'scale(var(--initial-stockroom-scale))',
-              'z-index': `${numShelves - Math.abs((numShelves)/2 - i)}`,
-              '--wearable-svg-1': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[0]}')` : false,
-              '--wearable-svg-2': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[1]}')` : false,
-              '--wearable-svg-3': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[2]}')` : false,
-              '--wearable-svg-4': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[3]}')` : false
-            }"
-            :data-svg="isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[0]}')` : ''"
-          >
-            <div class="shelf-extension" />
-            <template v-if="isTargetShelf(i)">
-              <div class="shelf-gotchi-bg" />
-            </template>
-          </div>
-        </XyzTransitionGroup>
-        <XyzTransition
-          appear
-          xyz="ease-linear"
           :style="{
-            '--xyz-duration': `${shelvesDuration}s`,
-            '--xyz-translate-x': '100vw'
+            '--shelf-num': i-1,
+            'z-index': `${numShelves - Math.abs((numShelves)/2 - i)}`,
+            '--wearable-svg-1': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[0]}')` : false,
+            '--wearable-svg-2': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[1]}')` : false,
+            '--wearable-svg-3': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[2]}')` : false,
+            '--wearable-svg-4': isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[3]}')` : false
           }"
+          :data-svg="isTargetShelf(i) ? `url('data:image/svg+xml;utf8,${wearableSvgs[0]}')` : ''"
         >
-          <div class="creation-point">
-            <div class="creation-point-inner" />
-          </div>
-        </XyzTransition>
-      </template>
+          <div class="shelf-extension" />
+          <template v-if="isTargetShelf(i)">
+            <div class="shelf-gotchi-bg" />
+          </template>
+        </div>
+      </div>
+      <div class="creation-point">
+        <div class="creation-point-inner" />
+      </div>
     </div>
     <div class="shelf-gotchi">
       <GotchiImage
@@ -107,15 +80,15 @@ export default {
       happy: false,
       floating: true,
       leaving: false,
-      numShelves: 24,
-      perShelfDuration: 0.02
+      numShelves: 16,
+      /* browser performance degrades for very short duration/rapid shelf entry */
+      perShelfDuration: 0.05
       //perShelfDuration: 1
     }
   },
   computed: {
     shelvesDuration () {
-      // start it just before the staggered shelves, by controlling their xyz-index-rev
-      // then its duration is calculated by the travel time across all shelves
+      // duration is calculated by the travel time of the creation point across all shelves
       // plus its own length (4 shelves) for the initial delay
       return (4 + this.numShelves) * this.perShelfDuration;
     },
@@ -136,7 +109,7 @@ export default {
       handler () {
         if (this.entered) {
           this.$nextTick(() => {
-            if (this.$refs.shelvesRef && document.fish) {
+            if (this.$refs.shelvesRef) {
               const animation = this.$refs.shelvesRef.getAnimations().find(anim => anim.animationName.includes("faceSide"))
               if (animation) {
                 animation.onfinish = () => {
@@ -230,7 +203,7 @@ export default {
     display: grid;
     align-items: center;
   }
-  .stockroom--entered {
+  .entrance--entered .stockroom {
     animation:
       zoomPerspective var(--zoom-duration) cubic-bezier(0.180, 0.770, 0.765, 1.015) var(--shelves-delay) forwards,
       zoomIn var(--zoom-duration) cubic-bezier(0.870, 0.110, 1.000, 0.715) var(--shelves-delay) forwards;
@@ -303,7 +276,7 @@ export default {
     }
   }
 
-  .stockroom--entered .shelves {
+  .entrance--entered .shelves {
     --translate-z: var(--shelves-target-position);
     --translate-x-amount: 0.6;
     --translate-x: calc(var(--translate-x-amount) * var(--shelf-gap));
@@ -313,7 +286,7 @@ export default {
   }
 
   @media (min-width: 450px) {
-    .stockroom--entered .shelves {
+    .entrance--entered .shelves {
       --translate-x-amount: 0.2;
     }
   }
@@ -352,7 +325,7 @@ export default {
   }
   .shelf,
   .shelf-extension {
-    transform: scale(var(--initial-stockroom-scale));
+    transform: translateX(150vw) scale(var(--initial-stockroom-scale));
   }
 
   .shelf {
@@ -364,6 +337,20 @@ export default {
     height: var(--shelf-height);
     width: var(--shelf-depth);
     background-color: #333;
+  }
+  .entrance--entered .shelf {
+    animation: enterShelf calc(var(--per-shelf-duration) * (0.5 + var(--num-shelves) - var(--shelf-num))) step-end 0s forwards;
+  }
+  /* use translateX to make the shelf 'appear' instantly (initially hidden offscreen).
+    Can't use opacity because that disables transform-style: preserve-3d
+   */
+  @keyframes enterShelf {
+    0% {
+      transform: translateX(150vw) scale(var(--initial-stockroom-scale));
+    }
+    100% {
+      transform: translateX(0vw) scale(var(--initial-stockroom-scale));
+    }
   }
 
   .shelf-extension {
@@ -429,7 +416,7 @@ export default {
 
     filter: saturate(0.7);
   }
-  .stockroom--entered .shelf-gotchi-bg {
+  .entrance--entered .shelf-gotchi-bg {
     animation: appear 0s step-end calc(var(--zoom-duration) + var(--shelves-delay)) forwards;
   }
 
@@ -446,6 +433,9 @@ export default {
     width: var(--creation-point-width);
     padding: 40px 30px;
 
+    transform: translateX(100vw);
+  }
+  .entrance--entered .creation-point {
     animation: creationPointMove var(--shelves-delay) linear 0s forwards;
   }
   @keyframes creationPointMove {
@@ -463,6 +453,7 @@ export default {
 
   /* The gotchi is rendered outside/over the 3D context,
    * to avoid Chrome's bad rendering quality for the floating effect there.
+   * This also lets it render at full resolution, instead of suffering scaling degradation in 3D.
    */
   .shelf-gotchi {
     position: absolute;
