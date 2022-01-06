@@ -53,11 +53,17 @@
         Last bid: {{ auction.highestBidGhst }} GHST
       </a>
       <br>Bidder:
-      <EthAddress :address="auction.highestBidder" />
+      <EthAddress
+        :address="auction.highestBidder"
+        icon
+      />
     </div>
     <div v-if="owner">
       Owner:
-      <EthAddress :address="owner" />
+      <EthAddress
+        :address="owner"
+        icon
+      />
     </div>
     <div v-if="listing">
       <a

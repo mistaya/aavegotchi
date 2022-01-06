@@ -1,12 +1,19 @@
 <template>
   <span>
-    <span
-      class="eth-address"
-      :title="address"
-    >
-      {{ shortAddress }}
-    </span>
-    <CopyToClipboard :text="address" />
+    <div class="address-row">
+      <EthIcon
+        v-if="icon"
+        style="width: 15px"
+        :address="address"
+      />
+      <span
+        class="eth-address"
+        :title="address"
+      >
+        {{ shortAddress }}
+      </span>
+      <CopyToClipboard :text="address" />
+    </div>
     <a
       v-if="polygonscan"
       :href="`https://polygonscan.com/address/${address}`"
@@ -21,14 +28,17 @@
 
 <script>
 import CopyToClipboard from './CopyToClipboard.vue'
+import EthIcon from './EthIcon.vue'
 
 export default {
   components: {
-    CopyToClipboard
+    CopyToClipboard,
+    EthIcon
   },
   props: {
     address: { type: String, required: true },
-    polygonscan: { type: Boolean, default: false }
+    polygonscan: { type: Boolean, default: false },
+    icon: { type: Boolean, default: false }
   },
   computed: {
     shortAddress () {
@@ -39,7 +49,12 @@ export default {
 </script>
 
 <style scoped>
+  .address-row {
+    display: inline-flex;
+    align-items: center;
+  }
   .eth-address {
+    margin: 0 3px 0 5px;
     font-family: monospace;
   }
 </style>

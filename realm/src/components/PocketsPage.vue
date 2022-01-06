@@ -65,7 +65,10 @@
               {{ gotchi.name }}
             </td>
             <td>
-              <EthAddress :address="gotchi.owner" />
+              <EthAddress
+                :address="gotchi.owner"
+                icon
+              />
             </td>
             <td>
               {{ gotchi.collateral }}
