@@ -7,6 +7,15 @@
       {{ shortAddress }}
     </span>
     <CopyToClipboard :text="address" />
+    <a
+      v-if="polygonscan"
+      :href="`https://polygonscan.com/address/${address}`"
+      target="_blank"
+      rel="nofollow noopener noreferrer"
+      style="margin-left: 5px"
+    >
+      polygonscan
+    </a>
   </span>
 </template>
 
@@ -18,7 +27,8 @@ export default {
     CopyToClipboard
   },
   props: {
-    address: { type: String, required: true }
+    address: { type: String, required: true },
+    polygonscan: { type: Boolean, default: false }
   },
   computed: {
     shortAddress () {
