@@ -86,7 +86,11 @@ export default {
     const svgDataURI = computed(() => {
       if (!props.downloadable || !originalSvgs.value?.[0]) { return }
       // Use original svg as a data URI, as we don't want to namespace its css
-      return `data:image/svg+xml;utf8,${encodeURIComponent(originalSvgs.value?.[0])}`
+      // We also need to add svg width and height, to avoid FF bug https://stackoverflow.com/questions/43165562/canvas-todataurl-returns-blank-image-in-firefox-even-with-onload-and-callback
+      let svg = originalSvgs.value[0]
+      const index = svg.indexOf("<svg");
+      svg = svg.substring(0, index) + '<svg width="64" height="64"' + svg.substring(index + "<svg".length);
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
     });
 
     const downloadImgRef = ref(null)
