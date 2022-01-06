@@ -10,16 +10,16 @@
       '--shelves-delay': `${shelvesDuration}s`
     }"
   >
+    <button
+      v-if="!entered"
+      type="button"
+      class="enter-button"
+      style="margin: auto; padding: 10px 30px;"
+      @click="entered = true"
+    >
+      Enter
+    </button>
     <div class="stockroom">
-      <button
-        v-if="!entered"
-        type="button"
-        style="margin: auto; padding: 10px 30px;"
-        @click="entered = true"
-      >
-        Enter
-      </button>
-
       <div
         ref="shelvesRef"
         class="shelves"
@@ -81,15 +81,15 @@ export default {
       leaving: false,
       numShelves: 16,
       /* browser performance degrades for very short duration/rapid shelf entry */
-      perShelfDuration: 0.05
+      perShelfDuration: 0.07
       //perShelfDuration: 1
     }
   },
   computed: {
     shelvesDuration () {
       // duration is calculated by the travel time of the creation point across all shelves
-      // plus its own length (4 shelves) for the initial delay
-      return (4 + this.numShelves) * this.perShelfDuration;
+      // plus its own length (2 shelves) for the initial delay
+      return (2 + this.numShelves) * this.perShelfDuration;
     },
     wearableSvgs () {
       const randoms = []
@@ -191,7 +191,12 @@ export default {
     transition: opacity 0.7s;
   }
 
+  .enter-button {
+    z-index: 1;
+  }
+
   .stockroom {
+    pointer-events: none;
     transform-style: preserve-3d;
 
     z-index: -1;
@@ -336,9 +341,11 @@ export default {
     height: var(--shelf-height);
     width: var(--shelf-depth);
     background-color: #333;
+    backface-visibility: hidden;
   }
   .entrance--entered .shelf {
-    animation: enterShelf calc(var(--per-shelf-duration) * (0.5 + var(--num-shelves) - var(--shelf-num))) step-end 0s forwards;
+    /* adjust the delay to match the creation point glow movement */
+    animation: enterShelf calc(var(--per-shelf-duration) * (0.2 + var(--num-shelves) - var(--shelf-num))) step-end 0s forwards;
   }
   /* use translateX to make the shelf 'appear' instantly (initially hidden offscreen).
     Can't use opacity because that disables transform-style: preserve-3d
@@ -353,20 +360,22 @@ export default {
   }
 
   .shelf-extension {
-    border: calc(0.25 * var(--shelf-depth)) solid #333;
-    background-color: #555;
-    /* image gradient: vertical lines */
-    background-image: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(153,153,153,1) 7%, rgba(68,68,68,1) 12%, rgba(51,51,51,1) 16%, rgba(204,204,204,1) 21%, rgba(82,82,82,1) 24%, rgba(51,51,51,1) 32%, rgba(62,62,62,1) 36%, rgba(67,67,67,1) 56%, rgba(170,170,170,1) 63%, rgba(31,31,31,1) 71%, rgba(0,0,0,1) 83%, rgba(0,0,0,1) 100%);
-    background-size: calc(var(--shelf-length) / 50);
+    border: calc(0.5 * var(--shelf-depth)) solid #333;
+    /* chrome on android fails to render background-image across all shelves - use a simple bg color */
+    background-color: #404040;
     width: var(--shelf-length);
     height: var(--shelf-height);
     transform-style: preserve-3d;
     transform-origin: left;
     transform: translateX(calc(0.05 * var(--shelf-depth))) rotateY(90deg);
+    backface-visibility: hidden;
   }
 
   .shelf--left .shelf-extension {
     transform: translateX(calc(0.95 * var(--shelf-depth))) rotateY(90deg);
+  }
+  .shelf:not(.shelf--left) .shelf-extension {
+    transform: translateX(calc(0.05 * var(--shelf-depth))) rotateY(90deg) rotateX(180deg);
   }
 
   .shelf-gotchi-bg {
@@ -420,14 +429,11 @@ export default {
   }
 
   .creation-point {
-    --creation-point-spans-shelves: 4;
+    --creation-point-spans-shelves: 2;
     --creation-point-width: calc(var(--creation-point-spans-shelves) * 100vw / var(--num-shelves));
 
     grid-row: 1;
     grid-column: 1 /2;
-
-    mask-image: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(255,255,255,0) 85%, rgba(255,255,255,0) 100%);
-    -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 60%, rgba(255,255,255,0) 85%, rgba(255,255,255,0) 100%);
 
     width: var(--creation-point-width);
     padding: 40px 30px;
@@ -436,6 +442,7 @@ export default {
   }
   .entrance--entered .creation-point {
     animation: creationPointMove var(--shelves-delay) linear 0s forwards;
+    perspective: 300px;
   }
   @keyframes creationPointMove {
     /* start offscreen to the right */
@@ -446,8 +453,15 @@ export default {
   .creation-point-inner {
     height: 40px;
     width: var(--creation-point-width);
+    /* Use a blurred border to produce the glow, with perspective to shape it. This has better performance than box-shadow and mask-image. */
     border-radius: 20px;
-    box-shadow: inset 0px 0px 25px var(--creation-point-glow), 0px 0px 40px 1px var(--creation-point-glow);
+    border: 5px solid var(--creation-point-glow);
+    border-left-width: 15px;
+    border-right-width: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    filter: blur(5px);
+    transform: rotateY(20deg);
   }
 
   /* The gotchi is rendered outside/over the 3D context,
@@ -455,6 +469,7 @@ export default {
    * This also lets it render at full resolution, instead of suffering scaling degradation in 3D.
    */
   .shelf-gotchi {
+    pointer-events: none;
     position: absolute;
     top: calc(60% - var(--gotchi-size) / 2);
     left: calc(50% - var(--gotchi-size) / 2);
