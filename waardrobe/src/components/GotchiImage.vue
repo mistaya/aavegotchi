@@ -22,11 +22,29 @@
         }"
       >
         <div
-          v-for="(svg, svgIndex) in (svgStatus.loading ? previousSvgs : svgs)"
+          v-for="(svg, svgIndex) in svgsToDisplay"
           :key="svgIndex"
           class="gotchi-image"
           v-html="svg"
         />
+        <div
+          v-if="downloadable && svgDataURI"
+          class="gotchi-image-downloads"
+        >
+          <img
+            ref="downloadImgRef"
+            :src="svgDataURI" width="100" height="100"
+            class="gotchi-image-download__image"
+          />
+          <a
+            ref="downloadLinkRef"
+            href="#"
+            :download="downloadFilename"
+            @click="onDownloadLinkClicked"
+          >
+            Download PNG
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -43,7 +61,8 @@ export default {
     floating: { type: Boolean, default: false },
     spinning: { type: Boolean, default: false },
     happy: { type: Boolean, default: false },
-    hideBackground: { type: Boolean, default: false }
+    hideBackground: { type: Boolean, default: false },
+    downloadable: { type: Boolean, default: false }
   },
   setup (props) {
     const { gotchiId, gotchiStatus, gotchiSvg, previewSvgStatus, previewSvg, namespaceSvgText } = useGotchi();
@@ -55,11 +74,45 @@ export default {
       return props.previewWearables ? previewSvgStatus.value : gotchiStatus.value;
     });
 
+    const originalSvgs = computed(() => props.previewWearables ? previewSvg.value : gotchiSvg.value)
+
     const svgs = computed(() => {
       if (!svgStatus.value.loaded) { return null; }
-      const originalSvgs = props.previewWearables ? previewSvg : gotchiSvg;
-      return originalSvgs?.value ? originalSvgs.value.map(svgText => namespaceSvgText(svgText, instanceNamespace.value)) : null;
+      return originalSvgs.value ? originalSvgs.value.map(svgText => namespaceSvgText(svgText, instanceNamespace.value)) : null;
     });
+
+    const svgsToDisplay = computed(() => svgStatus.value.loading ? previousSvgs.value : svgs.value);
+
+    const svgDataURI = computed(() => {
+      if (!props.downloadable || !originalSvgs.value?.[0]) { return }
+      // Use original svg as a data URI, as we don't want to namespace its css
+      return `data:image/svg+xml;utf8,${encodeURIComponent(originalSvgs.value?.[0])}`
+    });
+
+    const downloadImgRef = ref(null)
+    const downloadLinkRef = ref(null)
+
+    const onDownloadLinkClicked = () => {
+      // Run this just-in-time when the link is clicked,
+      // so that the image is available
+      if (!downloadImgRef.value || !downloadLinkRef.value) { return ""; }
+      const img = downloadImgRef.value;
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext('2d');
+      const width = 800;
+      const height = 800;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const imgURIFromCanvas = canvas
+        .toDataURL('image/png')
+        .replace('image/png', 'image/octet-stream');
+
+      downloadLinkRef.value.href = imgURIFromCanvas
+    }
+
+    const downloadFilename = computed(() => gotchiId.value ? `gotchi${gotchiId.value}.png` : `gotchiCustom.png`);
 
     watch(
       () => svgs.value,
@@ -79,8 +132,13 @@ export default {
     return {
       instanceNamespace,
       svgStatus,
-      svgs,
-      previousSvgs
+      previousSvgs,
+      svgsToDisplay,
+      svgDataURI,
+      downloadImgRef,
+      downloadLinkRef,
+      downloadFilename,
+      onDownloadLinkClicked
     };
   }
 };
@@ -256,5 +314,15 @@ export default {
   .gotchi-images--hide-background :deep(.gotchi-bg),
   .gotchi-images--hide-background :deep(.wearable-bg) {
     display: none;
+  }
+
+  .gotchi-image-downloads {
+    margin-top: 10px;
+  }
+
+  .gotchi-image-download__image {
+    position: absolute;
+    visibility: hidden;
+    pointer-events: none;
   }
 </style>

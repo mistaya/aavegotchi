@@ -54,6 +54,20 @@ const insertEyePettingSvg = function(svgText) {
     const insertionPoint = '<g class="gotchi-eyeColor';
     return svgText.replace(insertionPoint, `${gotchiEyePettingSvg}${insertionPoint}`)
 };
+const gotchiHideDefaultBgSvg = `
+    <style>
+        .gotchi-bg { display: none }
+    </style>
+`;
+const hideDefaultBg = function(svgText) {
+    // simple hack, assumes there is a <g class="gotchi-eyeColor" in the SVG
+    // This might break in future
+    const insertionPoint = '<g class="gotchi-eyeColor';
+    return svgText.replace(insertionPoint, `${gotchiHideDefaultBgSvg}${insertionPoint}`)
+};
+const tweakSvg = function(svgText) {
+    return hideDefaultBg(insertEyePettingSvg(svgText));
+};
 
 // Namespacing modifies the <style> rules inside the SVG with a prefix
 // so we can stop them affecting other gotchi SVGs on the same page
@@ -106,7 +120,7 @@ watch(
         const [isSvgStale, setSvgLoaded, setSvgError] = setSvgLoading();
         diamond.getAavegotchiSideSvgs(gotchiId.value).then(result => {
             if (isSvgStale()) { return; }
-            gotchiSvg.value = [insertEyePettingSvg(result[0]), result[1], result[3], result[2]];
+            gotchiSvg.value = [tweakSvg(result[0]), result[1], result[3], result[2]];
             setSvgLoaded();
         }).catch(err => {
             if (isSvgStale()) { return; }
@@ -146,7 +160,7 @@ watch(
             newCustomGotchi.equippedWearables
         ).then(result => {
             if (isSvgStale()) { return; }
-            gotchiSvg.value = [insertEyePettingSvg(result[0]), result[1], result[3], result[2]];
+            gotchiSvg.value = [tweakSvg(result[0]), result[1], result[3], result[2]];
             setSvgLoaded();
         }).catch(err => {
             if (isSvgStale()) { return; }
@@ -191,7 +205,7 @@ watch(
         const [isStale, setLoaded, setError] = setPreviewSvgLoading();
         diamond.getPreviewAavegotchiSideSvgs(hauntId, collateralType, numericTraits, equippedWearables).then(result => {
             if (isStale()) { return; }
-            previewSvg.value = [insertEyePettingSvg(result[0]), result[1], result[3], result[2]];
+            previewSvg.value = [tweakSvg(result[0]), result[1], result[3], result[2]];
             setLoaded();
         }).catch(err => {
             if (isStale()) { return; }

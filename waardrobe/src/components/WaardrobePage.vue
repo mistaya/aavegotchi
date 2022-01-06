@@ -41,10 +41,11 @@
 
       <div>
         <GotchiImage
-          style="width: 200px; height: 200px"
+          style="width: 200px; margin-bottom: 10px;"
           previewWearables
           :happy="previewHappy"
           :spinning="previewSpinning"
+          downloadable
         />
         <label>
           <input
