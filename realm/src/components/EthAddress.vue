@@ -57,6 +57,9 @@ export default {
 
 <style scoped>
   .address-row {
+    /* Bug workaround https://stackoverflow.com/questions/65083319/flex-box-inside-table-cell-or-with-width-min-content-shrinks-despite-flex-shrin */
+    width: max-content;
+
     display: inline-flex;
     align-items: center;
   }

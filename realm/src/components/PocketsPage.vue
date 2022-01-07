@@ -11,6 +11,31 @@
     </div>
 
     <template v-if="gotchisFetchStatus.loaded">
+      <div class="dashboard-controls">
+        <div class="dashboard-controls__modes">
+          Show totals for
+          <button
+            type="button"
+            class="dashboard-controls__mode"
+            :aria-pressed="`${dashboardDisplayMode === 'all'}`"
+            @click="dashboardDisplayMode = 'all'"
+          >
+            All (actual)
+          </button>
+
+          or
+
+          <button
+            type="button"
+            class="dashboard-controls__mode"
+            :aria-pressed="`${dashboardDisplayMode === 'minimum'}`"
+            @click="dashboardDisplayMode = 'minimum'"
+          >
+            Minimum (locked)
+          </button>
+          Collateral
+        </div>
+      </div>
       <div class="dashboard">
         <div
           v-if="hasPrices"
@@ -22,7 +47,7 @@
             </div>
             <div class="dashboard-number dashboard-number--primary">
               <NumberDisplay
-                :number="grandTotals.usdTotal"
+                :number="dashboardDisplayMode == 'all' ? grandTotals.usdTotal : grandTotals.usdTotalLocked"
                 usd
               />
             </div>
@@ -31,14 +56,14 @@
               <br>
               (average
                 <NumberDisplay
-                  :number="grandTotals.meanUsd"
+                  :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
                   usd
                 />)
             </div>
           </div>
         </div>
         <div
-          v-for="item in collateralTotalsWithPrice"
+          v-for="item in collateralTotalsWithPriceOrdered"
           :key="item.collateral.id"
           class="dashboard-metric"
         >
@@ -47,7 +72,7 @@
             style="width: 40px"
           />
           <div class="dashboard-number dashboard-number--primary">
-            <NumberDisplay :number="item.total" />
+            <NumberDisplay :number="dashboardDisplayMode == 'all' ? item.total : item.totalLocked" />
             {{ item.collateral.label }}
           </div>
           <div
@@ -55,12 +80,18 @@
             class="dashboard-number dashboard-number--secondary"
           >
             <NumberDisplay
-              :number="item.usdTotal"
+              :number="dashboardDisplayMode == 'all' ? item.usdTotal : item.usdTotalLocked"
               usd
             />
           </div>
           <div class="dashboard-text dashboard-text--secondary">
             in <NumberDisplay :number="item.numGotchis" /> gotchis
+            <br>
+            (average
+              <NumberDisplay
+                :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
+                usd
+              />)
           </div>
         </div>
       </div>
@@ -118,7 +149,8 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
 import useCollateralPrices from '@/data/useCollateralPrices'
 import useGotchis from '@/data/useGotchis'
@@ -138,6 +170,8 @@ export default {
     NumberDisplay
   },
   setup () {
+    const dashboardDisplayMode = ref('all') // or 'minimum'
+
     const {
       usdPrices,
       canSubmitFetch: canSubmitPricesFetch,
@@ -179,12 +213,14 @@ export default {
         Object.values(collaterals).map(collateral => {
           const numGotchis = 0
           const total = new BigNumber(0)
+          const totalLocked = new BigNumber(0)
           return [
             collateral.id,
             {
               collateral,
               numGotchis,
-              total
+              total,
+              totalLocked
             }
           ]
         })
@@ -196,21 +232,35 @@ export default {
         } else {
           collateralObj.numGotchis++
           collateralObj.total = collateralObj.total.plus(gotchi.stakedAmount)
+          collateralObj.totalLocked = collateralObj.totalLocked.plus(gotchi.minimumStake)
         }
       }
       return Object.values(collateralsMap)
     })
 
     const hasPrices = computed(() => pricesFetchStatus.value.loaded)
+
     const collateralTotalsWithPrice = computed(() => {
       if (!hasPrices.value) { return collateralTotals.value }
       return collateralTotals.value.map(obj => {
         const usdTotal = obj.total.times(usdPrices.value[obj.collateral.id])
+        const usdTotalLocked = obj.totalLocked.times(usdPrices.value[obj.collateral.id])
         return {
           ...obj,
-          usdTotal
+          usdTotal,
+          meanUsd: usdTotal.dividedBy(obj.numGotchis),
+          usdTotalLocked,
+          meanUsdLocked: usdTotalLocked.dividedBy(obj.numGotchis)
         }
       })
+    })
+
+    const collateralTotalsWithPriceOrdered = computed(() => {
+      if (!hasPrices.value) { return collateralTotals.value }
+      if (dashboardDisplayMode.value === 'all') {
+        return orderBy(collateralTotalsWithPrice.value, [obj => obj.usdTotal.toNumber()], ['desc'])
+      }
+      return orderBy(collateralTotalsWithPrice.value, [obj => obj.usdTotalLocked.toNumber()], ['desc'])
     })
 
     const grandTotals = computed(() => {
@@ -219,17 +269,25 @@ export default {
         ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.usdTotal), new BigNumber(0))
         : 0
       const meanUsd = hasPrices.value ? usdTotal.dividedBy(numGotchis) : 0
+      const usdTotalLocked = hasPrices.value
+        ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.usdTotalLocked), new BigNumber(0))
+        : 0
+      const meanUsdLocked = hasPrices.value ? usdTotalLocked.dividedBy(numGotchis) : 0
+
       return {
         numGotchis,
         usdTotal,
-        meanUsd
+        meanUsd,
+        usdTotalLocked,
+        meanUsdLocked
       }
     })
 
     return {
       gotchisFetchStatus,
+      dashboardDisplayMode,
       gotchisData,
-      collateralTotalsWithPrice,
+      collateralTotalsWithPriceOrdered,
       grandTotals,
       hasPrices
     }
@@ -238,6 +296,17 @@ export default {
 </script>
 
 <style scoped>
+  .dashboard-controls__modes {
+    margin: 20px 0 0 50px;
+  }
+  .dashboard-controls__mode {
+    padding: 5px 10px;
+  }
+  .dashboard-controls__mode[aria-pressed=true] {
+    background: var(--purple--contrast-black);
+    font-weight: bold;
+  }
+
   .dashboard {
     margin: 20px;
     display: flex;
@@ -256,7 +325,7 @@ export default {
     border: 1px solid #ccc;
     border-radius: 8px;
     text-align: center;
-    padding: 15px;
+    padding: 15px 25px;
   }
   .dashboard-number--primary {
     font-size: 1.5em;
