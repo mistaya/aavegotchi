@@ -235,6 +235,11 @@
         </section>
 
         <section>
+          <PaartnerParcelDetails
+            v-if="selectedParcelPaartnerId"
+            :paartner="selectedParcelPaartnerId"
+            @close="selectedParcelPaartnerId = null"
+          />
           <ParcelDetails
             v-if="selectedParcel"
             :parcel="selectedParcel.parcel"
@@ -306,6 +311,7 @@ import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DatePrecise from './DatePrecise.vue'
 import LoadingSpinner from './LoadingSpinner.vue'
+import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
@@ -322,6 +328,7 @@ export default {
   components: {
     PrereqParcels,
     LayoutMapWithFilters,
+    PaartnerParcelDetails,
     ParcelDetails,
     CitaadelMap,
     DatePrecise,
@@ -542,9 +549,18 @@ export default {
       return parcels
     })
 
-    const onClickParcel = function (parcel) {
-      selectedParcelId.value = parcel.id
+    const selectedParcelPaartnerId = ref(null)
+
+    const onClickParcel = (parcel) => {
+      if (parcel.paartner) {
+        selectedParcelPaartnerId.value = parcel.paartner
+        selectedParcelId.value = null
+      } else {
+        selectedParcelId.value = parcel.id
+        selectedParcelPaartnerId.value = null
+      }
     }
+
     const selectedParcel = computed(() => {
       if (!selectedParcelId.value) { return null }
       return {
@@ -631,6 +647,7 @@ export default {
       onClickParcel,
       selectedParcelId,
       selectedParcel,
+      selectedParcelPaartnerId,
       mostRecentAuction,
       mostRecentAuctionDate,
       canSubmitAuctionsFetch,

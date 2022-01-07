@@ -78,20 +78,50 @@
               fill: mapConfig.colorPaartners
             }"
           >
-            <path d="m 488.02088,568.02356 v -31.99952 h 31.99951 31.99951 v 31.99952 31.99948 h -31.99951 -31.99951 z" />
-            <path d="m 8515.8973,876.01882 v -31.99953 h 31.9993 31.9998 v 31.99953 31.99949 h -31.9998 -31.9993 z" />
-            <path d="m 7299.916,1648.0069 v -31.9995 h 31.9993 31.9998 v 31.9995 31.9995 h -31.9998 -31.9993 z" />
-            <path d="m 3375.9764,1776.005 v -31.9996 h 31.9995 31.9995 v 31.9996 31.9994 h -31.9995 -31.9995 z" />
-            <path d="m 5207.9481,2159.999 v -31.9995 h 31.9996 31.9995 v 31.9995 31.9995 h -31.9995 -31.9996 z" />
-            <path d="m 3511.9743,2691.9908 v -31.9995 h 31.9995 31.9995 v 31.9995 31.9995 h -31.9995 -31.9995 z" />
-            <path d="m 3919.968,3431.9794 v -31.9995 h 31.9995 31.9995 v 31.9995 31.9995 h -31.9995 -31.9995 z" />
-            <path d="m 5999.9358,3567.9774 v -31.9996 h 31.9998 31.9993 v 31.9996 31.9994 h -31.9993 -31.9998 z" />
-            <path d="m 4847.9537,3631.9763 v -31.9995 h 31.9995 31.9995 v 31.9995 31.9996 h -31.9995 -31.9995 z" />
-            <path d="m 8447.8981,3903.9721 v -31.9994 h 31.9998 31.9992 v 31.9994 31.9996 h -31.9992 -31.9998 z" />
-            <path d="m 464.02125,4303.966 v -31.9995 h 31.99951 31.9995 v 31.9995 31.9995 h -31.9995 -31.99951 z" />
-            <path d="m 4023.9664,4599.9614 v -31.9995 h 31.9995 31.9995 v 31.9995 31.9995 h -31.9995 -31.9995 z" />
-            <path d="m 6719.9247,4951.956 v -31.9995 h 31.9998 31.9993 v 31.9995 31.9995 h -31.9993 -31.9998 z" />
-            <path d="m 632.01868,5699.9447 v -31.9997 h 31.99948 31.99954 v 31.9997 31.9992 h -31.99954 -31.99948 z" />
+            <a
+              xlink:href="#"
+              @mousedown="onMouseDownParcel"
+              @click.prevent="onClickParcel($event, { paartner: 'aave' })"
+            >
+              <path data-paartner="aave" d="m 488,568 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            </a>
+            <path d="m 8516,876 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <path d="m 7300,1648 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <path d="m 3376,1776 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <a
+              xlink:href="#"
+              @mousedown="onMouseDownParcel"
+              @click.prevent="onClickParcel($event, { paartner: 'flamingo' })"
+            >
+              <path data-paartner="flamingo" d="m 5208,2160 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            </a>
+            <path d="m 3512,2692 v -31.9995 h 32 32 v 32 32 h -32 -32 z" />
+            <a
+              xlink:href="#"
+              @mousedown="onMouseDownParcel"
+              @click.prevent="onClickParcel($event, { paartner: 'blackpool' })"
+            >
+              <path data-paartner="blackpool" d="m 3920,3432 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            </a>
+            <path d="m 6000,3568 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <path d="m 4848,3632 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <path d="m 8448,3904 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <a
+              xlink:href="#"
+              @mousedown="onMouseDownParcel"
+              @click.prevent="onClickParcel($event, { paartner: 'yggsea' })"
+            >
+              <path data-paartner="yggsea" d="m 464,4304 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            </a>
+            <path d="m 4024,4600 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            <a
+              xlink:href="#"
+              @mousedown="onMouseDownParcel"
+              @click.prevent="onClickParcel($event, { paartner: 'readyplayerdao' })"
+            >
+              <path data-paartner="readyplayerdao" d="m 6720,4952 v -32 h 32 32 v 32 32 h -32 -32 z" />
+            </a>
+            <path d="m 632,5700 v -32 h 32 32 v 32 32 h -32 -32 z" />
           </g>
           <!--
           <image

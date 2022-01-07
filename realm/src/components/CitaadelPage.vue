@@ -223,6 +223,11 @@
         <FilterOwners v-model="filters.owners" />
 
         <section>
+          <PaartnerParcelDetails
+            v-if="selectedParcelPaartnerId"
+            :paartner="selectedParcelPaartnerId"
+            @close="selectedParcelPaartnerId = null"
+          />
           <ParcelDetails
             v-if="selectedParcel"
             :parcel="selectedParcel.parcel"
@@ -331,6 +336,7 @@ import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DateFriendly from './DateFriendly.vue'
+import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
@@ -351,6 +357,7 @@ export default {
     DateFriendly,
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
+    PaartnerParcelDetails,
     ParcelDetails,
     CitaadelMap,
     MapConfig,
@@ -676,8 +683,17 @@ export default {
         owner
       }
     })
+
+    const selectedParcelPaartnerId = ref(null)
+
     const onClickParcel = (parcel) => {
-      selectedParcelId.value = parcel.id
+      if (parcel.paartner) {
+        selectedParcelPaartnerId.value = parcel.paartner
+        selectedParcelId.value = null
+      } else {
+        selectedParcelId.value = parcel.id
+        selectedParcelPaartnerId.value = null
+      }
     }
 
     const listParcels = computed(() => {
@@ -748,6 +764,7 @@ export default {
       onClickParcel,
       selectedParcelId,
       selectedParcel,
+      selectedParcelPaartnerId,
       listParcelsShowAll,
       listParcelsToDisplay,
       listingsByParcelId,
