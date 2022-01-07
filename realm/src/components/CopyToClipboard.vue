@@ -11,11 +11,13 @@
       ref="buttonRef"
       type="button"
       class="copy-to-clipboard__button"
+      title="copy address"
       @click="copyToClipboard"
     >
+      <span class="sr-only">copy address</span>
       <img
         src="./icon-copy.svg"
-        alt="Copy"
+        alt=""
       />
     </button>
   </div>
@@ -64,7 +66,7 @@ export default {
     margin-left: 5px;
     border: none;
     padding: 0;
-    background: white;
+    background: transparent;
   }
   .copy-to-clipboard__button img {
     width: 100%;

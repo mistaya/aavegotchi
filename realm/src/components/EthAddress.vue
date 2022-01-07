@@ -13,16 +13,23 @@
         {{ shortAddress }}
       </span>
       <CopyToClipboard :text="address" />
+      <a
+        v-if="polygonscan"
+        :href="`https://polygonscan.com/address/${address}`"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        title="open in polygonscan"
+        class="polygonscan"
+      >
+        <span class="sr-only">
+          polygonscan
+        </span>
+        <img
+          src="./icon-open-in-new.svg"
+          alt=""
+        />
+      </a>
     </div>
-    <a
-      v-if="polygonscan"
-      :href="`https://polygonscan.com/address/${address}`"
-      target="_blank"
-      rel="nofollow noopener noreferrer"
-      style="margin-left: 5px"
-    >
-      polygonscan
-    </a>
   </span>
 </template>
 
@@ -53,8 +60,18 @@ export default {
     display: inline-flex;
     align-items: center;
   }
+  .address-row > * {
+    flex: 0 0 auto;
+  }
   .eth-address {
     margin: 0 3px 0 5px;
     font-family: monospace;
+  }
+  .polygonscan {
+    margin-left: 5px;
+  }
+  .polygonscan > img {
+    width: 15px;
+    height: 15px;
   }
 </style>

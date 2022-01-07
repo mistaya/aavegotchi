@@ -1,5 +1,7 @@
 <template>
   <div>
+    <CollateralIcons />
+
     <h1>Gotchi Soul Audit</h1>
 
     <DataFetcherGotchis />
@@ -8,39 +10,62 @@
       Using prices from coingecko
     </div>
 
-    <div class="dashboard">
-      <div
-        v-if="hasPrices"
-        class="dashboard-metric"
-      >
-        <b>Grand Total:</b>
-        <div class="dashboard-number">
-          {{ grandTotals.usdTotalFormatted }}
-        </div>
-        <div>
-          in {{ grandTotals.numGotchis }} gotchis
-        </div>
-      </div>
-      <div
-        v-for="item in collateralTotalsWithPrice"
-        :key="item.collateral.id"
-        class="dashboard-metric"
-      >
-        <div class="dashboard-number">
-          {{ item.totalFormatted }} {{ item.collateral.label }}
-        </div>
+    <template v-if="gotchisFetchStatus.loaded">
+      <div class="dashboard">
         <div
           v-if="hasPrices"
-          class="dashboard-number"
+          class="dashboard-row"
         >
-          {{ item.usdTotalFormatted }}
+          <div class="dashboard-metric">
+            <div class="dashboard-text dashboard-text--primary">
+              Grand Total
+            </div>
+            <div class="dashboard-number dashboard-number--primary">
+              <NumberDisplay
+                :number="grandTotals.usdTotal"
+                usd
+              />
+            </div>
+            <div class="dashboard-text dashboard-text--secondary">
+              in <NumberDisplay :number="grandTotals.numGotchis" /> gotchis
+              <br>
+              (average
+                <NumberDisplay
+                  :number="grandTotals.meanUsd"
+                  usd
+                />)
+            </div>
+          </div>
         </div>
-        <div>({{ item.numGotchis }} gotchis)</div>
+        <div
+          v-for="item in collateralTotalsWithPrice"
+          :key="item.collateral.id"
+          class="dashboard-metric"
+        >
+          <CollateralIcon
+            :address="item.collateral.id"
+            style="width: 40px"
+          />
+          <div class="dashboard-number dashboard-number--primary">
+            <NumberDisplay :number="item.total" />
+            {{ item.collateral.label }}
+          </div>
+          <div
+            v-if="hasPrices"
+            class="dashboard-number dashboard-number--secondary"
+          >
+            <NumberDisplay
+              :number="item.usdTotal"
+              usd
+            />
+          </div>
+          <div class="dashboard-text dashboard-text--secondary">
+            in <NumberDisplay :number="item.numGotchis" /> gotchis
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div v-if="gotchisFetchStatus.loaded">
-      <table>
+      <table class="gotchis">
         <thead>
           <tr>
             <th>Gotchi ID</th>
@@ -74,13 +99,13 @@
               {{ gotchi.collateral }}
             </td>
             <td>
-              {{ gotchi.minimumStake }}
+              <NumberDisplay :number="gotchi.minimumStake" />
             </td>
             <td>
-              {{ gotchi.stakedAmount }}
+              <NumberDisplay :number="gotchi.stakedAmount" />
             </td>
             <td>
-              {{ gotchi.excessStake }}
+              <NumberDisplay :number="gotchi.excessStake" />
             </td>
             <td>
               <EthAddress :address="gotchi.escrow" polygonscan />
@@ -88,7 +113,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -98,18 +123,21 @@ import BigNumber from 'bignumber.js'
 import useCollateralPrices from '@/data/useCollateralPrices'
 import useGotchis from '@/data/useGotchis'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
+import CollateralIcons from './CollateralIcons.vue'
+import CollateralIcon from './CollateralIcon.vue'
 import EthAddress from './EthAddress.vue'
+import NumberDisplay from './NumberDisplay.vue'
 import collaterals from '@/data/pockets/collaterals.json'
 
 export default {
   components: {
     DataFetcherGotchis,
-    EthAddress
+    CollateralIcons,
+    CollateralIcon,
+    EthAddress,
+    NumberDisplay
   },
   setup () {
-    const usdFormatter = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol' })
-    const amountFormatter = new Intl.NumberFormat(undefined, { maximumSignificantDigits: 7 })
-
     const {
       usdPrices,
       canSubmitFetch: canSubmitPricesFetch,
@@ -170,9 +198,6 @@ export default {
           collateralObj.total = collateralObj.total.plus(gotchi.stakedAmount)
         }
       }
-      for (const collateralObj of Object.values(collateralsMap)) {
-        collateralObj.totalFormatted = amountFormatter.format(collateralObj.total)
-      }
       return Object.values(collateralsMap)
     })
 
@@ -180,23 +205,24 @@ export default {
     const collateralTotalsWithPrice = computed(() => {
       if (!hasPrices.value) { return collateralTotals.value }
       return collateralTotals.value.map(obj => {
-        const usdTotal = obj.total.times(usdPrices.value[obj.collateral.id]).decimalPlaces(0)
+        const usdTotal = obj.total.times(usdPrices.value[obj.collateral.id])
         return {
           ...obj,
-          usdTotal,
-          usdTotalFormatted: usdFormatter.format(usdTotal)
+          usdTotal
         }
       })
     })
 
     const grandTotals = computed(() => {
+      const numGotchis = gotchis.value.length
       const usdTotal = hasPrices.value
         ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.usdTotal), new BigNumber(0))
         : 0
+      const meanUsd = hasPrices.value ? usdTotal.dividedBy(numGotchis) : 0
       return {
-        numGotchis: gotchis.value.length,
+        numGotchis,
         usdTotal,
-        usdTotalFormatted: usdFormatter.format(usdTotal)
+        meanUsd
       }
     })
 
@@ -218,10 +244,45 @@ export default {
     flex-wrap: wrap;
     justify-content: center;
   }
+  .dashboard-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
   .dashboard-metric {
+    flex: 0 0 auto;
     margin: 10px 15px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 8px;
+    text-align: center;
     padding: 15px;
+  }
+  .dashboard-number--primary {
+    font-size: 1.5em;
+  }
+  .dashboard-number--secondary {
+    margin-top: 5px;
+    font-size: 1.2em;
+  }
+  .dashboard-text--primary {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+  }
+  .dashboard-text--secondary {
+    margin-top: 8px;
+    font-size: 0.9em;
+  }
+  .dashboard-text--primary + .dashboard-number--primary {
+    font-size: 2em;
+  }
+
+  .gotchis td,
+  .gotchis th {
+    text-align: left;
+    padding: 5px;
+  }
+  .gotchis tr:nth-child(even) td {
+    background: #eee;
   }
 </style>
