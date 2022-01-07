@@ -43,7 +43,7 @@
         >
           <div class="dashboard-metric">
             <div class="dashboard-text dashboard-text--primary">
-              Grand Total
+              Total Spirit Force
             </div>
             <div class="dashboard-number dashboard-number--primary">
               <NumberDisplay
@@ -52,6 +52,7 @@
               />
             </div>
             <div class="dashboard-text dashboard-text--secondary">
+              of different collaterals
               in <NumberDisplay :number="grandTotals.numGotchis" /> gotchis
               <br>
               (average
@@ -59,6 +60,49 @@
                   :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
                   usd
                 />)
+            </div>
+          </div>
+          <div
+            v-if="hasGhst"
+            class="dashboard-metric"
+          >
+            <div class="dashboard-text dashboard-text--primary">
+              Total GHST
+            </div>
+            <div class="dashboard-number dashboard-number--primary">
+              <NumberDisplay
+                :number="ghstTotals.total"
+              />
+              GHST
+            </div>
+            <div
+              v-if="hasPrices"
+              class="dashboard-number dashboard-number--secondary"
+            >
+              <NumberDisplay
+                :number="ghstTotals.usdTotal"
+                usd
+              />
+            </div>
+            <div class="dashboard-text dashboard-text--secondary">
+              in <NumberDisplay :number="ghstTotals.numGotchis" /> gotchis
+              <br>
+              (average
+              <template v-if="hasPrices">
+                <NumberDisplay
+                  :number="ghstTotals.meanUsd"
+                  usd
+                />
+                /
+              </template>
+                <NumberDisplay
+                  :number="ghstTotals.mean"
+                />
+              GHST)
+              <br>
+              <br>
+              Balances fetched
+              <DateFriendly :date="ghstTotals.lastFetchDate" />
             </div>
           </div>
           <div
@@ -152,6 +196,7 @@
               <th>Minimum Collateral</th>
               <th>Staked Collateral</th>
               <th>Excess Collateral</th>
+              <th v-if="hasGhst">GHST</th>
               <th v-if="hasRewards">Unclaimed WMATIC</th>
               <th>Escrow Address</th>
             </tr>
@@ -185,6 +230,12 @@
               <td>
                 <NumberDisplay :number="gotchi.excessStake" />
               </td>
+              <td v-if="hasGhst">
+                <NumberDisplay
+                  v-if="ghstBalances[gotchi.id]"
+                  :number="ghstBalances[gotchi.id]"
+                />
+              </td>
               <td v-if="hasRewards">
                 <NumberDisplay
                   v-if="rewards[gotchi.id]"
@@ -208,6 +259,7 @@ import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
 import useCollateralPrices from '@/data/useCollateralPrices'
 import useGotchis from '@/data/useGotchis'
+import useGotchiGhst from '@/data/useGotchiGhst'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
 import CollateralIcons from './CollateralIcons.vue'
@@ -240,6 +292,13 @@ export default {
       gotchis,
       fetchStatus: gotchisFetchStatus
     } = useGotchis()
+
+    const {
+      balances: ghstBalances,
+      fetchStatus: ghstFetchStatus,
+      loadedBalancesDetails: loadedGhstDetails,
+      lastFetchDate: ghstLastFetchDate
+    } = useGotchiGhst()
 
     const {
       rewards,
@@ -347,6 +406,34 @@ export default {
       }
     })
 
+    const GHST_ID = '0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7'
+
+    const hasGhst = computed(() => ghstFetchStatus.value.loaded)
+
+    const ghstTotals = computed(() => {
+      if (!hasGhst.value) {
+        return null
+      }
+      const total = Object.values(ghstBalances.value).reduce((total, item) => total.plus(item), new BigNumber(0))
+      const numGotchis = loadedGhstDetails.value.numGotchis
+      const mean = total.dividedBy(numGotchis)
+
+      let usdTotal = 0
+      let meanUsd = 0
+      if (hasPrices.value) {
+        usdTotal = total.times(usdPrices.value[GHST_ID])
+        meanUsd = usdTotal.dividedBy(numGotchis)
+      }
+      return {
+        total,
+        numGotchis,
+        mean,
+        usdTotal,
+        meanUsd,
+        lastFetchDate: ghstLastFetchDate.value
+      }
+    })
+
     const WMATIC_ID = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
 
     const hasRewards = computed(() => rewardsFetchStatus.value.loaded)
@@ -382,6 +469,9 @@ export default {
       collateralTotalsWithPriceOrdered,
       grandTotals,
       hasPrices,
+      hasGhst,
+      ghstTotals,
+      ghstBalances,
       hasRewards,
       rewardTotals,
       rewards

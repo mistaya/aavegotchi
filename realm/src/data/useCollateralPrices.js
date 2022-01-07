@@ -8,8 +8,15 @@ const WMATIC = {
   id: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
   coingeckoId: 'wmatic'
 }
+const GHST = {
+  id: '0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7',
+  coingeckoId: 'aavegotchi'
+}
+const extraTokens = [WMATIC, GHST]
+const tokens = extraTokens.concat(Object.values(collaterals))
+
 const API_URL = 'https://api.coingecko.com/api/v3/simple/price'
-const collateralIdsForUrl = Object.values(collaterals).map(c => encodeURIComponent(c.coingeckoId)).concat(WMATIC.coingeckoId).join(',')
+const tokenIdsForUrl = tokens.map(c => encodeURIComponent(c.coingeckoId)).join(',')
 
 const { status: fetchStatus, setLoading } = useStatus()
 
@@ -23,7 +30,7 @@ const setPrices = function (gotchisArray) {
 
 const fetchPrices = function () {
   const [isStale, setLoaded, setError] = setLoading()
-  const url = `${API_URL}?ids=${collateralIdsForUrl}&vs_currencies=usd`
+  const url = `${API_URL}?ids=${tokenIdsForUrl}&vs_currencies=usd`
   fetch(url).then(async response => {
     if (isStale()) { console.log('Stale request, ignoring'); return }
     if (!response.ok) {
@@ -31,13 +38,11 @@ const fetchPrices = function () {
       return
     }
     const responseJson = await response.json()
-    if (responseJson[collaterals[Object.keys(collaterals)[0]].coingeckoId]) {
+    if (responseJson[tokens[0].coingeckoId]) {
       const pricesMap = {}
-      for (const id in collaterals) {
-        pricesMap[id] = responseJson[collaterals[id].coingeckoId]?.usd || null
+      for (const token of tokens) {
+        pricesMap[token.id] = responseJson[token.coingeckoId]?.usd || null
       }
-      // also include wmatic
-      pricesMap[WMATIC.id] = responseJson[WMATIC.coingeckoId]?.usd || null
       setPrices(pricesMap)
       // console.log(JSON.stringify(pricesMap))
       setLoaded()

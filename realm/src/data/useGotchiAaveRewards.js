@@ -57,23 +57,22 @@ const fetchRewards = function () {
   while (nextGotchiIndex < polygonGotchis.value.length) {
     const gotchis = polygonGotchis.value.slice(nextGotchiIndex, nextGotchiIndex + BATCH_SIZE)
     console.log('fetch rewards for ids', gotchis[0].id, 'to', gotchis[gotchis.length - 1].id)
-    // eslint-disable-next-line no-constant-condition
-    if (true) {
-      const request = aaveContract.getGotchiRewardsBalances(gotchis)
-      requests.push(request)
-      request.then(
-        result => {
-          if (isStale()) { return }
-          console.log('batch rewards result', { result }, Object.keys(result).length)
-          setRewards(result)
-        },
-        error => {
-          if (isStale()) { return }
-          console.error(error)
-          setError('Error fetching batch of rewards')
-        }
-      )
-    }
+
+    const request = aaveContract.getGotchiRewardsBalances(gotchis)
+    requests.push(request)
+    request.then(
+      result => {
+        if (isStale()) { return }
+        console.log('batch rewards result', { result }, Object.keys(result).length)
+        setRewards(result)
+      },
+      error => {
+        if (isStale()) { return }
+        console.error(error)
+        setError('Error fetching batch of rewards')
+      }
+    )
+
     nextGotchiIndex += BATCH_SIZE
   }
 
