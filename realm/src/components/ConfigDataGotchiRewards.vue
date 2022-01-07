@@ -4,7 +4,9 @@
 
     <p>
       The unclaimed AAVE rewards balance has to be queried directly from the AAVE contract, it's not available in the subgraph.
-      <br>So this needs to do a separate polygon-rpc call for EVERY polygon gotchi - be considerate calling this! And watch the console for errors.
+      So this needs to do a contract call for <i>every</i> polygon gotchi.
+      <br>To reduce rpc requests, these are batched using multicall - but this can result in errors during execution, so watch the console.
+      It may help to fetch the latest gotchi list before fetching this.
     </p>
 
     <form @submit.prevent="fetchRewards">

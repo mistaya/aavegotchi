@@ -48,50 +48,39 @@ const loadedRewardsDetails = computed(() => {
 
 const fetchRewards = function () {
   clearRewards()
-  const [isStale, setLoaded] = setLoading()
+  const [isStale, setLoaded, setError] = setLoading()
 
   let nextGotchiIndex = 0
-  const BATCH_SIZE = 100
-  const BATCH_DELAY = 1000
+  const BATCH_SIZE = 800
+  const requests = []
 
-  const sendBatch = function () {
-    const requests = []
-    const gotchiIds = []
-    let i = nextGotchiIndex
-    for (; i < polygonGotchis.value.length && requests.length < BATCH_SIZE; i++) {
-      const gotchi = polygonGotchis.value[i]
-      const request = aaveContract.getGotchiRewardsBalance({
-        collateral: gotchi.collateral,
-        escrow: gotchi.escrow
-      }).then(resultNum => [gotchi.id, resultNum])
+  while (nextGotchiIndex < polygonGotchis.value.length) {
+    const gotchis = polygonGotchis.value.slice(nextGotchiIndex, nextGotchiIndex + BATCH_SIZE)
+    console.log('fetch rewards for ids', gotchis[0].id, 'to', gotchis[gotchis.length - 1].id)
+    // eslint-disable-next-line no-constant-condition
+    if (true) {
+      const request = aaveContract.getGotchiRewardsBalances(gotchis)
       requests.push(request)
-      gotchiIds.push(gotchi.id)
-    }
-    nextGotchiIndex = i
-    console.log('fetched batch', gotchiIds)
-
-    Promise.allSettled(requests).then(results => {
-      if (isStale()) { return }
-      const fetchedRewardsByGotchi = {}
-      for (const result of results) {
-        if (result.status === 'fulfilled') {
-          fetchedRewardsByGotchi[result.value[0]] = result.value[1]
+      request.then(
+        result => {
+          if (isStale()) { return }
+          console.log('batch rewards result', { result }, Object.keys(result).length)
+          setRewards(result)
+        },
+        error => {
+          if (isStale()) { return }
+          console.error(error)
+          setError('Error fetching batch of rewards')
         }
-        // Ignore any errors - they'll have been printed in the console.
-        // Better to store and use what results we have managed to get.
-      }
-      setRewards(fetchedRewardsByGotchi)
-
-      if (nextGotchiIndex < polygonGotchis.value.length) {
-        // send next batch
-        setTimeout(sendBatch, BATCH_DELAY)
-      } else {
-        setLoaded()
-      }
-    })
+      )
+    }
+    nextGotchiIndex += BATCH_SIZE
   }
 
-  sendBatch()
+  Promise.allSettled(requests).then(results => {
+    if (isStale()) { return }
+    setLoaded()
+  })
 }
 
 // Use cached initial results
@@ -105,7 +94,7 @@ fetch(initialRewardsUrl)
     for (var key in json) {
       initialRewards[key] = new BigNumber(json[key])
     }
-    setRewards(initialRewards, new Date(1641564009995))
+    setRewards(initialRewards, new Date(1641585502396))
     setLoaded()
   }).catch(error => {
     console.error(error)
