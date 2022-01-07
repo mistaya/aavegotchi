@@ -14,6 +14,7 @@
     "d3-scale-chromatic": "^3.0.0",
     "date-fns": "^2.27.0",
     "ethereum-blockies": "github:ethereum/blockies#master",
+    "ethers": "^5.5.3",
     "fast-sort": "^3.1.1",
     "hammerjs": "^2.0.8",
     "lodash.debounce": "^4.0.8",

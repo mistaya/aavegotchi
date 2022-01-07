@@ -60,7 +60,7 @@ export default {
     position: absolute;
   }
   .copy-to-clipboard__button {
-    position: relative;
+    cursor: pointer;
     width: 15px;
     height: 15px;
     margin-left: 5px;

@@ -61,6 +61,49 @@
                 />)
             </div>
           </div>
+          <div
+            v-if="hasRewards"
+            class="dashboard-metric"
+          >
+            <div class="dashboard-text dashboard-text--primary">
+              Unclaimed AAVE Rewards
+            </div>
+            <div class="dashboard-number dashboard-number--primary">
+              <NumberDisplay
+                :number="rewardTotals.total"
+              />
+              WMATIC
+            </div>
+            <div
+              v-if="hasPrices"
+              class="dashboard-number dashboard-number--secondary"
+            >
+              <NumberDisplay
+                :number="rewardTotals.usdTotal"
+                usd
+              />
+            </div>
+            <div class="dashboard-text dashboard-text--secondary">
+              in <NumberDisplay :number="rewardTotals.numGotchis" /> gotchis
+              <br>
+              (average
+              <template v-if="hasPrices">
+                <NumberDisplay
+                  :number="rewardTotals.meanUsd"
+                  usd
+                />
+                /
+              </template>
+                <NumberDisplay
+                  :number="rewardTotals.mean"
+                />
+              WMATIC)
+              <br>
+              <br>
+              Rewards fetched
+              <DateFriendly :date="rewardTotals.lastFetchDate" />
+            </div>
+          </div>
         </div>
         <div
           v-for="item in collateralTotalsWithPriceOrdered"
@@ -86,64 +129,75 @@
           </div>
           <div class="dashboard-text dashboard-text--secondary">
             in <NumberDisplay :number="item.numGotchis" /> gotchis
-            <br>
-            (average
-              <NumberDisplay
-                :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
-                usd
-              />)
+            <template v-if="hasPrices">
+              <br>
+              (average
+                <NumberDisplay
+                  :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
+                  usd
+                />)
+            </template>
           </div>
         </div>
       </div>
 
-      <table class="gotchis">
-        <thead>
-          <tr>
-            <th>Gotchi ID</th>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Collateral</th>
-            <th>Minimum Collateral</th>
-            <th>Staked Collateral</th>
-            <th>Excess Collateral</th>
-            <th>Escrow Address</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="gotchi in gotchisData.slice(0, 100)"
-            :key="gotchi.id"
-          >
-            <td>
-              {{ gotchi.id }}
-            </td>
-            <td>
-              {{ gotchi.name }}
-            </td>
-            <td>
-              <EthAddress
-                :address="gotchi.owner"
-                icon
-              />
-            </td>
-            <td>
-              {{ gotchi.collateral }}
-            </td>
-            <td>
-              <NumberDisplay :number="gotchi.minimumStake" />
-            </td>
-            <td>
-              <NumberDisplay :number="gotchi.stakedAmount" />
-            </td>
-            <td>
-              <NumberDisplay :number="gotchi.excessStake" />
-            </td>
-            <td>
-              <EthAddress :address="gotchi.escrow" polygonscan />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="gotchis-table-wrapper">
+        <table class="gotchis-table">
+          <thead>
+            <tr>
+              <th>Gotchi ID</th>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>Collateral</th>
+              <th>Minimum Collateral</th>
+              <th>Staked Collateral</th>
+              <th>Excess Collateral</th>
+              <th v-if="hasRewards">Unclaimed WMATIC</th>
+              <th>Escrow Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="gotchi in gotchisData.slice(10000, 10100)"
+              :key="gotchi.id"
+            >
+              <td>
+                {{ gotchi.id }}
+              </td>
+              <td>
+                {{ gotchi.name }}
+              </td>
+              <td>
+                <EthAddress
+                  :address="gotchi.owner"
+                  icon
+                />
+              </td>
+              <td>
+                {{ gotchi.collateral }}
+              </td>
+              <td>
+                <NumberDisplay :number="gotchi.minimumStake" />
+              </td>
+              <td>
+                <NumberDisplay :number="gotchi.stakedAmount" />
+              </td>
+              <td>
+                <NumberDisplay :number="gotchi.excessStake" />
+              </td>
+              <td v-if="hasRewards">
+                <NumberDisplay
+                  v-if="rewards[gotchi.id]"
+                  :number="rewards[gotchi.id]"
+                />
+              </td>
+              <td>
+                <EthAddress :address="gotchi.escrow" polygonscan />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </template>
   </div>
 </template>
@@ -154,9 +208,11 @@ import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
 import useCollateralPrices from '@/data/useCollateralPrices'
 import useGotchis from '@/data/useGotchis'
+import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
 import CollateralIcons from './CollateralIcons.vue'
 import CollateralIcon from './CollateralIcon.vue'
+import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import NumberDisplay from './NumberDisplay.vue'
 import collaterals from '@/data/pockets/collaterals.json'
@@ -166,6 +222,7 @@ export default {
     DataFetcherGotchis,
     CollateralIcons,
     CollateralIcon,
+    DateFriendly,
     EthAddress,
     NumberDisplay
   },
@@ -183,6 +240,13 @@ export default {
       gotchis,
       fetchStatus: gotchisFetchStatus
     } = useGotchis()
+
+    const {
+      rewards,
+      fetchStatus: rewardsFetchStatus,
+      loadedRewardsDetails,
+      lastFetchDate: rewardsLastFetchDate
+    } = useGotchiAaveRewards()
 
     // Fetch collateral prices if necessary
     if (!pricesFetchStatus.value.loaded && canSubmitPricesFetch.value) {
@@ -283,13 +347,44 @@ export default {
       }
     })
 
+    const WMATIC_ID = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+
+    const hasRewards = computed(() => rewardsFetchStatus.value.loaded)
+
+    const rewardTotals = computed(() => {
+      if (!hasRewards.value) {
+        return null
+      }
+      const total = Object.values(rewards.value).reduce((total, item) => total.plus(item), new BigNumber(0))
+      const numGotchis = loadedRewardsDetails.value.numPolygonGotchis
+      const mean = total.dividedBy(numGotchis)
+
+      let usdTotal = 0
+      let meanUsd = 0
+      if (hasPrices.value) {
+        usdTotal = total.times(usdPrices.value[WMATIC_ID])
+        meanUsd = usdTotal.dividedBy(numGotchis)
+      }
+      return {
+        total,
+        numGotchis,
+        mean,
+        usdTotal,
+        meanUsd,
+        lastFetchDate: rewardsLastFetchDate.value
+      }
+    })
+
     return {
       gotchisFetchStatus,
       dashboardDisplayMode,
       gotchisData,
       collateralTotalsWithPriceOrdered,
       grandTotals,
-      hasPrices
+      hasPrices,
+      hasRewards,
+      rewardTotals,
+      rewards
     }
   }
 }
@@ -346,12 +441,23 @@ export default {
     font-size: 2em;
   }
 
-  .gotchis td,
-  .gotchis th {
+  .gotchis-table-wrapper {
+    margin: 40px 0;
+  }
+  .gotchis-table {
+    margin: 0 auto;
+  }
+  .gotchis-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: var(--background-color-transparent);
+  }
+  .gotchis-table td,
+  .gotchis-table th {
     text-align: left;
     padding: 5px;
   }
-  .gotchis tr:nth-child(even) td {
+  .gotchis-table tr:nth-child(even) td {
     background: #eee;
   }
 </style>

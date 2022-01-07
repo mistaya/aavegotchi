@@ -35,6 +35,7 @@ export default {
 
 <style>
   body {
+    --background-color-transparent: rgba(255, 255, 255, 0.9);
     --purple: #FA34F3;
     --purple--contrast-black: #fa3ef4;
     margin: 0;

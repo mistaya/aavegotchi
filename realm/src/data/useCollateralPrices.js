@@ -4,8 +4,12 @@ import collaterals from './pockets/collaterals.json'
 
 const usdPrices = ref({})
 
+const WMATIC = {
+  id: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+  coingeckoId: 'wmatic'
+}
 const API_URL = 'https://api.coingecko.com/api/v3/simple/price'
-const collateralIdsForUrl = Object.values(collaterals).map(c => encodeURIComponent(c.coingeckoId)).join(',')
+const collateralIdsForUrl = Object.values(collaterals).map(c => encodeURIComponent(c.coingeckoId)).concat(WMATIC.coingeckoId).join(',')
 
 const { status: fetchStatus, setLoading } = useStatus()
 
@@ -32,6 +36,8 @@ const fetchPrices = function () {
       for (const id in collaterals) {
         pricesMap[id] = responseJson[collaterals[id].coingeckoId]?.usd || null
       }
+      // also include wmatic
+      pricesMap[WMATIC.id] = responseJson[WMATIC.coingeckoId]?.usd || null
       setPrices(pricesMap)
       // console.log(JSON.stringify(pricesMap))
       setLoaded()

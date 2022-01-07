@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
+import initialGotchisUrl from './pockets/assetGotchis.json'
 
 // Fetch all gotchis to find their escrow addresses
 const gotchis = ref([])
@@ -12,9 +13,9 @@ const { status: fetchStatus, setLoading } = useStatus()
 const canSubmitFetch = computed(() => !fetchStatus.value.loading)
 const lastFetchDate = ref(null)
 
-const setGotchis = function (gotchisArray) {
+const setGotchis = function (gotchisArray, fetchDate = null) {
   gotchis.value = gotchisArray
-  lastFetchDate.value = new Date()
+  lastFetchDate.value = fetchDate || new Date()
 }
 
 const fetchGotchis = function () {
@@ -70,14 +71,17 @@ const fetchGotchis = function () {
 }
 
 // Use cached results just for development
-// eslint-disable-next-line no-unused-vars
 const [isStale, setLoaded, setError] = setLoading()
-import('./pockets/gotchis.json').then(
-  ({ default: json }) => {
-    setGotchis(json)
+fetch(initialGotchisUrl)
+  .then(response => response.json())
+  .then(json => {
+    if (isStale()) { return }
+    setGotchis(json, new Date(1641562136321))
     setLoaded()
-  }
-)
+  }).catch(error => {
+    console.error(error)
+    setError('Error loading initial gotchis')
+  })
 
 export default function useGotchis () {
   return {
