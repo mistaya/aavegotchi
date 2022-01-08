@@ -43,7 +43,7 @@
         >
           <div class="dashboard-metric">
             <div class="dashboard-text dashboard-text--primary">
-              Total Spirit Force
+              Spirit Force
             </div>
             <div class="dashboard-number dashboard-number--primary">
               <NumberDisplay
@@ -67,7 +67,7 @@
             class="dashboard-metric"
           >
             <div class="dashboard-text dashboard-text--primary">
-              Total GHST
+              GHST in Pockets
             </div>
             <div class="dashboard-number dashboard-number--primary">
               <NumberDisplay

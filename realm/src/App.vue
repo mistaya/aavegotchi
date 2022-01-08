@@ -5,6 +5,7 @@
       <router-link :to="{ name: 'citaadel' }">The Citaadel</router-link>
       <router-link :to="{ name: 'land-auction', params: { auctionId: '1' } }">Land Auction 1</router-link>
       <router-link :to="{ name: 'land-auction', params: { auctionId: '2' } }">Land Auction 2</router-link>
+      <router-link :to="{ name: 'wearable-sets', params: { mode: 'all' } }">Wearable Sets</router-link>
 
       <!--
       <router-link :to="{ name: 'config-data' }">Config Data</router-link>
@@ -45,6 +46,8 @@ export default {
     --purple--contrast-black: #fa3ef4;
     margin: 0;
     padding: 0;
+    text-size-adjust: none;
+    font-size: 16px;
   }
 
   h1 {
@@ -53,7 +56,7 @@ export default {
   }
 
   h2 {
-    margin: 10px 0 0;
+    margin: 20px 0;
     font-size: 1.2em;
   }
 

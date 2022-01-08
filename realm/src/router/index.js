@@ -11,6 +11,7 @@ const ConfigData = () => import(/* webpackChunkName: "config" */ '@/components/C
 const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/components/ConfigParcels.vue')
 const ConfigDataPocket = () => import(/* webpackChunkName: "config-pocket" */ '@/components/ConfigDataPocket.vue')
 const PocketsPage = () => import(/* webpackChunkName: "pocketses" */ '@/components/PocketsPage.vue')
+const WearableSetsPage = () => import(/* webpackChunkName: "wearable-sets" */ '@/components/WearableSetsPage.vue')
 
 const { headData } = useSiteHead()
 
@@ -53,6 +54,18 @@ const routes = [
       head: {
         title: 'Gotchi Pockets',
         description: 'Examine the contents of gotchi pockets: spirit force and GHST'
+      }
+    }
+  },
+  {
+    path: '/wearable-sets/:mode',
+    name: 'wearable-sets',
+    component: WearableSetsPage,
+    props: true,
+    meta: {
+      head: {
+        title: 'Wearable Sets',
+        description: 'Full details of all wearable sets, grouped by gotchi types'
       }
     }
   },
