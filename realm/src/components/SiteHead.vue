@@ -43,10 +43,14 @@ export default {
     }
   },
   created () {
-    // remove original title element
+    // remove original elements
     const title = document.querySelector('title[data-original]')
     if (title) {
       title.remove()
+    }
+    const meta = document.querySelector('meta[data-original]')
+    if (meta) {
+      meta.remove()
     }
   }
 }
