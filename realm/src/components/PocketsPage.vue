@@ -2,7 +2,7 @@
   <div>
     <CollateralIcons />
 
-    <h1>Gotchi Soul Audit</h1>
+    <h1>Gotchi Pockets</h1>
 
     <DataFetcherGotchis />
 

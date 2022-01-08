@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import useSiteHead from '@/data/useSiteHead'
 import usePageLoading from './usePageLoading'
 import NotFoundPage from './NotFoundPage.vue'
 
@@ -11,6 +12,8 @@ const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/component
 const ConfigDataPocket = () => import(/* webpackChunkName: "config-pocket" */ '@/components/ConfigDataPocket.vue')
 const PocketsPage = () => import(/* webpackChunkName: "pocketses" */ '@/components/PocketsPage.vue')
 
+const { headData } = useSiteHead()
+
 const routes = [
   {
     path: '/',
@@ -22,33 +25,69 @@ const routes = [
   {
     path: '/citaadel',
     name: 'citaadel',
-    component: CitaadelPage
+    component: CitaadelPage,
+    meta: {
+      head: {
+        title: 'The Citaadel',
+        description: 'Filter and explore the Citaadel map and Baazaar parcel listings from the Aavegotchi Realm'
+      }
+    }
   },
   {
     path: '/land-auction/:auctionId',
     name: 'land-auction',
     component: LandAuctionPage,
-    props: true
+    props: true,
+    meta: {
+      head: {
+        title: 'Land Auction',
+        description: 'Filter and explore the Land parcels that were/are up for auction from the Aavegotchi Realm'
+      }
+    }
   },
   {
     path: '/pocketses',
     name: 'pockets',
-    component: PocketsPage
+    component: PocketsPage,
+    meta: {
+      head: {
+        title: 'Gotchi Pockets',
+        description: 'Examine the contents of gotchi pockets: spirit force and GHST'
+      }
+    }
   },
   {
     path: '/config-data',
     name: 'config-data',
-    component: ConfigData
+    component: ConfigData,
+    meta: {
+      head: {
+        title: 'Configure Data: Realm',
+        description: 'Admin page for fetching data'
+      }
+    }
   },
   {
     path: '/config-parcels',
     name: 'config-parcels',
-    component: ConfigParcels
+    component: ConfigParcels,
+    meta: {
+      head: {
+        title: 'Configure Data: Parcel Groups',
+        description: 'Admin page for fetching data'
+      }
+    }
   },
   {
-    path: '/config-data-pockets',
-    name: 'config-data-pockets',
-    component: ConfigDataPocket
+    path: '/config-pockets',
+    name: 'config-pockets',
+    component: ConfigDataPocket,
+    meta: {
+      head: {
+        title: 'Configure Data: Gotchi Pockets',
+        description: 'Admin page for fetching data'
+      }
+    }
   },
   {
     path: '/:pathMatch(.*)',
@@ -70,6 +109,8 @@ router.beforeEach((to, from, next) => {
 })
 router.beforeResolve((to, from, next) => {
   pageLoading.value = false
+  headData.value.pageTitle = to.meta?.head?.title || ''
+  headData.value.description = to.meta?.head?.description || ''
   next()
 })
 
