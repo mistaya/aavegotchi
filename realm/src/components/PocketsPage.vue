@@ -185,29 +185,105 @@
         </div>
       </div>
 
+      <div class="gotchis-table-filters">
+        <form @submit.prevent="gotchisQuery = formQuery">
+          <label>
+            Search by gotchi ID, name, or owner address:
+            <input
+              v-model="formQuery"
+              type="text"
+            />
+            <button type="submit">
+              Search
+            </button>
+          </label>
+        </form>
+      </div>
       <div class="gotchis-table-wrapper">
         <table class="gotchis-table">
           <thead>
             <tr>
-              <th>Gotchi ID</th>
-              <th>Name</th>
-              <th>Owner</th>
-              <th>Collateral</th>
-              <th>Minimum Collateral</th>
-              <th>Staked Collateral</th>
-              <th>Excess Collateral</th>
-              <th v-if="hasGhst">GHST</th>
-              <th v-if="hasRewards">Unclaimed WMATIC</th>
+              <th>
+                Gotchi ID
+                <SortToggle
+                  :sort="gotchisSort.column === 'idNum' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'idNum' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th>
+                Name
+                <SortToggle
+                  :sort="gotchisSort.column === 'name' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'name' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th>
+                Owner
+                <SortToggle
+                  :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th>
+                Collateral
+                <SortToggle
+                  :sort="gotchisSort.column === 'collateral' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'collateral' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th>
+                Minimum Collateral
+                <SortToggle
+                  v-if="hasPrices"
+                  :sort="gotchisSort.column === 'minimumStake' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'minimumStake' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th>
+                Staked Collateral
+                <SortToggle
+                  v-if="hasPrices"
+                  :sort="gotchisSort.column === 'stakedAmount' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'stakedAmount' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th>
+                Excess Collateral
+                <SortToggle
+                  v-if="hasPrices"
+                  :sort="gotchisSort.column === 'excessStake' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'excessStake' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th v-if="hasGhst">
+                GHST
+                <SortToggle
+                  :sort="gotchisSort.column === 'ghst' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'ghst' : null; gotchisSort.direction = $event"
+                />
+              </th>
+              <th v-if="hasRewards">
+                Unclaimed WMATIC
+                <SortToggle
+                  :sort="gotchisSort.column === 'rewards' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'rewards' : null; gotchisSort.direction = $event"
+                />
+              </th>
               <th>Escrow Address</th>
             </tr>
           </thead>
           <tbody>
             <tr
-              v-for="gotchi in gotchisData.slice(10000, 10100)"
+              v-for="gotchi in gotchisToDisplay"
               :key="gotchi.id"
             >
               <td>
-                {{ gotchi.id }}
+                <a
+                  :href="`https://aavegotchi.com/gotchi/${gotchi.id}`"
+                  target="_blank"
+                >
+                  {{ gotchi.id }}
+                </a>
               </td>
               <td>
                 {{ gotchi.name }}
@@ -223,12 +299,27 @@
               </td>
               <td>
                 <NumberDisplay :number="gotchi.minimumStake" />
+                <span class="usd-value">(<NumberDisplay
+                  v-if="hasPrices"
+                  :number="gotchisUsdValues[gotchi.id].minimumStake"
+                  usd
+                />)</span>
               </td>
               <td>
                 <NumberDisplay :number="gotchi.stakedAmount" />
+                <span class="usd-value">(<NumberDisplay
+                  v-if="hasPrices"
+                  :number="gotchisUsdValues[gotchi.id].stakedAmount"
+                  usd
+                />)</span>
               </td>
               <td>
                 <NumberDisplay :number="gotchi.excessStake" />
+                <span class="usd-value">(<NumberDisplay
+                  v-if="hasPrices"
+                  :number="gotchisUsdValues[gotchi.id].excessStake"
+                  usd
+                />)</span>
               </td>
               <td v-if="hasGhst">
                 <NumberDisplay
@@ -267,6 +358,7 @@ import CollateralIcon from './CollateralIcon.vue'
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import NumberDisplay from './NumberDisplay.vue'
+import SortToggle from './SortToggle.vue'
 import collaterals from '@/data/pockets/collaterals.json'
 
 export default {
@@ -276,7 +368,8 @@ export default {
     CollateralIcon,
     DateFriendly,
     EthAddress,
-    NumberDisplay
+    NumberDisplay,
+    SortToggle
   },
   setup () {
     const dashboardDisplayMode = ref('all') // or 'minimum'
@@ -317,18 +410,58 @@ export default {
         const collateral = collaterals[g.collateral.toLowerCase()]
         const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : 0
         const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : 0
+        const excessStake = stakedAmount.minus(minimumStake)
         return {
           id: g.id,
+          idNum: g.id - 0,
           name: g.name,
+          nameLowerCase: g.name.toLowerCase(),
           owner: g.owner?.id,
           collateralId: collateral.id,
           collateral: collateral?.label || g.collateral,
           stakedAmount,
           minimumStake,
-          excessStake: stakedAmount.minus(minimumStake),
+          excessStake,
           escrow: g.escrow
         }
       })
+    })
+
+    const formQuery = ref('')
+    const gotchisQuery = ref('')
+    const gotchisSort = ref({
+      column: '',
+      direction: 'asc'
+    })
+
+    const gotchisFiltered = computed(() => {
+      const query = gotchisQuery.value?.trim().toLowerCase()
+      if (!query) { return gotchisData.value }
+      return gotchisData.value.filter(g => g.id === query || g.owner === query || g.nameLowerCase.includes(query))
+    })
+
+    const gotchisSorted = computed(() => {
+      const { column, direction } = gotchisSort.value
+      if (!column) { return gotchisFiltered.value }
+      if (column === 'ghst') {
+        if (!hasGhst.value) { return gotchisFiltered.value }
+        const ghstFor = ghstBalancesSortable.value
+        return orderBy(gotchisFiltered.value, [g => ghstFor[g.id] || 0], [direction])
+      }
+      if (column === 'rewards') {
+        if (!hasRewards.value) { return gotchisFiltered.value }
+        const rewardsFor = rewardsSortable.value
+        return orderBy(gotchisFiltered.value, [g => rewardsFor[g.id] || 0], [direction])
+      }
+      if (['stakedAmount', 'minimumStake', 'excessStake'].includes(column)) {
+        const usdValueFor = gotchisUsdValues.value
+        return orderBy(gotchisFiltered.value, [g => usdValueFor[g.id][`${column}Sortable`] || 0], [direction])
+      }
+      return orderBy(gotchisFiltered.value, [column], [direction])
+    })
+
+    const gotchisToDisplay = computed(() => {
+      return gotchisSorted.value.slice(0, 100)
     })
 
     const collateralTotals = computed(() => {
@@ -362,6 +495,29 @@ export default {
     })
 
     const hasPrices = computed(() => pricesFetchStatus.value.loaded)
+
+    const gotchisUsdValues = computed(() => {
+      if (!hasPrices.value) { return null }
+      return Object.fromEntries(
+        gotchisData.value.map(g => {
+          const collateralPrice = usdPrices.value[g.collateralId]
+          const stakedAmount = g.stakedAmount.times(collateralPrice)
+          const minimumStake = g.minimumStake.times(collateralPrice)
+          const excessStake = g.excessStake.times(collateralPrice)
+          return [
+            g.id,
+            {
+              stakedAmount,
+              stakedAmountSortable: stakedAmount.toNumber(),
+              minimumStake,
+              minimumStakeSortable: minimumStake.toNumber(),
+              excessStake,
+              excessStakeSortable: excessStake.toNumber()
+            }
+          ]
+        })
+      )
+    })
 
     const collateralTotalsWithPrice = computed(() => {
       if (!hasPrices.value) { return collateralTotals.value }
@@ -410,6 +566,15 @@ export default {
 
     const hasGhst = computed(() => ghstFetchStatus.value.loaded)
 
+    const ghstBalancesSortable = computed(() => {
+      if (!hasGhst.value) { return null }
+      const sortableGhst = {}
+      for (var key in ghstBalances.value) {
+        sortableGhst[key] = ghstBalances.value[key].toNumber()
+      }
+      return sortableGhst
+    })
+
     const ghstTotals = computed(() => {
       if (!hasGhst.value) {
         return null
@@ -438,6 +603,15 @@ export default {
 
     const hasRewards = computed(() => rewardsFetchStatus.value.loaded)
 
+    const rewardsSortable = computed(() => {
+      if (!hasGhst.value) { return null }
+      const sortableRewards = {}
+      for (var key in rewards.value) {
+        sortableRewards[key] = rewards.value[key].toNumber()
+      }
+      return sortableRewards
+    })
+
     const rewardTotals = computed(() => {
       if (!hasRewards.value) {
         return null
@@ -465,16 +639,20 @@ export default {
     return {
       gotchisFetchStatus,
       dashboardDisplayMode,
-      gotchisData,
       collateralTotalsWithPriceOrdered,
       grandTotals,
       hasPrices,
+      gotchisUsdValues,
       hasGhst,
       ghstTotals,
       ghstBalances,
       hasRewards,
       rewardTotals,
-      rewards
+      rewards,
+      formQuery,
+      gotchisQuery,
+      gotchisSort,
+      gotchisToDisplay
     }
   }
 }
@@ -531,11 +709,15 @@ export default {
     font-size: 2em;
   }
 
+  .gotchis-table-filters {
+    margin: 50px 0 30px;
+    text-align: center;
+  }
   .gotchis-table-wrapper {
-    margin: 40px 0;
+    margin: 0;
   }
   .gotchis-table {
-    margin: 0 auto;
+    margin: 0 auto 70px;
   }
   .gotchis-table thead th {
     position: sticky;
@@ -549,5 +731,10 @@ export default {
   }
   .gotchis-table tr:nth-child(even) td {
     background: #eee;
+  }
+
+  .gotchis-table .usd-value {
+    display: block;
+    font-size: 0.9em;
   }
 </style>
