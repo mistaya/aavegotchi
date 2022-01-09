@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Contract } from 'ethers-multicall'
 import { useMulticallProvider } from './useProvider'
-import abi from './pockets/aaveContractAbi.json'
 
 let multicallProvider = null
 const contractAddress = '0x357D51124f59836DeD84c8a1730D72B749d8BC23'
@@ -10,6 +9,35 @@ let contract = null
 
 const initContract = function () {
   multicallProvider = useMulticallProvider()
+  // ABI: only need functions we want to call
+  const abi = [
+    {
+      inputs:
+      [
+        {
+          internalType: 'address[]',
+          name: 'assets',
+          type: 'address[]'
+        },
+        {
+          internalType: 'address',
+          name: 'user',
+          type: 'address'
+        }
+      ],
+      name: 'getRewardsBalance',
+      outputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    }
+  ]
   contract = new Contract(
     contractAddress,
     abi
