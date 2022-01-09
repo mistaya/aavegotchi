@@ -78,50 +78,31 @@
               fill: mapConfig.colorPaartners
             }"
           >
-            <a
-              xlink:href="#"
-              @mousedown="onMouseDownParcel"
-              @click.prevent="onClickParcel($event, { paartner: 'aave' })"
+            <template
+              v-for="paartnerParcel in PAARTNER_PARCELS"
+              :key="paartnerParcel.id"
             >
-              <path data-paartner="aave" d="m 488,568 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            </a>
-            <path d="m 8516,876 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <path d="m 7300,1648 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <path d="m 3376,1776 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <a
-              xlink:href="#"
-              @mousedown="onMouseDownParcel"
-              @click.prevent="onClickParcel($event, { paartner: 'flamingo' })"
-            >
-              <path data-paartner="flamingo" d="m 5208,2160 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            </a>
-            <path d="m 3512,2692 v -31.9995 h 32 32 v 32 32 h -32 -32 z" />
-            <a
-              xlink:href="#"
-              @mousedown="onMouseDownParcel"
-              @click.prevent="onClickParcel($event, { paartner: 'blackpool' })"
-            >
-              <path data-paartner="blackpool" d="m 3920,3432 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            </a>
-            <path d="m 6000,3568 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <path d="m 4848,3632 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <path d="m 8448,3904 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <a
-              xlink:href="#"
-              @mousedown="onMouseDownParcel"
-              @click.prevent="onClickParcel($event, { paartner: 'yggsea' })"
-            >
-              <path data-paartner="yggsea" d="m 464,4304 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            </a>
-            <path d="m 4024,4600 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            <a
-              xlink:href="#"
-              @mousedown="onMouseDownParcel"
-              @click.prevent="onClickParcel($event, { paartner: 'readyplayerdao' })"
-            >
-              <path data-paartner="readyplayerdao" d="m 6720,4952 v -32 h 32 32 v 32 32 h -32 -32 z" />
-            </a>
-            <path d="m 632,5700 v -32 h 32 32 v 32 32 h -32 -32 z" />
+              <a
+                v-if="paartnerParcel.paartner"
+                xlink:href="#"
+                @mousedown="onMouseDownParcel"
+                @click.prevent="onClickParcel($event, { paartner: paartnerParcel.paartner })"
+              >
+                <rect
+                  :x="paartnerParcel.x"
+                  :y="paartnerParcel.y"
+                  width="64"
+                  height="64"
+                />
+              </a>
+              <rect
+                v-else
+                :x="paartnerParcel.x"
+                :y="paartnerParcel.y"
+                width="64"
+                height="64"
+              />
+            </template>
           </g>
           <!--
           <image
@@ -278,6 +259,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import svgPanZoom from 'svg-pan-zoom'
 import Hammer from 'hammerjs'
 import { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
+import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 
 const CITAADEL_WIDTH = 9504
 const CITAADEL_HEIGHT = 6336
@@ -473,6 +455,7 @@ export default {
     return {
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
+      PAARTNER_PARCELS,
       svgContainerRef,
       svgRef,
       zoomCircleRef,

@@ -34,38 +34,7 @@
 </template>
 
 <script>
-const PAARTNER_DETAILS = {
-  aave: {
-    id: 'aave',
-    label: 'AAVE',
-    twitter: 'AaveAave'
-  },
-  cgu: {
-    id: 'cgu',
-    label: 'Crypto Gaming United',
-    twitter: 'cryptogamingutd'
-  },
-  flamingo: {
-    id: 'flamingo',
-    label: 'Flamingo',
-    twitter: 'FLAMINGODAO'
-  },
-  readyplayerdao: {
-    id: 'readyplayerdao',
-    label: 'Ready Player DAO',
-    twitter: 'ReadyPlayerDAO'
-  },
-  blackpool: {
-    id: 'blackpool',
-    label: 'BlackPool',
-    twitter: 'BlackpoolHQ'
-  },
-  yggsea: {
-    id: 'yggsea',
-    label: 'YGGSEA',
-    twitter: 'yggsea'
-  }
-}
+import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
 
 export default {
   props: {
