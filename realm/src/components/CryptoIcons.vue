@@ -15,11 +15,15 @@
 
 <script>
 import collaterals from '@/data/pockets/collaterals.json'
+import tokens from '@/data/pockets/tokens.json'
 
 export default {
   computed: {
     symbols () {
-      return collaterals
+      return {
+        ...collaterals,
+        ...tokens
+      }
     }
   }
 }

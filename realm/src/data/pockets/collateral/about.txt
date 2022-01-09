@@ -1,1 +1,3 @@
 From https://github.com/spothq/cryptocurrency-icons
+
+except ghst which is converted from png

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CollateralIcons />
+    <CryptoIcons />
 
     <h1>Gotchi Pockets</h1>
 
@@ -67,7 +67,13 @@
             class="dashboard-metric"
           >
             <div class="dashboard-text dashboard-text--primary">
-              GHST in Pockets
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <CryptoIcon
+                  :address="GHST_ID"
+                  style="width: 40px; margin-right: 10px"
+                />
+                <div>GHST in Pockets</div>
+              </div>
             </div>
             <div class="dashboard-number dashboard-number--primary">
               <NumberDisplay
@@ -110,7 +116,13 @@
             class="dashboard-metric"
           >
             <div class="dashboard-text dashboard-text--primary">
-              Unclaimed AAVE Rewards
+              <div style="display: flex; align-items: center; justify-content: center;">
+                <CryptoIcon
+                  :address="WMATIC_ID"
+                  style="width: 40px; margin-right: 10px"
+                />
+                <div>Unclaimed AAVE Rewards</div>
+              </div>
             </div>
             <div class="dashboard-number dashboard-number--primary">
               <NumberDisplay
@@ -154,7 +166,7 @@
           :key="item.collateral.id"
           class="dashboard-metric"
         >
-          <CollateralIcon
+          <CryptoIcon
             :address="item.collateral.id"
             style="width: 40px"
           />
@@ -353,19 +365,20 @@ import useGotchis from '@/data/useGotchis'
 import useGotchiGhst from '@/data/useGotchiGhst'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
-import CollateralIcons from './CollateralIcons.vue'
-import CollateralIcon from './CollateralIcon.vue'
+import CryptoIcons from './CryptoIcons.vue'
+import CryptoIcon from './CryptoIcon.vue'
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import NumberDisplay from './NumberDisplay.vue'
 import SortToggle from './SortToggle.vue'
 import collaterals from '@/data/pockets/collaterals.json'
+import tokens from '@/data/pockets/tokens.json'
 
 export default {
   components: {
     DataFetcherGotchis,
-    CollateralIcons,
-    CollateralIcon,
+    CryptoIcons,
+    CryptoIcon,
     DateFriendly,
     EthAddress,
     NumberDisplay,
@@ -562,7 +575,7 @@ export default {
       }
     })
 
-    const GHST_ID = '0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7'
+    const GHST_ID = Object.values(tokens).find(t => t.label === 'GHST')?.id
 
     const hasGhst = computed(() => ghstFetchStatus.value.loaded)
 
@@ -599,7 +612,7 @@ export default {
       }
     })
 
-    const WMATIC_ID = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+    const WMATIC_ID = Object.values(tokens).find(t => t.label === 'WMATIC')?.id
 
     const hasRewards = computed(() => rewardsFetchStatus.value.loaded)
 
@@ -637,6 +650,8 @@ export default {
     })
 
     return {
+      GHST_ID,
+      WMATIC_ID,
       gotchisFetchStatus,
       dashboardDisplayMode,
       collateralTotalsWithPriceOrdered,

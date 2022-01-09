@@ -1,19 +1,11 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import collaterals from './pockets/collaterals.json'
+import moreTokens from './pockets/tokens.json'
 
 const usdPrices = ref({})
 
-const WMATIC = {
-  id: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
-  coingeckoId: 'wmatic'
-}
-const GHST = {
-  id: '0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7',
-  coingeckoId: 'aavegotchi'
-}
-const extraTokens = [WMATIC, GHST]
-const tokens = extraTokens.concat(Object.values(collaterals))
+const tokens = Object.values(moreTokens).concat(Object.values(collaterals))
 
 const API_URL = 'https://api.coingecko.com/api/v3/simple/price'
 const tokenIdsForUrl = tokens.map(c => encodeURIComponent(c.coingeckoId)).join(',')
