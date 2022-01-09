@@ -92,6 +92,10 @@ export default {
     white-space: nowrap;
     border-width: 0;
   }
+
+  .word-break {
+    word-break: break-word;
+  }
 </style>
 
 <style scoped>

@@ -79,7 +79,7 @@
             }"
           >
             <template
-              v-for="paartnerParcel in PAARTNER_PARCELS"
+              v-for="paartnerParcel in paartnerParcels"
               :key="paartnerParcel.id"
             >
               <a
@@ -93,6 +93,15 @@
                   :y="paartnerParcel.y"
                   width="64"
                   height="64"
+                />
+                <image
+                  v-if="paartnerParcel.logoUrl"
+                  :href="paartnerParcel.logoUrl"
+                  :x="paartnerParcel.x + 7"
+                  :y="paartnerParcel.y + 7"
+                  width="50"
+                  height="50"
+                  class="paartner-parcel-logo"
                 />
               </a>
               <rect
@@ -255,7 +264,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import svgPanZoom from 'svg-pan-zoom'
 import Hammer from 'hammerjs'
 import { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
@@ -280,6 +289,13 @@ export default {
     const svgContainerRef = ref(null)
     const svgRef = ref(null)
     const zoomCircleRef = ref(null)
+
+    const paartnerParcels = computed(() => {
+      return PAARTNER_PARCELS.map(parcel => ({
+        ...parcel,
+        logoUrl: parcel.paartner ? require(`./paartnerLogos/${parcel.paartner}.svg`) : null
+      }))
+    })
 
     // Workaround to avoid click-selections while dragging to pan
     let lastMousedown = null
@@ -455,7 +471,7 @@ export default {
     return {
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
-      PAARTNER_PARCELS,
+      paartnerParcels,
       svgContainerRef,
       svgRef,
       zoomCircleRef,
@@ -499,6 +515,13 @@ export default {
       transform: scale(32);
       stroke-width: 1px;
     }
+  }
+
+  .paartner-parcel-logo {
+    filter: saturate(0);
+  }
+  .paartner-parcel-logo:hover {
+    filter: none;
   }
 
   @keyframes pulse {
