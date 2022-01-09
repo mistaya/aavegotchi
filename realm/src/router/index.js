@@ -12,6 +12,7 @@ const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/component
 const ConfigDataPocket = () => import(/* webpackChunkName: "config-pocket" */ '@/components/ConfigDataPocket.vue')
 const PocketsPage = () => import(/* webpackChunkName: "pocketses" */ '@/components/PocketsPage.vue')
 const WearableSetsPage = () => import(/* webpackChunkName: "wearable-sets" */ '@/components/WearableSetsPage.vue')
+const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
 
 const { headData } = useSiteHead()
 
@@ -66,6 +67,17 @@ const routes = [
       head: {
         title: 'Wearable Sets',
         description: 'Full details of all wearable sets, grouped by gotchi types'
+      }
+    }
+  },
+  {
+    path: '/playground',
+    name: 'playground',
+    component: TempPlayground,
+    meta: {
+      head: {
+        title: 'Temporary Playground',
+        description: ''
       }
     }
   },
