@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div :class="{
+    'device--no-touch': deviceNoTouch
+  }">
     <SiteHead />
     <nav>
       <router-link :to="{ name: 'citaadel' }">The Citaadel</router-link>
@@ -32,8 +34,10 @@ export default {
   },
   setup: function () {
     const { pageLoading } = usePageLoading()
+
     return {
-      pageLoading
+      pageLoading,
+      deviceNoTouch: !('ontouchstart' in document.documentElement)
     }
   }
 }
@@ -95,6 +99,16 @@ export default {
 
   .word-break {
     word-break: break-word;
+  }
+  .visible-scrollbar::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+    height: 7px;
+  }
+  .visible-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.4);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.4);
   }
 </style>
 

@@ -211,7 +211,16 @@
           </label>
         </form>
       </div>
-      <div class="gotchis-table-wrapper">
+      <PagingControls
+        v-model="gotchisPaging"
+        :numItems="numFilteredGotchis"
+        itemsLabel="gotchis"
+        class="gotchis-table-paging gotchis-table-paging--top"
+      />
+      <div class="gotchis-table-scroll-text">
+        (Scroll the table sideways to see more columns)
+      </div>
+      <div class="gotchis-table-wrapper visible-scrollbar">
         <table class="gotchis-table">
           <thead>
             <tr>
@@ -352,12 +361,18 @@
           </tbody>
         </table>
       </div>
+      <PagingControls
+        v-model="gotchisPaging"
+        :numItems="numFilteredGotchis"
+        itemsLabel="gotchis"
+        class="gotchis-table-paging gotchis-table-paging--bottom"
+      />
     </template>
   </div>
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
 import useCollateralPrices from '@/data/useCollateralPrices'
@@ -370,6 +385,7 @@ import CryptoIcon from './CryptoIcon.vue'
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import NumberDisplay from './NumberDisplay.vue'
+import PagingControls from './PagingControls.vue'
 import SortToggle from './SortToggle.vue'
 import collaterals from '@/data/pockets/collaterals.json'
 import tokens from '@/data/pockets/tokens.json'
@@ -382,6 +398,7 @@ export default {
     DateFriendly,
     EthAddress,
     NumberDisplay,
+    PagingControls,
     SortToggle
   },
   setup () {
@@ -442,16 +459,32 @@ export default {
 
     const formQuery = ref('')
     const gotchisQuery = ref('')
+    const gotchisQueryCleaned = computed(() => gotchisQuery.value?.trim().toLowerCase())
     const gotchisSort = ref({
       column: '',
       direction: 'asc'
     })
+    const gotchisPaging = ref({
+      page: 0,
+      pageSize: 10
+    })
+
+    watch(
+      () => ({
+        query: gotchisQueryCleaned.value,
+        sortColumn: gotchisSort.value.column,
+        sortDirection: gotchisSort.value.direction
+      }),
+      () => { gotchisPaging.value.page = 0 }
+    )
 
     const gotchisFiltered = computed(() => {
-      const query = gotchisQuery.value?.trim().toLowerCase()
+      const query = gotchisQueryCleaned.value
       if (!query) { return gotchisData.value }
       return gotchisData.value.filter(g => g.id === query || g.owner === query || g.nameLowerCase.includes(query))
     })
+
+    const numFilteredGotchis = computed(() => gotchisFiltered.value.length)
 
     const gotchisSorted = computed(() => {
       const { column, direction } = gotchisSort.value
@@ -474,7 +507,9 @@ export default {
     })
 
     const gotchisToDisplay = computed(() => {
-      return gotchisSorted.value.slice(0, 100)
+      const start = gotchisPaging.value.page * gotchisPaging.value.pageSize
+      const end = start + gotchisPaging.value.pageSize
+      return gotchisSorted.value.slice(start, end)
     })
 
     const collateralTotals = computed(() => {
@@ -666,13 +701,50 @@ export default {
       rewards,
       formQuery,
       gotchisQuery,
+      gotchisPaging,
       gotchisSort,
-      gotchisToDisplay
+      gotchisToDisplay,
+      numFilteredGotchis
     }
   }
 }
 </script>
 
+<style>
+  /* global styles */
+  /* so we can refer to device css class from parent */
+
+  /* Handle table scrolling:
+
+     With a wide enough screen that the columns fit,
+     let the table flow normally in the layout, with
+     sticky headers.
+
+     1100px width: this magic number needs adjusting for changes
+
+     When the screen is narrower, allow horizontal scrolling.
+
+     Touchscreens are nicest to use with horizontal but no vertical
+     overflow, to avoid scroll-in-scroll. Unfortunately this also
+     breaks the sticky headers because no height is defined.
+
+     On desktops, can only horizontally scroll using the scrollbar,
+     so it's a pain when the bottom of the table is out of view.
+     So if no-touch and horizontal scrolling is necessary (narrow),
+     also limit the vertical height so the whole scrollable table
+     can fit on the viewport at once. (This also reenables the
+     sticky headers, as a height is defined.)
+   */
+  @media (max-width: 1100px) {
+    .gotchis-table-wrapper {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .gotchis-table-wrapper {
+      max-height: 90vh;
+    }
+  }
+</style>
 <style scoped>
   .dashboard-controls__modes {
     margin: 20px 0 0 50px;
@@ -698,6 +770,7 @@ export default {
     justify-content: center;
   }
   .dashboard-metric {
+    max-width: 100%;
     flex: 0 0 auto;
     margin: 10px 15px;
     border: 1px solid #ccc;
@@ -730,9 +803,25 @@ export default {
   }
   .gotchis-table-wrapper {
     margin: 0;
+    max-width: 100%;
   }
+
+  /* display help text for narrow screens */
+  .gotchis-table-scroll-text {
+    display: none;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    font-style: italic;
+    text-align: right;
+  }
+  @media (max-width: 950px) {
+    .gotchis-table-scroll-text {
+      display: block;
+    }
+  }
+
   .gotchis-table {
-    margin: 0 auto 70px;
+    margin: 0 auto;
   }
   .gotchis-table thead th {
     position: sticky;
@@ -746,6 +835,13 @@ export default {
   }
   .gotchis-table tr:nth-child(even) td {
     background: #eee;
+  }
+
+  .gotchis-table-paging {
+    margin: 20px auto;
+  }
+  .gotchis-table-paging--bottom {
+    margin-bottom: 70px;
   }
 
   .gotchis-table .usd-value {
