@@ -10,6 +10,7 @@ const LandAuctionPage = () => import(/* webpackChunkName: "land-auction" */'@/co
 const ConfigData = () => import(/* webpackChunkName: "config" */ '@/components/ConfigData.vue')
 const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/components/ConfigParcels.vue')
 const ConfigDataPocket = () => import(/* webpackChunkName: "config-pocket" */ '@/components/ConfigDataPocket.vue')
+const ConfigDataWearableSets = () => import(/* webpackChunkName: "config-wearable-sets" */ '@/components/ConfigDataWearableSetsPage.vue')
 const PocketsPage = () => import(/* webpackChunkName: "pocketses" */ '@/components/PocketsPage.vue')
 const WearableSetsPage = () => import(/* webpackChunkName: "wearable-sets" */ '@/components/WearableSetsPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
@@ -110,6 +111,17 @@ const routes = [
     meta: {
       head: {
         title: 'Configure Data: Gotchi Pockets',
+        description: 'Admin page for fetching data'
+      }
+    }
+  },
+  {
+    path: '/config-wearable-sets',
+    name: 'config-wearable-sets',
+    component: ConfigDataWearableSets,
+    meta: {
+      head: {
+        title: 'Configure Data: Wearable Sets',
         description: 'Admin page for fetching data'
       }
     }
