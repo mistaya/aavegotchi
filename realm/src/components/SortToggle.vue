@@ -6,22 +6,18 @@
     @click="nextSort"
   >
     <template v-if="!sort">
-      <img
-        src="./icon-arrow-up.svg"
-        alt="Sort"
+      <SiteIcon
+        name="arrow-up"
       />
+      <span class="sr-only">Sort</span>
     </template>
     <template v-if="sort">
       <span>Sort</span>
-      <img
-        v-if="sort === 'asc'"
-        src="./icon-arrow-up.svg"
-        alt="Ascending"
-      />
-      <img
-        v-if="sort === 'desc'"
-        src="./icon-arrow-down.svg"
-        alt="Descending"
+      <span class="sr-only">
+        {{ sort === 'asc' ? 'Ascending' : 'Descending' }}
+      </span>
+      <SiteIcon
+        :name="sort === 'asc' ? 'arrow-up' : 'arrow-down'"
       />
     </template>
   </button>

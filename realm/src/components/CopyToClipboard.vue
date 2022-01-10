@@ -15,10 +15,7 @@
       @click="copyToClipboard"
     >
       <span class="sr-only">copy address</span>
-      <img
-        src="./icon-copy.svg"
-        alt=""
-      />
+      <SiteIcon name="copy" />
     </button>
   </div>
 </template>

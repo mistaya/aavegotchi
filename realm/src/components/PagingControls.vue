@@ -11,7 +11,7 @@
         title="First page"
         @click="$emit('update:modelValue', { page: 0, pageSize: modelValue.pageSize })"
       >
-        <span aria-hidden="true">&lt;&lt;</span>
+        <SiteIcon name="arrow-leftmost" />
         <span class="sr-only">First page</span>
       </button>
       <button
@@ -20,7 +20,7 @@
         title="Previous page"
         @click="$emit('update:modelValue', { page: modelValue.page - 1, pageSize: modelValue.pageSize })"
       >
-        <span aria-hidden="true">&lt;</span>
+        <SiteIcon name="arrow-left" />
         <span class="sr-only">Previous page</span>
       </button>
       <span style="margin: 0 5px 0 3px">
@@ -32,7 +32,7 @@
         title="Next page"
         @click="$emit('update:modelValue', { page: modelValue.page + 1, pageSize: modelValue.pageSize })"
       >
-        <span aria-hidden="true">&gt;</span>
+        <SiteIcon name="arrow-right" />
         <span class="sr-only">Next page</span>
       </button>
       <button
@@ -41,7 +41,7 @@
         title="Last page"
         @click="$emit('update:modelValue', { page: lastPage, pageSize: modelValue.pageSize })"
       >
-        <span aria-hidden="true">&gt;&gt;</span>
+        <SiteIcon name="arrow-rightmost" />
         <span class="sr-only">Last page</span>
       </button>
     </div>
@@ -115,6 +115,7 @@ export default {
   }
 
   .paging-controls__pages button {
+    display: inline-flex;
     margin: 0 3px;
   }
 </style>

@@ -5,7 +5,10 @@
       {{ subject }}:
     </template>
     <template v-if="fetchStatus.loaded">
-      <span aria-hidden="true" class="data-fetcher__status data-fetcher__status--success">✓</span>
+      <SiteIcon
+        class="data-fetcher__status data-fetcher__status--success"
+        name="check"
+      />
       <slot
         name="loaded"
         :result="result"
@@ -16,7 +19,10 @@
       </slot>
     </template>
     <template v-if="fetchStatus.error">
-      <span aria-hidden="true" class="data-fetcher__status data-fetcher__status--error">❌</span>
+      <SiteIcon
+        class="data-fetcher__status data-fetcher__status--error"
+        name="warning-triangle"
+      />
       error loading {{ subject }}<template v-if="fetchStatus.errorMessage">: {{ fetchStatus.errorMessage }}</template>
     </template>
     <button
@@ -102,16 +108,14 @@ export default {
     color: #d383f3;
   }
   .data-fetcher__status {
-    margin-right: 4px;
-    line-height: 0;
+    margin-right: 3px;
+    margin-bottom: -3px;
   }
   .data-fetcher__status--success {
     color: #0ddd0d;
-    font-size: 16px;
   }
   .data-fetcher__status--error {
     color: red;
-    font-size: 10px;
   }
   .data-fetcher button {
     font-size: inherit;

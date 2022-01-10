@@ -24,10 +24,7 @@
         <span class="sr-only">
           polygonscan
         </span>
-        <img
-          src="./icon-open-in-new.svg"
-          alt=""
-        />
+        <SiteIcon name="open-window" />
       </a>
     </div>
   </span>

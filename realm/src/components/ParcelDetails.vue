@@ -5,10 +5,12 @@
   >
     <button
       type="button"
-      style="float: right"
+      style="float: right; display: flex;"
+      title="Close"
       @click="$emit('close')"
     >
-      Close
+      <span class="sr-only">Close</span>
+      <SiteIcon name="cancel" />
     </button>
 
     <h2>Parcel details:</h2>

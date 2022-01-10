@@ -3,6 +3,7 @@
     'device--no-touch': deviceNoTouch
   }">
     <SiteHead />
+    <SiteIcons />
     <nav>
       <router-link :to="{ name: 'citaadel' }">The Citaadel</router-link>
       <router-link :to="{ name: 'land-auction', params: { auctionId: '1' } }">Land Auction 1</router-link>
@@ -27,11 +28,13 @@
 <script>
 import usePageLoading from '@/router/usePageLoading'
 import SiteHead from '@/components/SiteHead.vue'
+import SiteIcons from '@/components/SiteIcons.vue'
 
 export default {
   name: 'App',
   components: {
-    SiteHead
+    SiteHead,
+    SiteIcons
   },
   setup: function () {
     const { pageLoading } = usePageLoading()
