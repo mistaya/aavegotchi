@@ -158,7 +158,7 @@ const getMatchingSets = function(profile) {
                     [${set.totalBRSBonus}]
                 </span>
                 <span class="set-summary__text">
-                    ${set.name} <span class="trait-bonus-types">(${set.totalTraitBonusTypesText})
+                    ${set.name} <span class="trait-bonus-types">(${set.totalTraitBonusTypesText})</span>
                 </span>
             </span>
         </summary>
@@ -400,11 +400,13 @@ const html = `
     <h2>All Wearable Sets</h2>
     <table class="sets-table">
         <thead>
-            <th class="sets-table__header">Set Name</th>
-            <th class="sets-table__header">Set Bonus</th>
-            <th class="sets-table__header sets-table__header--wearables">Items</th>
-            <th class="sets-table__header">Total Modifiers</th>
-            <th class="sets-table__header">Total BRS bonus</th>
+            <tr>
+                <th class="sets-table__header">Set Name</th>
+                <th class="sets-table__header">Set Bonus</th>
+                <th class="sets-table__header sets-table__header--wearables">Items</th>
+                <th class="sets-table__header">Total Modifiers</th>
+                <th class="sets-table__header">Total BRS bonus</th>
+            </tr>
         </thead>
         <tbody>
             ${tableRows.join("\n")}
@@ -414,11 +416,13 @@ const html = `
     <h2>Matching sets for different types of gotchi</h2>
     <table class="matching-sets-table">
         <thead>
-            <th>${individualTraitsByIndex[0]}</th>
-            <th>${individualTraitsByIndex[1]}</th>
-            <th>${individualTraitsByIndex[2]}</th>
-            <th>${individualTraitsByIndex[3]}</th>
-            <th class="matching-sets-table__header matching-sets-table__header--sets">Matching Sets</th>
+            <tr>
+                <th>${individualTraitsByIndex[0]}</th>
+                <th>${individualTraitsByIndex[1]}</th>
+                <th>${individualTraitsByIndex[2]}</th>
+                <th>${individualTraitsByIndex[3]}</th>
+                <th class="matching-sets-table__header matching-sets-table__header--sets">Matching Sets</th>
+            </tr>
         </thead>
         <tbody>
             ${traitProfiles.map(profile => `
@@ -436,7 +440,7 @@ const html = `
                 </tr>
             `).join("")}
         </tbody>
-    </table
+    </table>
 </body>
 </html>    	
 `;
