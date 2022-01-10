@@ -1,13 +1,13 @@
 <template>
   <DataFetcher
-    subject="parcel owners"
-    :use="useParcelOwners"
-    fetchProperty="fetchOwners"
+    subject="coingecko prices"
+    :use="useCollateralPrices"
+    fetchProperty="fetchPrices"
   />
 </template>
 
 <script>
-import useParcelOwners from '@/data/useParcelOwners'
+import useCollateralPrices from '@/data/useCollateralPrices'
 import DataFetcher from './DataFetcher.vue'
 
 export default {
@@ -16,7 +16,7 @@ export default {
   },
   setup (props) {
     return {
-      useParcelOwners
+      useCollateralPrices
     }
   }
 }

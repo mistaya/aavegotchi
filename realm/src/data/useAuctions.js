@@ -56,6 +56,7 @@ export default function useAuctions (auctionId) {
 
   const auctionsByParcelId = ref({})
 
+  const lastFetchDate = ref(null)
   const setAuctions = function (auctions) {
     for (const auction of auctions) {
       auctionsByParcelId.value[auction.tokenId] = {
@@ -90,6 +91,8 @@ export default function useAuctions (auctionId) {
       .then(json => {
         if (isStale()) { console.log('Stale request, ignoring'); return }
         auctionsByParcelId.value = json
+        const mostRecentAuctionTime = mostRecentAuction.value?.lastBidTime
+        lastFetchDate.value = mostRecentAuctionTime ? new Date(mostRecentAuctionTime * 1000) : new Date()
         setLoaded()
       }).catch(error => {
         console.error(error)
@@ -134,6 +137,7 @@ export default function useAuctions (auctionId) {
           setAuctions(responseJson.data.auctions)
           if (responseJson.data.auctions.length < FETCH_PAGE_SIZE) {
             // finished fetching all pages
+            lastFetchDate.value = new Date()
             setLoaded()
             return
           }
@@ -151,13 +155,17 @@ export default function useAuctions (auctionId) {
     fetchAuctionsFromSubgraph()
   }
 
+  const auctionEnded = computed(() => Date.now() > auctionInfo.endTime)
+
   resultByAuctionId[auctionId] = {
     auctionInfo,
     auctionsByParcelId,
     mostRecentAuction,
     canSubmitFetch,
     fetchStatus,
-    fetchAuctions
+    fetchAuctions,
+    lastFetchDate,
+    auctionEnded
   }
 
   fetchInitialAuctions()

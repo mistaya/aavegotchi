@@ -1,20 +1,20 @@
 <template>
   <DataFetcher
-    subject="gotchis and their collateral"
-    :use="useGotchis"
-    fetchProperty="fetchGotchis"
-    resultProperty="gotchis"
+    subject="gotchi GHST balances"
+    :use="useGotchiGhst"
+    fetchProperty="fetchBalances"
+    resultProperty="loadedBalancesDetails"
   >
     <template #loaded="{ result, lastFetchDate }">
-      <NumberDisplay :number="result.length" />
-      gotchis and their collateral fetched
+      <NumberDisplay :number="result.numBalancesFetched" />
+      gotchi GHST balances fetched
       <DateFriendly :date="lastFetchDate" />
     </template>
   </DataFetcher>
 </template>
 
 <script>
-import useGotchis from '@/data/useGotchis'
+import useGotchiGhst from '@/data/useGotchiGhst'
 import DateFriendly from './DateFriendly'
 import NumberDisplay from './NumberDisplay'
 import DataFetcher from './DataFetcher.vue'
@@ -27,7 +27,7 @@ export default {
   },
   setup (props) {
     return {
-      useGotchis
+      useGotchiGhst
     }
   }
 }

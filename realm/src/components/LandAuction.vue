@@ -7,34 +7,10 @@
             Auction {{ auctionId }} ({{ auctionInfo.days }})
           </h2>
 
-          <div
-            v-if="mostRecentAuction"
-            style="margin-bottom: 20px; font-style: italic; font-size: 0.95em;"
-          >
-            Last auction data fetched:
-            <br>
-            parcel #{{ mostRecentAuction.tokenId }},
-            <DatePrecise :date="mostRecentAuctionDate" />
-          </div>
-
-          <div style="margin: 10px 0 20px 0;">
-            <button
-              type="button"
-              :disabled="!canSubmitAuctionsFetch"
-              class="fetch-auctions"
-              style="display: none;"
-              @click="fetchAuctions"
-            >
-              Fetch Latest
-            </button>
-            <span v-if="auctionsFetchStatus.loading">
-              <LoadingSpinner style="position: relative; top: 2px; margin-right: 2px;" />
-              loading auctions...
-            </span>
-            <span v-if="auctionsFetchStatus.error">
-              Error loading auctions: {{ auctionsFetchStatus.errorMessage }}
-            </span>
-          </div>
+          <DataFetcherAuctions
+            :auctionId="auctionId"
+            style="margin-bottom: 20px; margin-right: 10px;"
+          />
 
           <details class="config-details">
             <summary>
@@ -309,8 +285,7 @@ import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
-import DatePrecise from './DatePrecise.vue'
-import LoadingSpinner from './LoadingSpinner.vue'
+import DataFetcherAuctions from './DataFetcherAuctions.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
@@ -328,11 +303,10 @@ export default {
   components: {
     PrereqParcels,
     LayoutMapWithFilters,
+    DataFetcherAuctions,
     PaartnerParcelDetails,
     ParcelDetails,
     CitaadelMap,
-    DatePrecise,
-    LoadingSpinner,
     MapConfig,
     FilterSize,
     FilterWalls,
@@ -352,16 +326,8 @@ export default {
     const { parcelsById } = useParcels()
     const {
       auctionInfo,
-      auctionsByParcelId,
-      mostRecentAuction,
-      canSubmitFetch: canSubmitAuctionsFetch,
-      fetchStatus: auctionsFetchStatus,
-      fetchAuctions
+      auctionsByParcelId
     } = useAuctions(props.auctionId)
-    const mostRecentAuctionDate = computed(() => {
-      if (!mostRecentAuction.value) { return null }
-      return new Date(mostRecentAuction.value.lastBidTime * 1000)
-    })
     const mapConfig = ref(getDefaultMapConfigValue())
     const filters = ref({
       size: [...SIZES],
@@ -648,11 +614,6 @@ export default {
       selectedParcelId,
       selectedParcel,
       selectedParcelPaartnerId,
-      mostRecentAuction,
-      mostRecentAuctionDate,
-      canSubmitAuctionsFetch,
-      fetchAuctions,
-      auctionsFetchStatus,
       SCALE_NAMES,
       SCALE_GRADIENTS,
       mapConfig,
@@ -668,13 +629,6 @@ export default {
 </script>
 
 <style scoped>
-  .fetch-auctions{
-    background: var(--purple--contrast-black);
-    color: black;
-    font-weight: bold;
-    padding: 5px 10px;
-  }
-
   .parcels-list {
     margin: 15px 0 0 0;
     padding: 0 0 0 15px;

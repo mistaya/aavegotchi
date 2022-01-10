@@ -4,10 +4,11 @@
 
     <h1>Gotchi Pockets</h1>
 
-    <DataFetcherGotchis />
-
-    <div v-if="hasPrices" style="font-style: italic;">
-      Using prices from coingecko
+    <div>
+      <DataFetcherGotchis />
+      <DataFetcherGotchiGhst />
+      <DataFetcherGotchiAaveRewards/>
+      <DataFetcherPrices />
     </div>
 
     <template v-if="gotchisFetchStatus.loaded">
@@ -380,6 +381,9 @@ import useGotchis from '@/data/useGotchis'
 import useGotchiGhst from '@/data/useGotchiGhst'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
+import DataFetcherGotchiAaveRewards from './DataFetcherGotchiAaveRewards.vue'
+import DataFetcherGotchiGhst from './DataFetcherGotchiGhst.vue'
+import DataFetcherPrices from './DataFetcherPrices.vue'
 import CryptoIcons from './CryptoIcons.vue'
 import CryptoIcon from './CryptoIcon.vue'
 import DateFriendly from './DateFriendly.vue'
@@ -393,6 +397,9 @@ import tokens from '@/data/pockets/tokens.json'
 export default {
   components: {
     DataFetcherGotchis,
+    DataFetcherGotchiAaveRewards,
+    DataFetcherGotchiGhst,
+    DataFetcherPrices,
     CryptoIcons,
     CryptoIcon,
     DateFriendly,

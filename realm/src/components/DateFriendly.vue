@@ -15,11 +15,22 @@ export default {
   },
   setup (props) {
     const { tickerDate } = useReactiveDate()
-    const friendlyDate = computed(() => formatDistanceStrict(
-      props.date,
-      max([tickerDate.value, new Date()]),
-      { addSuffix: true }
-    ))
+    const friendlyDate = computed(() => {
+      let str = formatDistanceStrict(
+        props.date,
+        max([tickerDate.value, new Date()]),
+        { addSuffix: true }
+      )
+      // Shorten it further
+      if (str.includes(' second')) {
+        str = str.replace(/(\d) seconds?/, '$1s')
+      } else if (str.includes(' minute')) {
+        str = str.replace(/(\d) minutes?/, '$1 min')
+      } else if (str.includes(' hour')) {
+        str = str.replace(/(\d) hours?/, '$1h')
+      }
+      return str
+    })
 
     return {
       friendlyDate

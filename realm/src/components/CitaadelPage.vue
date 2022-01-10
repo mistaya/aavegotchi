@@ -4,9 +4,9 @@
       <template #sidebar="{ viewMode, setViewModeMap }">
         <h1>The Citaadel</h1>
 
-        <div style="margin-bottom: 20px;">
-          <DataFetcherBaazaarListings style="margin-bottom: 10px;" />
-          <DataFetcherParcelOwners style="margin-bottom: 10px;" />
+        <div style="margin-bottom: 20px; margin-right: 10px;">
+          <DataFetcherBaazaarListings />
+          <DataFetcherParcelOwners />
         </div>
 
         <details class="filter-container">
