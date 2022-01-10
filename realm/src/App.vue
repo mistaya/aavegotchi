@@ -8,6 +8,7 @@
       <router-link :to="{ name: 'land-auction', params: { auctionId: '1' } }">Land Auction 1</router-link>
       <router-link :to="{ name: 'land-auction', params: { auctionId: '2' } }">Land Auction 2</router-link>
       <router-link :to="{ name: 'wearable-sets', params: { mode: 'all' } }">Wearable Sets</router-link>
+      <router-link :to="{ name: 'pockets' }">Gotchi Pockets</router-link>
 
       <!--
       <router-link :to="{ name: 'config-data' }">Config Data</router-link>

@@ -87,7 +87,7 @@ fetch(initialGhstUrl)
     for (var key in json) {
       initialBalances[key] = new BigNumber(json[key])
     }
-    setBalances(initialBalances, new Date(1641587997795))
+    setBalances(initialBalances, new Date(1641776626065))
     setLoaded()
   }).catch(error => {
     console.error(error)
