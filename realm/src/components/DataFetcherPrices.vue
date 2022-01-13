@@ -1,6 +1,6 @@
 <template>
   <DataFetcher
-    subject="coingecko prices"
+    subject="prices from coingecko &amp; quickswap"
     :use="useCollateralPrices"
     fetchProperty="fetchPrices"
   />
