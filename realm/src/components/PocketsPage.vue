@@ -159,6 +159,8 @@
               <br>
               Rewards fetched
               <DateFriendly :date="rewardTotals.lastFetchDate" />
+              <br>
+              <i>(Note: there is currently no way to claim these rewards)</i>
             </div>
           </div>
         </div>

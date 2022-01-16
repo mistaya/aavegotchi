@@ -76,7 +76,7 @@ fetch(initialGotchisUrl)
   .then(response => response.json())
   .then(json => {
     if (isStale()) { return }
-    setGotchis(json, new Date(1641776626065))
+    setGotchis(json, new Date(1642334104961))
     setLoaded()
   }).catch(error => {
     console.error(error)
