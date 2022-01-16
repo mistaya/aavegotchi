@@ -2,17 +2,18 @@
   <div>
     <h1>Config Data</h1>
 
-    <router-link :to="{ name: 'home' }">Back to Home</router-link>
-
-    <ConfigDataParcels />
-    <ConfigDataAuctions />
-    <ConfigDataBaazaarListings />
-    <ConfigDataParcelPrices />
-    <ConfigDataParcelOwners />
+    <PrereqParcels>
+      <ConfigDataParcels />
+      <ConfigDataAuctions />
+      <ConfigDataBaazaarListings />
+      <ConfigDataParcelPrices />
+      <ConfigDataParcelOwners />
+    </PrereqParcels>
   </div>
 </template>
 
 <script>
+import PrereqParcels from './PrereqParcels.vue'
 import ConfigDataParcels from './ConfigDataParcels.vue'
 import ConfigDataAuctions from './ConfigDataAuctions.vue'
 import ConfigDataBaazaarListings from './ConfigDataBaazaarListings.vue'
@@ -21,6 +22,7 @@ import ConfigDataParcelOwners from './ConfigDataParcelOwners.vue'
 
 export default {
   components: {
+    PrereqParcels,
     ConfigDataParcels,
     ConfigDataAuctions,
     ConfigDataBaazaarListings,

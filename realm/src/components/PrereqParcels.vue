@@ -1,28 +1,50 @@
 <template>
-  <div v-if="fetchStatus.loading">
-    <LoadingSpinner style="position: relative; top: 2px; margin-right: 2px;" />
-    Loading parcels...
+  <slot v-if="fetchStatus.loaded"></slot>
+  <div v-else>
+    <div v-if="fetchStatus.error">
+      Error loading parcels
+    </div>
+    <div v-else>
+      <DataFetcher
+        subject="parcels"
+        :use="useParcels"
+        fetchProperty="initParcels"
+        resultProperty="parcelsById"
+      >
+        <template #loaded>
+          Parcels fetched
+        </template>
+      </DataFetcher>
 
-    <div style="margin-top: 20px;">
-      This site works best on fast computers - if this is taking a long time, it probably won't work very well on your current device, sorry! You can try using a desktop or laptop instead.
+      <div style="margin: 20px 0;">
+        The Realm maps on this site work best on fast computers - if loading parcels takes a long time, it probably won't work very well on your current device, sorry! You can try using a desktop or laptop instead.
+      </div>
+
+      <div
+        v-if="!fetchStatus.loading"
+        style="margin: 20px 0; font-size: 1.4em; font-weight: bold; text-align: center;"
+      >
+        Click the 'Fetch' button above to start.
+      </div>
     </div>
   </div>
-  <div v-else-if="fetchStatus.error">
-    Error loading parcels
-  </div>
-  <slot v-else></slot>
 </template>
 <script>
+import useCapabilities from '@/data/useCapabilities'
 import useParcels from '@/data/useParcels'
-import LoadingSpinner from './LoadingSpinner.vue'
+import DataFetcher from './DataFetcher.vue'
 
 export default {
   components: {
-    LoadingSpinner
+    DataFetcher
   },
   setup (props) {
-    const { fetchStatus } = useParcels()
-    return { fetchStatus }
+    const { initParcels, fetchStatus } = useParcels()
+    const { isNetworkSlow, isDeviceSlow } = useCapabilities()
+    if (!isNetworkSlow.value && !isDeviceSlow.value) {
+      initParcels()
+    }
+    return { fetchStatus, useParcels }
   }
 }
 </script>

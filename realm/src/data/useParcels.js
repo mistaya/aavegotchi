@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import { WALLS } from './walls'
 import parcelsUrl from './parcels/assetParcels.json'
@@ -10,18 +10,28 @@ const SIZE_HEIGHTS_BY_ID = [8, 16, 64, 32]
 const { status: fetchStatus, setLoading } = useStatus()
 
 const parcelsById = ref({})
-const [isStale, setLoaded, setError] = setLoading()
 
-fetch(parcelsUrl)
-  .then(response => response.json())
-  .then(json => {
-    if (isStale()) { return }
-    parcelsById.value = json
-    setLoaded()
-  }).catch(error => {
-    console.error(error)
-    setError('Error loading parcels')
-  })
+const canSubmitFetch = computed(() => !(fetchStatus.value.loaded || fetchStatus.value.loading || fetchStatus.value.error))
+
+const initParcels = function () {
+  // initial fetch is of our cached parcels json
+  // this only needs to be done once,
+  // but it's safe to call this function many times.
+  if (!canSubmitFetch.value) {
+    return
+  }
+  const [isStale, setLoaded, setError] = setLoading()
+  fetch(parcelsUrl)
+    .then(response => response.json())
+    .then(json => {
+      if (isStale()) { return }
+      parcelsById.value = json
+      setLoaded()
+    }).catch(error => {
+      console.error(error)
+      setError('Error loading parcels')
+    })
+}
 
 const getParcelWall = function (parcel) {
   const parcelX = parcel.coordinateX - 0
@@ -63,6 +73,8 @@ const setParcels = function (parcels) {
 
 export default function useParcels () {
   return {
+    initParcels,
+    canSubmitFetch,
     fetchStatus,
     parcelsById,
     setParcels
