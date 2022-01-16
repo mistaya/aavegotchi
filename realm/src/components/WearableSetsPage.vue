@@ -311,6 +311,10 @@ export default {
           --background-color-match-4: rgba(255, 255, 0, 0.25);
           --border-color: #555;
       }
+
+      .wearable-sets-nav a {
+        color: var(--purple--contrast-black);
+      }
   }
 
   .wearable-sets-nav a[aria-current=page] {
