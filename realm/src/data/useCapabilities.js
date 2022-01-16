@@ -16,7 +16,8 @@ if (navigator.connection) {
 const isNetworkSlow = ref(maybeNetworkSlow)
 
 let maybeDeviceSlow = false
-if (navigator.deviceMemory && navigator.deviceMemory < 4) {
+// Brave doesn't report the correct deviceMemory (anti-fingerprinting)
+if (!navigator.brave && navigator.deviceMemory && navigator.deviceMemory < 4) {
   maybeDeviceSlow = true
 } else {
   // *assume* that if the primary input device is touch ('coarse'),
