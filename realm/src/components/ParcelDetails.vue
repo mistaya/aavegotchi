@@ -92,25 +92,16 @@
     </div>
     <div>
       Boosts:
-      <div style="margin-left: 10px">
-        <template v-if="parcel.hasBoost">
-          <div v-if="parcel.fudBoost !== '0'">
-            FUD: {{ parcel.fudBoost }}
-          </div>
-          <div v-if="parcel.fomoBoost !== '0'">
-            FOMO: {{ parcel.fomoBoost }}
-          </div>
-          <div v-if="parcel.alphaBoost !== '0'">
-            ALPHA: {{ parcel.alphaBoost }}
-          </div>
-          <div v-if="parcel.kekBoost !== '0'">
-            KEK: {{ parcel.kekBoost }}
-          </div>
-        </template>
-        <template v-else>
-          None
-        </template>
-      </div>
+      <ParcelBoosts
+        v-if="parcel.hasBoost"
+        :fud="parcel.fudBoost"
+        :fomo="parcel.fomoBoost"
+        :alpha="parcel.alphaBoost"
+        :kek="parcel.kekBoost"
+      />
+      <template v-else>
+        None
+      </template>
     </div>
   </div>
 </template>
@@ -119,12 +110,14 @@
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import FlagSelectedIcon from './FlagSelectedIcon.vue'
+import ParcelBoosts from './ParcelBoosts.vue'
 
 export default {
   components: {
     DateFriendly,
     EthAddress,
-    FlagSelectedIcon
+    FlagSelectedIcon,
+    ParcelBoosts
   },
   props: {
     parcel: { type: Object, required: true },

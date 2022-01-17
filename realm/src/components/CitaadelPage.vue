@@ -271,39 +271,75 @@
           <template v-else>
             <ul class="parcels-list">
               <li
-                v-for="parcel in listParcelsToDisplay"
+                v-for="(parcel, index) in listParcelsToDisplay"
                 :key="parcel.id"
+                class="parcels-list-item"
+                :class="`parcel-size--${parcel.sizeLabel.toLowerCase()}`"
               >
-                <a
-                  href="#"
-                  @click.prevent="onClickParcel(parcel)"
+                <div class="parcel-index">
+                  {{ index + 1 }}.
+                </div>
+                <div class="parcel-info">
+                  <div>
+                    <a
+                      href="#"
+                      class="parcel-id"
+                      @click.prevent="onClickParcel(parcel)"
+                    >
+                      {{ parcel.id }}
+                    </a>
+                    <span class="parcel-name">
+                      {{ parcel.parcelHash }}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="parcel-district">
+                      D{{ parcel.district }}
+                    </span>
+                    <span class="parcel-size">
+                      &nbsp;{{ parcel.sizeLabel }}
+                    </span>
+                    <ParcelBoosts
+                      v-if="parcel.hasBoost"
+                      :fomo="parcel.fomoBoost"
+                      :fud="parcel.fudBoost"
+                      :alpha="parcel.alphaBoost"
+                      :kek="parcel.kekBoost"
+                      class="parcel-boosts"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="parcel-baazaar"
+                  v-if="listingsByParcelId[parcel.id] || salesByParcelId[parcel.id]"
                 >
-                  {{ parcel.id }}
-                </a>
-                {{ parcel.parcelHash }}
-                {{ parcel.sizeLabel }}
-                district {{ parcel.district }}
-                <span
-                  v-if="listingsByParcelId[parcel.id]"
-                  style="margin: 0 10px;"
-                >
-                  <a
-                    :href="`https://aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
-                    target="_blank"
+                  <div
+                    v-if="listingsByParcelId[parcel.id]"
+                    class="parcel-baazaar-listing parcel-baazaar-listing--current"
                   >
-                    Baazaar {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
-                  </a>
-                </span>
-                <span v-if="salesByParcelId[parcel.id]">
-                  Last sold on Baazaar
-                  <a
-                    :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
-                    target="_blank"
+                    <a
+                      :href="`https://aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
+                      target="_blank"
+                    >
+                      Available for {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                      <SiteIcon name="open-window" />
+                    </a>
+                  </div>
+                  <div
+                    v-if="salesByParcelId[parcel.id]"
+                    class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
                   >
-                    <DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />
-                    for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
-                  </a>
-                </span>
+                    <a
+                      :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
+                      target="_blank"
+                    >
+                      Last sold for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                      <SiteIcon name="open-window" />
+                    </a>
+                    (<DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />)
+                  </div>
+                </div>
               </li>
             </ul>
           </template>
@@ -337,6 +373,7 @@ import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DateFriendly from './DateFriendly.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
+import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
@@ -358,6 +395,7 @@ export default {
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
     PaartnerParcelDetails,
+    ParcelBoosts,
     ParcelDetails,
     CitaadelMap,
     MapConfig,
@@ -784,5 +822,93 @@ export default {
   }
   .range-input {
     width: 60px;
+  }
+
+  .parcels-list {
+    list-style-type: none;
+    margin: 20px 0;
+    padding: 0;
+
+    --humble-color--r: 75;
+    --humble-color--g: 117;
+    --humble-color--b: 197;
+    --humble-color: rgb(var(--humble-color--r), var(--humble-color--g), var(--humble-color--b));
+    --humble-color-bg: rgb(var(--humble-color--r), var(--humble-color--g), var(--humble-color--b), 0.15);
+    --reasonable-color--r: 0;
+    --reasonable-color--g: 110;
+    --reasonable-color--b: 82;
+    --reasonable-color: rgb(var(--reasonable-color--r), var(--reasonable-color--g), var(--reasonable-color--b));
+    --reasonable-color-bg: rgb(var(--reasonable-color--r), var(--reasonable-color--g), var(--reasonable-color--b), 0.15);
+    --spacious-color--r: 81;
+    --spacious-color--g: 0;
+    --spacious-color--b: 162;
+    --spacious-color: rgb(var(--spacious-color--r), var(--spacious-color--g), var(--spacious-color--b));
+    --spacious-color-bg: rgb(var(--spacious-color--r), var(--spacious-color--g), var(--spacious-color--b), 0.15);
+  }
+  .parcels-list-item {
+    --parcel-width: 50%;
+    --parcel-color: black;
+    --parcel-color-bg: rgba(0,0,0,0.15);
+
+    position: relative;
+    margin: 0 0 10px 0;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: linear-gradient(to right, var(--parcel-color-bg), transparent var(--parcel-width), transparent 100%);
+  }
+  .parcels-list-item.parcel-size--humble {
+    --parcel-width: 10%;
+    --parcel-color: var(--humble-color);
+    --parcel-color-bg: var(--humble-color-bg);
+  }
+  .parcels-list-item.parcel-size--reasonable {
+    --parcel-width: 30%;
+    --parcel-color: var(--reasonable-color);
+    --parcel-color-bg: var(--reasonable-color-bg);
+  }
+  .parcels-list-item.parcel-size--spacious {
+    --parcel-width: 100%;
+    --parcel-color: var(--spacious-color);
+    --parcel-color-bg: var(--spacious-color-bg);
+  }
+
+  .parcels-list-item .parcel-index {
+    padding-top: 10px;
+    color: rgba(0,0,0,0.3);
+  }
+  .parcels-list-item .parcel-info {
+    padding: 7px 0;
+  }
+  .parcels-list-item .parcel-info > div {
+    padding: 2px 0;
+  }
+  .parcels-list-item .parcel-id {
+    margin-right: 10px;
+  }
+  .parcels-list-item .parcel-name {
+    font-family: monospace;
+  }
+  .parcels-list-item .parcel-district {
+    margin-right: 5px;
+  }
+  .parcels-list-item .parcel-size {
+    margin-right: 10px;
+  }
+  .parcels-list-item .parcel-size {
+    text-transform: capitalize;
+  }
+  .parcels-list-item .parcel-boosts {
+  }
+  .parcels-list-item .parcel-baazaar {
+    padding-top: 10px;
+  }
+  .parcels-list-item .parcel-baazaar-listing .icon {
+    width: 13px;
+  }
+  .parcels-list-item .parcel-baazaar-listing--current {
+  }
+  .parcels-list-item .parcel-baazaar-listing--last-sold {
   }
 </style>
