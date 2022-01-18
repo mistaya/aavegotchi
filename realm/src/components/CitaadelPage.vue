@@ -269,6 +269,20 @@
             No parcels found.
           </template>
           <template v-else>
+            <div style="margin-top: 20px; margin-left: 20px;">
+              <label>
+                Sort by:
+                <select v-model="listParcelsOrder">
+                  <option
+                    v-for="option in LIST_PARCELS_ORDERS"
+                    :key="option.id"
+                    :value="option.id"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </label>
+            </div>
             <ul class="parcels-list">
               <li
                 v-for="(parcel, index) in listParcelsToDisplay"
@@ -333,10 +347,11 @@
                       target="_blank"
                     >
                       <span>
-                        Available for {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                        Listed for {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
                       </span>
                       <SiteIcon name="open-window" />
                     </a>
+                    (<DateFriendly :date="listingsByParcelId[parcel.id].dateCreated" />)
                   </div>
                   <div
                     v-if="salesByParcelId[parcel.id]"
@@ -750,26 +765,50 @@ export default {
       }
     }
 
+    const listParcelsShowAll = ref(false)
+    const LIST_PARCELS_ORDERS = [
+      {
+        id: 'listingPrice',
+        label: 'Cheapest Listings (Baazaar)',
+        sort: { asc: p => listingsByParcelId.value[p.id]?.priceInGhstJsNum }
+      },
+      {
+        id: 'salePrice',
+        label: 'Cheapest Sales (Baazaar)',
+        sort: { asc: p => salesByParcelId.value[p.id]?.priceInGhstJsNum }
+      },
+      {
+        id: 'listingDate',
+        label: 'Recent Listings (Baazaar)',
+        sort: { desc: p => listingsByParcelId.value[p.id]?.dateCreated }
+      },
+      {
+        id: 'saleDate',
+        label: 'Recent Sales (Baazaar)',
+        sort: { desc: p => salesByParcelId.value[p.id]?.datePurchased }
+      }
+    ]
+    const listParcelsOrder = ref(LIST_PARCELS_ORDERS[0].id)
+
+    watch(
+      () => numParcelsMatchingFilters.value,
+      () => { listParcelsShowAll.value = false }
+    )
+
     const listParcels = computed(() => {
       // console.time('listParcels')
       // console.log('start listParcels')
       const parcels = parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id])
       // console.timeLog('listParcels')
+
       inPlaceSort(parcels).by([
-        { asc: p => listingsByParcelId.value[p.id]?.priceInGhstJsNum },
+        LIST_PARCELS_ORDERS.find(entry => entry.id === listParcelsOrder.value).sort,
         { asc: p => p.district - 0 },
         { asc: p => p.id - 0 }
       ])
       // console.timeEnd('listParcels')
       return parcels
     })
-
-    const listParcelsShowAll = ref(false)
-
-    watch(
-      () => numParcelsMatchingFilters.value,
-      () => { listParcelsShowAll.value = false }
-    )
 
     const listParcelsToDisplay = computed(() => {
       if (listParcelsShowAll.value) {
@@ -820,6 +859,8 @@ export default {
       selectedParcel,
       selectedParcelPaartnerId,
       listParcelsShowAll,
+      LIST_PARCELS_ORDERS,
+      listParcelsOrder,
       listParcelsToDisplay,
       ownersByParcelId,
       listingsByParcelId,
