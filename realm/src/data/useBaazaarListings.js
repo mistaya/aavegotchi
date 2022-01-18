@@ -35,6 +35,7 @@ const setListings = function (listings) {
     if (listing.timePurchased !== '0') {
       salesByParcelId.value[listing.tokenId] = {
         id: listing.id,
+        seller: listing.seller,
         priceInGhst,
         priceInGhstJsNum: priceInGhst.toNumber(),
         datePurchased: new Date(listing.timePurchased * 1000)
@@ -42,6 +43,7 @@ const setListings = function (listings) {
     } else {
       listingsByParcelId.value[listing.tokenId] = {
         id: listing.id,
+        seller: listing.seller,
         priceInGhst,
         priceInGhstJsNum: priceInGhst.toNumber(),
         dateCreated: new Date(listing.timeCreated * 1000)
@@ -67,6 +69,7 @@ const fetchListings = function () {
           erc721Listings(first: ${FETCH_PAGE_SIZE}, orderBy: timeCreated, where: { timeCreated_gte: ${lastTimeCreated}, category: "4", cancelled: false }) {
             id
             tokenId
+            seller
             timeCreated
             timePurchased
             priceInWei

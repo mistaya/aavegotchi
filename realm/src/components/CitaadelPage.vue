@@ -291,6 +291,16 @@
                     <span class="parcel-name">
                       {{ parcel.parcelHash }}
                     </span>
+                    <span
+                      v-if="ownersByParcelId[parcel.id] || listingsByParcelId[parcel.id]"
+                      class="parcel-owner"
+                    >
+                      <EthIcon
+                        :address="ownersByParcelId[parcel.id] || listingsByParcelId[parcel.id].seller"
+                        style="width: 15px"
+                        :title="`Owner: ${ownersByParcelId[parcel.id] || listingsByParcelId[parcel.id].seller}`"
+                      />
+                    </span>
                   </div>
 
                   <div>
@@ -322,7 +332,9 @@
                       :href="`https://aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
                       target="_blank"
                     >
-                      Available for {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                      <span>
+                        Available for {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                      </span>
                       <SiteIcon name="open-window" />
                     </a>
                   </div>
@@ -334,7 +346,9 @@
                       :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
                       target="_blank"
                     >
-                      Last sold for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                      <span>
+                        Last sold for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                      </span>
                       <SiteIcon name="open-window" />
                     </a>
                     (<DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />)
@@ -372,6 +386,7 @@ import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DateFriendly from './DateFriendly.vue'
+import EthIcon from './EthIcon.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetails from './ParcelDetails.vue'
@@ -391,6 +406,7 @@ export default {
   components: {
     PrereqParcels,
     LayoutMapWithFilters,
+    EthIcon,
     DateFriendly,
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
@@ -805,6 +821,7 @@ export default {
       selectedParcelPaartnerId,
       listParcelsShowAll,
       listParcelsToDisplay,
+      ownersByParcelId,
       listingsByParcelId,
       salesByParcelId,
       mapRef,
@@ -852,7 +869,7 @@ export default {
 
     position: relative;
     margin: 0 0 10px 0;
-    padding: 0 20px;
+    padding: 7px 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -879,13 +896,15 @@ export default {
     color: rgba(0,0,0,0.3);
   }
   .parcels-list-item .parcel-info {
-    padding: 7px 0;
   }
   .parcels-list-item .parcel-info > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
     padding: 2px 0;
   }
   .parcels-list-item .parcel-id {
-    margin-right: 10px;
   }
   .parcels-list-item .parcel-name {
     font-family: monospace;
@@ -902,10 +921,18 @@ export default {
   .parcels-list-item .parcel-boosts {
   }
   .parcels-list-item .parcel-baazaar {
-    padding-top: 10px;
+    padding-top: 3px;
   }
   .parcels-list-item .parcel-baazaar-listing .icon {
     width: 13px;
+  }
+  .parcels-list-item .parcel-baazaar-listing a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .parcels-list-item .parcel-baazaar-listing a > * {
+    flex: 0 0 auto;
   }
   .parcels-list-item .parcel-baazaar-listing--current {
   }

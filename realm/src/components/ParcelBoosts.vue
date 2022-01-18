@@ -69,7 +69,7 @@ export default {
 
     display: inline-block;
     list-style-type: none;
-    margin: 0;
+    margin: 0 0 -5px 0;
     padding: 0;
     font-variant: all-small-caps;
   }
