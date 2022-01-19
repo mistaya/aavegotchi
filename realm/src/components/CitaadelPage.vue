@@ -283,6 +283,12 @@
                 </select>
               </label>
             </div>
+            <PagingControls
+              v-model="paging"
+              :numItems="numParcelsMatchingFilters"
+              itemsLabel="parcels"
+              class="parcels-paging parcels-paging--top"
+            />
             <ul class="parcels-list">
               <li
                 v-for="(parcel, index) in listParcelsToDisplay"
@@ -371,15 +377,13 @@
                 </div>
               </li>
             </ul>
+            <PagingControls
+              v-model="paging"
+              :numItems="numParcelsMatchingFilters"
+              itemsLabel="parcels"
+              class="parcels-paging parcels-paging--bottom"
+            />
           </template>
-          <div v-if="numParcelsMatchingFilters > listParcelsToDisplay.length && !listParcelsShowAll">
-            <button
-              type="button"
-              @click="listParcelsShowAll = true"
-            >
-              Show all {{ numParcelsMatchingFilters }} matching parcels
-            </button>
-          </div>
         </div>
       </template>
     </LayoutMapWithFilters>
@@ -403,6 +407,7 @@ import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DateFriendly from './DateFriendly.vue'
 import EthIcon from './EthIcon.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
+import PagingControls from './PagingControls.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import CitaadelMap from './CitaadelMap.vue'
@@ -426,6 +431,7 @@ export default {
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
     PaartnerParcelDetails,
+    PagingControls,
     ParcelBoosts,
     ParcelDetails,
     CitaadelMap,
@@ -765,7 +771,10 @@ export default {
       }
     }
 
-    const listParcelsShowAll = ref(false)
+    const paging = ref({
+      page: 0,
+      pageSize: 10
+    })
     const LIST_PARCELS_ORDERS = [
       {
         id: 'listingPrice',
@@ -792,7 +801,7 @@ export default {
 
     watch(
       () => numParcelsMatchingFilters.value,
-      () => { listParcelsShowAll.value = false }
+      () => { paging.value.page = 0 }
     )
 
     const listParcels = computed(() => {
@@ -811,10 +820,9 @@ export default {
     })
 
     const listParcelsToDisplay = computed(() => {
-      if (listParcelsShowAll.value) {
-        return listParcels.value
-      }
-      return listParcels.value.slice(0, 100)
+      const start = paging.value.page * paging.value.pageSize
+      const end = start + paging.value.pageSize
+      return listParcels.value.slice(start, end)
     })
 
     const mapRef = ref(null)
@@ -858,7 +866,7 @@ export default {
       selectedParcelId,
       selectedParcel,
       selectedParcelPaartnerId,
-      listParcelsShowAll,
+      paging,
       LIST_PARCELS_ORDERS,
       listParcelsOrder,
       listParcelsToDisplay,
@@ -882,6 +890,12 @@ export default {
     width: 60px;
   }
 
+  .parcels-paging--top {
+    margin-top: 10px;
+  }
+  .parcels-paging--bottom {
+    margin-bottom: 50px;
+  }
   .parcels-list {
     list-style-type: none;
     margin: 20px 0;
@@ -936,16 +950,12 @@ export default {
     padding-top: 10px;
     color: rgba(0,0,0,0.3);
   }
-  .parcels-list-item .parcel-info {
-  }
   .parcels-list-item .parcel-info > div {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     padding: 2px 0;
-  }
-  .parcels-list-item .parcel-id {
   }
   .parcels-list-item .parcel-name {
     font-family: monospace;
@@ -958,8 +968,6 @@ export default {
   }
   .parcels-list-item .parcel-size {
     text-transform: capitalize;
-  }
-  .parcels-list-item .parcel-boosts {
   }
   .parcels-list-item .parcel-baazaar {
     padding-top: 3px;
@@ -974,9 +982,5 @@ export default {
   }
   .parcels-list-item .parcel-baazaar-listing a > * {
     flex: 0 0 auto;
-  }
-  .parcels-list-item .parcel-baazaar-listing--current {
-  }
-  .parcels-list-item .parcel-baazaar-listing--last-sold {
   }
 </style>
