@@ -773,7 +773,7 @@ export default {
 
     const paging = ref({
       page: 0,
-      pageSize: 10
+      pageSize: 100
     })
     const LIST_PARCELS_ORDERS = [
       {
