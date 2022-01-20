@@ -31,7 +31,7 @@
           :class="`parcel-size--${parcel.sizeLabel.toLowerCase()}`"
         >
           <div class="parcel-index">
-            {{ index + 1 }}.
+            {{ (paging.page * paging.pageSize) + index + 1 }}.
           </div>
           <div class="parcel-info">
             <div>
