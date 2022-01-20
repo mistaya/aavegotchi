@@ -44,36 +44,41 @@ const fetchBalances = function () {
   clearBalances()
   const [isStale, setLoaded, setError] = setLoading()
 
-  let nextGotchiIndex = 0
-  const BATCH_SIZE = 800
-  const requests = []
-
-  while (nextGotchiIndex < gotchisWithEscrow.value.length) {
-    const gotchis = gotchisWithEscrow.value.slice(nextGotchiIndex, nextGotchiIndex + BATCH_SIZE)
-    console.log('fetch balances for ids', gotchis[0].id, 'to', gotchis[gotchis.length - 1].id)
-
-    const request = ghstContract.getGotchiBalances(gotchis)
-    requests.push(request)
-    request.then(
-      result => {
-        if (isStale()) { return }
-        console.log('batch balances result', { result }, Object.keys(result).length)
-        setBalances(result)
-      },
-      error => {
-        if (isStale()) { return }
-        console.error(error)
-        setError('Error fetching batch of balances')
-      }
-    )
-
-    nextGotchiIndex += BATCH_SIZE
-  }
-
-  Promise.allSettled(requests).then(results => {
+  // Give the UI a chance to display the loading state before we start fetching
+  setTimeout(() => {
     if (isStale()) { return }
-    setLoaded()
-  })
+
+    let nextGotchiIndex = 0
+    const BATCH_SIZE = 800
+    const requests = []
+
+    while (nextGotchiIndex < gotchisWithEscrow.value.length) {
+      const gotchis = gotchisWithEscrow.value.slice(nextGotchiIndex, nextGotchiIndex + BATCH_SIZE)
+      console.log('fetch balances for ids', gotchis[0].id, 'to', gotchis[gotchis.length - 1].id)
+
+      const request = ghstContract.getGotchiBalances(gotchis)
+      requests.push(request)
+      request.then(
+        result => {
+          if (isStale()) { return }
+          // console.log('batch balances result', { result }, Object.keys(result).length)
+          setBalances(result)
+        },
+        error => {
+          if (isStale()) { return }
+          console.error(error)
+          setError('Error fetching batch of balances')
+        }
+      )
+
+      nextGotchiIndex += BATCH_SIZE
+    }
+
+    Promise.allSettled(requests).then(results => {
+      if (isStale()) { return }
+      setLoaded()
+    })
+  }, 100)
 }
 
 // Use cached initial results
