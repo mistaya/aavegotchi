@@ -27,7 +27,7 @@ const fetchGotchis = function () {
       method: 'POST',
       body: JSON.stringify({
         query: `{
-          aavegotchis(first: ${FETCH_PAGE_SIZE}, orderBy: gotchiId, where: { gotchiId_gt: ${lastIdNum}, owner_not: "0x0000000000000000000000000000000000000000" }) {
+          aavegotchis(first: ${FETCH_PAGE_SIZE}, orderBy: gotchiId, where: { gotchiId_gt: ${lastIdNum}, owner_not: "0x0000000000000000000000000000000000000000", collateral_not: "0x0000000000000000000000000000000000000000" }) {
             id
             owner {
               id

@@ -447,8 +447,8 @@ export default {
     const gotchisData = computed(() => {
       return gotchis.value.map(g => {
         const collateral = collaterals[g.collateral.toLowerCase()]
-        const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : 0
-        const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : 0
+        const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : new BigNumber(0)
+        const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : new BigNumber(0)
         const excessStake = stakedAmount.minus(minimumStake)
         return {
           id: g.id,
