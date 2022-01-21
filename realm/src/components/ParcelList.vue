@@ -4,7 +4,7 @@
       No parcels found.
     </template>
     <template v-else>
-      <div style="margin-top: 20px; margin-left: 20px;">
+      <div style="margin-top: 20px; margin-left: 10px;">
         <label>
           Sort by:
           <select v-model="listParcelsOrder">

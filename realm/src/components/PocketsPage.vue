@@ -848,6 +848,7 @@ export default {
 
   .gotchis-table-paging {
     margin: 20px auto;
+    justify-content: center;
   }
   .gotchis-table-paging--bottom {
     margin-bottom: 70px;
