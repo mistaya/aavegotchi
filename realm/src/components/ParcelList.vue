@@ -46,13 +46,13 @@
                 {{ parcel.parcelHash }}
               </span>
               <span
-                v-if="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id]"
+                v-if="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id] || auctionsByParcelId?.[parcel.id]"
                 class="parcel-owner"
               >
                 <EthIcon
-                  :address="ownersByParcelId?.[parcel.id] || listingsByParcelId[parcel.id].seller"
+                  :address="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder"
                   style="width: 15px"
-                  :title="`Owner: ${ownersByParcelId?.[parcel.id] || listingsByParcelId[parcel.id].seller}`"
+                  :title="`Owner: ${ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder}`"
                 />
               </span>
             </div>
@@ -73,6 +73,18 @@
                 class="parcel-boosts"
               />
             </div>
+          </div>
+          <div
+            class="parcel-auction"
+            v-if="auctionsByParcelId?.[parcel.id]"
+          >
+            <a
+              :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
+              target="_blank"
+            >
+              Last bid: {{ auctionsByParcelId[parcel.id].highestBidGhst }} GHST
+              (<DateFriendly :date="new Date(auctionsByParcelId[parcel.id].lastBidTime * 1000)" />)
+            </a>
           </div>
           <div
             class="parcel-baazaar"
@@ -139,7 +151,8 @@ export default {
     parcels: { type: Array, default: () => [] },
     ownersByParcelId: { type: Object, default: null },
     listingsByParcelId: { type: Object, default: null },
-    salesByParcelId: { type: Object, default: null }
+    salesByParcelId: { type: Object, default: null },
+    auctionsByParcelId: { type: Object, default: null }
   },
   setup (props) {
     const numParcels = computed(() => props.parcels.length)
@@ -149,6 +162,18 @@ export default {
       pageSize: 100
     })
     const LIST_PARCELS_ORDERS = []
+    if (props.auctionsByParcelId) {
+      LIST_PARCELS_ORDERS.push({
+        id: 'auctionPrice',
+        label: 'Cheapest Parcels (Auction)',
+        sort: { asc: p => props.auctionsByParcelId[p.id]?.highestBidGhst - 0 }
+      })
+      LIST_PARCELS_ORDERS.push({
+        id: 'auctionDate',
+        label: 'Recent Bids (Auction)',
+        sort: { desc: p => props.auctionsByParcelId[p.id]?.lastBidTime - 0 }
+      })
+    }
     if (props.listingsByParcelId) {
       LIST_PARCELS_ORDERS.push({
         id: 'listingPrice',
@@ -183,7 +208,7 @@ export default {
 
     const listParcels = computed(() => {
       return sort(props.parcels).by([
-        LIST_PARCELS_ORDERS.find(entry => entry.id === listParcelsOrder.value)?.sort,
+        LIST_PARCELS_ORDERS.find(entry => entry.id === listParcelsOrder.value)?.sort || { asc: p => p.district - 0 },
         { asc: p => p.district - 0 },
         { asc: p => p.id - 0 }
       ])
@@ -280,6 +305,7 @@ export default {
   .parcels-list-item .parcel-size {
     text-transform: capitalize;
   }
+  .parcels-list-item .parcel-auction,
   .parcels-list-item .parcel-baazaar {
     padding-top: 3px;
   }

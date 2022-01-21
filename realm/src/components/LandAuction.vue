@@ -241,36 +241,13 @@
           :selectedParcel="selectedParcel?.parcel"
           @click:parcel="onClickParcel"
         />
-        <div v-if="viewMode === 'list'">
-          <template v-if="!listParcelsToDisplay.length">
-            No parcels found.
-          </template>
-          <template v-else>
-            {{ listParcelsToDisplay.length }} parcels found. Cheapest first:
-            <ul class="parcels-list">
-              <li
-                v-for="parcel in listParcelsToDisplay"
-                :key="parcel.id"
-              >
-                <a
-                  href="#"
-                  @click.prevent="onClickParcel(parcel)"
-                >
-                  {{ parcel.id }}
-                </a>
-                {{ parcel.parcelHash }}
-                {{ parcel.sizeLabel }}
-                district {{ parcel.district }}
-                <a
-                  :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
-                  target="_blank"
-                >
-                  Last bid: {{ parcelAuctions[parcel.id].highestBidGhst }} GHST
-                </a>
-              </li>
-            </ul>
-          </template>
-        </div>
+        <ParcelList
+          v-show="viewMode === 'list'"
+          class="parcel-list"
+          :parcels="parcelsList"
+          :auctionsByParcelId="auctionsByParcelId"
+          @click:parcel="onClickParcel"
+        />
       </template>
     </LayoutMapWithFilters>
   </PrereqParcels>
@@ -288,6 +265,7 @@ import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DataFetcherAuctions from './DataFetcherAuctions.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
+import ParcelList from './ParcelList.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
@@ -306,6 +284,7 @@ export default {
     DataFetcherAuctions,
     PaartnerParcelDetails,
     ParcelDetails,
+    ParcelList,
     CitaadelMap,
     MapConfig,
     FilterSize,
@@ -502,18 +481,9 @@ export default {
       return result
     })
 
-    const listParcelsToDisplay = computed(() => {
-      // console.time('listParcelsToDisplay')
-      const parcels = parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
-      parcels.sort((a, b) => {
-        const auctionA = parcelAuctions.value[a.id]
-        const auctionB = parcelAuctions.value[b.id]
-        if (auctionA.highestBid === auctionB.highestBid) { return 0 }
-        return auctionA.highestBid < auctionB.highestBid ? -1 : 1
-      })
-      // console.timeEnd('listParcelsToDisplay')
-      return parcels
-    })
+    const parcelsList = computed(() =>
+      parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
+    )
 
     const selectedParcelPaartnerId = ref(null)
 
@@ -608,8 +578,8 @@ export default {
       parcelsToDisplay,
       parcelsMatchingFilters,
       parcelColors,
-      parcelAuctions,
-      listParcelsToDisplay,
+      auctionsByParcelId,
+      parcelsList,
       onClickParcel,
       selectedParcelId,
       selectedParcel,
@@ -629,13 +599,8 @@ export default {
 </script>
 
 <style scoped>
-  .parcels-list {
-    margin: 15px 0 0 0;
-    padding: 0 0 0 15px;
-  }
-  .parcels-list > li {
-    margin: 0 0 8px 0;
-    padding: 0;
+  .parcel-list {
+    margin: 15px 0 50px;
   }
 
   .config-details {
