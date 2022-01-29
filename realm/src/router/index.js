@@ -72,6 +72,14 @@ const routes = [
     }
   },
   {
+    path: '/wearable-sets',
+    name: 'wearable-sets-index',
+    redirect: {
+      name: 'wearable-sets',
+      params: { mode: 'all' }
+    }
+  },
+  {
     path: '/playground',
     name: 'playground',
     component: TempPlayground,
