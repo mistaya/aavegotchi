@@ -182,7 +182,7 @@ const ANNOTATED_WEARABLES = wearablesJson.map(wearable => {
   }
 })
 
-const WEARABLES_BY_ID = Object.fromEntries(ANNOTATED_WEARABLES.map(wearable => [wearable.id - 0, wearable]))
+const WEARABLES_BY_ID = Object.fromEntries(ANNOTATED_WEARABLES.map(wearable => [wearable.id, wearable]))
 
 export default {
   props: {

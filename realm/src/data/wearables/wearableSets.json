@@ -359,7 +359,7 @@
     },
     {
         "id": 23,
-        "name": "Aagent ",
+        "name": "Aagent",
         "wearableIds": [
             55,
             56,
@@ -375,7 +375,7 @@
     },
     {
         "id": 24,
-        "name": "Aagent ",
+        "name": "Aagent",
         "wearableIds": [
             55,
             56,
@@ -392,7 +392,7 @@
     },
     {
         "id": 25,
-        "name": "Wizard ",
+        "name": "Wizard",
         "wearableIds": [
             60,
             64,
@@ -1569,7 +1569,7 @@
     },
     {
         "id": 97,
-        "name": "Cyborg ",
+        "name": "Cyborg",
         "wearableIds": [
             215,
             216,
@@ -1778,7 +1778,7 @@
     },
     {
         "id": 110,
-        "name": "WGMI Wagie ",
+        "name": "WGMI Wagie",
         "wearableIds": [
             239,
             240,

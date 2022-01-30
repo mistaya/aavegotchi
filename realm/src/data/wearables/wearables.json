@@ -1,6 +1,6 @@
 [
     {
-        "id": "0",
+        "id": 0,
         "name": "The Void",
         "rarityScoreModifier": 0,
         "slotPositions": [
@@ -31,7 +31,7 @@
         ]
     },
     {
-        "id": "1",
+        "id": 1,
         "name": "Camo Hat",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -62,7 +62,7 @@
         ]
     },
     {
-        "id": "10",
+        "id": 10,
         "name": "Link White Hat",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -93,7 +93,7 @@
         ]
     },
     {
-        "id": "100",
+        "id": 100,
         "name": "Clutch",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -124,7 +124,7 @@
         ]
     },
     {
-        "id": "101",
+        "id": 101,
         "name": "Witchy Hat",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -155,7 +155,7 @@
         ]
     },
     {
-        "id": "102",
+        "id": 102,
         "name": "Witchy Cloak",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -186,7 +186,7 @@
         ]
     },
     {
-        "id": "103",
+        "id": 103,
         "name": "Witchy Wand",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -217,7 +217,7 @@
         ]
     },
     {
-        "id": "104",
+        "id": 104,
         "name": "Portal Mage Helmet",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -248,7 +248,7 @@
         ]
     },
     {
-        "id": "105",
+        "id": 105,
         "name": "Portal Mage Armor",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -279,7 +279,7 @@
         ]
     },
     {
-        "id": "106",
+        "id": 106,
         "name": "Portal Mage Axe",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -310,7 +310,7 @@
         ]
     },
     {
-        "id": "107",
+        "id": 107,
         "name": "Portal Mage Black Axe",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -341,7 +341,7 @@
         ]
     },
     {
-        "id": "108",
+        "id": 108,
         "name": "Rasta Hat",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -372,7 +372,7 @@
         ]
     },
     {
-        "id": "109",
+        "id": 109,
         "name": "Rasta Shirt",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -403,7 +403,7 @@
         ]
     },
     {
-        "id": "11",
+        "id": 11,
         "name": "Link Mess Dress",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -434,7 +434,7 @@
         ]
     },
     {
-        "id": "110",
+        "id": 110,
         "name": "Jamaican Flag",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -465,7 +465,7 @@
         ]
     },
     {
-        "id": "111",
+        "id": 111,
         "name": "Hazmat Hood",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -496,7 +496,7 @@
         ]
     },
     {
-        "id": "112",
+        "id": 112,
         "name": "Hazmat Suit",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -527,7 +527,7 @@
         ]
     },
     {
-        "id": "113",
+        "id": 113,
         "name": "Uranium Rod",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -558,7 +558,7 @@
         ]
     },
     {
-        "id": "114",
+        "id": 114,
         "name": "Red Hawaiian Shirt",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -589,7 +589,7 @@
         ]
     },
     {
-        "id": "115",
+        "id": 115,
         "name": "Blue Hawaiian Shirt",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -620,7 +620,7 @@
         ]
     },
     {
-        "id": "116",
+        "id": 116,
         "name": "Coconut",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -651,7 +651,7 @@
         ]
     },
     {
-        "id": "117",
+        "id": 117,
         "name": "Cool shades",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -682,7 +682,7 @@
         ]
     },
     {
-        "id": "118",
+        "id": 118,
         "name": "Water Jug",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -713,7 +713,7 @@
         ]
     },
     {
-        "id": "119",
+        "id": 119,
         "name": "Baby Bottle",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -744,7 +744,7 @@
         ]
     },
     {
-        "id": "12",
+        "id": 12,
         "name": "Link Bubbly",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -775,7 +775,7 @@
         ]
     },
     {
-        "id": "120",
+        "id": 120,
         "name": "Martini",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -806,7 +806,7 @@
         ]
     },
     {
-        "id": "121",
+        "id": 121,
         "name": "Wine",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -837,7 +837,7 @@
         ]
     },
     {
-        "id": "122",
+        "id": 122,
         "name": "Milkshake",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -868,7 +868,7 @@
         ]
     },
     {
-        "id": "123",
+        "id": 123,
         "name": "Apple Juice",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -899,7 +899,7 @@
         ]
     },
     {
-        "id": "124",
+        "id": 124,
         "name": "Beer Helmet",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -930,7 +930,7 @@
         ]
     },
     {
-        "id": "125",
+        "id": 125,
         "name": "Track Suit",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -961,7 +961,7 @@
         ]
     },
     {
-        "id": "13",
+        "id": 13,
         "name": "Sergey Beard",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -992,7 +992,7 @@
         ]
     },
     {
-        "id": "130",
+        "id": 130,
         "name": "Fireball",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -1023,7 +1023,7 @@
         ]
     },
     {
-        "id": "131",
+        "id": 131,
         "name": "Dragon Horns",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1054,7 +1054,7 @@
         ]
     },
     {
-        "id": "132",
+        "id": 132,
         "name": "Dragon Wings",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1085,7 +1085,7 @@
         ]
     },
     {
-        "id": "133",
+        "id": 133,
         "name": "Pointy Horns",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -1116,7 +1116,7 @@
         ]
     },
     {
-        "id": "134",
+        "id": 134,
         "name": "L2 Sign",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -1147,7 +1147,7 @@
         ]
     },
     {
-        "id": "135",
+        "id": 135,
         "name": "Polygon Shirt",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1178,7 +1178,7 @@
         ]
     },
     {
-        "id": "136",
+        "id": 136,
         "name": "Polygon Cap",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1209,7 +1209,7 @@
         ]
     },
     {
-        "id": "137",
+        "id": 137,
         "name": "Vote Sign",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -1240,7 +1240,7 @@
         ]
     },
     {
-        "id": "138",
+        "id": 138,
         "name": "Snapshot Shirt",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1271,7 +1271,7 @@
         ]
     },
     {
-        "id": "139",
+        "id": 139,
         "name": "Snapshot Cap",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1302,7 +1302,7 @@
         ]
     },
     {
-        "id": "14",
+        "id": 14,
         "name": "Sergey Eyes",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -1333,7 +1333,7 @@
         ]
     },
     {
-        "id": "140",
+        "id": 140,
         "name": "Elf Ears",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -1364,7 +1364,7 @@
         ]
     },
     {
-        "id": "141",
+        "id": 141,
         "name": "Gemstone Ring",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1395,7 +1395,7 @@
         ]
     },
     {
-        "id": "142",
+        "id": 142,
         "name": "Princess Tiara",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1426,7 +1426,7 @@
         ]
     },
     {
-        "id": "143",
+        "id": 143,
         "name": "Gold Necklace",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -1457,7 +1457,7 @@
         ]
     },
     {
-        "id": "144",
+        "id": 144,
         "name": "Princess Hair",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -1488,7 +1488,7 @@
         ]
     },
     {
-        "id": "145",
+        "id": 145,
         "name": "Godli Locks",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -1519,7 +1519,7 @@
         ]
     },
     {
-        "id": "146",
+        "id": 146,
         "name": "Imperial Moustache",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -1550,7 +1550,7 @@
         ]
     },
     {
-        "id": "147",
+        "id": 147,
         "name": "Tiny Crown",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1581,7 +1581,7 @@
         ]
     },
     {
-        "id": "148",
+        "id": 148,
         "name": "Royal Scepter",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1612,7 +1612,7 @@
         ]
     },
     {
-        "id": "149",
+        "id": 149,
         "name": "Royal Crown",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -1643,7 +1643,7 @@
         ]
     },
     {
-        "id": "15",
+        "id": 15,
         "name": "Red Plaid",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -1674,7 +1674,7 @@
         ]
     },
     {
-        "id": "150",
+        "id": 150,
         "name": "Royal Robes",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -1705,7 +1705,7 @@
         ]
     },
     {
-        "id": "151",
+        "id": 151,
         "name": "Common Rofl",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -1736,7 +1736,7 @@
         ]
     },
     {
-        "id": "152",
+        "id": 152,
         "name": "Uncommon Rofl",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1767,7 +1767,7 @@
         ]
     },
     {
-        "id": "153",
+        "id": 153,
         "name": "Rare Rofl",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1798,7 +1798,7 @@
         ]
     },
     {
-        "id": "154",
+        "id": 154,
         "name": "Legendary Rofl",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -1829,7 +1829,7 @@
         ]
     },
     {
-        "id": "155",
+        "id": 155,
         "name": "Mythical Rofl",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -1860,7 +1860,7 @@
         ]
     },
     {
-        "id": "156",
+        "id": 156,
         "name": "Godlike Rofl",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -1891,7 +1891,7 @@
         ]
     },
     {
-        "id": "157",
+        "id": 157,
         "name": "Lil Pump Goatee",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -1922,7 +1922,7 @@
         ]
     },
     {
-        "id": "158",
+        "id": 158,
         "name": "Lil Pump Drank",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -1953,7 +1953,7 @@
         ]
     },
     {
-        "id": "159",
+        "id": 159,
         "name": "Lil Pump Shades",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -1984,7 +1984,7 @@
         ]
     },
     {
-        "id": "16",
+        "id": 16,
         "name": "Blue Plaid",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -2015,7 +2015,7 @@
         ]
     },
     {
-        "id": "160",
+        "id": 160,
         "name": "Lil Pump Threads",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -2046,7 +2046,7 @@
         ]
     },
     {
-        "id": "161",
+        "id": 161,
         "name": "Lil Pump Dreads",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -2077,7 +2077,7 @@
         ]
     },
     {
-        "id": "162",
+        "id": 162,
         "name": "Miami Shirt",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2108,7 +2108,7 @@
         ]
     },
     {
-        "id": "17",
+        "id": 17,
         "name": "Link Cube",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -2139,7 +2139,7 @@
         ]
     },
     {
-        "id": "18",
+        "id": 18,
         "name": "Aave Hero Mask",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2170,7 +2170,7 @@
         ]
     },
     {
-        "id": "19",
+        "id": 19,
         "name": "Aave Hero Shirt",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2201,7 +2201,7 @@
         ]
     },
     {
-        "id": "199",
+        "id": 199,
         "name": "Steampunk Goggles",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -2232,7 +2232,7 @@
         ]
     },
     {
-        "id": "2",
+        "id": 2,
         "name": "Camo Pants",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2263,7 +2263,7 @@
         ]
     },
     {
-        "id": "20",
+        "id": 20,
         "name": "Aave Plush",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2294,7 +2294,7 @@
         ]
     },
     {
-        "id": "200",
+        "id": 200,
         "name": "Steampunk Trousers",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2325,7 +2325,7 @@
         ]
     },
     {
-        "id": "201",
+        "id": 201,
         "name": "Mechanical Claw",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -2356,7 +2356,7 @@
         ]
     },
     {
-        "id": "202",
+        "id": 202,
         "name": "VR Headset",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -2387,7 +2387,7 @@
         ]
     },
     {
-        "id": "203",
+        "id": 203,
         "name": "Gamer Jacket",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -2418,7 +2418,7 @@
         ]
     },
     {
-        "id": "204",
+        "id": 204,
         "name": "Game Controller",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2449,7 +2449,7 @@
         ]
     },
     {
-        "id": "205",
+        "id": 205,
         "name": "Gotchi Mug",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2480,7 +2480,7 @@
         ]
     },
     {
-        "id": "206",
+        "id": 206,
         "name": "Biker Helmet",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -2511,7 +2511,7 @@
         ]
     },
     {
-        "id": "207",
+        "id": 207,
         "name": "Biker Jacket",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2542,7 +2542,7 @@
         ]
     },
     {
-        "id": "208",
+        "id": 208,
         "name": "Aviators",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2573,7 +2573,7 @@
         ]
     },
     {
-        "id": "209",
+        "id": 209,
         "name": "Horseshoe Mustache",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -2604,7 +2604,7 @@
         ]
     },
     {
-        "id": "21",
+        "id": 21,
         "name": "Captain Aave Mask",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2635,7 +2635,7 @@
         ]
     },
     {
-        "id": "210",
+        "id": 210,
         "name": "Haunt1 BG",
         "rarityScoreModifier": 0,
         "slotPositions": [
@@ -2666,7 +2666,7 @@
         ]
     },
     {
-        "id": "211",
+        "id": 211,
         "name": "Guy Fawkes Mask",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -2697,7 +2697,7 @@
         ]
     },
     {
-        "id": "212",
+        "id": 212,
         "name": "1337 Laptop",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -2728,7 +2728,7 @@
         ]
     },
     {
-        "id": "213",
+        "id": 213,
         "name": "H4xx0r Shirt",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -2759,7 +2759,7 @@
         ]
     },
     {
-        "id": "214",
+        "id": 214,
         "name": "Matrix Eyes",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -2790,7 +2790,7 @@
         ]
     },
     {
-        "id": "215",
+        "id": 215,
         "name": "Cyborg Eye",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -2821,7 +2821,7 @@
         ]
     },
     {
-        "id": "216",
+        "id": 216,
         "name": "Rainbow Vomit",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -2852,7 +2852,7 @@
         ]
     },
     {
-        "id": "217",
+        "id": 217,
         "name": "Energy Gun",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -2883,7 +2883,7 @@
         ]
     },
     {
-        "id": "218",
+        "id": 218,
         "name": "Mohawk",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2914,7 +2914,7 @@
         ]
     },
     {
-        "id": "219",
+        "id": 219,
         "name": "Mutton Chops",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -2945,7 +2945,7 @@
         ]
     },
     {
-        "id": "22",
+        "id": 22,
         "name": "Captain Aave Suit",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -2976,7 +2976,7 @@
         ]
     },
     {
-        "id": "220",
+        "id": 220,
         "name": "Punk Shirt",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -3007,7 +3007,7 @@
         ]
     },
     {
-        "id": "221",
+        "id": 221,
         "name": "Pirate Hat",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -3038,7 +3038,7 @@
         ]
     },
     {
-        "id": "222",
+        "id": 222,
         "name": "Pirate Coat",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3069,7 +3069,7 @@
         ]
     },
     {
-        "id": "223",
+        "id": 223,
         "name": "Hook Hand",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3100,7 +3100,7 @@
         ]
     },
     {
-        "id": "224",
+        "id": 224,
         "name": "Pirate Patch",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3131,7 +3131,7 @@
         ]
     },
     {
-        "id": "225",
+        "id": 225,
         "name": "Basketball",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -3162,7 +3162,7 @@
         ]
     },
     {
-        "id": "226",
+        "id": 226,
         "name": "Red Headband",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3193,7 +3193,7 @@
         ]
     },
     {
-        "id": "227",
+        "id": 227,
         "name": "23 Jersey",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3224,7 +3224,7 @@
         ]
     },
     {
-        "id": "228",
+        "id": 228,
         "name": "10 Gallon Hat",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -3255,7 +3255,7 @@
         ]
     },
     {
-        "id": "229",
+        "id": 229,
         "name": "Lasso",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3286,7 +3286,7 @@
         ]
     },
     {
-        "id": "23",
+        "id": 23,
         "name": "Captain Aave Shield",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3317,7 +3317,7 @@
         ]
     },
     {
-        "id": "230",
+        "id": 230,
         "name": "Wraangler Jeans",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -3348,7 +3348,7 @@
         ]
     },
     {
-        "id": "231",
+        "id": 231,
         "name": "Comfy Poncho",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3379,7 +3379,7 @@
         ]
     },
     {
-        "id": "232",
+        "id": 232,
         "name": "Poncho Hoodie",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -3410,7 +3410,7 @@
         ]
     },
     {
-        "id": "233",
+        "id": 233,
         "name": "Uncommon Cacti",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3441,7 +3441,7 @@
         ]
     },
     {
-        "id": "234",
+        "id": 234,
         "name": "Shaaman Poncho",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -3472,7 +3472,7 @@
         ]
     },
     {
-        "id": "235",
+        "id": 235,
         "name": "Shaaman Hoodie",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -3503,7 +3503,7 @@
         ]
     },
     {
-        "id": "236",
+        "id": 236,
         "name": "Rare Cacti",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3534,7 +3534,7 @@
         ]
     },
     {
-        "id": "237",
+        "id": 237,
         "name": "Mythical Cacti",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -3565,7 +3565,7 @@
         ]
     },
     {
-        "id": "238",
+        "id": 238,
         "name": "Godlike Cacti",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -3596,7 +3596,7 @@
         ]
     },
     {
-        "id": "239",
+        "id": 239,
         "name": "Wagie Cap",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3627,7 +3627,7 @@
         ]
     },
     {
-        "id": "24",
+        "id": 24,
         "name": "Thaave Helmet",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3658,7 +3658,7 @@
         ]
     },
     {
-        "id": "240",
+        "id": 240,
         "name": "Headphones",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3689,7 +3689,7 @@
         ]
     },
     {
-        "id": "241",
+        "id": 241,
         "name": "WGMI Shirt",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3720,7 +3720,7 @@
         ]
     },
     {
-        "id": "242",
+        "id": 242,
         "name": "Maan Bun",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -3751,7 +3751,7 @@
         ]
     },
     {
-        "id": "243",
+        "id": 243,
         "name": "Tinted Shades",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3782,7 +3782,7 @@
         ]
     },
     {
-        "id": "244",
+        "id": 244,
         "name": "V-Neck Shirt",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3813,7 +3813,7 @@
         ]
     },
     {
-        "id": "245",
+        "id": 245,
         "name": "Gecko Hat",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3844,7 +3844,7 @@
         ]
     },
     {
-        "id": "246",
+        "id": 246,
         "name": "APY Shades",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3875,7 +3875,7 @@
         ]
     },
     {
-        "id": "247",
+        "id": 247,
         "name": "Up Arrow",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3906,7 +3906,7 @@
         ]
     },
     {
-        "id": "248",
+        "id": 248,
         "name": "Up Only Shirt",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -3937,7 +3937,7 @@
         ]
     },
     {
-        "id": "249",
+        "id": 249,
         "name": "Gecko Eyes",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3968,7 +3968,7 @@
         ]
     },
     {
-        "id": "25",
+        "id": 25,
         "name": "Thaave Suit",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -3999,7 +3999,7 @@
         ]
     },
     {
-        "id": "250",
+        "id": 250,
         "name": "CoinGecko Tee",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -4030,7 +4030,7 @@
         ]
     },
     {
-        "id": "251",
+        "id": 251,
         "name": "Candy Jaar",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -4061,7 +4061,7 @@
         ]
     },
     {
-        "id": "252",
+        "id": 252,
         "name": "Aastronaut Helmet",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4092,7 +4092,7 @@
         ]
     },
     {
-        "id": "253",
+        "id": 253,
         "name": "Aastronaut Suit",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4123,7 +4123,7 @@
         ]
     },
     {
-        "id": "254",
+        "id": 254,
         "name": "uGOTCHI Token",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4154,7 +4154,7 @@
         ]
     },
     {
-        "id": "255",
+        "id": 255,
         "name": "Space Helmet",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -4185,7 +4185,7 @@
         ]
     },
     {
-        "id": "256",
+        "id": 256,
         "name": "Lil Bubble Space Suit",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -4216,7 +4216,7 @@
         ]
     },
     {
-        "id": "257",
+        "id": 257,
         "name": "Bitcoin Guitar",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -4247,7 +4247,7 @@
         ]
     },
     {
-        "id": "258",
+        "id": 258,
         "name": "Taoist Robe",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -4278,7 +4278,7 @@
         ]
     },
     {
-        "id": "259",
+        "id": 259,
         "name": "Bushy Eyebrows",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -4309,7 +4309,7 @@
         ]
     },
     {
-        "id": "26",
+        "id": 26,
         "name": "Thaave Hammer",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -4340,7 +4340,7 @@
         ]
     },
     {
-        "id": "260",
+        "id": 260,
         "name": "Beard of Wisdom",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -4371,7 +4371,7 @@
         ]
     },
     {
-        "id": "261",
+        "id": 261,
         "name": "Aantenna Bot",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -4402,7 +4402,7 @@
         ]
     },
     {
-        "id": "262",
+        "id": 262,
         "name": "Radar Eyes",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -4433,7 +4433,7 @@
         ]
     },
     {
-        "id": "263",
+        "id": 263,
         "name": "Signal Headset",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -4464,7 +4464,7 @@
         ]
     },
     {
-        "id": "27",
+        "id": 27,
         "name": "Marc Hair",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -4495,7 +4495,7 @@
         ]
     },
     {
-        "id": "28",
+        "id": 28,
         "name": "Marc Outfit",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -4526,7 +4526,7 @@
         ]
     },
     {
-        "id": "29",
+        "id": 29,
         "name": "REKT Sign",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -4557,7 +4557,255 @@
         ]
     },
     {
-        "id": "3",
+        "id": 292,
+        "name": "Brunette Ponytail",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 293,
+        "name": "Leather Tunic",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -1,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 294,
+        "name": "Bow and Arrow",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 295,
+        "name": "Forked Beard",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 296,
+        "name": "Doublesided Axe",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            1,
+            0,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 297,
+        "name": "Animal Skins",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 298,
+        "name": "Horned Helmet",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            0,
+            0,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 299,
+        "name": "Longbow",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -1,
+            0,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 3,
         "name": "MK2 Grenade",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4588,7 +4836,7 @@
         ]
     },
     {
-        "id": "30",
+        "id": 30,
         "name": "Jordan Hair",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -4619,7 +4867,317 @@
         ]
     },
     {
-        "id": "31",
+        "id": 300,
+        "name": "Feathered Cap",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -1,
+            0,
+            -1,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 301,
+        "name": "Alluring Eyes",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -2,
+            0,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 302,
+        "name": "Geisha Headpiece",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -2,
+            -1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 303,
+        "name": "Kimono",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -1,
+            -2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 304,
+        "name": "Paper Fan",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -3,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 305,
+        "name": "Sus Butterfly",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            4,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 306,
+        "name": "Flower Studs",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -2,
+            0,
+            -2,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 307,
+        "name": "Fairy Wings",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -2,
+            0,
+            -2,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 308,
+        "name": "Red Hair",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -2,
+            0,
+            -2,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 309,
+        "name": "Citaadel Helm",
+        "rarityScoreModifier": 20,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            3,
+            -2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 31,
         "name": "Jordan Suit",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -4650,7 +5208,193 @@
         ]
     },
     {
-        "id": "32",
+        "id": 310,
+        "name": "Plate Armor",
+        "rarityScoreModifier": 20,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            3,
+            -2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 311,
+        "name": "Spirit Sword",
+        "rarityScoreModifier": 20,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            2,
+            -3,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 312,
+        "name": "Plate Shield",
+        "rarityScoreModifier": 20,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -5,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 313,
+        "name": "Kabuto Helmet",
+        "rarityScoreModifier": 50,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            3,
+            3,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 314,
+        "name": "Yoroi Armor",
+        "rarityScoreModifier": 50,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            3,
+            3,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 315,
+        "name": "Haanzo Katana",
+        "rarityScoreModifier": 50,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            2,
+            4,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 32,
         "name": "Aave Flag",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -4681,7 +5425,7 @@
         ]
     },
     {
-        "id": "33",
+        "id": 33,
         "name": "Stani Hair",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -4712,7 +5456,7 @@
         ]
     },
     {
-        "id": "34",
+        "id": 34,
         "name": "Stani Vest",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -4743,7 +5487,7 @@
         ]
     },
     {
-        "id": "35",
+        "id": 35,
         "name": "Aave Boat",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -4774,7 +5518,7 @@
         ]
     },
     {
-        "id": "36",
+        "id": 36,
         "name": "ETH Logo Glasses",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4805,7 +5549,7 @@
         ]
     },
     {
-        "id": "37",
+        "id": 37,
         "name": "ETH Tshirt",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4836,7 +5580,7 @@
         ]
     },
     {
-        "id": "38",
+        "id": 38,
         "name": "32 ETH Coin",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -4867,7 +5611,7 @@
         ]
     },
     {
-        "id": "39",
+        "id": 39,
         "name": "Foxy Mask",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -4898,7 +5642,7 @@
         ]
     },
     {
-        "id": "4",
+        "id": 4,
         "name": "Snow Camo Hat",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -4929,7 +5673,7 @@
         ]
     },
     {
-        "id": "40",
+        "id": 40,
         "name": "Foxy Tail",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -4960,7 +5704,7 @@
         ]
     },
     {
-        "id": "41",
+        "id": 41,
         "name": "Trezor Wallet",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -4991,7 +5735,7 @@
         ]
     },
     {
-        "id": "42",
+        "id": 42,
         "name": "Eagle Mask",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5022,7 +5766,7 @@
         ]
     },
     {
-        "id": "43",
+        "id": 43,
         "name": "Eagle Armor",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5053,7 +5797,7 @@
         ]
     },
     {
-        "id": "44",
+        "id": 44,
         "name": "DAO Egg",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5084,7 +5828,7 @@
         ]
     },
     {
-        "id": "45",
+        "id": 45,
         "name": "Ape Mask",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -5115,7 +5859,7 @@
         ]
     },
     {
-        "id": "46",
+        "id": 46,
         "name": "Halfrekt Shirt",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -5146,7 +5890,7 @@
         ]
     },
     {
-        "id": "47",
+        "id": 47,
         "name": "Waifu Pillow",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -5177,7 +5921,7 @@
         ]
     },
     {
-        "id": "48",
+        "id": 48,
         "name": "Xibot Mohawk",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -5208,7 +5952,7 @@
         ]
     },
     {
-        "id": "49",
+        "id": 49,
         "name": "Coderdan Shades",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -5239,7 +5983,7 @@
         ]
     },
     {
-        "id": "5",
+        "id": 5,
         "name": "Snow Camo Pants",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -5270,7 +6014,7 @@
         ]
     },
     {
-        "id": "50",
+        "id": 50,
         "name": "GldnXross Robe",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -5301,7 +6045,7 @@
         ]
     },
     {
-        "id": "51",
+        "id": 51,
         "name": "Mudgen Diamond",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -5332,7 +6076,7 @@
         ]
     },
     {
-        "id": "52",
+        "id": 52,
         "name": "Galaxy Brain",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -5363,7 +6107,7 @@
         ]
     },
     {
-        "id": "53",
+        "id": 53,
         "name": "All-Seeing Eyes",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -5394,7 +6138,7 @@
         ]
     },
     {
-        "id": "54",
+        "id": 54,
         "name": "Llamacorn Shirt",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -5425,7 +6169,7 @@
         ]
     },
     {
-        "id": "55",
+        "id": 55,
         "name": "Aagent Headset",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5456,7 +6200,7 @@
         ]
     },
     {
-        "id": "56",
+        "id": 56,
         "name": "Aagent Shirt",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5487,7 +6231,7 @@
         ]
     },
     {
-        "id": "57",
+        "id": 57,
         "name": "Aagent Shades",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5518,7 +6262,7 @@
         ]
     },
     {
-        "id": "58",
+        "id": 58,
         "name": "Aagent Pistol",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5549,7 +6293,7 @@
         ]
     },
     {
-        "id": "59",
+        "id": 59,
         "name": "Aagent Fedora Hat",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5580,7 +6324,7 @@
         ]
     },
     {
-        "id": "6",
+        "id": 6,
         "name": "M67 Grenade",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -5611,7 +6355,7 @@
         ]
     },
     {
-        "id": "60",
+        "id": 60,
         "name": "Common Wizard Hat",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -5642,7 +6386,7 @@
         ]
     },
     {
-        "id": "61",
+        "id": 61,
         "name": "Legendary Wizard Hat",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -5673,7 +6417,7 @@
         ]
     },
     {
-        "id": "62",
+        "id": 62,
         "name": "Mythical Wizard Hat",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -5704,7 +6448,7 @@
         ]
     },
     {
-        "id": "63",
+        "id": 63,
         "name": "Godlike Wizard Hat",
         "rarityScoreModifier": 50,
         "slotPositions": [
@@ -5735,7 +6479,7 @@
         ]
     },
     {
-        "id": "64",
+        "id": 64,
         "name": "Common Wizard Staff",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -5766,7 +6510,7 @@
         ]
     },
     {
-        "id": "65",
+        "id": 65,
         "name": "Legendary Wizard Staff",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -5797,7 +6541,7 @@
         ]
     },
     {
-        "id": "66",
+        "id": 66,
         "name": "Wizard Visor",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -5828,7 +6572,7 @@
         ]
     },
     {
-        "id": "67",
+        "id": 67,
         "name": "Straw Hat",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -5859,7 +6603,7 @@
         ]
     },
     {
-        "id": "68",
+        "id": 68,
         "name": "Farmer Jeans",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -5890,7 +6634,7 @@
         ]
     },
     {
-        "id": "69",
+        "id": 69,
         "name": "Pitchfork",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -5921,7 +6665,7 @@
         ]
     },
     {
-        "id": "7",
+        "id": 7,
         "name": "Marine Cap",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -5952,7 +6696,7 @@
         ]
     },
     {
-        "id": "70",
+        "id": 70,
         "name": "Handsaw",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -5983,7 +6727,7 @@
         ]
     },
     {
-        "id": "71",
+        "id": 71,
         "name": "Red Santa Hat",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6014,7 +6758,7 @@
         ]
     },
     {
-        "id": "72",
+        "id": 72,
         "name": "Jaay Hairpiece",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -6045,7 +6789,7 @@
         ]
     },
     {
-        "id": "73",
+        "id": 73,
         "name": "Jaay Glasses",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -6076,7 +6820,7 @@
         ]
     },
     {
-        "id": "74",
+        "id": 74,
         "name": "Jaay Suit",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -6107,7 +6851,7 @@
         ]
     },
     {
-        "id": "75",
+        "id": 75,
         "name": "OKex Sign",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -6138,7 +6882,7 @@
         ]
     },
     {
-        "id": "76",
+        "id": 76,
         "name": "Big GHST Token",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -6169,7 +6913,7 @@
         ]
     },
     {
-        "id": "77",
+        "id": 77,
         "name": "Bitcoin Beanie",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6200,7 +6944,7 @@
         ]
     },
     {
-        "id": "78",
+        "id": 78,
         "name": "Black Jeans",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6231,7 +6975,7 @@
         ]
     },
     {
-        "id": "79",
+        "id": 79,
         "name": "Skateboard",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6262,7 +7006,7 @@
         ]
     },
     {
-        "id": "8",
+        "id": 8,
         "name": "Marine Jacket",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6293,7 +7037,7 @@
         ]
     },
     {
-        "id": "80",
+        "id": 80,
         "name": "Sushi Bandana",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6324,7 +7068,7 @@
         ]
     },
     {
-        "id": "81",
+        "id": 81,
         "name": "Sushi Coat",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6355,7 +7099,7 @@
         ]
     },
     {
-        "id": "82",
+        "id": 82,
         "name": "Sushi Piece",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -6386,7 +7130,7 @@
         ]
     },
     {
-        "id": "83",
+        "id": 83,
         "name": "Sushi Knife",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6417,7 +7161,7 @@
         ]
     },
     {
-        "id": "84",
+        "id": 84,
         "name": "Gentleman Hat",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -6448,7 +7192,7 @@
         ]
     },
     {
-        "id": "85",
+        "id": 85,
         "name": "Gentleman Coat",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -6479,7 +7223,7 @@
         ]
     },
     {
-        "id": "86",
+        "id": 86,
         "name": "Monocle",
         "rarityScoreModifier": 20,
         "slotPositions": [
@@ -6510,7 +7254,7 @@
         ]
     },
     {
-        "id": "87",
+        "id": 87,
         "name": "Miner Helmet",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6541,7 +7285,7 @@
         ]
     },
     {
-        "id": "88",
+        "id": 88,
         "name": "Miner Jeans",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6572,7 +7316,7 @@
         ]
     },
     {
-        "id": "89",
+        "id": 89,
         "name": "Pickaxe",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6603,7 +7347,7 @@
         ]
     },
     {
-        "id": "9",
+        "id": 9,
         "name": "Walkie Talkie",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6634,7 +7378,7 @@
         ]
     },
     {
-        "id": "90",
+        "id": 90,
         "name": "Pajama Hat",
         "rarityScoreModifier": 1,
         "slotPositions": [
@@ -6665,7 +7409,7 @@
         ]
     },
     {
-        "id": "91",
+        "id": 91,
         "name": "Pajama Shirt",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6696,7 +7440,7 @@
         ]
     },
     {
-        "id": "92",
+        "id": 92,
         "name": "Bedtime Milk",
         "rarityScoreModifier": 5,
         "slotPositions": [
@@ -6727,7 +7471,7 @@
         ]
     },
     {
-        "id": "93",
+        "id": 93,
         "name": "Fluffy Pillow",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -6758,7 +7502,7 @@
         ]
     },
     {
-        "id": "94",
+        "id": 94,
         "name": "Sweatband",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6789,7 +7533,7 @@
         ]
     },
     {
-        "id": "95",
+        "id": 95,
         "name": "Track Shorts",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6820,7 +7564,7 @@
         ]
     },
     {
-        "id": "96",
+        "id": 96,
         "name": "Water bottle",
         "rarityScoreModifier": 2,
         "slotPositions": [
@@ -6851,7 +7595,7 @@
         ]
     },
     {
-        "id": "97",
+        "id": 97,
         "name": "Pillbox Hat",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -6882,7 +7626,7 @@
         ]
     },
     {
-        "id": "98",
+        "id": 98,
         "name": "Day Dress",
         "rarityScoreModifier": 10,
         "slotPositions": [
@@ -6913,7 +7657,7 @@
         ]
     },
     {
-        "id": "99",
+        "id": 99,
         "name": "Parasol",
         "rarityScoreModifier": 20,
         "slotPositions": [

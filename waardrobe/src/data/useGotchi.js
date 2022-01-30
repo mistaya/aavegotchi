@@ -5,10 +5,27 @@ import useDiamond from "@/data/diamond";
 import wearables from "./wearables.json";
 import wearableSets from "./wearableSets.json";
 
+const ANNOTATED_WEARABLE_SETS = wearableSets.map(item => {
+    const rarityScoreModifier = item.traitsBonuses[0] - 0;
+    const traitModifiers = item.traitsBonuses.slice(1).map(value => value - 0);
+    let totalSetBonus = rarityScoreModifier;
+    for (let modifier of traitModifiers) {
+        totalSetBonus += Math.abs(modifier);
+    }
+    return {
+        id: item.id,
+        name: item.name,
+        wearableIds: item.wearableIds,
+        rarityScoreModifier,
+        traitModifiers,
+        totalSetBonus
+    };
+});
+
 const wearablesById = Object.fromEntries(wearables.map(w => [w.id, { ...w, wearableSets: [] }]));
 
-for (let i = 0; i < wearableSets.length; i++) {
-    const wearableSet = wearableSets[i];
+for (let i = 0; i < ANNOTATED_WEARABLE_SETS.length; i++) {
+    const wearableSet = ANNOTATED_WEARABLE_SETS[i];
     for (let wearableId of wearableSet.wearableIds) {
         let wearable = wearablesById[wearableId];
         if (wearable) {
@@ -218,8 +235,8 @@ watch(
 const getBestWearableSet = function(wearableSetIndices) {
     if (!wearableSetIndices?.length) { return null; }
     const sortedSetIndices = [].concat(wearableSetIndices).sort((a, b) => {
-        const setA = wearableSets[a];
-        const setB = wearableSets[b];
+        const setA = ANNOTATED_WEARABLE_SETS[a];
+        const setB = ANNOTATED_WEARABLE_SETS[b];
         if (setA.totalSetBonus === setB.totalSetBonus) {
             if (setA.name === setB.name) {
                 return 0;
@@ -228,15 +245,16 @@ const getBestWearableSet = function(wearableSetIndices) {
         }
         return setA.totalSetBonus > setB.totalSetBonus ? -1: 1;
     });
-    return wearableSets[sortedSetIndices[0]];
+    return ANNOTATED_WEARABLE_SETS[sortedSetIndices[0]];
 };
 
-const previewDetails = computed(() => {
+
+const calculateTraitsWithWearables = function (wearables) {
     const originalTraits = gotchiDetails.value?.numericTraits;
     const newTraits = [...originalTraits].map(value => value - 0);
     let additionalBrs = 0;
     let possibleWearableSets = [];
-    for (const wearableId of previewWearables.value) {
+    for (const wearableId of wearables) {
         const wearable = wearablesById[wearableId];
         if (wearable && wearableId !== "0") {
             additionalBrs += wearable.rarityScoreModifier - 0;
@@ -249,9 +267,9 @@ const previewDetails = computed(() => {
     // reduce to unique set indexes
     possibleWearableSets = [...new Set(possibleWearableSets)];
     // check each set to see if it's satisfied
-    const previewHasWearable = id => previewWearables.value.includes(id);
+    const previewHasWearable = id => wearables.includes(id);
     const matchingWearableSets = possibleWearableSets.filter(
-        setIndex => wearableSets[setIndex].wearableIds.every(previewHasWearable)
+        setIndex => ANNOTATED_WEARABLE_SETS[setIndex].wearableIds.every(previewHasWearable)
     );
     // only one set can be applied
     const bestWearableSet = getBestWearableSet(matchingWearableSets);
@@ -267,7 +285,9 @@ const previewDetails = computed(() => {
         numericTraits: newTraits,
         wearableSet: bestWearableSet
     };
-});
+}
+
+const previewDetails = computed(() => calculateTraitsWithWearables(previewWearables.value));
 
 const calculateBaseRarityScore = function(traits) {
     let rarityScore = 0;
@@ -300,10 +320,12 @@ export default function useGotchi() {
         gotchiDetails,
         gotchiSvg,
         baseRarityScore,
+        previewWearables,
         setPreviewWearables,
         previewSvgStatus,
         previewSvg,
         namespaceSvgText,
-        previewDetails
+        previewDetails,
+        calculateTraitsWithWearables
     };
 }

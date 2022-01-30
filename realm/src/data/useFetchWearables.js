@@ -16,7 +16,10 @@ const canSubmitFetch = computed(() => !fetchStatus.value.loading)
 const lastFetchDate = ref(new Date(1641853552901))
 
 const setWearables = function (wearablesArray, fetchDate = null) {
-  wearables.value = wearablesArray
+  wearables.value = wearablesArray.map(w => ({
+    ...w,
+    id: w.id - 0 // store numeric wearable id for consistency with wearable sets
+  }))
   lastFetchDate.value = fetchDate || new Date()
 }
 
