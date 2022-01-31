@@ -22,7 +22,7 @@ const AUCTIONS = {
     },
     display: {
       viewBox: '0 0 5000 5500',
-      aspectRatio: '10 / 8'
+      aspectRatio: 10 / 8
     }
   },
   '2': {
@@ -38,7 +38,7 @@ const AUCTIONS = {
     },
     display: {
       viewBox: '6600 1000 2500 4400',
-      aspectRatio: '10 / 8'
+      aspectRatio: 10 / 8
     }
   }
 }

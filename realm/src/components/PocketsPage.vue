@@ -71,7 +71,8 @@
               <div style="display: flex; align-items: center; justify-content: center;">
                 <CryptoIcon
                   :address="GHST_ID"
-                  style="width: 40px; margin-right: 10px"
+                  :size="40"
+                  style="margin-right: 10px"
                 />
                 <div>GHST in Pockets</div>
               </div>
@@ -120,7 +121,8 @@
               <div style="display: flex; align-items: center; justify-content: center;">
                 <CryptoIcon
                   :address="WMATIC_ID"
-                  style="width: 40px; margin-right: 10px"
+                  :size="40"
+                  style="margin-right: 10px"
                 />
                 <div>Unclaimed AAVE Rewards</div>
               </div>
@@ -171,7 +173,7 @@
         >
           <CryptoIcon
             :address="item.collateral.id"
-            style="width: 40px"
+            :size="40"
           />
           <div class="dashboard-number dashboard-number--primary">
             <NumberDisplay :number="dashboardDisplayMode == 'all' ? item.total : item.totalLocked" />

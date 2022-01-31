@@ -3,6 +3,9 @@
     <div
       ref="svgContainerRef"
       class="map-svg-container"
+      :style="{
+        '--aspect-ratio': aspectRatio
+      }"
     >
       <svg
         ref="svgRef"
@@ -13,9 +16,6 @@
           'map-svg--unmatched-hide': mapConfig.unmatchedDisplay === 'hide',
           'map-svg--unmatched-outline': mapConfig.unmatchedDisplay === 'outline',
           'map-svg--flag-selected': mapConfig.flagSelected
-        }"
-        :style="{
-          'aspect-ratio': aspectRatio
         }"
       >
         <g>
@@ -319,12 +319,12 @@ import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 
 const CITAADEL_WIDTH = 9504
 const CITAADEL_HEIGHT = 6336
-const CITAADEL_ASPECT_RATIO = `${CITAADEL_WIDTH / CITAADEL_HEIGHT}`
+const CITAADEL_ASPECT_RATIO = CITAADEL_WIDTH / CITAADEL_HEIGHT
 
 export default {
   props: {
     viewBox: { type: String, default: `0 0 ${CITAADEL_WIDTH} ${CITAADEL_HEIGHT}` },
-    aspectRatio: { type: String, default: CITAADEL_ASPECT_RATIO },
+    aspectRatio: { type: Number, default: CITAADEL_ASPECT_RATIO },
     parcels: { type: Array, default: () => [] },
     parcelsMatchingFilters: { type: Object, default: () => ({}) }, /* parcel Id => boolean show */
     parcelColors: { type: Object, default: () => ({}) }, /* parcel Id => color */
@@ -533,11 +533,20 @@ export default {
 
 <style scoped>
   .map-svg-container {
+    position: relative;
+    overflow: hidden;
     width: 100%;
     border: 1px solid #ccc;
+    /* Safari 14 doesn't support aspect-ratio, so we need the padding hack */
+    /* also limit height to 80% of window */
+    padding-top: calc( min( 100% / var(--aspect-ratio, 1), 80vh ) );
   }
   .map-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
   }
 
   .map-svg--unmatched-hide .parcel--hidden-by-filter {
