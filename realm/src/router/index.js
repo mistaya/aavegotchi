@@ -76,7 +76,7 @@ const routes = [
     name: 'wearable-sets-index',
     redirect: {
       name: 'wearable-sets',
-      params: { mode: 'all' }
+      params: { mode: 'gotchi' }
     }
   },
   {

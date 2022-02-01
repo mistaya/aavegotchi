@@ -2,11 +2,12 @@
   <div class="wearable-sets-page">
     <div class="wearable-sets-nav">
       Show:
-      <router-link :to="{ name: 'wearable-sets', params: { mode: 'all' } }">List</router-link>
-      or
+
       <router-link :to="{ name: 'wearable-sets', params: { mode: 'gotchi' } }">
         Group by Gotchi Type
       </router-link>
+      or
+      <router-link :to="{ name: 'wearable-sets', params: { mode: 'all' } }">List All Sets</router-link>
     </div>
     <template v-if="mode === 'all'">
       <h2>All Wearable Sets</h2>
