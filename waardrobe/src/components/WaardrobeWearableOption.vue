@@ -2,11 +2,11 @@
     <option
       :value="wearable.id"
     >
-      {{ wearable.name }}
-
       <template v-if="wearable.rarity">
-        ({{ wearable.rarity }})
+        ({{ wearable.rarity[0] }})
       </template>
+
+      {{ wearable.name }}
 
       <template v-if="isSelected">
         [Selected]
