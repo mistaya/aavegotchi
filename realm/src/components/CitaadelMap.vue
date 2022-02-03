@@ -36,7 +36,7 @@
             y="0"
             :width="CITAADEL_WIDTH"
             :height="CITAADEL_HEIGHT"
-            href="@/assets/citaadelAlchemicaFud.webp"
+            href="@/assets/citaadelAlchemicaFud.png"
             filter="url(#alchemicaFilterFud)"
           />
           <image
@@ -45,7 +45,7 @@
             y="0"
             :width="CITAADEL_WIDTH"
             :height="CITAADEL_HEIGHT"
-            href="@/assets/citaadelAlchemicaFomo.webp"
+            href="@/assets/citaadelAlchemicaFomo.png"
             filter="url(#alchemicaFilterFomo)"
           />
           <image
@@ -54,7 +54,7 @@
             y="0"
             :width="CITAADEL_WIDTH"
             :height="CITAADEL_HEIGHT"
-            href="@/assets/citaadelAlchemicaAlpha.webp"
+            href="@/assets/citaadelAlchemicaAlpha.png"
             filter="url(#alchemicaFilterAlpha)"
           />
           <image
@@ -63,7 +63,7 @@
             y="0"
             :width="CITAADEL_WIDTH"
             :height="CITAADEL_HEIGHT"
-            href="@/assets/citaadelAlchemicaKek.webp"
+            href="@/assets/citaadelAlchemicaKek.png"
             filter="url(#alchemicaFilterKek)"
           />
           <g
