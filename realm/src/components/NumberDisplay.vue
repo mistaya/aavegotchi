@@ -5,7 +5,14 @@
 </template>
 
 <script>
-const usdFormatter = new Intl.NumberFormat(navigator.language, { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol' })
+// Safari <14.1 doesn't support currencyDisplay: narrowSymbol, so fallback
+const getUsdFormatter = function () {
+  try {
+    return new Intl.NumberFormat(navigator.language, { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol' })
+  } catch (e) {}
+  return new Intl.NumberFormat(navigator.language, { style: 'currency', currency: 'USD', currencyDisplay: 'symbol' })
+}
+const usdFormatter = getUsdFormatter()
 const amountFormatter = new Intl.NumberFormat(navigator.language)
 
 export default {
