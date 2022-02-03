@@ -2004,5 +2004,376 @@
             0,
             0
         ]
+    },
+    {
+        "id": 124,
+        "name": "Aarcher",
+        "wearableIds": [
+            292,
+            293,
+            294
+        ],
+        "traitsBonuses": [
+            1,
+            0,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 125,
+        "name": "Baarbarian",
+        "wearableIds": [
+            295,
+            296,
+            297,
+            298
+        ],
+        "traitsBonuses": [
+            2,
+            0,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 126,
+        "name": "Raanger",
+        "wearableIds": [
+            293,
+            299,
+            300
+        ],
+        "traitsBonuses": [
+            2,
+            -1,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 127,
+        "name": "Geisha",
+        "wearableIds": [
+            301,
+            302,
+            303,
+            304
+        ],
+        "traitsBonuses": [
+            3,
+            0,
+            -2,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 128,
+        "name": "Fairy",
+        "wearableIds": [
+            306,
+            307,
+            308
+        ],
+        "traitsBonuses": [
+            4,
+            -1,
+            0,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 129,
+        "name": "Sus Fairy",
+        "wearableIds": [
+            305,
+            306,
+            307,
+            308
+        ],
+        "traitsBonuses": [
+            4,
+            -1,
+            0,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 130,
+        "name": "Knight",
+        "wearableIds": [
+            309,
+            310,
+            311
+        ],
+        "traitsBonuses": [
+            5,
+            2,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 131,
+        "name": "Citaadel Knight",
+        "wearableIds": [
+            309,
+            310,
+            311,
+            312
+        ],
+        "traitsBonuses": [
+            5,
+            1,
+            -2,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 132,
+        "name": "Bushidogotchi",
+        "wearableIds": [
+            313,
+            314,
+            315
+        ],
+        "traitsBonuses": [
+            6,
+            0,
+            1,
+            2,
+            0
+        ]
+    },
+    {
+        "id": 133,
+        "name": "Robin Hood",
+        "wearableIds": [
+            18,
+            293,
+            294,
+            300
+        ],
+        "traitsBonuses": [
+            2,
+            -1,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 134,
+        "name": "Nure-onna",
+        "wearableIds": [
+            249,
+            302,
+            303,
+            304
+        ],
+        "traitsBonuses": [
+            3,
+            0,
+            -2,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 135,
+        "name": "Tinkerbell",
+        "wearableIds": [
+            148,
+            306,
+            307,
+            308
+        ],
+        "traitsBonuses": [
+            4,
+            -1,
+            0,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 136,
+        "name": "Rave Gurl",
+        "wearableIds": [
+            216,
+            120,
+            49,
+            235,
+            307
+        ],
+        "traitsBonuses": [
+            5,
+            -1,
+            1,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 137,
+        "name": "Off Duty Knight",
+        "wearableIds": [
+            99,
+            122,
+            144,
+            310
+        ],
+        "traitsBonuses": [
+            5,
+            1,
+            0,
+            -2,
+            0
+        ]
+    },
+    {
+        "id": 138,
+        "name": "Daimyogotchi",
+        "wearableIds": [
+            155,
+            313,
+            314,
+            315
+        ],
+        "traitsBonuses": [
+            8,
+            0,
+            1,
+            2,
+            -1
+        ]
+    },
+    {
+        "id": 139,
+        "name": "Shogungotchi",
+        "wearableIds": [
+            156,
+            313,
+            314,
+            315
+        ],
+        "traitsBonuses": [
+            8,
+            -1,
+            1,
+            2,
+            -1
+        ]
+    },
+    {
+        "id": 140,
+        "name": "Noble Savage",
+        "wearableIds": [
+            146,
+            296,
+            297,
+            298
+        ],
+        "traitsBonuses": [
+            2,
+            0,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 141,
+        "name": "Elven Aarcher",
+        "wearableIds": [
+            140,
+            292,
+            293,
+            294
+        ],
+        "traitsBonuses": [
+            1,
+            0,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 142,
+        "name": "Elven Raanger",
+        "wearableIds": [
+            140,
+            141,
+            293,
+            299,
+            300
+        ],
+        "traitsBonuses": [
+            2,
+            0,
+            0,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 143,
+        "name": "Woodland Critter",
+        "wearableIds": [
+            293,
+            300,
+            140,
+            40
+        ],
+        "traitsBonuses": [
+            2,
+            0,
+            0,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 144,
+        "name": "Vacation Geisha",
+        "wearableIds": [
+            115,
+            304,
+            243,
+            302
+        ],
+        "traitsBonuses": [
+            4,
+            0,
+            -2,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 145,
+        "name": "Tooth Fairy",
+        "wearableIds": [
+            306,
+            307,
+            308,
+            93
+        ],
+        "traitsBonuses": [
+            4,
+            0,
+            0,
+            -2,
+            0
+        ]
     }
 ]
