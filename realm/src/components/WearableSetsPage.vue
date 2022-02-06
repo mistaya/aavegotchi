@@ -328,6 +328,10 @@ export default {
       .wearable-sets-nav a {
         color: var(--purple--contrast-black);
       }
+
+      .sets-table__cell--image img {
+        filter: drop-shadow(0px 5px 12px rgba(253, 178, 250, 0.35));
+      }
   }
 
   .wearable-sets-nav a[aria-current=page] {
