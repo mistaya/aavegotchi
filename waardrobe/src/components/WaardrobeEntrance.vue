@@ -125,10 +125,19 @@ export default {
       }
     }
   },
+  created () {
+    document.addEventListener('keydown', this.onKeydown)
+  },
   unmounted () {
+    document.removeEventListener('keydown', this.onKeydown)
     this.isDestroyed = true
   },
   methods: {
+    onKeydown (evt) {
+      if (evt.code === 'Space' || evt.code === 'Enter' || evt.code === 'Escape') {
+        this.leave();
+      }
+    },
     isLeftShelf (i) {
       return i <= this.numShelves/2;
     },
