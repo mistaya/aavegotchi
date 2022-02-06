@@ -17,6 +17,7 @@
           <tr>
             <th class="sets-table__header">Set Name</th>
             <th class="sets-table__header">Set Bonus</th>
+            <th class="sets-table__header sets-table__header--image">Image</th>
             <th class="sets-table__header sets-table__header--wearables">Items</th>
             <th class="sets-table__header">Total Modifiers</th>
             <th class="sets-table__header">Total BRS bonus</th>
@@ -29,6 +30,14 @@
           >
             <td class="sets-table__cell sets-table__cell--name">{{ set.name }}</td>
             <td class="sets-table__cell">{{ set.traitBonusesText }}</td>
+            <td class="sets-table__cell sets-table__cell--image">
+              <img
+                :src="`/wearablesets/${set.key}.png`"
+                width="100"
+                height="100"
+                :alt="`gotchi equipped with set '${set.name}'`"
+              />
+            </td>
             <td class="sets-table__cell sets-table__cell--wearables">
               <ul class="sets-table__wearables">
                 <li
@@ -135,6 +144,7 @@
 </template>
 
 <script>
+import orderBy from 'lodash.orderby'
 import wearablesJson from '@/data/wearables/wearables.json'
 import wearableSetsJson from '@/data/wearables/wearableSets.json'
 
@@ -196,6 +206,7 @@ export default {
         set.traitsBonuses.forEach((bonus, index) => {
           setTraitBonusesMap[TRAITS_BY_INDEX[index]] = bonus
         })
+        const key = orderBy(set.wearableIds).join('-')
         const wearables = set.wearableIds.map(id => WEARABLES_BY_ID[id])
         const totalTraitBonuses = wearables.reduce(
           (memo, wearable) => {
@@ -216,6 +227,7 @@ export default {
         }).filter(text => !!text).join(', ')
         return {
           ...set,
+          key,
           wearables,
           traitBonusesText: set.traitsBonuses.map((bonus, index) => {
             if (bonus === 0) { return '' }
@@ -357,12 +369,20 @@ export default {
           display: none;
       }
       .sets-table__cell--wearables {
-          grid-column: 1 / 5;
+          grid-column: 2 / 5;
+      }
+      /* also move the image */
+      .sets-table__header--image {
+          display: none;
+      }
+      .sets-table__cell--image {
+          grid-column: 1 / 2;
       }
       .sets-table__cell {
           margin-top: 10px;
           border-bottom: none;
       }
+      .sets-table__cell--image,
       .sets-table__cell--wearables {
           padding-bottom: 10px;
           border-bottom: 1px solid var(--border-color);
