@@ -275,7 +275,27 @@ const calculateTraitsWithWearables = function (wearables) {
     // check each set to see if it's satisfied
     const previewHasWearable = id => wearables.includes(id);
     const matchingWearableSets = possibleWearableSets.filter(
-        setIndex => ANNOTATED_WEARABLE_SETS[setIndex].wearableIds.every(previewHasWearable)
+        setIndex => {
+            const wearableIds = ANNOTATED_WEARABLE_SETS[setIndex].wearableIds;
+            const hasAllWearables = wearableIds.every(previewHasWearable);
+            if (!hasAllWearables){
+                return false;
+            }
+            // edge case: wearable set might require two of the same hand wearable (Gunslinger)
+            if (wearableIds.length > (new Set(wearableIds)).size) {
+                const seenWearable = {};
+                for (var wearableId of wearableIds) {
+                    if (seenWearable[wearableId]) {
+                        // check we have two of this wearable equipped
+                        const firstMatch = wearables.indexOf(wearableId); // we know there is at least one
+                        const secondMatch = wearables.slice(firstMatch + 1).indexOf(wearableId);
+                        if (secondMatch === -1) { return false; }
+                    }
+                    seenWearable[wearableId] = true;
+                }
+            }
+            return true;
+        }
     );
     // only one set can be applied
     const bestWearableSet = getBestWearableSet(matchingWearableSets);
