@@ -63,6 +63,38 @@
             </select>
           </label>
         </div>
+
+        <hr style="margin-top: 20px; margin-bottom: 20px;" />
+
+        <div>
+          <label>
+            Pick a whole set:
+            <select
+              :value="previewDetails.wearableSet ? previewDetails.wearableSet ?.id : -1"
+              @input="onPickWearableSet($event.target.value - 0)"
+            >
+              <option value="-1">-- No Set --</option>
+              <option
+                v-for="set in wearableSets"
+                :key="set.id"
+                :value="set.id"
+              >
+                {{ set.name }}
+                ({{ set.wearableRarities.map(rarity => rarity[0]).join('') }} +{{ set.bonus }})
+                [{{ set.key }}]
+              </option>
+            </select>
+          </label>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <button
+            type="button"
+            @click="formWearables = formWearables.map(() => 0)"
+          >
+            Remove all wearables
+          </button>
+        </div>
       </div>
 
       <div>
@@ -138,6 +170,7 @@ import useGotchi from "@/data/useGotchi";
 import wearableSlots from "@/data/wearableSlots";
 import wearablesBySlot from "@/data/wearablesBySlot";
 import traits from "@/data/traits.json";
+import WEARABLE_SETS from "@/data/wearableSets.json";
 
 import GotchiImage from "./GotchiImage.vue";
 import WaardrobeWearableOption from "./WaardrobeWearableOption.vue";
@@ -186,6 +219,72 @@ export default {
     watchEffect(() => {
       setPreviewWearables(formWearables.value);
     });
+
+    const WEARABLES_BY_ID = Object.fromEntries(Object.values(ANNOTATED_WEARABLES_BY_SLOT).flat().map(w => [w.id, w]));
+
+    const wearableSets = computed(() => {
+      return orderBy(
+        WEARABLE_SETS.map(set => {
+          const wearableRarities = orderBy(
+              set.wearableIds.map(wearableId => WEARABLES_BY_ID[wearableId]),
+              'rarityScoreModifier'
+            ).map(wearable => wearable.rarity || '');
+          return {
+            ...set,
+            key: orderBy(set.wearableIds).join('-'),
+            bonus: set.traitsBonuses.reduce((sum, bonus) => sum + Math.abs(bonus), 0),
+            wearableRarities
+          };
+        }),
+        ['name', 'bonus'],
+        ['asc', 'asc']
+      );
+    });
+
+    const onPickWearableSet = function(setId) {
+      const set = wearableSets.value.find(set => set.id === setId);
+      if (set) {
+        const wearablesForSlots = [...formWearables.value]
+        // prioritise equipping wearables that can only fit in one slot
+        const wearableIds = orderBy(set.wearableIds, [id => {
+          const wearable = WEARABLES_BY_ID[id];
+          if (wearable) {
+            return wearable.slotPositions.reduce((sum, position) => sum + (position === true ? 1 : 0), 0)
+          }
+          return 0;
+        }], ['asc'])
+        const equippedHandWearables = []
+        for (const wearableId of wearableIds) {
+          const wearable = WEARABLES_BY_ID[wearableId];
+          if (wearable) {
+            const slotIndex = wearable.slotPositions.indexOf(true);
+            if (slotIndex !== -1) {
+              // if a hand item from this set is already equipped, try the other slot if allowed
+              if (slotIndex === 4 &&
+                wearablesForSlots[slotIndex] &&
+                wearablesForSlots[slotIndex] !== wearable.id &&
+                wearableIds.includes(wearablesForSlots[slotIndex]) &&
+                wearable.slotPositions[5]
+              ) {
+                wearablesForSlots[5] = wearable.id;
+              } else {
+                wearablesForSlots[slotIndex] = wearable.id;
+              }
+              if (slotIndex === 4 || slotIndex === 5) {
+                equippedHandWearables.push(wearable.id)
+              }
+            }
+          }
+        }
+        // edge case: check for 2 hand wearables that are the same (Gunslinger)
+        // Above logic will have only equipped one slot, so force them here
+        if (equippedHandWearables.length === 2 && equippedHandWearables[0] === equippedHandWearables[1]) {
+          wearablesForSlots[4] = wearablesForSlots[5] = equippedHandWearables[0]
+        }
+
+        formWearables.value = wearablesForSlots;
+      }
+    }
 
     const previewSpinning = ref(false);
     const previewHappy = ref(false);
@@ -271,6 +370,8 @@ export default {
       order,
       sortedWearablesBySlot,
       formWearables,
+      wearableSets,
+      onPickWearableSet,
       traitsToDisplay: traits.slice(0, 4),
       previewDetails,
       previewSpinning,

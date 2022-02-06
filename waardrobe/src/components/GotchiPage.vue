@@ -150,7 +150,7 @@ import traits from "@/data/traits.json";
 import GotchiImage from "./GotchiImage.vue";
 
 const defaultCustomGotchi = {
-  name: "Imaginary Friend",
+  name: "Imaginary Fren",
   hauntId: "1",
   collateral: "0x20D3922b4a1A8560E1aC99FBA4faDe0c849e2142",
   numericTraits: [99, 99, 99, 99, 35, 50],

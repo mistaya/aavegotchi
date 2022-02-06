@@ -241,7 +241,13 @@ const getBestWearableSet = function(wearableSetIndices) {
             if (setA.name === setB.name) {
                 return 0;
             }
-            return setA.name < setB.name ? -1 : 1;
+            // same total set bonus, different name.
+            // pick the one with more wearables (Archer vs Elven Archer)
+            if (setA.wearableIds.length === setB.wearableIds.length) {
+                // same number of wearables: fall back to alphabetical name
+                return setA.name < setB.name ? -1 : 1;
+            }
+            return setA.wearableIds.length > setB.wearableIds.length ? -1 : 1;
         }
         return setA.totalSetBonus > setB.totalSetBonus ? -1: 1;
     });
