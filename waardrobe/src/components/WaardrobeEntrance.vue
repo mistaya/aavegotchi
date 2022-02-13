@@ -202,6 +202,25 @@ export default {
 
   .enter-button {
     z-index: 1;
+    position: absolute;
+    top: calc(50% - 25px);
+    left: calc(50% - 55px);
+    background-color: #fa34f3;
+    border: 4px solid black;
+    font-family: monospace;
+    font-weight: bold;
+    box-shadow: inset -4px -4px 0 #cf15f9;
+  }
+  .enter-button:hover,
+  .enter-button:focus {
+    box-shadow: inset -4px -4px 0 #cf15f9,
+      6px 6px 0 #555;
+    outline: 1px solid transparent;
+  }
+  .enter-button:active {
+    transform: translateX(2px) translateY(2px);
+    box-shadow: inset -4px -4px 0 #cf15f9,
+      3px 3px 0 #555;
   }
 
   .stockroom {
