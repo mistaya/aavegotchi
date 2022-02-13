@@ -7,6 +7,7 @@
       'eth-icon--special': isSpecialAddress
     }"
     :title="title"
+    :alt="title || ''"
   />
 </template>
 
