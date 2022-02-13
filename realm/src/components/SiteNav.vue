@@ -11,16 +11,10 @@
         The Citaadel
       </router-link>
       <router-link
-        :to="{ name: 'land-auction', params: { auctionId: '1' } }"
+        :to="{ name: 'land-auctions' }"
         class="site-banner__link"
       >
-        Land Auction 1
-      </router-link>
-      <router-link
-        :to="{ name: 'land-auction', params: { auctionId: '2' } }"
-        class="site-banner__link"
-      >
-        Land Auction 2
+        Land Auctions
       </router-link>
       <router-link
         :to="{ name: 'wearable-sets', params: { mode: 'gotchi' } }"

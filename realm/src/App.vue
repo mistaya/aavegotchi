@@ -242,7 +242,8 @@ export default {
 
   .site-banner__link:hover,
   .site-banner__link:focus,
-  .site-banner__link[aria-current=page] {
+  .site-banner__link[aria-current=page],
+  .site-banner__link.router-link-active {
     text-decoration-color: var(--site-banner-link-underline-color--hover);
     text-decoration-thickness: 4px;
     text-underline-offset: 1px;
@@ -251,12 +252,15 @@ export default {
     outline: 1px solid var(--site-banner-link-color);
     outline-offset: 7px;
   }
-  .site-banner__link[aria-current=page] {
+  .site-banner__link[aria-current=page],
+  .site-banner__link.router-link-active {
     --site-banner-link-underline-color--hover: var(--site-banner-link-underline-color--current);
     font-weight: bold;
   }
   .site-banner__link[aria-current=page]::before,
-  .site-banner__link[aria-current=page]::after {
+  .site-banner__link[aria-current=page]::after,
+  .site-banner__link.router-link-active::before,
+  .site-banner__link.router-link-active::after {
     content: '';
     display: inline-block;
     position: relative;
@@ -265,10 +269,12 @@ export default {
     height: 4px;
     background-color: var(--gotchi-pink);
   }
-  .site-banner__link[aria-current=page]::before {
+  .site-banner__link[aria-current=page]::before,
+  .site-banner__link.router-link-active::before {
     left: -4px;
   }
-  .site-banner__link[aria-current=page]::after {
+  .site-banner__link[aria-current=page]::after,
+  .site-banner__link.router-link-active::after {
     right: -4px;
   }
 

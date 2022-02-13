@@ -6,6 +6,7 @@ import NotFoundPage from './NotFoundPage.vue'
 const { pageLoading } = usePageLoading()
 
 const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/components/CitaadelPage.vue')
+const LandAuctionsPage = () => import(/* webpackChunkName: "land-auctions" */'@/components/LandAuctionsPage.vue')
 const LandAuctionPage = () => import(/* webpackChunkName: "land-auction" */'@/components/LandAuctionPage.vue')
 const ConfigData = () => import(/* webpackChunkName: "config" */ '@/components/ConfigData.vue')
 const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/components/ConfigParcels.vue')
@@ -37,16 +38,23 @@ const routes = [
     }
   },
   {
-    path: '/land-auction/:auctionId',
-    name: 'land-auction',
-    component: LandAuctionPage,
-    props: true,
-    meta: {
-      head: {
-        title: 'Land Auction',
-        description: 'Filter and explore the Land parcels that were/are up for auction from the Aavegotchi Realm'
+    path: '/land-auction',
+    name: 'land-auctions',
+    component: LandAuctionsPage,
+    children: [
+      {
+        path: ':auctionId',
+        name: 'land-auction',
+        component: LandAuctionPage,
+        props: true,
+        meta: {
+          head: {
+            title: 'Land Auction',
+            description: 'Filter and explore the Land parcels that were/are up for auction from the Aavegotchi Realm'
+          }
+        }
       }
-    }
+    ]
   },
   {
     path: '/pocketses',

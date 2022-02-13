@@ -311,7 +311,7 @@ export default {
   .wearable-sets-nav {
     /* TODO this is a workaround to cover the padding from the <main> element */
     margin: -9px -10px -10px -10px;
-    padding: 10px 20px 5px 20px;
+    padding: 5px 5px 3px 5px;
   }
   .wearable-sets-nav a {
     padding: 0 15px;
