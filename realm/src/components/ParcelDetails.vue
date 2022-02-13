@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="parcel"
-    class="parcel-details"
+    class="parcel-details site-card"
   >
-    <button
+    <SiteButton
       type="button"
       style="float: right; display: flex;"
       title="Close"
@@ -11,22 +11,22 @@
     >
       <span class="sr-only">Close</span>
       <SiteIcon name="cancel" />
-    </button>
+    </SiteButton>
 
     <h2>Parcel details:</h2>
 
     ID: {{ parcel.id }}
 
     <div style="display: flex; margin-top: 5px; margin-bottom: 5px;">
-      <button
+      <SiteButton
         type="button"
         style="margin-right: 10px"
         @click="$emit('zoomToParcel')"
       >
         Zoom to parcel
-      </button>
+      </SiteButton>
 
-      <button
+      <SiteButton
         v-if="flagSelected !== null"
         type="button"
         class="selected-flag-toggle"
@@ -40,7 +40,7 @@
         <span class="sr-only">
           {{ flagSelected ? 'Remove Highlight' : 'Highlight Parcel' }}
         </span>
-      </button>
+      </SiteButton>
     </div>
 
     Name: {{ parcel.parcelHash }}
@@ -133,15 +133,10 @@ export default {
 
 <style scoped>
   .parcel-details {
-    border: 1px solid #ccc;
-    padding: 10px;
+    padding: 10px 10px 15px 15px;
   }
 
   .selected-flag-toggle {
     display: inline-flex;
-  }
-  .selected-flag-toggle[aria-pressed=true] {
-    background: var(--purple--contrast-black);
-    font-weight: bold;
   }
 </style>

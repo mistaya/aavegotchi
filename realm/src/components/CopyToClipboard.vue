@@ -64,6 +64,10 @@ export default {
     border: none;
     padding: 0;
     background: transparent;
+    box-shadow: none;
+  }
+  .copy-to-clipboard__button:hover {
+    filter: drop-shadow(1px 1px 1px rgba(255, 150, 255, 1));
   }
   .copy-to-clipboard__button img {
     width: 100%;

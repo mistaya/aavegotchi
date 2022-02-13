@@ -210,7 +210,7 @@
           <FilterParcelNames v-model="filters.parcelNames" />
         </section>
 
-        <section>
+        <section style="padding: 0 10px 20px 0;">
           <PaartnerParcelDetails
             v-if="selectedParcelPaartnerId"
             :paartner="selectedParcelPaartnerId"
@@ -221,7 +221,6 @@
             :parcel="selectedParcel.parcel"
             :auction="selectedParcel.auction"
             v-model:flagSelected="mapConfig.flagSelected"
-            style="margin: 0 10px 20px 0;"
             @close="selectedParcelId = null"
             @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeMap })"
           />

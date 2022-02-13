@@ -1,15 +1,18 @@
 <template>
-  <section style="margin: 15px; border: 1px solid #ccc; padding: 5px 10px">
+  <section
+    class="site-card"
+    style="margin: 15px; padding: 0px 15px 10px 15px"
+  >
     <h2>Wearable Sets</h2>
 
     <form @submit.prevent="fetchWearableSets">
       <div style="margin-top: 10px">
-        <button
+        <SiteButton
           type="submit"
           :disabled="!canSubmitFetch"
         >
           Fetch
-        </button>
+        </SiteButton>
         <span v-if="fetchStatus.loading">
           loading...
         </span>
@@ -22,14 +25,14 @@
     <h3>All Wearable Sets ({{ numWearableSets }})</h3>
 
     <div style="margin-bottom: 10px;">
-      <button
+      <SiteButton
         type="button"
         :aria-pressed="`${showJson}`"
         @click="showJson = !showJson"
       >
         {{ showJson ? 'Hide' : 'Show' }}
         JSON
-      </button>
+      </SiteButton>
     </div>
 
     <textarea

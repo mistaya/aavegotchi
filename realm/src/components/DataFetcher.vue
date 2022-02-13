@@ -1,5 +1,5 @@
 <template>
-  <div class="data-fetcher">
+  <div class="data-fetcher site-dark-mode">
     <span class="data-fetcher__prompt">data:</span>
     <template v-if="!fetchStatus.loaded && !fetchStatus.loading && !fetchStatus.error">
       {{ subject }}:
@@ -25,14 +25,14 @@
       />
       error loading {{ subject }}<template v-if="fetchStatus.errorMessage">: {{ fetchStatus.errorMessage }}</template>
     </template>
-    <button
+    <SiteButton
       v-if="!disableFetch && canSubmitFetch"
       type="button"
       style="margin-left: 10px;"
       @click="fetch"
     >
       Fetch
-    </button>
+    </SiteButton>
     <template v-if="fetchStatus.loading">
       <span class="data-fetcher__loading-spinner-wrapper">
         <span class="data-fetcher__loading-spinner" />
@@ -77,15 +77,25 @@ export default {
 }
 </script>
 
+<style>
+  /* global styles for color scheme */
+  .data-fetcher {
+    --data-fetcher-background-color: #333;
+  }
+  .site-dark-mode .data-fetcher {
+    --data-fetcher-background-color: rgba(80, 69, 80, 0.35);
+  }
+</style>
 <style scoped>
   .data-fetcher,
   .data-fetcher button {
     font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
   }
+
   .data-fetcher {
     border:  1px solid black;
     padding: 7px 10px;
-    background: #333;
+    background: var(--data-fetcher-background-color);
     color: white;
     font-size: 0.8em;
     line-height: 1.5;
@@ -105,7 +115,7 @@ export default {
 
   .data-fetcher__prompt {
     margin-right: 8px;
-    color: #d383f3;
+    color: var(--rarity-color--mythical);
   }
   .data-fetcher__status {
     margin-right: 3px;

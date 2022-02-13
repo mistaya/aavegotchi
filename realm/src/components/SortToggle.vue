@@ -1,5 +1,5 @@
 <template>
-  <button
+  <SiteButton
     type="button"
     class="sort-toggle"
     :aria-pressed="`${!!sort}`"
@@ -12,15 +12,15 @@
       <span class="sr-only">Sort</span>
     </template>
     <template v-if="sort">
-      <span>Sort</span>
       <span class="sr-only">
+        Sorting
         {{ sort === 'asc' ? 'Ascending' : 'Descending' }}
       </span>
       <SiteIcon
         :name="sort === 'asc' ? 'arrow-up' : 'arrow-down'"
       />
     </template>
-  </button>
+  </SiteButton>
 </template>
 
 <script>
@@ -45,13 +45,6 @@ export default {
 <style scoped>
   .sort-toggle {
     display: inline-flex;
-  }
-  .sort-toggle[aria-pressed=false] {
-    font-style: italic;
-  }
-  .sort-toggle[aria-pressed=true] {
-    background: var(--purple--contrast-black);
-    font-weight: bold;
   }
   .sort-toggle img {
     width: 15px;

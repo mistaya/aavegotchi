@@ -1,15 +1,18 @@
 <template>
-  <section style="margin: 15px; border: 1px solid #ccc; padding: 5px 10px">
+  <section
+    class="site-card"
+    style="margin: 15px; padding: 0px 15px 10px 15px"
+  >
     <h2>Baazaar Listings</h2>
 
     <form @submit.prevent="fetchListings">
       <div style="margin-top: 10px">
-        <button
+        <SiteButton
           type="submit"
           :disabled="!canSubmitFetch"
         >
           Fetch
-        </button>
+        </SiteButton>
         <span v-if="fetchStatus.loading">
           loading...
         </span>
@@ -22,14 +25,14 @@
     <h3>All Baazaar Listings Data ({{ numListings }} parcels currently listed, {{ numSales }} parcels with sold prices)</h3>
 
     <div style="margin-bottom: 10px;">
-      <button
+      <SiteButton
         type="button"
         :aria-pressed="`${showJson}`"
         @click="showJson = !showJson"
       >
         {{ showJson ? 'Hide' : 'Show' }}
         JSON
-      </button>
+      </SiteButton>
     </div>
 
     <template v-if="showJson">

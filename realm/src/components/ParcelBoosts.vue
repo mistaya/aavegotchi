@@ -44,35 +44,49 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+  /* global styles for color scheme */
   .parcel-boosts {
+    --boost-color--a: 1.0;
+    --boost-color-bg--a: 0.15;
     --fud-color--r: 0;
     --fud-color--g: 255;
     --fud-color--b: 0;
-    --fud-color: rgb(var(--fud-color--r), var(--fud-color--g), var(--fud-color--b));
-    --fud-color-bg: rgb(var(--fud-color--r), var(--fud-color--g), var(--fud-color--b), 0.15);
+    --fud-color: rgb(var(--fud-color--r), var(--fud-color--g), var(--fud-color--b), var(--boost-color--a));
+    --fud-color-bg: rgb(var(--fud-color--r), var(--fud-color--g), var(--fud-color--b), var(--boost-color-bg--a));
     --fomo-color--r: 255;
     --fomo-color--g: 30;
     --fomo-color--b: 0;
-    --fomo-color: rgb(var(--fomo-color--r), var(--fomo-color--g), var(--fomo-color--b));
-    --fomo-color-bg: rgb(var(--fomo-color--r), var(--fomo-color--g), var(--fomo-color--b), 0.15);
+    --fomo-color--a: 1;
+    --fomo-color: rgb(var(--fomo-color--r), var(--fomo-color--g), var(--fomo-color--b), var(--boost-color--a));
+    --fomo-color-bg: rgb(var(--fomo-color--r), var(--fomo-color--g), var(--fomo-color--b), var(--boost-color-bg--a));
     --alpha-color--r: 0;
     --alpha-color--g: 255;
     --alpha-color--b: 255;
-    --alpha-color: rgb(var(--alpha-color--r), var(--alpha-color--g), var(--alpha-color--b));
-    --alpha-color-bg: rgb(var(--alpha-color--r), var(--alpha-color--g), var(--alpha-color--b), 0.15);
+    --alpha-color--a: 1;
+    --alpha-color: rgb(var(--alpha-color--r), var(--alpha-color--g), var(--alpha-color--b), var(--boost-color--a));
+    --alpha-color-bg: rgb(var(--alpha-color--r), var(--alpha-color--g), var(--alpha-color--b), var(--boost-color-bg--a));
     --kek-color--r: 240;
     --kek-color--g: 30;
     --kek-color--b: 255;
-    --kek-color: rgb(var(--kek-color--r), var(--kek-color--g), var(--kek-color--b));
-    --kek-color-bg: rgb(var(--kek-color--r), var(--kek-color--g), var(--kek-color--b), 0.15);
+    --kek-color--a: 1;
+    --kek-color: rgb(var(--kek-color--r), var(--kek-color--g), var(--kek-color--b), var(--boost-color--a));
+    --kek-color-bg: rgb(var(--kek-color--r), var(--kek-color--g), var(--kek-color--b), var(--boost-color-bg--a));
+  }
 
+  .site-dark-mode .parcel-boosts {
+    --boost-color--a: 0.5;
+  }
+</style>
+<style scoped>
+  .parcel-boosts {
     display: inline-block;
     list-style-type: none;
     margin: 0 0 -5px 0;
     padding: 0;
     font-variant: all-small-caps;
   }
+
   .parcel-boost {
     --boost-color: black;
     --boost-color-bg: rgba(0,0,0,0.15);

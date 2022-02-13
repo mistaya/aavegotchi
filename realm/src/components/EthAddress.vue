@@ -74,4 +74,7 @@ export default {
     width: 15px;
     height: 15px;
   }
+  .polygonscan:hover {
+    filter: drop-shadow(1px 1px 1px var(--site-link-underline-color--hover));
+  }
 </style>

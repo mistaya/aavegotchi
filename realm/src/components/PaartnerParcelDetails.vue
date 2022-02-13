@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="paartnerDetails"
-    class="paartner-parcel-details"
+    class="paartner-parcel-details site-card"
   >
-    <button
+    <SiteButton
       type="button"
       style="float: right; display: flex;"
       title="Close"
@@ -11,7 +11,7 @@
     >
       <span class="sr-only">Close</span>
       <SiteIcon name="cancel" />
-    </button>
+    </SiteButton>
 
     <h2>Paartner Parcel:</h2>
 
@@ -78,8 +78,7 @@ export default {
 
 <style scoped>
   .paartner-parcel-details {
-    border: 1px solid #ccc;
-    padding: 10px;
+    padding: 10px 10px 15px 15px;
   }
 
   .paartner-logo {

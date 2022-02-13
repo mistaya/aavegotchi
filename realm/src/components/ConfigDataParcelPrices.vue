@@ -1,5 +1,8 @@
 <template>
-  <section style="margin: 15px; border: 1px solid #ccc; padding: 5px 10px">
+  <section
+    class="site-card"
+    style="margin: 15px; padding: 0px 15px 10px 15px"
+  >
     <h2>Parcel Prices</h2>
     <p>
       Prices for {{ numParcels }} parcels are derived from
@@ -8,14 +11,14 @@
     </p>
     <p>These final auction prices are separately stored as JSON for quick reference as initial cached data.</p>
     <div style="margin-bottom: 10px;">
-      <button
+      <SiteButton
         type="button"
         :aria-pressed="`${showJson}`"
         @click="showJson = !showJson"
       >
         {{ showJson ? 'Hide' : 'Show' }}
         JSON
-      </button>
+      </SiteButton>
     </div>
 
     <textarea

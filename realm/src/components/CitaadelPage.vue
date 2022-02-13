@@ -222,7 +222,7 @@
         <FilterBoosts v-model="filters.boosts" />
         <FilterOwners v-model="filters.owners" />
 
-        <section>
+        <section style="padding: 0 10px 20px 0;">
           <PaartnerParcelDetails
             v-if="selectedParcelPaartnerId"
             :paartner="selectedParcelPaartnerId"
@@ -236,7 +236,6 @@
             :auctionPrice="selectedParcel.auctionPrice"
             :owner="selectedParcel.owner"
             v-model:flagSelected="mapConfig.flagSelected"
-            style="margin: 0 10px 20px 0;"
             @close="selectedParcelId = null"
             @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeMap })"
           />

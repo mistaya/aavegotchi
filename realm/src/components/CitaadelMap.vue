@@ -266,8 +266,7 @@
               :y="parcel.coordinateY"
               :width="parcel.width"
               :height="parcel.height"
-              stroke="#555"
-              :fill="parcelColors[parcel.id] || '#eee'"
+              :fill="parcelColors[parcel.id] || parcelFallbackFill"
             />
           </a>
           <template v-if="selectedParcel">
@@ -297,14 +296,14 @@
         </g>
       </svg>
     </div>
-    <button
+    <SiteButton
       type="button"
       style="margin-top: 8px"
       @click="resetZoom"
     >
       Reset map zoom
-    </button>
-    <span style="margin-left: 20px; font-size: 0.9em; font-style: italic; color: #595959">
+    </SiteButton>
+    <span class="map-footer-total">
       {{ parcels.length }} parcels total
     </span>
   </div>
@@ -316,6 +315,7 @@ import svgPanZoom from 'svg-pan-zoom'
 import Hammer from 'hammerjs'
 import { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
+import useColorScheme from '@/data/useColorScheme'
 
 const CITAADEL_WIDTH = 9504
 const CITAADEL_HEIGHT = 6336
@@ -333,9 +333,12 @@ export default {
   },
   setup (props, { emit }) {
     // console.time('setup CitaadelMap')
+    const { colorScheme } = useColorScheme()
     const svgContainerRef = ref(null)
     const svgRef = ref(null)
     const zoomCircleRef = ref(null)
+
+    const parcelFallbackFill = computed(() => colorScheme.value === 'light' ? '#eee' : '#222')
 
     const paartnerParcels = computed(() => {
       return PAARTNER_PARCELS.map(parcel => ({
@@ -518,6 +521,7 @@ export default {
     return {
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
+      parcelFallbackFill,
       paartnerParcels,
       svgContainerRef,
       svgRef,
@@ -531,16 +535,44 @@ export default {
 }
 </script>
 
+<style>
+  /* global styles for color scheme */
+  .map-svg-container {
+    --map-border-color: #ccc;
+  }
+  .map-svg {
+    --map-parcel--stroke-color: #555;
+    --map-parcel--unmatched-fill-color: var(--site-background-color);
+    --map-parcel--unmatched-stroke-color: #ddd;
+  }
+
+  .site-dark-mode .map-svg-container {
+    --map-border-color: #4a4a4a;
+  }
+  .site-dark-mode .map-svg {
+    --map-parcel--stroke-color: #4a4a4a;
+    --map-parcel--unmatched-stroke-color: #282828;
+  }
+</style>
 <style scoped>
   .map-svg-container {
+    /* performance: if the browser decides that this needs to be made into a layer;
+     e.g. due to something else overlaying it, it can cause a temporary lock-up.
+     Force layer creation up-front.
+     */
+    contain: strict;
+    transform: translateZ(0);
+    backface-visibility: hidden; /* might help 3d performance */
+
     position: relative;
     overflow: hidden;
     width: 100%;
-    border: 1px solid #ccc;
+    border: 1px solid var(--map-border-color);
     /* Safari 14 doesn't support aspect-ratio, so we need the padding hack */
     /* also limit height to 80% of window */
     padding-top: calc( min( 100% / var(--aspect-ratio, 1), 80vh ) );
   }
+
   .map-svg {
     position: absolute;
     top: 0;
@@ -549,12 +581,16 @@ export default {
     height: 100%;
   }
 
+  .parcel {
+    stroke: var(--map-parcel--stroke-color);
+  }
+
   .map-svg--unmatched-hide .parcel--hidden-by-filter {
     display: none;
   }
   .map-svg--unmatched-outline .parcel--hidden-by-filter {
-    stroke: #ddd;
-    fill: white;
+    stroke: var(--map-parcel--unmatched-stroke-color);
+    fill: var(--map-parcel--unmatched-fill-color);
   }
   .selected-parcel,
   .selected-parcel-flag {
@@ -578,6 +614,13 @@ export default {
   }
   .paartner-parcel-logo:hover {
     filter: none;
+  }
+
+  .map-footer-total {
+    margin-left: 20px;
+    font-size: 0.9em;
+    font-style: italic;
+    color: var(--site-text-color--subtle);
   }
 
   @keyframes pulse {

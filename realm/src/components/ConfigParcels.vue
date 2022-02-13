@@ -86,25 +86,25 @@
               </div>
 
               <div style="margin-bottom: 10px">
-                <button
+                <SiteButton
                   type="button"
                   :disabled="!canAddNewList"
                   @click="addNewList"
                 >
                   Add List
-                </button>
+                </SiteButton>
               </div>
             </div>
 
             <div style="margin: 20px 0 10px 0;">
-              <button
+              <SiteButton
                 type="button"
                 :aria-pressed="`${showJson}`"
                 @click="showJson = !showJson"
               >
                 {{ showJson ? 'Hide' : 'Show' }}
                 JSON
-              </button>
+              </SiteButton>
             </div>
 
             <textarea
@@ -131,6 +131,7 @@
 
 <script>
 import { ref, computed } from 'vue'
+import useColorScheme from '@/data/useColorScheme'
 import useParcels from '@/data/useParcels'
 import useParcelLists from '@/data/useParcelLists'
 import PrereqParcels from './PrereqParcels.vue'
@@ -148,6 +149,9 @@ export default {
     TextareaList
   },
   setup () {
+    const { colorScheme } = useColorScheme()
+    const parcelFill = computed(() => colorScheme.value === 'light' ? '#00f' : '#dfdfdf')
+
     const { parcelsById } = useParcels()
     const parcelsToDisplay = computed(() => Object.values(parcelsById.value))
 
@@ -199,7 +203,8 @@ export default {
       if (!selectedList.value) {
         return {}
       }
-      return Object.fromEntries(selectedList.value.parcels.map(parcelId => [parcelId, '#00f']))
+      const color = parcelFill.value
+      return Object.fromEntries(selectedList.value.parcels.map(parcelId => [parcelId, color]))
     })
 
     return {

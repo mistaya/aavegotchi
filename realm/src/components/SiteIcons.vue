@@ -27,6 +27,9 @@ import arrowRightmostSvg from '!!raw-loader!./icons/icon-arrow-rightmost.svg'
 import openWindowSvg from '!!raw-loader!./icons/icon-open-window.svg'
 import checkSvg from '!!raw-loader!./icons/icon-check.svg'
 import warningTriangleSvg from '!!raw-loader!./icons/icon-warning-triangle.svg'
+import twitterSvg from '!!raw-loader!./icons/icon-twitter.svg'
+import sunSvg from '!!raw-loader!./icons/icon-sun.svg'
+import moonSvg from '!!raw-loader!./icons/icon-moon.svg'
 
 const icons = [
   { id: 'copy', svg: copySvg },
@@ -39,7 +42,10 @@ const icons = [
   { id: 'arrow-rightmost', svg: arrowRightmostSvg },
   { id: 'open-window', svg: openWindowSvg },
   { id: 'check', svg: checkSvg },
-  { id: 'warning-triangle', svg: warningTriangleSvg }
+  { id: 'warning-triangle', svg: warningTriangleSvg },
+  { id: 'twitter', svg: twitterSvg },
+  { id: 'sun', svg: sunSvg },
+  { id: 'moon', svg: moonSvg }
 ]
 icons.forEach(icon => {
   icon.viewBox = icon.svg.match(/viewBox="([^"]+)"/)?.[1]

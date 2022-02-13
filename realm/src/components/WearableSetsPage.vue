@@ -1,145 +1,139 @@
 <template>
   <div class="wearable-sets-page">
-    <div class="wearable-sets-nav">
-      Show:
-
-      <router-link :to="{ name: 'wearable-sets', params: { mode: 'gotchi' } }">
+    <div class="wearable-sets-nav site-banner site-banner--secondary">
+      <router-link
+        :to="{ name: 'wearable-sets', params: { mode: 'gotchi' } }"
+        class="site-banner__link"
+      >
         Group by Gotchi Type
       </router-link>
-      or
-      <router-link :to="{ name: 'wearable-sets', params: { mode: 'all' } }">List All Sets</router-link>
+      <router-link
+        :to="{ name: 'wearable-sets', params: { mode: 'all' } }"
+        class="site-banner__link"
+      >
+        List All Sets
+      </router-link>
     </div>
-    <template v-if="mode === 'all'">
-      <h2>All Wearable Sets</h2>
+    <div class="wearable-sets-content">
+      <template v-if="mode === 'all'">
+        <h2>All Wearable Sets</h2>
 
-      <table class="sets-table">
-        <thead>
-          <tr>
-            <th class="sets-table__header">Set Name</th>
-            <th class="sets-table__header">Set Bonus</th>
-            <th class="sets-table__header sets-table__header--image">Image</th>
-            <th class="sets-table__header sets-table__header--wearables">Items</th>
-            <th class="sets-table__header">Total Modifiers</th>
-            <th class="sets-table__header">Total BRS bonus</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="set in wearableSets"
-            :key="set.id"
-          >
-            <td class="sets-table__cell sets-table__cell--name">{{ set.name }}</td>
-            <td class="sets-table__cell">{{ set.traitBonusesText }}</td>
-            <td class="sets-table__cell sets-table__cell--image">
-              <img
-                :src="`/wearablesets/${set.key}.png`"
-                width="100"
-                height="100"
-                :alt="`gotchi equipped with set '${set.name}'`"
-              />
-            </td>
-            <td class="sets-table__cell sets-table__cell--wearables">
-              <ul class="sets-table__wearables">
-                <li
-                  v-for="wearable in set.wearables"
-                  :key="wearable.name"
-                >
-                  {{ wearable.name }}
-                  ({{ wearable.rarity}}; {{ wearable.traitModifiersText }})
-                </li>
-              </ul>
-            </td>
-            <td class="sets-table__cell">{{ set.totalTraitBonusesText }} </td>
-            <td class="sets-table__cell">{{ set.totalBRSBonus }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </template>
-    <template v-if="mode === 'gotchi'">
-      <h2>Matching sets for different types of gotchi</h2>
+        <table class="sets-table">
+          <thead>
+            <tr>
+              <th class="sets-table__header"></th>
+              <th class="sets-table__header">Set Bonus</th>
+              <th class="sets-table__header sets-table__header--image"></th>
+              <th class="sets-table__header sets-table__header--wearables">Items</th>
+              <th class="sets-table__header">Total Modifiers</th>
+              <th class="sets-table__header">Total BRS bonus</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="set in wearableSets"
+              :key="set.id"
+            >
+              <td class="sets-table__cell sets-table__cell--name">{{ set.name }}</td>
+              <td class="sets-table__cell sets-table__cell--set-bonus">{{ set.traitBonusesText }}</td>
+              <td class="sets-table__cell sets-table__cell--image">
+                <img
+                  :src="`/wearablesets/${set.key}.png`"
+                  width="100"
+                  height="100"
+                  :alt="`gotchi equipped with set '${set.name}'`"
+                />
+              </td>
+              <td class="sets-table__cell sets-table__cell--wearables">
+                <ul class="sets-table__wearables">
+                  <li
+                    v-for="wearable in set.wearables"
+                    :key="wearable.name"
+                  >
+                    {{ wearable.name }}
+                    ({{ wearable.rarity}}; {{ wearable.traitModifiersText }})
+                  </li>
+                </ul>
+              </td>
+              <td class="sets-table__cell sets-table__cell--total-bonuses">{{ set.totalTraitBonusesText }} </td>
+              <td class="sets-table__cell sets-table__cell--total">{{ set.totalBRSBonus }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+      <template v-if="mode === 'gotchi'">
+        <h2>Matching sets for different types of gotchi</h2>
 
-      <table class="matching-sets-table">
-        <thead>
-          <tr>
-            <th
-              v-for="trait in baseTraitLabels"
-              :key="trait"
+        <table class="matching-sets-table">
+          <tbody>
+            <tr
+              class="trait-profile"
+              v-for="profile in traitProfiles"
+              :key="profile.id"
             >
-              {{ trait }}
-            </th>
-            <th class="matching-sets-table__header matching-sets-table__header--sets">
-              Matching Sets
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            class="trait-profile"
-            v-for="profile in traitProfiles"
-            :key="profile.id"
-          >
-            <td
-              v-for="trait in profile.traits"
-              :key="trait.id"
-              class="matching-sets-table__cell trait"
-              :class="{
-                'trait--positive': trait.direction,
-                'trait--negative': !trait.direction
-              }"
-            >
-              {{ trait.direction ? '+' : '-' }}
-              {{ trait.id }}
-            </td>
-            <td class="matching-sets-table__cell matching-sets-table__cell--sets">
-              <div class="matching-sets">
-                <details
-                  v-for="set in profile.sets"
-                  :key="set.id"
-                  :class="`matching-set-with-types--${set.totalTraitBonusTypesCount}`"
-                >
-                  <summary>
-                    <span class="set-summary">
-                      <span class="set-summary__rarity-markers rarity-markers">
-                        <span
-                           v-for="wearable in set.wearables"
-                           :key="wearable.id"
-                           class="rarity-marker"
-                           :class="`rarity-marker--${wearable.rarity.toLowerCase()}`"
-                           :title="`${wearable.name} (${wearable.rarity})`"
-                        ></span>
+              <td
+                v-for="trait in profile.traits"
+                :key="trait.id"
+                class="matching-sets-table__cell trait"
+                :class="{
+                  'trait--positive': trait.direction,
+                  'trait--negative': !trait.direction
+                }"
+              >
+                {{ trait.direction ? '+' : '-' }}
+                {{ trait.id }}
+              </td>
+              <td class="matching-sets-table__cell matching-sets-table__cell--sets">
+                <div class="matching-sets">
+                  <details
+                    v-for="set in profile.sets"
+                    :key="set.id"
+                    :class="`matching-set-with-types--${set.totalTraitBonusTypesCount}`"
+                  >
+                    <summary>
+                      <span class="set-summary">
+                        <span class="set-summary__rarity-markers rarity-markers">
+                          <span
+                             v-for="wearable in set.wearables"
+                             :key="wearable.id"
+                             class="rarity-marker"
+                             :class="`rarity-marker--${wearable.rarity.toLowerCase()}`"
+                             :title="`${wearable.name} (${wearable.rarity})`"
+                          ></span>
+                        </span>
+                        <span class="set-summary__total">
+                          [{{ set.totalBRSBonus }}]
+                        </span>
+                        <span class="set-summary__text">
+                          {{ set.name }}
+                          <span class="trait-bonus-types">({{ set.totalTraitBonusTypesText }})</span>
+                        </span>
                       </span>
-                      <span class="set-summary__total">
-                        [{{ set.totalBRSBonus }}]
-                      </span>
-                      <span class="set-summary__text">
-                        {{ set.name }}
-                        <span class="trait-bonus-types">({{ set.totalTraitBonusTypesText }})</span>
-                      </span>
-                    </span>
-                  </summary>
-                  <ul class="set-details">
-                    <li
-                      v-for="wearable in set.wearables"
-                      :key="wearable.id"
-                      class="set-details__wearable"
-                    >
-                      <div
-                        class="set-details__wearable-rarity-marker rarity-marker"
-                        :class="`rarity-marker--${wearable.rarity.toLowerCase()}`"
-                      ></div>
-                      <div class="set-details__wearable-desc">
-                        {{ wearable.name }}
-                        ({{ wearable.rarity }}; {{ wearable.traitModifiersText }})
-                      </div>
-                    </li>
-                  </ul>
-                </details>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </template>
+                    </summary>
+                    <ul class="set-details">
+                      <li
+                        v-for="wearable in set.wearables"
+                        :key="wearable.id"
+                        class="set-details__wearable"
+                      >
+                        <div
+                          class="set-details__wearable-rarity-marker rarity-marker"
+                          :class="`rarity-marker--${wearable.rarity.toLowerCase()}`"
+                        ></div>
+                        <div class="set-details__wearable-desc">
+                          {{ wearable.name }}
+                          ({{ wearable.rarity }}; {{ wearable.traitModifiersText }})
+                        </div>
+                      </li>
+                    </ul>
+                  </details>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -287,55 +281,41 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+  /* global styles for color scheme */
   .wearable-sets-page {
-    --text-color: black;
     --text-color-subtle: #777;
     --text-color-match-1: #555;
     --text-color-match-2: #333;
-    --background-color: white;
-    --background-color-transparent: rgba(255, 255, 255, 0.9);
     --background-color-match-4: yellow;
     --border-color: #ccc;
+  }
 
-    --rarity-color--common: rgb(128, 100, 255);
-    --rarity-color--uncommon: rgb(51, 186, 204);
-    --rarity-color--rare: rgb(89, 188, 255);
-    --rarity-color--legendary: rgb(255, 195, 107);
-    --rarity-color--mythical: rgb(255, 150, 255);
-    --rarity-color--godlike: rgb(81, 255, 168);
+  .site-dark-mode .wearable-sets-page {
+    --text-color-subtle: #888;
+    --text-color-match-1: #aaa;
+    --text-color-match-2: #dedede;
+    --background-color-match-4: rgba(255, 255, 0, 0.25);
+    --border-color: #555;
+  }
 
-    background: var(--background-color);
-    color: var(--text-color);
-
-    /* TODO temp workaround - make background stretch over the main page padding (dark mode) */
-    margin: -10px;
+  .site-dark-mode .sets-table__cell--image img {
+    filter: drop-shadow(0px 5px 12px rgba(253, 178, 250, 0.35));
+  }
+</style>
+<style scoped>
+  .wearable-sets-content {
     padding: 10px;
   }
 
-  @media (prefers-color-scheme: dark) {
-      .wearable-sets-page {
-          --text-color: white;
-          --text-color-subtle: #888;
-          --text-color-match-1: #aaa;
-          --text-color-match-2: #dedede;
-          --background-color: rgb(20, 20, 20);
-          --background-color-transparent: rgba(20, 20, 20, 0.9);
-          --background-color-match-4: rgba(255, 255, 0, 0.25);
-          --border-color: #555;
-      }
-
-      .wearable-sets-nav a {
-        color: var(--purple--contrast-black);
-      }
-
-      .sets-table__cell--image img {
-        filter: drop-shadow(0px 5px 12px rgba(253, 178, 250, 0.35));
-      }
+  .wearable-sets-nav {
+    /* TODO this is a workaround to cover the padding from the <main> element */
+    margin: -9px -10px -10px -10px;
+    padding: 10px 20px 5px 20px;
   }
-
-  .wearable-sets-nav a[aria-current=page] {
-    font-weight: bold;
+  .wearable-sets-nav a {
+    padding: 0 15px;
+    margin-bottom: 5px;
   }
 
   .sets-table {
@@ -345,10 +325,15 @@ export default {
   .sets-table__header {
       position: sticky;
       top: 0;
-      background-color: var(--background-color-transparent);
+      /* need this so the sticky header is above the gotchi image in dark mode,
+        where it has a filter that creates a positioning context
+       */
+      z-index: 1;
+      background-color: var(--site-background-color--transparent);
+      color: var(--site-text-color--subtle);
   }
   .sets-table__cell {
-      border-bottom: 10px solid var(--background-color);
+      border-bottom: 10px solid var(--site-background-color);
   }
   th {
       text-align: left;
@@ -392,14 +377,22 @@ export default {
           border-bottom: 1px solid var(--border-color);
           font-size: 0.9em;
       }
+      .sets-table__cell--name,
+      .sets-table__cell--image {
+          text-align: center;
+      }
       .sets-table__cell--name {
-          font-weight: bold;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      .sets-table__cell--total {
+        text-align: center;
       }
   }
 
   .trait {
       white-space: nowrap;
-      border-bottom: 20px solid var(--background-color);
+      border-bottom: 20px solid var(--site-background-color);
   }
   .trait--positive {
       background-color: rgba(106, 170, 150, 0.55);
@@ -440,13 +433,16 @@ export default {
   }
 
   .rarity-markers {
+      --rarity-marker-width: 10px;
+      --rarity-marker-gap: 1px;
       display: inline-flex;
-      gap: 1px;
+      gap: var(--rarity-marker-gap);
+      min-width: calc((4 * var(--rarity-marker-width)) + (3 * var(--rarity-marker-gap)));
   }
   .rarity-marker {
     --rarity-marker-color: transparent;
     flex: none;
-    width: 10px;
+    width: var(--rarity-marker-width);
     height: 15px;
     background-color: var(--rarity-marker-color);
   }
@@ -469,7 +465,6 @@ export default {
     --rarity-marker-color: var(--rarity-color--godlike);
   }
 
-  .matching-sets-table__header--sets,
   .matching-sets-table__cell--sets {
       padding-left: 5px;
   }

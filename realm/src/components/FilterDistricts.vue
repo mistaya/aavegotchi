@@ -63,21 +63,23 @@
         </label>
       </span>
 
-      <button
-        type="button"
-        class="district-select-shortcut"
-        @click="selectMultipleChanged(districts)"
-      >
-        Select all
-      </button>
+      <div>
+        <SiteButton
+          type="button"
+          class="district-select-shortcut"
+          @click="selectMultipleChanged(districts)"
+        >
+          Select all
+        </SiteButton>
 
-      <button
-        type="button"
-        class="district-select-shortcut"
-        @click="selectMultipleChanged([])"
-      >
-        Select none
-      </button>
+        <SiteButton
+          type="button"
+          class="district-select-shortcut"
+          @click="selectMultipleChanged([])"
+        >
+          Select none
+        </SiteButton>
+      </div>
     </div>
   </details>
 </template>

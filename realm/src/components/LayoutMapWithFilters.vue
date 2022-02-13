@@ -10,22 +10,22 @@
     </div>
     <div>
       <div class="view-modes">
-        <button
+        <SiteButton
           type="button"
           class="view-mode"
           :aria-pressed="`${viewMode === 'map'}`"
           @click="viewMode = 'map'"
         >
           Map View
-        </button>
-        <button
+        </SiteButton>
+        <SiteButton
           type="button"
           class="view-mode"
           :aria-pressed="`${viewMode === 'list'}`"
           @click="viewMode = 'list'"
         >
           List View
-        </button>
+        </SiteButton>
         <slot name="top"></slot>
       </div>
       <div>
@@ -74,10 +74,6 @@ export default {
   .view-mode {
     margin-right: 10px;
     padding: 5px 10px;
-  }
-  .view-mode[aria-pressed=true] {
-    background: var(--purple--contrast-black);
-    font-weight: bold;
   }
 
   /* common styles for filters inside this layout */

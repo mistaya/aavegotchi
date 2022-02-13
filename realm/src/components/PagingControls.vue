@@ -5,7 +5,7 @@
       v-if="numPages > 1"
       class="paging-controls__pages"
     >
-      <button
+      <SiteButton
         v-if="showFirstPage"
         type="button"
         title="First page"
@@ -13,8 +13,8 @@
       >
         <SiteIcon name="arrow-leftmost" />
         <span class="sr-only">First page</span>
-      </button>
-      <button
+      </SiteButton>
+      <SiteButton
         v-if="showPrevPage"
         type="button"
         title="Previous page"
@@ -22,11 +22,11 @@
       >
         <SiteIcon name="arrow-left" />
         <span class="sr-only">Previous page</span>
-      </button>
+      </SiteButton>
       <span style="margin: 0 5px 0 3px">
         Page {{ modelValue.page + 1 }}/{{ numPages }}
       </span>
-      <button
+      <SiteButton
         v-if="showNextPage"
         type="button"
         title="Next page"
@@ -34,8 +34,8 @@
       >
         <SiteIcon name="arrow-right" />
         <span class="sr-only">Next page</span>
-      </button>
-      <button
+      </SiteButton>
+      <SiteButton
         v-if="showLastPage"
         type="button"
         title="Last page"
@@ -43,7 +43,7 @@
       >
         <SiteIcon name="arrow-rightmost" />
         <span class="sr-only">Last page</span>
-      </button>
+      </SiteButton>
     </div>
     <div>
       <label>

@@ -231,28 +231,42 @@ export default {
 }
 </script>
 
+<style>
+  /* global styles for color scheme */
+  .parcels-list {
+    --humble-color--r: 75;
+    --humble-color--g: 117;
+    --humble-color--b: 197;
+    --humble-color: rgb(var(--humble-color--r), var(--humble-color--g), var(--humble-color--b));
+    --humble-color-bg--a: 0.15;
+    --humble-color-bg: rgb(var(--humble-color--r), var(--humble-color--g), var(--humble-color--b), var(--humble-color-bg--a));
+    --reasonable-color--r: 0;
+    --reasonable-color--g: 110;
+    --reasonable-color--b: 82;
+    --reasonable-color: rgb(var(--reasonable-color--r), var(--reasonable-color--g), var(--reasonable-color--b));
+    --reasonable-color-bg--a: 0.15;
+    --reasonable-color-bg: rgb(var(--reasonable-color--r), var(--reasonable-color--g), var(--reasonable-color--b), var(--reasonable-color-bg--a));
+    --spacious-color--r: 81;
+    --spacious-color--g: 0;
+    --spacious-color--b: 162;
+    --spacious-color: rgb(var(--spacious-color--r), var(--spacious-color--g), var(--spacious-color--b));
+    --spacious-color-bg--a: 0.15;
+    --spacious-color-bg: rgb(var(--spacious-color--r), var(--spacious-color--g), var(--spacious-color--b), var(--spacious-color-bg--a));
+  }
+
+  .site-dark-mode .parcels-list {
+    --humble-color-bg--a: 0.2;
+    --reasonable-color-bg--a: 0.2;
+    --spacious-color-bg--a: 0.2;
+  }
+</style>
 <style scoped>
   .parcels-list {
     list-style-type: none;
     margin: 20px 0;
     padding: 0;
-
-    --humble-color--r: 75;
-    --humble-color--g: 117;
-    --humble-color--b: 197;
-    --humble-color: rgb(var(--humble-color--r), var(--humble-color--g), var(--humble-color--b));
-    --humble-color-bg: rgb(var(--humble-color--r), var(--humble-color--g), var(--humble-color--b), 0.15);
-    --reasonable-color--r: 0;
-    --reasonable-color--g: 110;
-    --reasonable-color--b: 82;
-    --reasonable-color: rgb(var(--reasonable-color--r), var(--reasonable-color--g), var(--reasonable-color--b));
-    --reasonable-color-bg: rgb(var(--reasonable-color--r), var(--reasonable-color--g), var(--reasonable-color--b), 0.15);
-    --spacious-color--r: 81;
-    --spacious-color--g: 0;
-    --spacious-color--b: 162;
-    --spacious-color: rgb(var(--spacious-color--r), var(--spacious-color--g), var(--spacious-color--b));
-    --spacious-color-bg: rgb(var(--spacious-color--r), var(--spacious-color--g), var(--spacious-color--b), 0.15);
   }
+
   .parcels-list-item {
     --parcel-width: 50%;
     --parcel-color: black;
@@ -284,7 +298,7 @@ export default {
 
   .parcels-list-item .parcel-index {
     padding-top: 10px;
-    color: rgba(0,0,0,0.3);
+    opacity: 0.3;
   }
   .parcels-list-item .parcel-info > div {
     display: flex;

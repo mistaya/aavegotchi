@@ -74,9 +74,38 @@
 </template>
 
 <script>
+import { watch } from 'vue'
 import debounce from 'lodash.debounce'
+import useColorScheme from '@/data/useColorScheme'
+
+const DEFAULT_COLORS = {
+  light: {
+    colorRoads: '#bbbbbb',
+    colorWalls: '#000000',
+    colorPaartners: '#bf91ff',
+    colorLandmarks: '#FA34F3',
+    colorAlchemicaFud: '#C8E4C8',
+    colorAlchemicaFomo: '#F0DAD1',
+    colorAlchemicaAlpha: '#D7EEEE',
+    colorAlchemicaKek: '#F0D9F2',
+    colorAlchemica: '#E3E3E3'
+  },
+  dark: {
+    colorRoads: '#4A4A4A',
+    colorWalls: '#A3A3A3',
+    colorPaartners: '#bf91ff',
+    colorLandmarks: '#FA34F3',
+    colorAlchemicaFud: '#475C47',
+    colorAlchemicaFomo: '#5B4A43',
+    colorAlchemicaAlpha: '#476262',
+    colorAlchemicaKek: '#533A55',
+    colorAlchemica: '#292929'
+  }
+}
 
 const getDefaultValue = function () {
+  const { colorScheme } = useColorScheme()
+  const colors = DEFAULT_COLORS[colorScheme.value] || DEFAULT_COLORS.light
   return {
     unmatchedDisplay: 'outline', /* or 'hide' */
     showRoads: true,
@@ -87,16 +116,8 @@ const getDefaultValue = function () {
     showAlchemicaFomo: true,
     showAlchemicaAlpha: true,
     showAlchemicaKek: true,
-    colorRoads: '#bbbbbb',
-    colorWalls: '#000000',
-    colorPaartners: '#bf91ff',
-    colorLandmarks: '#FA34F3',
-    colorAlchemicaFud: '#C8E4C8',
-    colorAlchemicaFomo: '#F0DAD1',
-    colorAlchemicaAlpha: '#D7EEEE',
-    colorAlchemicaKek: '#F0D9F2',
+    ...colors,
     useOneAlchemicaColor: false,
-    colorAlchemica: '#E3E3E3',
     flagSelected: false
   }
 }
@@ -105,6 +126,32 @@ export { getDefaultValue }
 export default {
   props: {
     modelValue: { type: Object, default: getDefaultValue }
+  },
+  setup (props, { emit }) {
+    const { colorScheme } = useColorScheme()
+    watch(
+      () => colorScheme.value,
+      () => {
+        // if previous colors were the default, change them to the new default for the scheme
+        const previousScheme = colorScheme.value === 'light' ? 'dark' : 'light'
+        const previousDefaultColors = DEFAULT_COLORS[previousScheme]
+        const newDefaultColors = DEFAULT_COLORS[colorScheme.value]
+        const newColors = {}
+        for (const key in previousDefaultColors) {
+          if (props.modelValue[key] === previousDefaultColors[key] &&
+            props.modelValue[key] !== newDefaultColors[key]) {
+            newColors[key] = newDefaultColors[key]
+          }
+        }
+        if (Object.keys(newColors).length) {
+          emit('update:modelValue', {
+            ...props.modelValue,
+            ...newColors
+          })
+        }
+      }
+    )
+    return {}
   },
   created () {
     this.debouncedColorChanged = debounce(this.colorChanged, 300)

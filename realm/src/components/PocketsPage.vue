@@ -15,25 +15,25 @@
       <div class="dashboard-controls">
         <div class="dashboard-controls__modes">
           Show totals for
-          <button
+          <SiteButton
             type="button"
             class="dashboard-controls__mode"
             :aria-pressed="`${dashboardDisplayMode === 'all'}`"
             @click="dashboardDisplayMode = 'all'"
           >
             All (actual)
-          </button>
+          </SiteButton>
 
           or
 
-          <button
+          <SiteButton
             type="button"
             class="dashboard-controls__mode"
             :aria-pressed="`${dashboardDisplayMode === 'minimum'}`"
             @click="dashboardDisplayMode = 'minimum'"
           >
             Minimum (locked)
-          </button>
+          </SiteButton>
           Collateral
         </div>
       </div>
@@ -42,7 +42,7 @@
           v-if="hasPrices"
           class="dashboard-row"
         >
-          <div class="dashboard-metric">
+          <div class="dashboard-metric site-card">
             <div class="dashboard-text dashboard-text--primary">
               Spirit Force
             </div>
@@ -65,7 +65,7 @@
           </div>
           <div
             v-if="hasGhst"
-            class="dashboard-metric"
+            class="dashboard-metric site-card"
           >
             <div class="dashboard-text dashboard-text--primary">
               <div style="display: flex; align-items: center; justify-content: center;">
@@ -115,7 +115,7 @@
           </div>
           <div
             v-if="hasRewards"
-            class="dashboard-metric"
+            class="dashboard-metric site-card"
           >
             <div class="dashboard-text dashboard-text--primary">
               <div style="display: flex; align-items: center; justify-content: center;">
@@ -169,7 +169,7 @@
         <div
           v-for="item in collateralTotalsWithPriceOrdered"
           :key="item.collateral.id"
-          class="dashboard-metric"
+          class="dashboard-metric site-card"
         >
           <CryptoIcon
             :address="item.collateral.id"
@@ -210,9 +210,9 @@
               v-model="formQuery"
               type="text"
             />
-            <button type="submit">
+            <SiteButton type="submit">
               Search
-            </button>
+            </SiteButton>
           </label>
         </form>
       </div>
@@ -758,14 +758,17 @@ export default {
 </style>
 <style scoped>
   .dashboard-controls__modes {
-    margin: 20px 0 0 50px;
+    margin: 10px 0 0 10px;
   }
+  @media (min-width: 550px) {
+    .dashboard-controls__modes {
+      margin: 20px 0 0 50px;
+    }
+  }
+
   .dashboard-controls__mode {
+    margin-bottom: 5px;
     padding: 5px 10px;
-  }
-  .dashboard-controls__mode[aria-pressed=true] {
-    background: var(--purple--contrast-black);
-    font-weight: bold;
   }
 
   .dashboard {
@@ -781,13 +784,10 @@ export default {
     justify-content: center;
   }
   .dashboard-metric {
-    max-width: 100%;
     flex: 0 0 auto;
     margin: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    text-align: center;
     padding: 15px 25px;
+    text-align: center;
   }
   .dashboard-number--primary {
     font-size: 1.5em;
@@ -837,7 +837,9 @@ export default {
   .gotchis-table thead th {
     position: sticky;
     top: 0;
-    background-color: var(--background-color-transparent);
+    z-index: 1;
+    background-color: var(--site-background-color--transparent);
+    color: var(--site-text-color--subtle);
   }
   .gotchis-table td,
   .gotchis-table th {
@@ -845,7 +847,7 @@ export default {
     padding: 5px;
   }
   .gotchis-table tr:nth-child(even) td {
-    background: #eee;
+    background: var(--site-background-color--alternate);
   }
 
   .gotchis-table-paging {
