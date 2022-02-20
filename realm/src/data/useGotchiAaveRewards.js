@@ -55,7 +55,7 @@ const fetchRewards = function () {
     if (isStale()) { return }
 
     let nextGotchiIndex = 0
-    const BATCH_SIZE = 800
+    const BATCH_SIZE = 600
     const requests = []
 
     while (nextGotchiIndex < polygonGotchis.value.length) {
@@ -98,7 +98,7 @@ fetch(initialRewardsUrl)
     for (var key in json) {
       initialRewards[key] = new BigNumber(json[key])
     }
-    setRewards(initialRewards, new Date(1644770809550))
+    setRewards(initialRewards, new Date(1645380801635))
     setLoaded()
   }).catch(error => {
     console.error(error)

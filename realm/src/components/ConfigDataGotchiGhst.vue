@@ -3,11 +3,11 @@
     class="site-card"
     style="margin: 15px; padding: 0px 15px 10px 15px"
   >
-    <h2>Gotchi GHST Balances</h2>
+    <h2>Gotchi Balances</h2>
 
     <p>
-      The GHST balance has to be queried directly from the GHST token contract, it's not available in the subgraph.
-      So this needs to do a contract call for <i>every</i> gotchi.
+      Each balance has to be queried directly from the individual token contract, it's not available in the subgraph.
+      So this needs to do a contract call for <i>every</i> gotchi, for each token.
       <br>To reduce rpc requests, these are batched using multicall - but this can result in errors during execution, so watch the console.
       It may help to fetch the latest gotchi list before fetching this.
     </p>
@@ -29,7 +29,7 @@
       </div>
     </form>
 
-    <h3>All Gotchi GHST Data</h3>
+    <h3>All Gotchi Balances Data</h3>
 
     <p>
       {{ loadedBalancesDetails.numBalancesFetched }} balances fetched out of {{ loadedBalancesDetails.numGotchis }} gotchis
@@ -56,7 +56,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useGotchiGhst from '@/data/useGotchiGhst'
+import useGotchiBalances from '@/data/useGotchiBalances'
 
 export default {
   setup (props) {
@@ -66,7 +66,7 @@ export default {
       fetchStatus,
       fetchBalances,
       loadedBalancesDetails
-    } = useGotchiGhst()
+    } = useGotchiBalances()
 
     const numBalances = computed(() => Object.keys(balances.value).length)
     const showJson = ref(false)

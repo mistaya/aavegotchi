@@ -6,7 +6,7 @@
 
     <div>
       <DataFetcherGotchis />
-      <DataFetcherGotchiGhst />
+      <DataFetcherGotchiBalances />
       <DataFetcherGotchiAaveRewards/>
       <DataFetcherPrices />
     </div>
@@ -382,11 +382,11 @@ import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
 import useCollateralPrices from '@/data/useCollateralPrices'
 import useGotchis from '@/data/useGotchis'
-import useGotchiGhst from '@/data/useGotchiGhst'
+import useGotchiBalances from '@/data/useGotchiBalances'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
 import DataFetcherGotchiAaveRewards from './DataFetcherGotchiAaveRewards.vue'
-import DataFetcherGotchiGhst from './DataFetcherGotchiGhst.vue'
+import DataFetcherGotchiBalances from './DataFetcherGotchiBalances.vue'
 import DataFetcherPrices from './DataFetcherPrices.vue'
 import CryptoIcons from './CryptoIcons.vue'
 import CryptoIcon from './CryptoIcon.vue'
@@ -402,7 +402,7 @@ export default {
   components: {
     DataFetcherGotchis,
     DataFetcherGotchiAaveRewards,
-    DataFetcherGotchiGhst,
+    DataFetcherGotchiBalances,
     DataFetcherPrices,
     CryptoIcons,
     CryptoIcon,
@@ -428,11 +428,12 @@ export default {
     } = useGotchis()
 
     const {
-      balances: ghstBalances,
-      fetchStatus: ghstFetchStatus,
-      loadedBalancesDetails: loadedGhstDetails,
+      balances,
+      balanceTokens,
+      fetchStatus: balancesFetchStatus,
+      loadedBalancesDetails,
       lastFetchDate: ghstLastFetchDate
-    } = useGotchiGhst()
+    } = useGotchiBalances()
 
     const {
       rewards,
@@ -623,12 +624,20 @@ export default {
 
     const GHST_ID = Object.values(tokens).find(t => t.label === 'GHST')?.id
 
-    const hasGhst = computed(() => ghstFetchStatus.value.loaded)
+    const hasGhst = computed(() => balancesFetchStatus.value.loaded)
+    const balanceIndexGhst = balanceTokens.findIndex(t => t.label === 'GHST')
+    const ghstBalances = computed(() => {
+      const ghstByGotchi = {}
+      for (const gotchiId in balances.value) {
+        ghstByGotchi[gotchiId] = balances.value[gotchiId][balanceIndexGhst]
+      }
+      return ghstByGotchi
+    })
 
     const ghstBalancesSortable = computed(() => {
       if (!hasGhst.value) { return null }
       const sortableGhst = {}
-      for (var key in ghstBalances.value) {
+      for (const key in ghstBalances.value) {
         sortableGhst[key] = ghstBalances.value[key].toNumber()
       }
       return sortableGhst
@@ -639,7 +648,7 @@ export default {
         return null
       }
       const total = Object.values(ghstBalances.value).reduce((total, item) => total.plus(item), new BigNumber(0))
-      const numGotchis = loadedGhstDetails.value.numGotchis
+      const numGotchis = loadedBalancesDetails.value.numGotchis
       const mean = total.dividedBy(numGotchis)
 
       let usdTotal = 0
