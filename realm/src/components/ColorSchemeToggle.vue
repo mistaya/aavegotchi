@@ -1,38 +1,18 @@
 <template>
-  <div class="color-scheme-toggles">
-    <label title="light mode">
-      <input
-        type="radio"
-        name="color-scheme-toggle-group"
-        :checked="preferredColorScheme === 'light'"
-        class="sr-only"
-        @click="onClickRadio('light')"
-      />
-      <span class="sr-only">light mode</span>
-      <SiteIcon name="sun" class="color-scheme-icon" />
-    </label>
-    <label title="use default color scheme">
-      <input
-        type="radio"
-        name="color-scheme-toggle-group"
-        :checked="preferredColorScheme === null"
-        class="sr-only"
-        @click="onClickRadio(null)"
-      />
-      <span class="color-scheme-visible-label">auto</span>
-    </label>
-    <label title="dark mode">
-      <input
-        type="radio"
-        name="color-scheme-toggle-group"
-        :checked="preferredColorScheme === 'dark'"
-        class="sr-only"
-        @click="onClickRadio('dark')"
-      />
-      <span class="sr-only">dark mode</span>
-      <SiteIcon name="moon" class="color-scheme-icon" />
-    </label>
-  </div>
+  <button
+    type="button"
+    class="button-reset color-scheme-toggle"
+    @click="toggleColorScheme"
+  >
+    <SiteIcon
+      :name="colorScheme === 'light' ? 'moon' : 'sun'"
+      class="color-scheme-icon"
+      aria-label="``"
+    />
+    <span class="sr-only">
+      Switch to {{ colorScheme === 'light' ? 'dark' : 'light' }} mode
+    </span>
+  </button>
 </template>
 
 <script>
@@ -40,56 +20,33 @@ import useColorScheme from '@/data/useColorScheme'
 
 export default {
   setup () {
-    const { preferredColorScheme, savePreference } = useColorScheme()
+    const { colorScheme, toggleColorScheme } = useColorScheme()
 
-    const onClickRadio = function (mode) {
-      savePreference(mode)
-    }
     return {
-      preferredColorScheme,
-      onClickRadio
+      colorScheme,
+      toggleColorScheme
     }
   }
 }
 </script>
 
 <style scoped>
-  .color-scheme-toggles {
+  .color-scheme-toggle {
     height: 24px;
-    display: flex;
-    align-items: center;
     margin-top: 5px;
     margin-right: 10px;
   }
-  .color-scheme-toggles label {
-    cursor: pointer;
+
+  .color-scheme-icon {
     flex: 0 0 auto;
-  }
-  .color-scheme-toggles label:not(:last-child) {
-    margin-right: 5px;
-  }
-  .color-scheme-toggles .color-scheme-icon {
-    position: relative;
-    top: 2px;
-  }
-  .color-scheme-toggles .color-scheme-visible-label {
-    text-transform: uppercase;
-    font-size: 0.8em;
+    color: var(--site-banner-text-color);
   }
 
-  .color-scheme-toggles label:hover .color-scheme-icon,
-  .color-scheme-toggles label:hover .color-scheme-visible-label {
+  .color-scheme-toggle:hover .color-scheme-icon {
     filter: drop-shadow(1px 1px 1px rgba(255, 150, 255, 1));
   }
-  .color-scheme-toggles .color-scheme-visible-label:hover {
-    filter: drop-shadow(1px 1px 1px rgba(255, 150, 255, 1));
-  }
-  .color-scheme-toggles input[type=radio]:checked ~ .color-scheme-icon,
-  .color-scheme-toggles input[type=radio]:checked ~ .color-scheme-visible-label {
-    color: var(--purple);
-  }
-  .color-scheme-toggles input[type=radio]:focus-visible ~ .color-scheme-icon,
-  .color-scheme-toggles input[type=radio]:focus-visible ~ .color-scheme-visible-label {
+
+  .color-scheme-toggle:focus-visible {
     outline: 1px solid white;
     outline-offset: 4px;
   }

@@ -37,6 +37,18 @@ const savePreference = function (colorScheme) {
   }
 }
 
+const toggleColorScheme = function () {
+  // we want to toggle the final scheme from whatever it currently is using
+  const newScheme = colorScheme.value === 'light' ? 'dark' : 'light'
+  // if the newScheme is the same as auto, unset any preference so it falls back to auto
+  if (newScheme === autoColorScheme.value) {
+    savePreference(null)
+  } else {
+    // otherwise (the newScheme is different to auto), save the preference
+    savePreference(newScheme)
+  }
+}
+
 // Resolved final color scheme
 const colorScheme = computed(() => {
   return preferredColorScheme.value || autoColorScheme.value
@@ -53,8 +65,6 @@ watch(
 export default function () {
   return {
     colorScheme,
-    preferredColorScheme,
-    autoColorScheme,
-    savePreference
+    toggleColorScheme
   }
 }

@@ -207,6 +207,22 @@ export default {
     -webkit-box-shadow: 0 0 1px var(--site-scrollbar-shadow-color);
   }
 
+  .button-reset {
+    border: none;
+    background-color: transparent;
+    font-family: inherit;
+    padding: 0;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .button-reset::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+
   .site-banner {
     --site-banner-background-color: rgba(84, 23, 82, 0.9);
     --site-banner-background-color--secondary: rgba(84, 23, 82, 0.7);
