@@ -3,7 +3,7 @@
     class="site-card"
     style="margin: 15px; padding: 0px 15px 10px 15px"
   >
-    <h2>Parcel Prices</h2>
+    <h2>Parcel Auction Prices</h2>
     <p>
       Prices for {{ numParcels }} parcels are derived from
       the cached auction records (1: {{ numAuction1 }}, 2: {{ numAuction2 }}),
