@@ -251,6 +251,12 @@
         <template v-else>
           Matched {{ numParcelsMatchingFilters }} parcels ({{ percentParcelsMatchingFilters }}% of {{ numParcelsToDisplay }} currently available)
         </template>
+        <template v-if="numParcelsMatchingFilters > 0">
+          <ParcelsExport
+            :parcels="parcelsList"
+            style="float: right;"
+          />
+        </template>
       </template>
       <template #main="{ viewMode }">
         <CitaadelMap
@@ -293,6 +299,7 @@ import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import ParcelList from './ParcelList.vue'
+import ParcelsExport from './ParcelsExport.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
@@ -314,6 +321,7 @@ export default {
     PaartnerParcelDetails,
     ParcelDetails,
     ParcelList,
+    ParcelsExport,
     CitaadelMap,
     MapConfig,
     FilterBaazaar,
