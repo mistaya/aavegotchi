@@ -13,6 +13,8 @@
         name="loaded"
         :result="result"
         :lastFetchDate="lastFetchDate"
+        :showingMore="showingMore"
+        :toggleMore="toggleMore"
       >
         {{ subject }} fetched
         <DateFriendly :date="lastFetchDate" />
@@ -39,10 +41,21 @@
       </span>
       fetching {{ subject }}...
     </template>
+    <div
+      v-if="fetchStatus.loaded && hasMore && showingMore"
+      class="data-fetcher__more"
+    >
+      <slot
+        name="more"
+        :result="result"
+        :toggleMore="toggleMore"
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
 import DateFriendly from './DateFriendly'
 
 export default {
@@ -54,7 +67,8 @@ export default {
     use: { type: Function, required: true },
     fetchProperty: { type: String, required: true },
     resultProperty: { type: String, default: null },
-    disableFetch: { type: Boolean, default: false }
+    disableFetch: { type: Boolean, default: false },
+    hasMore: { type: Boolean, default: false }
   },
   setup (props) {
     const useObj = props.use()
@@ -66,12 +80,19 @@ export default {
     const fetch = useObj[props.fetchProperty]
     const result = props.resultProperty ? useObj[props.resultProperty] : null
 
+    const showingMore = ref(false)
+    const toggleMore = function () {
+      showingMore.value = !showingMore.value
+    }
+
     return {
       result,
       canSubmitFetch,
       fetchStatus,
       fetch,
-      lastFetchDate
+      lastFetchDate,
+      showingMore,
+      toggleMore
     }
   }
 }
@@ -88,7 +109,7 @@ export default {
 </style>
 <style scoped>
   .data-fetcher,
-  .data-fetcher button {
+  .data-fetcher :deep(button) {
     font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
   }
 
@@ -127,7 +148,7 @@ export default {
   .data-fetcher__status--error {
     color: red;
   }
-  .data-fetcher button {
+  .data-fetcher :deep(button) {
     font-size: inherit;
     padding: 2px 10px;
   }
@@ -145,6 +166,9 @@ export default {
     height: 12px;
     background-color: white;
     animation: 3s steps(8) 0s infinite normal forwards spin;
+  }
+  .data-fetcher__more {
+    margin-top: 5px;
   }
 
   @keyframes spin {

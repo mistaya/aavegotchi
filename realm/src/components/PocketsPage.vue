@@ -12,107 +12,69 @@
     </div>
 
     <template v-if="gotchisFetchStatus.loaded">
-      <div class="dashboard-controls">
-        <div class="dashboard-controls__modes">
-          Show totals for
-          <SiteButton
-            type="button"
-            class="dashboard-controls__mode"
-            :aria-pressed="`${dashboardDisplayMode === 'all'}`"
-            @click="dashboardDisplayMode = 'all'"
-          >
-            All (actual)
-          </SiteButton>
-
-          or
-
-          <SiteButton
-            type="button"
-            class="dashboard-controls__mode"
-            :aria-pressed="`${dashboardDisplayMode === 'minimum'}`"
-            @click="dashboardDisplayMode = 'minimum'"
-          >
-            Minimum (locked)
-          </SiteButton>
-          Collateral
-        </div>
-      </div>
       <div class="dashboard">
+
         <div
-          v-if="hasPrices"
           class="dashboard-row"
+          style="margin-bottom: 50px;"
         >
-          <div class="dashboard-metric site-card">
-            <div class="dashboard-text dashboard-text--primary">
-              Spirit Force
-            </div>
-            <div class="dashboard-number dashboard-number--primary">
-              <NumberDisplay
-                :number="dashboardDisplayMode == 'all' ? grandTotals.usdTotal : grandTotals.usdTotalLocked"
-                usd
-              />
-            </div>
-            <div class="dashboard-text dashboard-text--secondary">
-              of different collaterals
-              in <NumberDisplay :number="grandTotals.numGotchis" /> gotchis
-              <br>
-              (average
+          <template v-if="hasBalances">
+            <div
+              v-for="(token, tokenIndex) in balanceTokens"
+              :key="token.id"
+              class="dashboard-metric site-card"
+            >
+              <div class="dashboard-text dashboard-text--primary">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                  <CryptoIcon
+                    :address="token.id"
+                    :size="40"
+                    style="margin-right: 10px"
+                  />
+                  <div>{{ token.label }} in Pockets</div>
+                </div>
+              </div>
+              <div class="dashboard-number dashboard-number--primary">
                 <NumberDisplay
-                  :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
-                  usd
-                />)
-            </div>
-          </div>
-          <div
-            v-if="hasGhst"
-            class="dashboard-metric site-card"
-          >
-            <div class="dashboard-text dashboard-text--primary">
-              <div style="display: flex; align-items: center; justify-content: center;">
-                <CryptoIcon
-                  :address="GHST_ID"
-                  :size="40"
-                  style="margin-right: 10px"
+                  :number="balanceTotals[tokenIndex].total"
                 />
-                <div>GHST in Pockets</div>
+                {{ token.label }}
+              </div>
+              <div
+                v-if="hasPrices"
+                class="dashboard-number dashboard-number--secondary"
+              >
+                <i v-if="balanceTotals[tokenIndex].usdTotal === null">
+                  (USD price unknown)
+                </i>
+                <NumberDisplay
+                  v-else
+                  :number="balanceTotals[tokenIndex].usdTotal"
+                  usd
+                />
+              </div>
+              <div class="dashboard-text dashboard-text--secondary">
+                in <NumberDisplay :number="balanceTotals[tokenIndex].numGotchis" /> gotchis
+                <br>
+                (average
+                <template v-if="hasPrices && balanceTotals[tokenIndex].meanUsd !== null">
+                  <NumberDisplay
+                    :number="balanceTotals[tokenIndex].meanUsd"
+                    usd
+                  />
+                  /
+                </template>
+                  <NumberDisplay
+                    :number="balanceTotals[tokenIndex].mean"
+                  />
+                {{ token.label }})
+                <br>
+                <br>
+                Balances fetched
+                <DateFriendly :date="balanceTotals[tokenIndex].lastFetchDate" />
               </div>
             </div>
-            <div class="dashboard-number dashboard-number--primary">
-              <NumberDisplay
-                :number="ghstTotals.total"
-              />
-              GHST
-            </div>
-            <div
-              v-if="hasPrices"
-              class="dashboard-number dashboard-number--secondary"
-            >
-              <NumberDisplay
-                :number="ghstTotals.usdTotal"
-                usd
-              />
-            </div>
-            <div class="dashboard-text dashboard-text--secondary">
-              in <NumberDisplay :number="ghstTotals.numGotchis" /> gotchis
-              <br>
-              (average
-              <template v-if="hasPrices">
-                <NumberDisplay
-                  :number="ghstTotals.meanUsd"
-                  usd
-                />
-                /
-              </template>
-                <NumberDisplay
-                  :number="ghstTotals.mean"
-                />
-              GHST)
-              <br>
-              <br>
-              Balances fetched
-              <DateFriendly :date="ghstTotals.lastFetchDate" />
-            </div>
-          </div>
+          </template>
           <div
             v-if="hasRewards"
             class="dashboard-metric site-card"
@@ -166,38 +128,94 @@
             </div>
           </div>
         </div>
+
         <div
-          v-for="item in collateralTotalsWithPriceOrdered"
-          :key="item.collateral.id"
-          class="dashboard-metric site-card"
+          v-if="hasPrices"
+          class="dashboard-row"
         >
-          <CryptoIcon
-            :address="item.collateral.id"
-            :size="40"
-          />
-          <div class="dashboard-number dashboard-number--primary">
-            <NumberDisplay :number="dashboardDisplayMode == 'all' ? item.total : item.totalLocked" />
-            {{ item.collateral.label }}
-          </div>
-          <div
-            v-if="hasPrices"
-            class="dashboard-number dashboard-number--secondary"
-          >
-            <NumberDisplay
-              :number="dashboardDisplayMode == 'all' ? item.usdTotal : item.usdTotalLocked"
-              usd
-            />
-          </div>
-          <div class="dashboard-text dashboard-text--secondary">
-            in <NumberDisplay :number="item.numGotchis" /> gotchis
-            <template v-if="hasPrices">
+          <div class="dashboard-metric site-card">
+            <div class="dashboard-text dashboard-text--primary">
+              Spirit Force
+            </div>
+            <div class="dashboard-number dashboard-number--primary">
+              <NumberDisplay
+                :number="dashboardDisplayMode == 'all' ? grandTotals.usdTotal : grandTotals.usdTotalLocked"
+                usd
+              />
+            </div>
+            <div class="dashboard-text dashboard-text--secondary">
+              of different collaterals
+              in <NumberDisplay :number="grandTotals.numGotchis" /> gotchis
               <br>
               (average
                 <NumberDisplay
-                  :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
+                  :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
                   usd
                 />)
-            </template>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-controls">
+          <div class="dashboard-controls__modes">
+            Show totals for
+            <SiteButton
+              type="button"
+              class="dashboard-controls__mode"
+              :aria-pressed="`${dashboardDisplayMode === 'all'}`"
+              @click="dashboardDisplayMode = 'all'"
+            >
+              All (actual)
+            </SiteButton>
+
+            or
+
+            <SiteButton
+              type="button"
+              class="dashboard-controls__mode"
+              :aria-pressed="`${dashboardDisplayMode === 'minimum'}`"
+              @click="dashboardDisplayMode = 'minimum'"
+            >
+              Minimum (locked)
+            </SiteButton>
+            Collateral
+          </div>
+        </div>
+
+        <div class="dashboard-row">
+          <div
+            v-for="item in collateralTotalsWithPriceOrdered"
+            :key="item.collateral.id"
+            class="dashboard-metric site-card"
+          >
+            <CryptoIcon
+              :address="item.collateral.id"
+              :size="40"
+            />
+            <div class="dashboard-number dashboard-number--primary">
+              <NumberDisplay :number="dashboardDisplayMode == 'all' ? item.total : item.totalLocked" />
+              {{ item.collateral.label }}
+            </div>
+            <div
+              v-if="hasPrices"
+              class="dashboard-number dashboard-number--secondary"
+            >
+              <NumberDisplay
+                :number="dashboardDisplayMode == 'all' ? item.usdTotal : item.usdTotalLocked"
+                usd
+              />
+            </div>
+            <div class="dashboard-text dashboard-text--secondary">
+              in <NumberDisplay :number="item.numGotchis" /> gotchis
+              <template v-if="hasPrices">
+                <br>
+                (average
+                  <NumberDisplay
+                    :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
+                    usd
+                  />)
+              </template>
+            </div>
           </div>
         </div>
       </div>
@@ -281,13 +299,18 @@
                   @update:sort="gotchisSort.column = $event ? 'excessStake' : null; gotchisSort.direction = $event"
                 />
               </th>
-              <th v-if="hasGhst">
-                GHST
-                <SortToggle
-                  :sort="gotchisSort.column === 'ghst' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'ghst' : null; gotchisSort.direction = $event"
-                />
-              </th>
+              <template v-if="hasBalances">
+                <th
+                  v-for="(token, tokenIndex) in balanceTokens"
+                  :key="token.id"
+                >
+                  {{ token.label }}
+                  <SortToggle
+                    :sort="gotchisSort.column === `tokenBalance:${tokenIndex}` ? gotchisSort.direction : null"
+                    @update:sort="gotchisSort.column = $event ? `tokenBalance:${tokenIndex}` : null; gotchisSort.direction = $event"
+                  />
+                </th>
+              </template>
               <th v-if="hasRewards">
                 Unclaimed WMATIC
                 <SortToggle
@@ -347,12 +370,17 @@
                   usd
                 />)</span>
               </td>
-              <td v-if="hasGhst">
-                <NumberDisplay
-                  v-if="ghstBalances[gotchi.id]"
-                  :number="ghstBalances[gotchi.id]"
-                />
-              </td>
+              <template v-if="hasBalances">
+                <td
+                  v-for="(token, tokenIndex) in balanceTokens"
+                  :key="token.id"
+                >
+                  <NumberDisplay
+                    v-if="balances[gotchi.id]"
+                    :number="balances[gotchi.id][tokenIndex] || 0"
+                  />
+                </td>
+              </template>
               <td v-if="hasRewards">
                 <NumberDisplay
                   v-if="rewards[gotchi.id]"
@@ -380,7 +408,7 @@
 import { ref, computed, watch } from 'vue'
 import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
-import useCollateralPrices from '@/data/useCollateralPrices'
+import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
@@ -396,7 +424,6 @@ import NumberDisplay from './NumberDisplay.vue'
 import PagingControls from './PagingControls.vue'
 import SortToggle from './SortToggle.vue'
 import collaterals from '@/data/pockets/collaterals.json'
-import tokens from '@/data/pockets/tokens.json'
 
 export default {
   components: {
@@ -419,8 +446,9 @@ export default {
       usdPrices,
       canSubmitFetch: canSubmitPricesFetch,
       fetchStatus: pricesFetchStatus,
-      fetchPrices
-    } = useCollateralPrices()
+      fetchPrices,
+      tokens
+    } = useTokenPrices()
 
     const {
       gotchis,
@@ -501,10 +529,11 @@ export default {
     const gotchisSorted = computed(() => {
       const { column, direction } = gotchisSort.value
       if (!column) { return gotchisFiltered.value }
-      if (column === 'ghst') {
-        if (!hasGhst.value) { return gotchisFiltered.value }
-        const ghstFor = ghstBalancesSortable.value
-        return orderBy(gotchisFiltered.value, [g => ghstFor[g.id] || 0], [direction])
+      if (column.startsWith('tokenBalance:')) {
+        if (!hasBalances.value) { return gotchisFiltered.value }
+        const tokenIndex = column.substring('tokenBalance:'.length)
+        const balancesByGotchi = balancesSortable.value
+        return orderBy(gotchisFiltered.value, [g => balancesByGotchi[g.id][tokenIndex] || 0], [direction])
       }
       if (column === 'rewards') {
         if (!hasRewards.value) { return gotchisFiltered.value }
@@ -622,49 +651,58 @@ export default {
       }
     })
 
-    const GHST_ID = Object.values(tokens).find(t => t.label === 'GHST')?.id
+    const hasBalances = computed(() => balancesFetchStatus.value.loaded)
 
-    const hasGhst = computed(() => balancesFetchStatus.value.loaded)
-    const balanceIndexGhst = balanceTokens.findIndex(t => t.label === 'GHST')
-    const ghstBalances = computed(() => {
-      const ghstByGotchi = {}
-      for (const gotchiId in balances.value) {
-        ghstByGotchi[gotchiId] = balances.value[gotchiId][balanceIndexGhst]
-      }
-      return ghstByGotchi
-    })
-
-    const ghstBalancesSortable = computed(() => {
-      if (!hasGhst.value) { return null }
-      const sortableGhst = {}
-      for (const key in ghstBalances.value) {
-        sortableGhst[key] = ghstBalances.value[key].toNumber()
-      }
-      return sortableGhst
-    })
-
-    const ghstTotals = computed(() => {
-      if (!hasGhst.value) {
+    const balanceTotals = computed(() => {
+      if (!hasBalances.value) {
         return null
       }
-      const total = Object.values(ghstBalances.value).reduce((total, item) => total.plus(item), new BigNumber(0))
-      const numGotchis = loadedBalancesDetails.value.numGotchis
-      const mean = total.dividedBy(numGotchis)
+      const totalByToken = Object.values(balances.value).reduce(
+        (totals, gotchiBalances) => {
+          for (let i = 0; i < gotchiBalances.length; i++) {
+            totals[i] = totals[i].plus(gotchiBalances[i])
+          }
+          return totals
+        },
+        balanceTokens.map(() => new BigNumber(0))
+      )
 
-      let usdTotal = 0
-      let meanUsd = 0
-      if (hasPrices.value) {
-        usdTotal = total.times(usdPrices.value[GHST_ID])
-        meanUsd = usdTotal.dividedBy(numGotchis)
+      const numGotchis = loadedBalancesDetails.value.numGotchis
+
+      const statsByTokenIndex = Object.fromEntries(
+        balanceTokens.map((token, tokenIndex) => {
+          const total = totalByToken[tokenIndex]
+          const mean = total.dividedBy(numGotchis)
+          let usdTotal = null
+          let meanUsd = null
+          if (hasPrices.value && usdPrices.value[token.id] !== undefined) {
+            usdTotal = total.times(usdPrices.value[token.id])
+            meanUsd = usdTotal.dividedBy(numGotchis)
+          }
+          const stats = {
+            total,
+            numGotchis,
+            mean,
+            usdTotal,
+            meanUsd,
+            lastFetchDate: ghstLastFetchDate.value
+          }
+          return [tokenIndex, stats]
+        })
+      )
+      return statsByTokenIndex
+    })
+
+    const balancesSortable = computed(() => {
+      if (!hasBalances.value) { return null }
+      const sortableByGotchi = {}
+      for (const gotchiId in balances.value) {
+        sortableByGotchi[gotchiId] = []
+        for (const balance of balances.value[gotchiId]) {
+          sortableByGotchi[gotchiId].push(balance.toNumber())
+        }
       }
-      return {
-        total,
-        numGotchis,
-        mean,
-        usdTotal,
-        meanUsd,
-        lastFetchDate: ghstLastFetchDate.value
-      }
+      return sortableByGotchi
     })
 
     const WMATIC_ID = Object.values(tokens).find(t => t.label === 'WMATIC')?.id
@@ -672,7 +710,7 @@ export default {
     const hasRewards = computed(() => rewardsFetchStatus.value.loaded)
 
     const rewardsSortable = computed(() => {
-      if (!hasGhst.value) { return null }
+      if (!hasRewards.value) { return null }
       const sortableRewards = {}
       for (var key in rewards.value) {
         sortableRewards[key] = rewards.value[key].toNumber()
@@ -705,7 +743,6 @@ export default {
     })
 
     return {
-      GHST_ID,
       WMATIC_ID,
       gotchisFetchStatus,
       dashboardDisplayMode,
@@ -713,9 +750,10 @@ export default {
       grandTotals,
       hasPrices,
       gotchisUsdValues,
-      hasGhst,
-      ghstTotals,
-      ghstBalances,
+      hasBalances,
+      balanceTokens,
+      balanceTotals,
+      balances,
       hasRewards,
       rewardTotals,
       rewards,
