@@ -98,7 +98,7 @@ fetch(initialRewardsUrl)
     for (var key in json) {
       initialRewards[key] = new BigNumber(json[key])
     }
-    setRewards(initialRewards, new Date(1646512105421))
+    setRewards(initialRewards, new Date(1646693127554))
     setLoaded()
   }).catch(error => {
     console.error(error)

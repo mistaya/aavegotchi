@@ -8,6 +8,7 @@
       <DataFetcherGotchis />
       <DataFetcherGotchiBalances />
       <DataFetcherGotchiAaveRewards/>
+      <DataFetcherVaultOwners />
       <DataFetcherPrices />
     </div>
 
@@ -267,6 +268,13 @@
                   :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
                   @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
                 />
+                <div v-if="hasVaultOwners">
+                  True Owner
+                  <SortToggle
+                    :sort="gotchisSort.column === 'trueOwner' ? gotchisSort.direction : null"
+                    @update:sort="gotchisSort.column = $event ? 'trueOwner' : null; gotchisSort.direction = $event"
+                  />
+                </div>
               </th>
               <th>
                 Collateral
@@ -342,6 +350,12 @@
                   :address="gotchi.owner"
                   icon
                 />
+                <div v-if="hasVaultOwners && vaultOwners[gotchi.id]">
+                  <EthAddress
+                    :address="(hasVaultOwners && vaultOwners[gotchi.id])"
+                    icon
+                  />
+                </div>
               </td>
               <td>
                 {{ gotchi.collateral }}
@@ -412,10 +426,12 @@ import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
+import useVaultOwners from '@/data/useVaultOwners'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
 import DataFetcherGotchiAaveRewards from './DataFetcherGotchiAaveRewards.vue'
 import DataFetcherGotchiBalances from './DataFetcherGotchiBalances.vue'
 import DataFetcherPrices from './DataFetcherPrices.vue'
+import DataFetcherVaultOwners from './DataFetcherVaultOwners.vue'
 import CryptoIcons from './CryptoIcons.vue'
 import CryptoIcon from './CryptoIcon.vue'
 import DateFriendly from './DateFriendly.vue'
@@ -431,6 +447,7 @@ export default {
     DataFetcherGotchiAaveRewards,
     DataFetcherGotchiBalances,
     DataFetcherPrices,
+    DataFetcherVaultOwners,
     CryptoIcons,
     CryptoIcon,
     DateFriendly,
@@ -469,6 +486,11 @@ export default {
       loadedRewardsDetails,
       lastFetchDate: rewardsLastFetchDate
     } = useGotchiAaveRewards()
+
+    const {
+      ownersByGotchi: vaultOwners,
+      fetchStatus: vaultOwnersFetchStatus
+    } = useVaultOwners()
 
     // Fetch collateral prices if necessary
     if (!pricesFetchStatus.value.loaded && canSubmitPricesFetch.value) {
@@ -521,7 +543,14 @@ export default {
     const gotchisFiltered = computed(() => {
       const query = gotchisQueryCleaned.value
       if (!query) { return gotchisData.value }
-      return gotchisData.value.filter(g => g.id === query || g.owner === query || g.nameLowerCase.includes(query))
+      const checkVaultOwner = hasVaultOwners.value
+      const vaultOwnerFor = vaultOwners.value
+      return gotchisData.value.filter(g =>
+        g.id === query ||
+        g.owner === query ||
+        g.nameLowerCase.includes(query) ||
+        (checkVaultOwner && vaultOwnerFor[g.id] === query)
+      )
     })
 
     const numFilteredGotchis = computed(() => gotchisFiltered.value.length)
@@ -543,6 +572,11 @@ export default {
       if (['stakedAmount', 'minimumStake', 'excessStake'].includes(column)) {
         const usdValueFor = gotchisUsdValues.value
         return orderBy(gotchisFiltered.value, [g => usdValueFor[g.id][`${column}Sortable`] || 0], [direction])
+      }
+      if (column === 'trueOwner') {
+        if (!hasVaultOwners.value) { return gotchisFiltered.value }
+        const vaultOwnerFor = vaultOwners.value
+        return orderBy(gotchisFiltered.value, [g => vaultOwnerFor[g.id] || g.owner], [direction])
       }
       return orderBy(gotchisFiltered.value, [column], [direction])
     })
@@ -742,6 +776,8 @@ export default {
       }
     })
 
+    const hasVaultOwners = computed(() => vaultOwnersFetchStatus.value.loaded)
+
     return {
       WMATIC_ID,
       gotchisFetchStatus,
@@ -757,6 +793,8 @@ export default {
       hasRewards,
       rewardTotals,
       rewards,
+      vaultOwners,
+      hasVaultOwners,
       formQuery,
       gotchisQuery,
       gotchisPaging,

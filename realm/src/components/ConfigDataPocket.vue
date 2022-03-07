@@ -5,6 +5,7 @@
     <ConfigDataGotchis />
     <ConfigDataGotchiRewards />
     <ConfigDataGotchiGhst />
+    <ConfigDataVaultOwners />
   </div>
 </template>
 
@@ -12,12 +13,14 @@
 import ConfigDataGotchis from './ConfigDataGotchis.vue'
 import ConfigDataGotchiRewards from './ConfigDataGotchiRewards.vue'
 import ConfigDataGotchiGhst from './ConfigDataGotchiGhst.vue'
+import ConfigDataVaultOwners from './ConfigDataVaultOwners.vue'
 
 export default {
   components: {
     ConfigDataGotchis,
     ConfigDataGotchiRewards,
-    ConfigDataGotchiGhst
+    ConfigDataGotchiGhst,
+    ConfigDataVaultOwners
   }
 }
 </script>
