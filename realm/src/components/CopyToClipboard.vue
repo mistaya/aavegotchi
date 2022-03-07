@@ -50,7 +50,7 @@ export default {
     display: inline-block;
   }
   .copy-to-clipboard__input {
-    width: 1px;
+    width: 10px; /* a minimum width is needed for copying to work in chrome */
     height: 1px;
     opacity: 0;
     pointer-events: none;
