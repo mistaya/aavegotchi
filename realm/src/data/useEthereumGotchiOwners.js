@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
-import initialOwnersUrl from './pockets/assetVaultOwners.json'
+import initialOwnersUrl from './pockets/assetEthereumGotchiOwners.json'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-ethereum'
 const FETCH_PAGE_SIZE = 1000
 
 const ownersByGotchi = ref({})
@@ -21,7 +21,10 @@ const setOwnersByGotchi = function (ownersByGotchiMap, fetchDate = null) {
   lastFetchDate.value = fetchDate || new Date()
 }
 
-// Alternative implementation is to get these from the contract with useVaultOwnersFromContract.js
+// Note that this produces an imperfect list:
+// - it includes gotchis that have been sacrificed
+// - it doesn't include every gotchi that is 'on ethereum' according to their owner address
+//   (perhaps stuck on bridge?)
 const fetchOwners = function () {
   clearOwnersByGotchi()
   const [isStale, setLoaded, setError] = setLoading()
@@ -43,7 +46,7 @@ const fetchOwners = function () {
     }).then(async response => {
       if (isStale()) { console.log('Stale request, ignoring'); return }
       if (!response.ok) {
-        setError('There was an error fetching vault owners')
+        setError('There was an error fetching ethereum gotchi owners')
         return
       }
       const responseJson = await response.json()
@@ -68,7 +71,7 @@ const fetchOwners = function () {
       }
     }).catch(error => {
       console.error(error)
-      setError('There was an error fetching vault owners')
+      setError('There was an error fetching ethereum gotchi owners')
     })
   }
 
@@ -85,7 +88,7 @@ fetch(initialOwnersUrl)
     setLoaded()
   }).catch(error => {
     console.error(error)
-    setError('Error loading initial vault gotchi owners')
+    setError('Error loading initial ethereum gotchi owners')
   })
 
 export default function () {

@@ -8,6 +8,7 @@
       <DataFetcherGotchis />
       <DataFetcherGotchiBalances />
       <DataFetcherGotchiAaveRewards/>
+      <DataFetcherEthereumGotchiOwners />
       <DataFetcherVaultOwners />
       <DataFetcherPrices />
     </div>
@@ -268,7 +269,7 @@
                   :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
                   @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
                 />
-                <div v-if="hasVaultOwners">
+                <div v-if="hasVaultOwners || hasEthereumGotchiOwners">
                   True Owner
                   <SortToggle
                     :sort="gotchisSort.column === 'trueOwner' ? gotchisSort.direction : null"
@@ -352,7 +353,13 @@
                 />
                 <div v-if="hasVaultOwners && vaultOwners[gotchi.id]">
                   <EthAddress
-                    :address="(hasVaultOwners && vaultOwners[gotchi.id])"
+                    :address="vaultOwners[gotchi.id]"
+                    icon
+                  />
+                </div>
+                <div v-else-if="hasEthereumGotchiOwners && ethereumGotchiOwners[gotchi.id]">
+                  <EthAddress
+                    :address="ethereumGotchiOwners[gotchi.id]"
                     icon
                   />
                 </div>
@@ -426,11 +433,13 @@ import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
+import useEthereumGotchiOwners from '@/data/useEthereumGotchiOwners'
 import useVaultOwners from '@/data/useVaultOwners'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
 import DataFetcherGotchiAaveRewards from './DataFetcherGotchiAaveRewards.vue'
 import DataFetcherGotchiBalances from './DataFetcherGotchiBalances.vue'
 import DataFetcherPrices from './DataFetcherPrices.vue'
+import DataFetcherEthereumGotchiOwners from './DataFetcherEthereumGotchiOwners.vue'
 import DataFetcherVaultOwners from './DataFetcherVaultOwners.vue'
 import CryptoIcons from './CryptoIcons.vue'
 import CryptoIcon from './CryptoIcon.vue'
@@ -447,6 +456,7 @@ export default {
     DataFetcherGotchiAaveRewards,
     DataFetcherGotchiBalances,
     DataFetcherPrices,
+    DataFetcherEthereumGotchiOwners,
     DataFetcherVaultOwners,
     CryptoIcons,
     CryptoIcon,
@@ -491,6 +501,11 @@ export default {
       ownersByGotchi: vaultOwners,
       fetchStatus: vaultOwnersFetchStatus
     } = useVaultOwners()
+
+    const {
+      ownersByGotchi: ethereumGotchiOwners,
+      fetchStatus: ethereumGotchiOwnersFetchStatus
+    } = useEthereumGotchiOwners()
 
     // Fetch collateral prices if necessary
     if (!pricesFetchStatus.value.loaded && canSubmitPricesFetch.value) {
@@ -545,11 +560,14 @@ export default {
       if (!query) { return gotchisData.value }
       const checkVaultOwner = hasVaultOwners.value
       const vaultOwnerFor = vaultOwners.value
+      const checkEthereumOwner = hasEthereumGotchiOwners.value
+      const ethereumOwnerFor = ethereumGotchiOwners.value
       return gotchisData.value.filter(g =>
         g.id === query ||
         g.owner === query ||
         g.nameLowerCase.includes(query) ||
-        (checkVaultOwner && vaultOwnerFor[g.id] === query)
+        (checkVaultOwner && vaultOwnerFor[g.id] === query) ||
+        (checkEthereumOwner && ethereumOwnerFor[g.id] === query)
       )
     })
 
@@ -574,9 +592,10 @@ export default {
         return orderBy(gotchisFiltered.value, [g => usdValueFor[g.id][`${column}Sortable`] || 0], [direction])
       }
       if (column === 'trueOwner') {
-        if (!hasVaultOwners.value) { return gotchisFiltered.value }
+        if (!hasVaultOwners.value && !hasEthereumGotchiOwners.value) { return gotchisFiltered.value }
         const vaultOwnerFor = vaultOwners.value
-        return orderBy(gotchisFiltered.value, [g => vaultOwnerFor[g.id] || g.owner], [direction])
+        const ethereumOwnerFor = ethereumGotchiOwners.value
+        return orderBy(gotchisFiltered.value, [g => vaultOwnerFor[g.id] || ethereumOwnerFor[g.id] || g.owner], [direction])
       }
       return orderBy(gotchisFiltered.value, [column], [direction])
     })
@@ -776,6 +795,7 @@ export default {
       }
     })
 
+    const hasEthereumGotchiOwners = computed(() => ethereumGotchiOwnersFetchStatus.value.loaded)
     const hasVaultOwners = computed(() => vaultOwnersFetchStatus.value.loaded)
 
     return {
@@ -793,6 +813,8 @@ export default {
       hasRewards,
       rewardTotals,
       rewards,
+      ethereumGotchiOwners,
+      hasEthereumGotchiOwners,
       vaultOwners,
       hasVaultOwners,
       formQuery,
