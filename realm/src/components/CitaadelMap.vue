@@ -555,6 +555,15 @@ export default {
   }
 </style>
 <style scoped>
+
+  /* chromium bug workaround https://bugs.chromium.org/p/chromium/issues/detail?id=352912
+     Avoids fill:black being set on visited links inside SVG (paartner parcels)
+   */
+  a:visited {
+    fill: inherit;
+    stroke: inherit;
+  }
+
   .map-svg-container {
     /* performance: if the browser decides that this needs to be made into a layer;
      e.g. due to something else overlaying it, it can cause a temporary lock-up.
