@@ -337,7 +337,7 @@
             >
               <td>
                 <a
-                  :href="`https://aavegotchi.com/gotchi/${gotchi.id}`"
+                  :href="`https://app.aavegotchi.com/gotchi/${gotchi.id}`"
                   target="_blank"
                 >
                   {{ gotchi.id }}

@@ -69,7 +69,7 @@
     </div>
     <div v-if="listing">
       <a
-        :href="`https://aavegotchi.com/baazaar/erc721/${listing.id}`"
+        :href="`https://app.aavegotchi.com/baazaar/erc721/${listing.id}`"
         target="_blank"
       >
         Currently listed on Baazaar for
@@ -78,7 +78,7 @@
     </div>
     <div v-if="lastSale">
       <a
-        :href="`https://aavegotchi.com/baazaar/erc721/${lastSale.id}`"
+        :href="`https://app.aavegotchi.com/baazaar/erc721/${lastSale.id}`"
         target="_blank"
       >
         Last sold on Baazaar

@@ -95,7 +95,7 @@
               class="parcel-baazaar-listing parcel-baazaar-listing--current"
             >
               <a
-                :href="`https://aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
+                :href="`https://app.aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
                 target="_blank"
               >
                 <span>
@@ -110,7 +110,7 @@
               class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
             >
               <a
-                :href="`https://aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
+                :href="`https://app.aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
                 target="_blank"
               >
                 <span>
