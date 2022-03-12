@@ -11,7 +11,7 @@
       <TextareaList
         class="addresses-textarea"
         :modelValue="modelValue"
-        :delimiterRegexp="/[^x0-9a-f]+/"
+        :delimiterRegexp="/[^x0-9a-fA-F]+/"
         @update:modelValue="$emit('update:modelValue', $event)"
       />
     </label>
@@ -23,9 +23,10 @@ import TextareaList from './TextareaList.vue'
 
 const getFilter = function (ownersByParcelId, idsArray) {
   if (idsArray?.length) {
+    const idsLowercase = idsArray.map(id => id.toLowerCase())
     return (parcel) => {
       const owner = ownersByParcelId[parcel.id]
-      return owner && idsArray.includes(owner)
+      return owner && idsLowercase.includes(owner)
     }
   }
   return () => true

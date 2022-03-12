@@ -11,7 +11,7 @@
       <TextareaList
         class="addresses-textarea"
         :modelValue="modelValue"
-        :delimiterRegexp="/[^x0-9a-f]+/"
+        :delimiterRegexp="/[^x0-9a-fA-F]+/"
         @update:modelValue="$emit('update:modelValue', $event)"
       />
     </label>
@@ -23,9 +23,10 @@ import TextareaList from './TextareaList.vue'
 
 const getFilter = function (parcelAuctionsByParcelId, idsArray) {
   if (idsArray?.length) {
+    const idsLowercase = idsArray.map(id => id.toLowerCase())
     return (parcel) => {
       const bidder = parcelAuctionsByParcelId[parcel.id]?.highestBidder
-      return bidder && idsArray.includes(bidder)
+      return bidder && idsLowercase.includes(bidder)
     }
   }
   return () => true
