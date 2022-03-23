@@ -31,9 +31,9 @@ export default {
   methods: {
     nextSort () {
       if (!this.sort) {
-        this.$emit('update:sort', 'asc')
-      } else if (this.sort === 'asc') {
         this.$emit('update:sort', 'desc')
+      } else if (this.sort === 'desc') {
+        this.$emit('update:sort', 'asc')
       } else {
         this.$emit('update:sort', null)
       }
