@@ -7,7 +7,6 @@
     <div>
       <DataFetcherGotchis />
       <DataFetcherGotchiBalances />
-      <DataFetcherGotchiAaveRewards/>
       <DataFetcherEthereumGotchiOwners />
       <DataFetcherVaultOwners />
       <DataFetcherPrices />
@@ -77,58 +76,6 @@
               </div>
             </div>
           </template>
-          <div
-            v-if="hasRewards"
-            class="dashboard-metric site-card"
-          >
-            <div class="dashboard-text dashboard-text--primary">
-              <div style="display: flex; align-items: center; justify-content: center;">
-                <CryptoIcon
-                  :address="WMATIC_ID"
-                  :size="40"
-                  style="margin-right: 10px"
-                />
-                <div>Unclaimed AAVE Rewards</div>
-              </div>
-            </div>
-            <div class="dashboard-number dashboard-number--primary">
-              <NumberDisplay
-                :number="rewardTotals.total"
-              />
-              WMATIC
-            </div>
-            <div
-              v-if="hasPrices"
-              class="dashboard-number dashboard-number--secondary"
-            >
-              <NumberDisplay
-                :number="rewardTotals.usdTotal"
-                usd
-              />
-            </div>
-            <div class="dashboard-text dashboard-text--secondary">
-              in <NumberDisplay :number="rewardTotals.numGotchis" /> gotchis
-              <br>
-              (average
-              <template v-if="hasPrices">
-                <NumberDisplay
-                  :number="rewardTotals.meanUsd"
-                  usd
-                />
-                /
-              </template>
-                <NumberDisplay
-                  :number="rewardTotals.mean"
-                />
-              WMATIC)
-              <br>
-              <br>
-              Rewards fetched
-              <DateFriendly :date="rewardTotals.lastFetchDate" />
-              <br>
-              <i>(Note: there is currently no way to claim these rewards)</i>
-            </div>
-          </div>
         </div>
 
         <div
@@ -320,13 +267,6 @@
                   />
                 </th>
               </template>
-              <th v-if="hasRewards">
-                Unclaimed WMATIC
-                <SortToggle
-                  :sort="gotchisSort.column === 'rewards' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'rewards' : null; gotchisSort.direction = $event"
-                />
-              </th>
               <th>Escrow Address</th>
             </tr>
           </thead>
@@ -402,12 +342,6 @@
                   />
                 </td>
               </template>
-              <td v-if="hasRewards">
-                <NumberDisplay
-                  v-if="rewards[gotchi.id]"
-                  :number="rewards[gotchi.id]"
-                />
-              </td>
               <td>
                 <EthAddress :address="gotchi.escrow" polygonscan />
               </td>
@@ -432,11 +366,9 @@ import BigNumber from 'bignumber.js'
 import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
-import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
 import useEthereumGotchiOwners from '@/data/useEthereumGotchiOwners'
 import useVaultOwners from '@/data/useVaultOwners'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
-import DataFetcherGotchiAaveRewards from './DataFetcherGotchiAaveRewards.vue'
 import DataFetcherGotchiBalances from './DataFetcherGotchiBalances.vue'
 import DataFetcherPrices from './DataFetcherPrices.vue'
 import DataFetcherEthereumGotchiOwners from './DataFetcherEthereumGotchiOwners.vue'
@@ -453,7 +385,6 @@ import collaterals from '@/data/pockets/collaterals.json'
 export default {
   components: {
     DataFetcherGotchis,
-    DataFetcherGotchiAaveRewards,
     DataFetcherGotchiBalances,
     DataFetcherPrices,
     DataFetcherEthereumGotchiOwners,
@@ -473,8 +404,7 @@ export default {
       usdPrices,
       canSubmitFetch: canSubmitPricesFetch,
       fetchStatus: pricesFetchStatus,
-      fetchPrices,
-      tokens
+      fetchPrices
     } = useTokenPrices()
 
     const {
@@ -489,13 +419,6 @@ export default {
       loadedBalancesDetails,
       lastFetchDate: ghstLastFetchDate
     } = useGotchiBalances()
-
-    const {
-      rewards,
-      fetchStatus: rewardsFetchStatus,
-      loadedRewardsDetails,
-      lastFetchDate: rewardsLastFetchDate
-    } = useGotchiAaveRewards()
 
     const {
       ownersByGotchi: vaultOwners,
@@ -581,11 +504,6 @@ export default {
         const tokenIndex = column.substring('tokenBalance:'.length)
         const balancesByGotchi = balancesSortable.value
         return orderBy(gotchisFiltered.value, [g => balancesByGotchi[g.id][tokenIndex] || 0], [direction])
-      }
-      if (column === 'rewards') {
-        if (!hasRewards.value) { return gotchisFiltered.value }
-        const rewardsFor = rewardsSortable.value
-        return orderBy(gotchisFiltered.value, [g => rewardsFor[g.id] || 0], [direction])
       }
       if (['stakedAmount', 'minimumStake', 'excessStake'].includes(column)) {
         const usdValueFor = gotchisUsdValues.value
@@ -758,48 +676,10 @@ export default {
       return sortableByGotchi
     })
 
-    const WMATIC_ID = Object.values(tokens).find(t => t.label === 'WMATIC')?.id
-
-    const hasRewards = computed(() => rewardsFetchStatus.value.loaded)
-
-    const rewardsSortable = computed(() => {
-      if (!hasRewards.value) { return null }
-      const sortableRewards = {}
-      for (var key in rewards.value) {
-        sortableRewards[key] = rewards.value[key].toNumber()
-      }
-      return sortableRewards
-    })
-
-    const rewardTotals = computed(() => {
-      if (!hasRewards.value) {
-        return null
-      }
-      const total = Object.values(rewards.value).reduce((total, item) => total.plus(item), new BigNumber(0))
-      const numGotchis = loadedRewardsDetails.value.numPolygonGotchis
-      const mean = total.dividedBy(numGotchis)
-
-      let usdTotal = 0
-      let meanUsd = 0
-      if (hasPrices.value) {
-        usdTotal = total.times(usdPrices.value[WMATIC_ID])
-        meanUsd = usdTotal.dividedBy(numGotchis)
-      }
-      return {
-        total,
-        numGotchis,
-        mean,
-        usdTotal,
-        meanUsd,
-        lastFetchDate: rewardsLastFetchDate.value
-      }
-    })
-
     const hasEthereumGotchiOwners = computed(() => ethereumGotchiOwnersFetchStatus.value.loaded)
     const hasVaultOwners = computed(() => vaultOwnersFetchStatus.value.loaded)
 
     return {
-      WMATIC_ID,
       gotchisFetchStatus,
       dashboardDisplayMode,
       collateralTotalsWithPriceOrdered,
@@ -810,9 +690,6 @@ export default {
       balanceTokens,
       balanceTotals,
       balances,
-      hasRewards,
-      rewardTotals,
-      rewards,
       ethereumGotchiOwners,
       hasEthereumGotchiOwners,
       vaultOwners,
