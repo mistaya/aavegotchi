@@ -183,178 +183,166 @@
           </label>
         </form>
       </div>
-      <PagingControls
-        v-model="gotchisPaging"
-        :numItems="numFilteredGotchis"
-        itemsLabel="gotchis"
-        class="gotchis-table-paging gotchis-table-paging--top"
-      />
-      <div class="gotchis-table-scroll-text">
-        (Scroll the table sideways to see more columns)
-      </div>
-      <div class="gotchis-table-wrapper visible-scrollbar">
-        <table class="gotchis-table">
-          <thead>
-            <tr>
-              <th>
-                Gotchi ID
+      <GotchisTable
+        v-model:page="gotchisPaging.page"
+        v-model:pageSize="gotchisPaging.pageSize"
+        :numResults="numFilteredGotchis"
+      >
+        <template #headers>
+          <tr>
+            <th>
+              Gotchi ID
+              <SortToggle
+                :sort="gotchisSort.column === 'idNum' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'idNum' : null; gotchisSort.direction = $event"
+              />
+            </th>
+            <th>
+              Name
+              <SortToggle
+                :sort="gotchisSort.column === 'name' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'name' : null; gotchisSort.direction = $event"
+              />
+            </th>
+            <th>
+              Owner
+              <SortToggle
+                :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
+              />
+              <div v-if="hasVaultOwners || hasEthereumGotchiOwners">
+                True Owner
                 <SortToggle
-                  :sort="gotchisSort.column === 'idNum' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'idNum' : null; gotchisSort.direction = $event"
+                  :sort="gotchisSort.column === 'trueOwner' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'trueOwner' : null; gotchisSort.direction = $event"
+                />
+              </div>
+            </th>
+            <th>
+              Collateral
+              <SortToggle
+                :sort="gotchisSort.column === 'collateral' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'collateral' : null; gotchisSort.direction = $event"
+              />
+            </th>
+            <th>
+              Minimum Collateral
+              <SortToggle
+                v-if="hasPrices"
+                :sort="gotchisSort.column === 'minimumStake' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'minimumStake' : null; gotchisSort.direction = $event"
+              />
+            </th>
+            <th>
+              Staked Collateral
+              <SortToggle
+                v-if="hasPrices"
+                :sort="gotchisSort.column === 'stakedAmount' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'stakedAmount' : null; gotchisSort.direction = $event"
+              />
+            </th>
+            <th>
+              Excess Collateral
+              <SortToggle
+                v-if="hasPrices"
+                :sort="gotchisSort.column === 'excessStake' ? gotchisSort.direction : null"
+                @update:sort="gotchisSort.column = $event ? 'excessStake' : null; gotchisSort.direction = $event"
+              />
+            </th>
+            <template v-if="hasBalances">
+              <th
+                v-for="(token, tokenIndex) in balanceTokens"
+                :key="token.id"
+              >
+                {{ token.label }}
+                <SortToggle
+                  :sort="gotchisSort.column === `tokenBalance:${tokenIndex}` ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? `tokenBalance:${tokenIndex}` : null; gotchisSort.direction = $event"
                 />
               </th>
-              <th>
-                Name
-                <SortToggle
-                  :sort="gotchisSort.column === 'name' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'name' : null; gotchisSort.direction = $event"
-                />
-              </th>
-              <th>
-                Owner
-                <SortToggle
-                  :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
-                />
-                <div v-if="hasVaultOwners || hasEthereumGotchiOwners">
-                  True Owner
-                  <SortToggle
-                    :sort="gotchisSort.column === 'trueOwner' ? gotchisSort.direction : null"
-                    @update:sort="gotchisSort.column = $event ? 'trueOwner' : null; gotchisSort.direction = $event"
-                  />
-                </div>
-              </th>
-              <th>
-                Collateral
-                <SortToggle
-                  :sort="gotchisSort.column === 'collateral' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'collateral' : null; gotchisSort.direction = $event"
-                />
-              </th>
-              <th>
-                Minimum Collateral
-                <SortToggle
-                  v-if="hasPrices"
-                  :sort="gotchisSort.column === 'minimumStake' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'minimumStake' : null; gotchisSort.direction = $event"
-                />
-              </th>
-              <th>
-                Staked Collateral
-                <SortToggle
-                  v-if="hasPrices"
-                  :sort="gotchisSort.column === 'stakedAmount' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'stakedAmount' : null; gotchisSort.direction = $event"
-                />
-              </th>
-              <th>
-                Excess Collateral
-                <SortToggle
-                  v-if="hasPrices"
-                  :sort="gotchisSort.column === 'excessStake' ? gotchisSort.direction : null"
-                  @update:sort="gotchisSort.column = $event ? 'excessStake' : null; gotchisSort.direction = $event"
-                />
-              </th>
-              <template v-if="hasBalances">
-                <th
-                  v-for="(token, tokenIndex) in balanceTokens"
-                  :key="token.id"
-                >
-                  {{ token.label }}
-                  <SortToggle
-                    :sort="gotchisSort.column === `tokenBalance:${tokenIndex}` ? gotchisSort.direction : null"
-                    @update:sort="gotchisSort.column = $event ? `tokenBalance:${tokenIndex}` : null; gotchisSort.direction = $event"
-                  />
-                </th>
-              </template>
-              <th>Escrow Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="gotchi in gotchisToDisplay"
-              :key="gotchi.id"
-            >
-              <td>
-                <a
-                  :href="`https://app.aavegotchi.com/gotchi/${gotchi.id}`"
-                  target="_blank"
-                >
-                  {{ gotchi.id }}
-                </a>
-              </td>
-              <td>
-                {{ gotchi.name }}
-              </td>
-              <td>
+            </template>
+            <th>Escrow Address</th>
+          </tr>
+        </template>
+
+        <template #rows>
+          <tr
+            v-for="gotchi in gotchisToDisplay"
+            :key="gotchi.id"
+          >
+            <td>
+              <a
+                :href="`https://app.aavegotchi.com/gotchi/${gotchi.id}`"
+                target="_blank"
+              >
+                {{ gotchi.id }}
+              </a>
+            </td>
+            <td>
+              {{ gotchi.name }}
+            </td>
+            <td>
+              <EthAddress
+                :address="gotchi.owner"
+                icon
+              />
+              <div v-if="hasVaultOwners && vaultOwners[gotchi.id]">
                 <EthAddress
-                  :address="gotchi.owner"
+                  :address="vaultOwners[gotchi.id]"
                   icon
                 />
-                <div v-if="hasVaultOwners && vaultOwners[gotchi.id]">
-                  <EthAddress
-                    :address="vaultOwners[gotchi.id]"
-                    icon
-                  />
-                </div>
-                <div v-else-if="hasEthereumGotchiOwners && ethereumGotchiOwners[gotchi.id]">
-                  <EthAddress
-                    :address="ethereumGotchiOwners[gotchi.id]"
-                    icon
-                  />
-                </div>
+              </div>
+              <div v-else-if="hasEthereumGotchiOwners && ethereumGotchiOwners[gotchi.id]">
+                <EthAddress
+                  :address="ethereumGotchiOwners[gotchi.id]"
+                  icon
+                />
+              </div>
+            </td>
+            <td>
+              {{ gotchi.collateral }}
+            </td>
+            <td>
+              <NumberDisplay :number="gotchi.minimumStake" />
+              <span class="usd-value">(<NumberDisplay
+                v-if="hasPrices"
+                :number="gotchisUsdValues[gotchi.id].minimumStake"
+                usd
+              />)</span>
+            </td>
+            <td>
+              <NumberDisplay :number="gotchi.stakedAmount" />
+              <span class="usd-value">(<NumberDisplay
+                v-if="hasPrices"
+                :number="gotchisUsdValues[gotchi.id].stakedAmount"
+                usd
+              />)</span>
+            </td>
+            <td>
+              <NumberDisplay :number="gotchi.excessStake" />
+              <span class="usd-value">(<NumberDisplay
+                v-if="hasPrices"
+                :number="gotchisUsdValues[gotchi.id].excessStake"
+                usd
+              />)</span>
+            </td>
+            <template v-if="hasBalances">
+              <td
+                v-for="(token, tokenIndex) in balanceTokens"
+                :key="token.id"
+              >
+                <NumberDisplay
+                  v-if="balances[gotchi.id]"
+                  :number="balances[gotchi.id][tokenIndex] || 0"
+                />
               </td>
-              <td>
-                {{ gotchi.collateral }}
-              </td>
-              <td>
-                <NumberDisplay :number="gotchi.minimumStake" />
-                <span class="usd-value">(<NumberDisplay
-                  v-if="hasPrices"
-                  :number="gotchisUsdValues[gotchi.id].minimumStake"
-                  usd
-                />)</span>
-              </td>
-              <td>
-                <NumberDisplay :number="gotchi.stakedAmount" />
-                <span class="usd-value">(<NumberDisplay
-                  v-if="hasPrices"
-                  :number="gotchisUsdValues[gotchi.id].stakedAmount"
-                  usd
-                />)</span>
-              </td>
-              <td>
-                <NumberDisplay :number="gotchi.excessStake" />
-                <span class="usd-value">(<NumberDisplay
-                  v-if="hasPrices"
-                  :number="gotchisUsdValues[gotchi.id].excessStake"
-                  usd
-                />)</span>
-              </td>
-              <template v-if="hasBalances">
-                <td
-                  v-for="(token, tokenIndex) in balanceTokens"
-                  :key="token.id"
-                >
-                  <NumberDisplay
-                    v-if="balances[gotchi.id]"
-                    :number="balances[gotchi.id][tokenIndex] || 0"
-                  />
-                </td>
-              </template>
-              <td>
-                <EthAddress :address="gotchi.escrow" polygonscan />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <PagingControls
-        v-model="gotchisPaging"
-        :numItems="numFilteredGotchis"
-        itemsLabel="gotchis"
-        class="gotchis-table-paging gotchis-table-paging--bottom"
-      />
+            </template>
+            <td>
+              <EthAddress :address="gotchi.escrow" polygonscan />
+            </td>
+          </tr>
+        </template>
+      </GotchisTable>
     </template>
   </div>
 </template>
@@ -377,8 +365,8 @@ import CryptoIcons from './CryptoIcons.vue'
 import CryptoIcon from './CryptoIcon.vue'
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
+import GotchisTable from './GotchisTable.vue'
 import NumberDisplay from './NumberDisplay.vue'
-import PagingControls from './PagingControls.vue'
 import SortToggle from './SortToggle.vue'
 import collaterals from '@/data/pockets/collaterals.json'
 
@@ -394,7 +382,7 @@ export default {
     DateFriendly,
     EthAddress,
     NumberDisplay,
-    PagingControls,
+    GotchisTable,
     SortToggle
   },
   setup () {
@@ -473,7 +461,8 @@ export default {
       () => ({
         query: gotchisQueryCleaned.value,
         sortColumn: gotchisSort.value.column,
-        sortDirection: gotchisSort.value.direction
+        sortDirection: gotchisSort.value.direction,
+        pageSize: gotchisPaging.value.pageSize
       }),
       () => { gotchisPaging.value.page = 0 }
     )
@@ -705,41 +694,6 @@ export default {
 }
 </script>
 
-<style>
-  /* global styles */
-  /* so we can refer to device css class from parent */
-
-  /* Handle table scrolling:
-
-     With a wide enough screen that the columns fit,
-     let the table flow normally in the layout, with
-     sticky headers.
-
-     1100px width: this magic number needs adjusting for changes
-
-     When the screen is narrower, allow horizontal scrolling.
-
-     Touchscreens are nicest to use with horizontal but no vertical
-     overflow, to avoid scroll-in-scroll. Unfortunately this also
-     breaks the sticky headers because no height is defined.
-
-     On desktops, can only horizontally scroll using the scrollbar,
-     so it's a pain when the bottom of the table is out of view.
-     So if no-touch and horizontal scrolling is necessary (narrow),
-     also limit the vertical height so the whole scrollable table
-     can fit on the viewport at once. (This also reenables the
-     sticky headers, as a height is defined.)
-   */
-  @media (max-width: 1100px) {
-    .gotchis-table-wrapper {
-      position: relative;
-      overflow: auto;
-    }
-    .device--no-touch .gotchis-table-wrapper {
-      max-height: 90vh;
-    }
-  }
-</style>
 <style scoped>
   .dashboard-controls__modes {
     margin: 10px 0 0 10px;
@@ -796,53 +750,8 @@ export default {
     margin: 50px 0 30px;
     text-align: center;
   }
-  .gotchis-table-wrapper {
-    margin: 0;
-    max-width: 100%;
-  }
 
-  /* display help text for narrow screens */
-  .gotchis-table-scroll-text {
-    display: none;
-    margin-bottom: 10px;
-    font-size: 0.9em;
-    font-style: italic;
-    text-align: right;
-  }
-  @media (max-width: 950px) {
-    .gotchis-table-scroll-text {
-      display: block;
-    }
-  }
-
-  .gotchis-table {
-    margin: 0 auto;
-  }
-  .gotchis-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background-color: var(--site-background-color--transparent);
-    color: var(--site-text-color--subtle);
-  }
-  .gotchis-table td,
-  .gotchis-table th {
-    text-align: left;
-    padding: 5px;
-  }
-  .gotchis-table tr:nth-child(even) td {
-    background: var(--site-background-color--alternate);
-  }
-
-  .gotchis-table-paging {
-    margin: 20px auto;
-    justify-content: center;
-  }
-  .gotchis-table-paging--bottom {
-    margin-bottom: 70px;
-  }
-
-  .gotchis-table .usd-value {
+  .usd-value {
     display: block;
     font-size: 0.9em;
   }

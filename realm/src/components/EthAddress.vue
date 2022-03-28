@@ -42,11 +42,15 @@ export default {
   props: {
     address: { type: String, required: true },
     polygonscan: { type: Boolean, default: false },
-    icon: { type: Boolean, default: false }
+    icon: { type: Boolean, default: false },
+    shortest: { type: Boolean, default: false }
   },
   computed: {
     shortAddress () {
-      return `${this.address.substring(0, 5)}...${this.address.substring(this.address.length - 5)}`
+      if (this.shortest) {
+        return this.address.substring(0, 5)
+      }
+      return `${this.address.substring(0, 5)}...${this.address.substring(this.address.length - 4)}`
     }
   }
 }

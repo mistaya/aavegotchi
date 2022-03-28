@@ -14,6 +14,8 @@ const ConfigDataPocket = () => import(/* webpackChunkName: "config-pocket" */ '@
 const ConfigDataWearableSets = () => import(/* webpackChunkName: "config-wearable-sets" */ '@/components/ConfigDataWearableSetsPage.vue')
 const PocketsPage = () => import(/* webpackChunkName: "pocketses" */ '@/components/PocketsPage.vue')
 const WearableSetsPage = () => import(/* webpackChunkName: "wearable-sets" */ '@/components/WearableSetsPage.vue')
+const RarityFarmingsPage = () => import(/* webpackChunkName: "rf" */ '@/components/RarityFarmingsPage.vue')
+const RarityFarmingPage = () => import(/* webpackChunkName: "rf" */ '@/components/RarityFarmingPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
 
 const { headData } = useSiteHead()
@@ -86,6 +88,25 @@ const routes = [
       name: 'wearable-sets',
       params: { mode: 'gotchi' }
     }
+  },
+  {
+    path: '/rf',
+    name: 'rf-index',
+    component: RarityFarmingsPage,
+    children: [
+      {
+        path: ':season/:round',
+        name: 'rf',
+        component: RarityFarmingPage,
+        props: true,
+        meta: {
+          head: {
+            title: 'Rarity Farming',
+            description: 'See historical rarity farming leaderboard results'
+          }
+        }
+      }
+    ]
   },
   {
     path: '/playground',

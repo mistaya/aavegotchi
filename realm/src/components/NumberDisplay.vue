@@ -14,15 +14,20 @@ const getUsdFormatter = function () {
 }
 const usdFormatter = getUsdFormatter()
 const amountFormatter = new Intl.NumberFormat(navigator.language)
+const maxDecimalsFormatter = new Intl.NumberFormat(navigator.language, {
+  maximumFractionDigits: 18
+})
 
 export default {
   props: {
     number: { type: [Number, Object], required: true },
-    usd: { type: Boolean, default: false }
+    usd: { type: Boolean, default: false },
+    maxDecimals: { type: Boolean, default: false }
   },
   computed: {
     formatter () {
       if (this.usd) { return usdFormatter }
+      if (this.maxDecimals) { return maxDecimalsFormatter }
       return amountFormatter
     },
     formattedNumber () {
