@@ -139,7 +139,7 @@
             <!-- TODO temp for debugging BRS/Set issues -->
             <td
               :class="{
-                'brs--low': (row.gotchi.withSetsRarityScoreRF - 0) < (row.gotchi.withSetsRarityScoreBest - 0)
+                'brs--different': (row.gotchi.withSetsRarityScoreRF - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
               }"
             >
               {{ row.gotchi.withSetsRarityScoreRF }}
@@ -153,7 +153,7 @@
             </td>
             <td
               :class="{
-                'brs--low': (row.gotchi.withSetsRarityScore - 0) < (row.gotchi.withSetsRarityScoreBest - 0)
+                'brs--different': (row.gotchi.withSetsRarityScore - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
               }"
             >
               {{ row.gotchi.withSetsRarityScore }}
@@ -297,6 +297,9 @@ export default {
         if (gotchi.withSetsRarityScoreBest > lastScore) {
           console.error(`Gotchi at rank ${ranking} out of order (${gotchi.withSetsRarityScoreBest} is more than ${lastScore}). ${gotchi.equippedSetNameBest}`, gotchi)
         }
+        if (gotchi.withSetsRarityScoreRF > gotchi.withSetsRarityScoreBest) {
+          console.warn(`Gotchi at rank ${ranking} has HIGHER RF BRS than expected`, gotchi)
+        }
         // log the score used by ranking as the 'last score'
         lastScore = gotchi.withSetsRarityScoreRF
       }
@@ -359,13 +362,13 @@ export default {
   }
 
   /* TODO temp debugging */
-  .brs--low {
+  .brs--different {
     background: #fcc !important;
   }
   .set--different {
     background: #fda !important;
   }
-  .brs--low ~ .brs--best {
+  .brs--different ~ .brs--best {
     background: #dfd !important;
   }
   .set--different ~ .set--best {

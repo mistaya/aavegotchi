@@ -10,9 +10,9 @@
       between the top <NumberDisplay :number="seasonInfo.numWinners" /> gotchis in each leaderboard
       (<template
         v-for="(leaderboard, index) in seasonInfo.leaderboards"
-        :key="leaderboard.type"
+        :key="leaderboard.id"
       >
-        {{ leaderboard.type }}: {{ leaderboard.percent }}%<template v-if="index !== seasonInfo.leaderboards.length - 1">, </template>
+        {{ leaderboard.label }}: {{ leaderboard.percent }}%<template v-if="index !== seasonInfo.leaderboards.length - 1">, </template>
       </template>)
     </p>
   </div>
