@@ -1,8 +1,8 @@
 const axios = require('axios')
-const { writeJsonFile, readJsonFile } = require('./fileUtils.js')
+const { writeJsonFile, readJsonFile } = require('../fileUtils.js')
 const BigNumber = require('bignumber.js')
-const calculateWithSets = require('./calculateWithSets.js')
-// const diamond = require('./diamond.js')
+const setHelpers = require('./sets/setHelpers.js')
+// const diamond = require('./diamond/diamond.js')
 
 // Snapshot blocks
 const RF_BLOCKS = {
@@ -20,11 +20,11 @@ const RF_BLOCKS = {
 
 // Params for this run
 // - round
-const BLOCKS = RF_BLOCKS.szn3.rnd1
-const ROUND_WINNERS_FILE = '../public/data/rf/szn3/rnd1.json'
-const GOTCHIS_FILENAME = 'rnd1Gotchis'
+const BLOCKS = RF_BLOCKS.szn3.rnd2
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd2.json'
+const GOTCHIS_FILENAME = 'rnd2Gotchis'
 // - season
-const SEASON_REWARDS_FILE = '../public/data/rf/szn3/rewards.json'
+const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
 const NUM_ROUNDS = 4
 // const GOTCHI_IMAGES_FOLDER = './svgs'
 
@@ -282,21 +282,19 @@ const fetchVaultGotchiOwners = function (gotchiIds) {
 
 const manuallyCalculateBRS = async function () {
   const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
-  await calculateWithSets.init()
+  await setHelpers.init()
   // The withSetsRarityScore from the graph seems to be buggy
   // Manually recalculate this: this introduces risk of getting a different result from the official one.
   for (const gotchi of gotchis) {
-    // gotchi.withSetsNumericTraitsOriginal = gotchi.withSetsNumericTraits
-    // gotchi.withSetsRarityScoreOriginal = gotchi.withSetsRarityScore
-    // gotchi.equippedSetNameOriginal = gotchi.equippedSetName
-    // Testing: for comparison, calculate sets and BRS both ways
-    const resultBest = calculateWithSets.calculate(gotchi)
+    // The subgraph's sets are unreliable (withSetsNumericTraits, withSetsRarityScore, equippedSetID, equippedSetName)
+    // Calculate sets and BRS manually
+    const resultBest = setHelpers.calculateBest(gotchi)
     gotchi.withSetsNumericTraitsBest = resultBest.numericTraits
-    gotchi.withSetsRarityScoreBest = `${resultBest.rarityScore}`
+    gotchi.withSetsRarityScoreBest = resultBest.rarityScore
     gotchi.equippedSetNameBest = resultBest.wearableSetName
-    const resultRF = calculateWithSets.calculate(gotchi, true)
+    const resultRF = setHelpers.calculateRF(gotchi)
     gotchi.withSetsNumericTraitsRF = resultRF.numericTraits
-    gotchi.withSetsRarityScoreRF = `${resultRF.rarityScore}`
+    gotchi.withSetsRarityScoreRF = resultRF.rarityScore
     gotchi.equippedSetNameRF = resultRF.wearableSetName
   }
   await writeJsonFile(`${GOTCHIS_FILENAME}_fixed.json`, gotchis)
