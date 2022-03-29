@@ -14,7 +14,7 @@ const multicallProvider = useMulticallProvider()
 const balanceTokens = []
 const balanceContracts = []
 
-for (const tokenLabel of ['GHST', 'vGHST']) {
+for (const tokenLabel of ['GHST', 'vGHST', 'FUD', 'FOMO', 'ALPHA', 'KEK']) {
   const token = Object.values(tokens).find(({ label }) => label === tokenLabel)
   if (token) {
     balanceTokens.push(token)

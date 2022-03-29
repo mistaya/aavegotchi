@@ -71,7 +71,7 @@ export default {
      can fit on the viewport at once. (This also reenables the
      sticky headers, as a height is defined.)
    */
-  @media (max-width: 1100px) {
+  @media (max-width: 1300px) {
     .gotchis-table-wrapper {
       position: relative;
       overflow: auto;
