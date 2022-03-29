@@ -203,7 +203,7 @@
               {{ row.gotchi.experience }}
             </td>
             <td>
-              {{ row.gotchi.equippedSetName }}
+              {{ row.gotchi.equippedSetNameRF }}
             </td>
             <td>
               <NumberDisplay
