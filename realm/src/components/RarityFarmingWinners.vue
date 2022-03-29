@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="rf-winners">
     <div v-if="fetchStatus.loading">
       Loading...
     </div>
@@ -39,6 +39,18 @@
             </SiteButton>
           </label>
         </form>
+        <div
+          v-if="currentLeaderboardId === 'rarity'"
+          style="margin-top: 20px;"
+        >
+          <label>
+            <input
+              v-model="debug"
+              type="checkbox"
+            />
+            Display alternate Rarity Scores for debugging
+          </label>
+        </div>
       </div>
 
       <GotchisTable
@@ -52,28 +64,30 @@
           <th>Name</th>
           <!-- TODO add gotchi image -->
 
-          <!-- TODO temp for debugging Rarity/Set issues -->
-          <th>
-            Rarity (RF Ranking)
-          </th>
-          <th>
-            Set (RF Ranking)
-          </th>
-          <th>
-            Rarity (Graph)
-          </th>
-          <th>
-            Set (Graph)
-          </th>
-          <th>
-            Rarity (Best)
-          </th>
-          <th>
-            Set (Best)
-          </th>
-          <th>
-            Collateral, Traits, Equipment
-          </th>
+          <!-- for debugging Rarity/Set issues -->
+          <template v-if="showDebugTable">
+            <th>
+              Rarity (RF Ranking)
+            </th>
+            <th>
+              Set (RF Ranking)
+            </th>
+            <th>
+              Rarity (Graph)
+            </th>
+            <th>
+              Set (Graph)
+            </th>
+            <th>
+              Rarity (Best)
+            </th>
+            <th>
+              Set (Best)
+            </th>
+            <th>
+              Collateral, Traits, Equipment
+            </th>
+          </template>
 
           <th
             v-for="board in seasonInfo.leaderboards"
@@ -96,7 +110,7 @@
             </span>
           </th>
           <th>
-            Set
+            Wearable Set
           </th>
           <th>Reward (GHST)</th>
           <th>Owner</th>
@@ -136,49 +150,51 @@
               {{ row.gotchi.name }}
             </td>
 
-            <!-- TODO temp for debugging Rarity/Set issues -->
-            <td
-              :class="{
-                'rarity--different': (row.gotchi.withSetsRarityScoreRF - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
-              }"
-            >
-              {{ row.gotchi.withSetsRarityScoreRF }}
-            </td>
-            <td
-              :class="{
-                'set--different': (row.gotchi.equippedSetNameRF?.trim() || '') !== (row.gotchi.equippedSetNameBest || '')
-              }"
-            >
-              {{ row.gotchi.equippedSetNameRF }}
-            </td>
-            <td
-              :class="{
-                'rarity--different': (row.gotchi.withSetsRarityScore - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
-              }"
-            >
-              {{ row.gotchi.withSetsRarityScore }}
-            </td>
-            <td
-              :class="{
-                'set--different': (row.gotchi.equippedSetName?.trim() || '') !== (row.gotchi.equippedSetNameBest || '')
-              }"
-            >
-              {{ row.gotchi.equippedSetName }}
-            </td>
-            <td class="rarity--best">
-              {{ row.gotchi.withSetsRarityScoreBest }}
-            </td>
-            <td class="set--best">
-              {{ row.gotchi.equippedSetNameBest }}
-            </td>
-            <td>
-              {{ row.gotchi.collateral }}
-              {{ row.gotchi.numericTraits }}
-              {{ row.gotchi.equippedWearables }}
-            </td>
+            <!-- For debugging Rarity/Set issues -->
+            <template v-if="showDebugTable">
+              <td
+                :class="{
+                  'rarity--different': (row.gotchi.withSetsRarityScoreRF - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
+                }"
+              >
+                {{ row.gotchi.withSetsRarityScoreRF }}
+              </td>
+              <td
+                :class="{
+                  'set--different': (row.gotchi.equippedSetNameRF?.trim() || '') !== (row.gotchi.equippedSetNameBest || '')
+                }"
+              >
+                {{ row.gotchi.equippedSetNameRF }}
+              </td>
+              <td
+                :class="{
+                  'rarity--different': (row.gotchi.withSetsRarityScore - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
+                }"
+              >
+                {{ row.gotchi.withSetsRarityScore }}
+              </td>
+              <td
+                :class="{
+                  'set--different': (row.gotchi.equippedSetName?.trim() || '') !== (row.gotchi.equippedSetNameBest || '')
+                }"
+              >
+                {{ row.gotchi.equippedSetName }}
+              </td>
+              <td class="rarity--best">
+                {{ row.gotchi.withSetsRarityScoreBest }}
+              </td>
+              <td class="set--best">
+                {{ row.gotchi.equippedSetNameBest }}
+              </td>
+              <td>
+                {{ row.gotchi.collateral }}
+                {{ row.gotchi.numericTraits }}
+                {{ row.gotchi.equippedWearables }}
+              </td>
+            </template>
 
             <td>
-              {{ row.gotchi.withSetsRarityScore }}
+              {{ row.gotchi.withSetsRarityScoreRF }}
             </td>
             <td>
               {{ row.gotchi.kinship }}
@@ -246,6 +262,8 @@ export default {
     round: { type: String, required: true }
   },
   setup (props) {
+    const debug = ref(true)
+
     const { seasonInfo, roundInfo, fetchStatus, winners } = useRarityFarming(props.season, props.round)
 
     const numUniqueWinners = computed(() => winners.value.length)
@@ -333,7 +351,11 @@ export default {
 
     const numFilteredGotchis = computed(() => winnersFiltered.value.length)
 
+    const showDebugTable = computed(() => debug.value && currentLeaderboardId.value === 'rarity')
+
     return {
+      debug,
+      showDebugTable,
       seasonInfo,
       roundInfo,
       fetchStatus,
@@ -361,7 +383,7 @@ export default {
     text-align: center;
   }
 
-  /* TODO temp debugging */
+  /* debugging */
   .rarity--different {
     background: #fcc !important;
   }
@@ -373,5 +395,14 @@ export default {
   }
   .set--different ~ .set--best {
     background: #dfd !important;
+  }
+</style>
+<style>
+  /* Global styles to use dark mode marker */
+  .site-dark-mode .rf-winners .set--different,
+  .site-dark-mode .rf-winners .rarity--different,
+  .site-dark-mode .rf-winners .set--different ~ .set--best,
+  .site-dark-mode .rf-winners .rarity--different ~ .rarity--best {
+    color: black;
   }
 </style>
