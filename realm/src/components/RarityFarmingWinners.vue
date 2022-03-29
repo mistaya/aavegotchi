@@ -52,21 +52,21 @@
           <th>Name</th>
           <!-- TODO add gotchi image -->
 
-          <!-- TODO temp for debugging BRS/Set issues -->
+          <!-- TODO temp for debugging Rarity/Set issues -->
           <th>
-            BRS (RF Ranking)
+            Rarity (RF Ranking)
           </th>
           <th>
             Set (RF Ranking)
           </th>
           <th>
-            BRS (Graph)
+            Rarity (Graph)
           </th>
           <th>
             Set (Graph)
           </th>
           <th>
-            BRS (Best)
+            Rarity (Best)
           </th>
           <th>
             Set (Best)
@@ -136,10 +136,10 @@
               {{ row.gotchi.name }}
             </td>
 
-            <!-- TODO temp for debugging BRS/Set issues -->
+            <!-- TODO temp for debugging Rarity/Set issues -->
             <td
               :class="{
-                'brs--different': (row.gotchi.withSetsRarityScoreRF - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
+                'rarity--different': (row.gotchi.withSetsRarityScoreRF - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
               }"
             >
               {{ row.gotchi.withSetsRarityScoreRF }}
@@ -153,7 +153,7 @@
             </td>
             <td
               :class="{
-                'brs--different': (row.gotchi.withSetsRarityScore - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
+                'rarity--different': (row.gotchi.withSetsRarityScore - 0) !== (row.gotchi.withSetsRarityScoreBest - 0)
               }"
             >
               {{ row.gotchi.withSetsRarityScore }}
@@ -165,7 +165,7 @@
             >
               {{ row.gotchi.equippedSetName }}
             </td>
-            <td class="brs--best">
+            <td class="rarity--best">
               {{ row.gotchi.withSetsRarityScoreBest }}
             </td>
             <td class="set--best">
@@ -298,7 +298,7 @@ export default {
           console.error(`Gotchi at rank ${ranking} out of order (${gotchi.withSetsRarityScoreBest} is more than ${lastScore}). ${gotchi.equippedSetNameBest}`, gotchi)
         }
         if (gotchi.withSetsRarityScoreRF > gotchi.withSetsRarityScoreBest) {
-          console.warn(`Gotchi at rank ${ranking} has HIGHER RF BRS than expected`, gotchi)
+          console.warn(`Gotchi at rank ${ranking} has HIGHER RF Rarity than expected`, gotchi)
         }
         // log the score used by ranking as the 'last score'
         lastScore = gotchi.withSetsRarityScoreRF
@@ -362,13 +362,13 @@ export default {
   }
 
   /* TODO temp debugging */
-  .brs--different {
+  .rarity--different {
     background: #fcc !important;
   }
   .set--different {
     background: #fda !important;
   }
-  .brs--different ~ .brs--best {
+  .rarity--different ~ .rarity--best {
     background: #dfd !important;
   }
   .set--different ~ .set--best {

@@ -13,7 +13,7 @@ const SEASONS = {
     leaderboards: [
       {
         id: 'rarity',
-        label: 'Rarity (BRS)',
+        label: 'Rarity',
         percent: 70,
         tiebreaker: 'kinship'
       },
