@@ -15,8 +15,9 @@ const usdPrices = ref({})
 
 const tokens = Object.values(moreTokens).filter(token => token.polygon).concat(Object.values(collaterals))
 // coingecko is unreliable for the maToken prices: instead, get those directly from quickswap through covalent's API
+// Also fetch alchemica prices from quickswap
 const tokensForCoingecko = tokens.filter(t => t.polygon && t.coingeckoId)
-const tokensForCovalent = tokens.filter(t => !t.polygon)
+const tokensForCovalent = tokens.filter(t => !t.polygon || t.alchemica)
 const tokenIdsForCoingeckoUrl = tokensForCoingecko.map(c => encodeURIComponent(c.coingeckoId)).join(',')
 const API_URL_COINGECKO = 'https://api.coingecko.com/api/v3/simple/price'
 const tokenIdsForCovalentUrl = tokensForCovalent.map(c => encodeURIComponent(c.id)).join(',')
