@@ -51,6 +51,16 @@
             />
           </label>
         </div>
+        <div style="margin-bottom: 10px">
+          <label>
+            Duration &ge;
+            <input
+              v-model.lazy="hours"
+              type="text"
+            />
+            hours
+          </label>
+        </div>
       </div>
 
       <template v-if="status.loading">
@@ -191,6 +201,7 @@ export default {
     const ownerSplit = ref('')
     const borrowerSplit = ref('')
     const otherSplit = ref('')
+    const hours = ref('')
 
     const fetchLendings = function () {
       const [isStale, setLoaded, setError] = setLoading()
@@ -202,8 +213,10 @@ export default {
       const borrowerSplitQuery = !Number.isNaN(borrowerSplitNum) && borrowerSplitNum > 0 ? `, splitBorrower_gte: "${borrowerSplitNum}"` : ''
       const otherSplitNum = otherSplit.value - 0
       const otherSplitQuery = !Number.isNaN(otherSplitNum) && otherSplitNum > 0 ? `, splitOther_gte: "${otherSplitNum}"` : ''
+      const hoursNum = hours.value - 0
+      const periodQuery = !Number.isNaN(hoursNum) && hoursNum > 0 ? `, period_gte: "${hoursNum * 60 * 60}"` : ''
       const query = `
-      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery}}) {
+      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery} ${periodQuery} }) {
         id
         rentDuration
         upfrontCost
@@ -252,13 +265,13 @@ export default {
     fetchLendings()
 
     watch(
-      () => [fetchPageSize.value, withWhitelist.value, onlyZeroUpfront.value, ownerSplit.value, borrowerSplit.value, otherSplit.value],
+      () => [fetchPageSize.value, withWhitelist.value, onlyZeroUpfront.value, ownerSplit.value, borrowerSplit.value, otherSplit.value, hours.value],
       fetchLendings
     )
 
     const friendlyDuration = function (periodString) {
       const hours = (periodString - 0) / (60 * 60)
-      return `${hours} hrs`
+      return `${hours} hr${hours !== 1 ? 's' : ''}`
     }
 
     const friendlyGhst = function (upfrontCost) {
@@ -273,6 +286,7 @@ export default {
       ownerSplit,
       borrowerSplit,
       otherSplit,
+      hours,
       status,
       fetchLendings,
       results,
