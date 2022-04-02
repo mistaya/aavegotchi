@@ -2,6 +2,57 @@
   <div>
     <h1>Gotchi lending activity</h1>
     <div>
+      <div style="margin-bottom: 30px;">
+        <div style="margin-bottom: 10px">
+          <label>
+            <input
+              v-model="withWhitelist"
+              type="checkbox"
+            />
+            whitelisted (private) lendings only
+          </label>
+        </div>
+        <div style="margin-bottom: 10px">
+          <label>
+            <input
+              v-model="onlyZeroUpfront"
+              type="checkbox"
+            />
+            0 GHST upfront only
+          </label>
+        </div>
+        <div style="margin-bottom: 10px">
+          <label>
+            Owner % &ge;
+            <input
+              v-model.lazy="ownerSplit"
+              type="text"
+            />
+          </label>
+          <span style="font-size: 0.9em">
+            (press Enter or click outside field to search)
+          </span>
+        </div>
+        <div style="margin-bottom: 10px">
+          <label>
+            Borrower % &ge;
+            <input
+              v-model.lazy="borrowerSplit"
+              type="text"
+            />
+          </label>
+        </div>
+        <div style="margin-bottom: 10px">
+          <label>
+            Other % &ge;
+            <input
+              v-model.lazy="otherSplit"
+              type="text"
+            />
+          </label>
+        </div>
+      </div>
+
       <template v-if="status.loading">
         Fetching, please wait...
       </template>
@@ -23,25 +74,8 @@
               {{ fetchPageSize === 100 ? 1000 : 100 }}
             </button>
           </div>
-          <div style="margin-bottom: 10px">
-            <label>
-              <input
-                v-model="withWhitelist"
-                type="checkbox"
-              />
-              whitelisted (private) lendings only
-            </label>
-          </div>
-          <div style="margin-bottom: 10px">
-            <label>
-              <input
-                v-model="onlyZeroUpfront"
-                type="checkbox"
-              />
-              0 GHST upfront only
-            </label>
-          </div>
-          <div style="margin-top: 20px; margin-bottom: 20px;">
+
+          <div style="margin-top: 30px; margin-bottom: 20px;">
             <button
               type="button"
               @click="fetchLendings"
@@ -154,13 +188,22 @@ export default {
     const withWhitelist = ref(false)
     const onlyZeroUpfront = ref(false)
     const fetchPageSize = ref(100)
+    const ownerSplit = ref('')
+    const borrowerSplit = ref('')
+    const otherSplit = ref('')
 
     const fetchLendings = function () {
       const [isStale, setLoaded, setError] = setLoading()
       const whitelistQuery = `, whitelistId${withWhitelist.value ? '_not' : ''}: null`
       const upfrontQuery = onlyZeroUpfront.value ? ', upfrontCost: "0"' : ''
+      const ownerSplitNum = ownerSplit.value - 0
+      const ownerSplitQuery = !Number.isNaN(ownerSplitNum) && ownerSplitNum > 0 ? `, splitOwner_gte: "${ownerSplitNum}"` : ''
+      const borrowerSplitNum = borrowerSplit.value - 0
+      const borrowerSplitQuery = !Number.isNaN(borrowerSplitNum) && borrowerSplitNum > 0 ? `, splitBorrower_gte: "${borrowerSplitNum}"` : ''
+      const otherSplitNum = otherSplit.value - 0
+      const otherSplitQuery = !Number.isNaN(otherSplitNum) && otherSplitNum > 0 ? `, splitOther_gte: "${otherSplitNum}"` : ''
       const query = `
-      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null ${whitelistQuery} ${upfrontQuery} }) {
+      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery}}) {
         id
         rentDuration
         upfrontCost
@@ -209,7 +252,7 @@ export default {
     fetchLendings()
 
     watch(
-      () => [fetchPageSize.value, withWhitelist.value, onlyZeroUpfront.value],
+      () => [fetchPageSize.value, withWhitelist.value, onlyZeroUpfront.value, ownerSplit.value, borrowerSplit.value, otherSplit.value],
       fetchLendings
     )
 
@@ -227,6 +270,9 @@ export default {
       fetchPageSize,
       withWhitelist,
       onlyZeroUpfront,
+      ownerSplit,
+      borrowerSplit,
+      otherSplit,
       status,
       fetchLendings,
       results,
@@ -238,6 +284,9 @@ export default {
 </script>
 
 <style scoped>
+  input[type=text] {
+    width: 70px;
+  }
   table td, th {
     text-align: center;
     padding: 5px 10px;
