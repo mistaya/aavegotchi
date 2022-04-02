@@ -14,27 +14,34 @@
         </template>
         <template v-else>
           <div style="margin-bottom: 10px;">
-            Here are the latest {{ FETCH_PAGE_SIZE }}
-            <template v-if="withWhitelist">
-              lendings that have a whitelist.
-              <button
-                type="button"
-                @click="withWhitelist = false"
-              >
-                See public lendings instead
-              </button>
-            </template>
-            <template v-else>
-              public lendings (no whitelist).
-              <button
-                type="button"
-                @click="withWhitelist = true"
-              >
-                See lendings with whitelists instead
-              </button>
-            </template>
+            Here are the latest {{ fetchPageSize }} lendings.
+            <button
+              type="button"
+              @click="fetchPageSize = fetchPageSize === 100 ? 1000 : 100"
+            >
+              Show
+              {{ fetchPageSize === 100 ? 1000 : 100 }}
+            </button>
           </div>
-          <div style="margin-bottom: 20px;">
+          <div style="margin-bottom: 10px">
+            <label>
+              <input
+                v-model="withWhitelist"
+                type="checkbox"
+              />
+              whitelisted (private) lendings only
+            </label>
+          </div>
+          <div style="margin-bottom: 10px">
+            <label>
+              <input
+                v-model="onlyZeroUpfront"
+                type="checkbox"
+              />
+              0 GHST upfront only
+            </label>
+          </div>
+          <div style="margin-top: 20px; margin-bottom: 20px;">
             <button
               type="button"
               @click="fetchLendings"
@@ -136,8 +143,6 @@ import EthAddress from '@/components/EthAddress.vue'
 
 const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-two'
 
-const FETCH_PAGE_SIZE = 1000
-
 export default {
   components: {
     DateFriendly,
@@ -147,11 +152,15 @@ export default {
     const { status, setLoading } = useStatus()
     const results = ref([])
     const withWhitelist = ref(false)
+    const onlyZeroUpfront = ref(false)
+    const fetchPageSize = ref(100)
 
     const fetchLendings = function () {
       const [isStale, setLoaded, setError] = setLoading()
+      const whitelistQuery = `, whitelistId${withWhitelist.value ? '_not' : ''}: null`
+      const upfrontQuery = onlyZeroUpfront.value ? ', upfrontCost: "0"' : ''
       const query = `
-      {gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null, whitelistId${withWhitelist.value ? '_not' : ''}: null }) {
+      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null ${whitelistQuery} ${upfrontQuery} }) {
         id
         rentDuration
         upfrontCost
@@ -185,7 +194,7 @@ export default {
           const responseJson = await response.json()
           if (responseJson.data?.gotchiLendings) {
             results.value = responseJson.data.gotchiLendings
-            // console.log('results', results.value)
+            console.log('results', results.value)
             setLoaded()
           } else {
             setError('Unexpected response')
@@ -200,7 +209,7 @@ export default {
     fetchLendings()
 
     watch(
-      () => withWhitelist.value,
+      () => [fetchPageSize.value, withWhitelist.value, onlyZeroUpfront.value],
       fetchLendings
     )
 
@@ -215,8 +224,9 @@ export default {
     }
 
     return {
+      fetchPageSize,
       withWhitelist,
-      FETCH_PAGE_SIZE,
+      onlyZeroUpfront,
       status,
       fetchLendings,
       results,
