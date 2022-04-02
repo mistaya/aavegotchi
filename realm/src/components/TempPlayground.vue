@@ -1,6 +1,23 @@
 <template>
   <div>
     <h1>Gotchi lending activity</h1>
+    <div style="margin-bottom: 20px; font-style: italic;">
+      (Confused what this is? You can rent a gotchi to
+      <a
+        href="https://blog.aavegotchi.com/play-to-earn-guide-the-gotchiverse-alpha-launch/"
+        target="_blank"
+      >
+        play and earn
+      </a>
+      in the newly-released gotchiverse from the official
+      <a
+        href="https://app.aavegotchi.com/lending"
+        target="_blank"
+      >
+        Gotchi Lending
+      </a>
+      page!)
+    </div>
     <div>
       <div style="margin-bottom: 30px;">
         <div style="margin-bottom: 10px">
