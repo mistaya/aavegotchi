@@ -92,7 +92,14 @@
         </template>
         <template v-else>
           <div style="margin-bottom: 10px;">
-            Here are the latest {{ fetchPageSize }} lendings.
+            Here are the latest {{ fetchPageSize }}
+            <template v-if="withWhitelist">
+              whitelisted (private)
+            </template>
+            <template v-else>
+              public (no whitelist)
+            </template>
+            lendings.
             <button
               type="button"
               @click="fetchPageSize = fetchPageSize === 100 ? 1000 : 100"
