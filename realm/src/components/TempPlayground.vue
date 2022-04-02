@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Public gotchi lending activity</h1>
+    <h1>Gotchi lending activity</h1>
     <div>
       <template v-if="status.loading">
         Fetching, please wait...
@@ -14,7 +14,25 @@
         </template>
         <template v-else>
           <div style="margin-bottom: 10px;">
-            Here are the latest {{ FETCH_PAGE_SIZE }} public lendings (no whitelist).
+            Here are the latest {{ FETCH_PAGE_SIZE }}
+            <template v-if="withWhitelist">
+              lendings that have a whitelist.
+              <button
+                type="button"
+                @click="withWhitelist = false"
+              >
+                See public lendings instead
+              </button>
+            </template>
+            <template v-else>
+              public lendings (no whitelist).
+              <button
+                type="button"
+                @click="withWhitelist = true"
+              >
+                See lendings with whitelists instead
+              </button>
+            </template>
           </div>
           <div style="margin-bottom: 20px;">
             <button
@@ -36,6 +54,9 @@
                 <th>Owner %</th>
                 <th>Borrower %</th>
                 <th>Other %</th>
+                <th v-if="withWhitelist">
+                  Whitelist
+                </th>
                 <th>Gotchi</th>
                 <th>Owner</th>
                 <th>Borrower</th>
@@ -79,6 +100,9 @@
                 <td>
                   {{ result.splitOther }}
                 </td>
+                <td v-if="withWhitelist">
+                  {{ result.whitelistId }}
+                </td>
                 <td>
                   <a
                     :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
@@ -105,7 +129,7 @@
 
 <script>
 import BigNumber from 'bignumber.js'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import useStatus from '@/data/useStatus'
 import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from '@/components/EthAddress.vue'
@@ -113,26 +137,6 @@ import EthAddress from '@/components/EthAddress.vue'
 const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-two'
 
 const FETCH_PAGE_SIZE = 1000
-
-const SUBGRAPH_QUERY = `
-{gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null, whitelistId: null }) {
-  id
-  rentDuration
-  upfrontCost
-  period
-  gotchi {
-    name
-  }
-  timeCreated
-  timeAgreed
-  lender
-  borrower
-  splitOther
-  splitBorrower
-  splitOwner
-  gotchiTokenId
-}}
-`
 
 export default {
   components: {
@@ -142,13 +146,34 @@ export default {
   setup () {
     const { status, setLoading } = useStatus()
     const results = ref([])
+    const withWhitelist = ref(false)
 
     const fetchLendings = function () {
       const [isStale, setLoaded, setError] = setLoading()
+      const query = `
+      {gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: null, whitelistId${withWhitelist.value ? '_not' : ''}: null }) {
+        id
+        rentDuration
+        upfrontCost
+        period
+        gotchi {
+          name
+        }
+        timeCreated
+        timeAgreed
+        lender
+        borrower
+        splitOther
+        splitBorrower
+        splitOwner
+        gotchiTokenId
+        whitelistId
+      }}
+      `
       fetch(SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
-          query: SUBGRAPH_QUERY
+          query
         })
       })
         .then(async response => {
@@ -174,6 +199,11 @@ export default {
 
     fetchLendings()
 
+    watch(
+      () => withWhitelist.value,
+      fetchLendings
+    )
+
     const friendlyDuration = function (periodString) {
       const hours = (periodString - 0) / (60 * 60)
       return `${hours} hrs`
@@ -185,6 +215,7 @@ export default {
     }
 
     return {
+      withWhitelist,
       FETCH_PAGE_SIZE,
       status,
       fetchLendings,
