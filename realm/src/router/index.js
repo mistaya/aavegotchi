@@ -16,6 +16,10 @@ const PocketsPage = () => import(/* webpackChunkName: "pocketses" */ '@/componen
 const WearableSetsPage = () => import(/* webpackChunkName: "wearable-sets" */ '@/components/WearableSetsPage.vue')
 const RarityFarmingsPage = () => import(/* webpackChunkName: "rf" */ '@/components/RarityFarmingsPage.vue')
 const RarityFarmingPage = () => import(/* webpackChunkName: "rf" */ '@/components/RarityFarmingPage.vue')
+const LendingPage = () => import(/* webpackChunkName: "lending" */ '@/components/LendingPage.vue')
+const LendingAvailablePage = () => import(/* webpackChunkName: "lending-available" */ '@/components/LendingAvailablePage.vue')
+const LendingActivityPage = () => import(/* webpackChunkName: "lending-activity" */ '@/components/LendingActivityPage.vue')
+const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/components/LendingManagerPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
 
 const { headData } = useSiteHead()
@@ -103,6 +107,47 @@ const routes = [
           head: {
             title: 'Rarity Farming',
             description: 'See historical rarity farming leaderboard results'
+          }
+        }
+      }
+    ]
+  },
+  {
+    path: '/lending',
+    name: 'lending-index',
+    component: LendingPage,
+    children: [
+      {
+        path: 'available',
+        name: 'lending-available',
+        component: LendingAvailablePage,
+        meta: {
+          head: {
+            title: 'Gotchi Lending Listings',
+            description: 'Filter and explore the gotchis available for lending'
+          }
+        }
+      },
+      {
+        path: 'activity',
+        name: 'lending-activity',
+        component: LendingActivityPage,
+        meta: {
+          head: {
+            title: 'Gotchi Lending Activity',
+            description: 'See recently-agreed gotchi lendings'
+          }
+        }
+      },
+      {
+        path: 'manager',
+        name: 'lending-manager',
+        component: LendingManagerPage,
+        props: route => ({ address: route.query.address }),
+        meta: {
+          head: {
+            title: 'Gotchi Lending Manager',
+            description: 'Management overview of your gotchi lendings'
           }
         }
       }

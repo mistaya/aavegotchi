@@ -1,20 +1,32 @@
 <template>
   <div>
     <div class="rf-nav site-banner site-banner--secondary">
-      <router-link
-        :to="{ name: 'rf', params: { season: '3', round: '1' } }"
-        class="site-banner__link"
-      >
-        Season 3 Round 1
-      </router-link>
-      <router-link
-        :to="{ name: 'rf', params: { season: '3', round: '2' } }"
-        class="site-banner__link"
-      >
-        <span class="sr-only">Season 3</span> Round 2
-      </router-link>
+      <!--
+      <div>
+        Season 2:
+        <router-link
+          v-for="round in ['1', '2', '3', '4']"
+          :key="round"
+          :to="{ name: 'rf', params: { season: '2', round } }"
+          class="site-banner__link"
+        >
+          <span class="sr-only">Season 2</span> Round {{ round }}
+        </router-link>
+      </div>
+      -->
+      <div>
+        Season 3:
+        <router-link
+          v-for="round in ['1', '2']"
+          :key="round"
+          :to="{ name: 'rf', params: { season: '3', round } }"
+          class="site-banner__link"
+        >
+          <span class="sr-only">Season 3</span> Round {{ round }}
+        </router-link>
+      </div>
     </div>
-    <router-view></router-view>
+    <router-view :key="`${$route.params.season}_${$route.params.round}`"></router-view>
   </div>
 </template>
 

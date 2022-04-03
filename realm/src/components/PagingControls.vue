@@ -53,7 +53,7 @@
           @change="$emit('update:modelValue', { page: modelValue.page, pageSize: $event.target.value - 0 })"
         >
           <option
-            v-for="size in [10,25,50,100,200,500]"
+            v-for="size in [10,25,50,100,200,500,1000]"
             :key="size"
             :value="size"
           >

@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <GotchisTable
+      <SiteTable
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
@@ -237,7 +237,7 @@
             </td>
           </tr>
         </template>
-      </GotchisTable>
+      </SiteTable>
     </div>
   </div>
 </template>
@@ -246,16 +246,16 @@
 import { ref, computed, watch } from 'vue'
 import useRarityFarming from '@/data/useRarityFarming'
 import EthAddress from './EthAddress.vue'
-import GotchisTable from './GotchisTable.vue'
 import NumberDisplay from './NumberDisplay.vue'
 import SiteButton from './SiteButton.vue'
+import SiteTable from './SiteTable.vue'
 
 export default {
   components: {
     EthAddress,
     NumberDisplay,
     SiteButton,
-    GotchisTable
+    SiteTable
   },
   props: {
     season: { type: String, required: true },

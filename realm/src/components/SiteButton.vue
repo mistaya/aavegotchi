@@ -59,12 +59,15 @@ export default {
       backface-visibility: initial;
     }
   }
-  .site-button:active {
+  .site-button:active:not(:disabled) {
     --site-button-background-color: var(--site-button-background-color--active);
   }
   .site-button:focus-visible {
     outline: 2px solid var(--site-button-background-color--pressed);
     outline-offset: 3px;
+  }
+  .site-button:disabled {
+    filter: grayscale();
   }
   .site-button[aria-pressed=true] {
     --site-button-text-color: var(--site-button-text-color--pressed);
@@ -165,6 +168,9 @@ export default {
 
   .site-button__detector:hover ~ .site-button__shadow {
     animation: var(--site-button-animation-duration) linear 0s forwards shadow-enter;
+  }
+  .site-button:disabled .site-button__detector:hover ~ .site-button__shadow {
+    animation: none;
   }
   @media (prefers-reduced-motion: reduce) {
     .site-button__detector:hover ~ .site-button__shadow {

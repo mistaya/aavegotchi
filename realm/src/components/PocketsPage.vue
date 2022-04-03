@@ -183,7 +183,7 @@
           </label>
         </form>
       </div>
-      <GotchisTable
+      <SiteTable
         v-model:page="gotchisPaging.page"
         v-model:pageSize="gotchisPaging.pageSize"
         :numResults="numFilteredGotchis"
@@ -342,7 +342,7 @@
             </td>
           </tr>
         </template>
-      </GotchisTable>
+      </SiteTable>
     </template>
   </div>
 </template>
@@ -365,8 +365,8 @@ import CryptoIcons from './CryptoIcons.vue'
 import CryptoIcon from './CryptoIcon.vue'
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
-import GotchisTable from './GotchisTable.vue'
 import NumberDisplay from './NumberDisplay.vue'
+import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
 import collaterals from '@/data/pockets/collaterals.json'
 
@@ -382,7 +382,7 @@ export default {
     DateFriendly,
     EthAddress,
     NumberDisplay,
-    GotchisTable,
+    SiteTable,
     SortToggle
   },
   setup () {

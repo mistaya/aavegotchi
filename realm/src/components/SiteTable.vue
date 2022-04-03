@@ -3,15 +3,15 @@
     <PagingControls
       :modelValue="{ page, pageSize }"
       :numItems="numResults"
-      itemsLabel="gotchis"
-      class="gotchis-table-paging gotchis-table-paging--top"
+      :itemsLabel="itemsLabel"
+      class="site-table-paging site-table-paging--top"
       @update:modelValue="$emit('update:page', $event.page); $emit('update:pageSize', $event.pageSize)"
     />
-    <div class="gotchis-table-scroll-text">
+    <div class="site-table-scroll-text">
       (Scroll the table sideways to see more columns)
     </div>
-    <div class="gotchis-table-wrapper visible-scrollbar">
-      <table class="gotchis-table">
+    <div class="site-table-wrapper visible-scrollbar">
+      <table class="site-table">
         <thead>
           <slot name="headers"></slot>
         </thead>
@@ -23,8 +23,8 @@
     <PagingControls
       :modelValue="{ page, pageSize }"
       :numItems="numResults"
-      itemsLabel="gotchis"
-      class="gotchis-table-paging gotchis-table-paging--bottom"
+      :itemsLabel="itemsLabel"
+      class="site-table-paging site-table-paging--bottom"
       @update:modelValue="$emit('update:page', $event.page); $emit('update:pageSize', $event.pageSize)"
     />
   </div>
@@ -41,7 +41,8 @@ export default {
     // TODO set the magic number for horizontal scrolling here
     page: { type: Number, default: 0 },
     pageSize: { type: Number, default: 10 },
-    numResults: { type: Number, required: true }
+    numResults: { type: Number, required: true },
+    itemsLabel: { type: String, default: 'gotchis' }
   }
 }
 </script>
@@ -72,23 +73,23 @@ export default {
      sticky headers, as a height is defined.)
    */
   @media (max-width: 1300px) {
-    .gotchis-table-wrapper {
+    .site-table-wrapper {
       position: relative;
       overflow: auto;
     }
-    .device--no-touch .gotchis-table-wrapper {
+    .device--no-touch .site-table-wrapper {
       max-height: 90vh;
     }
   }
 </style>
 <style scoped>
-  .gotchis-table-wrapper {
+  .site-table-wrapper {
     margin: 0;
     max-width: 100%;
   }
 
   /* display help text for narrow screens */
-  .gotchis-table-scroll-text {
+  .site-table-scroll-text {
     display: none;
     margin-bottom: 10px;
     font-size: 0.9em;
@@ -96,35 +97,35 @@ export default {
     text-align: right;
   }
   @media (max-width: 950px) {
-    .gotchis-table-scroll-text {
+    .site-table-scroll-text {
       display: block;
     }
   }
 
-  .gotchis-table {
+  .site-table {
     margin: 0 auto;
   }
-  .gotchis-table :deep(thead th) {
+  .site-table :deep(thead th) {
     position: sticky;
     top: 0;
     z-index: 1;
     background-color: var(--site-background-color--transparent);
     color: var(--site-text-color--subtle);
   }
-  .gotchis-table :deep(td),
-  .gotchis-table :deep(th) {
+  .site-table :deep(td),
+  .site-table :deep(th) {
     text-align: left;
     padding: 5px;
   }
-  .gotchis-table :deep(tr:nth-child(even) td) {
+  .site-table :deep(tr:nth-child(even) td) {
     background: var(--site-background-color--alternate);
   }
 
-  .gotchis-table-paging {
+  .site-table-paging {
     margin: 20px auto;
     justify-content: center;
   }
-  .gotchis-table-paging--bottom {
+  .site-table-paging--bottom {
     margin-bottom: 70px;
   }
 </style>

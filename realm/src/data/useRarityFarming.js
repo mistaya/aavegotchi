@@ -59,12 +59,12 @@ export default function useRarityFarming (seasonId, roundId) {
   const seasonInfo = SEASONS[seasonId]
   if (!seasonInfo) {
     console.error('Invalid seasonId provided to useRarityFarming')
-    return
+    return null
   }
   const roundInfo = seasonInfo.rounds[roundId]
   if (!roundInfo) {
     console.error('Invalid roundId provided to useRarityFarming')
-    return
+    return null
   }
 
   // Extend info
