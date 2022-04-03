@@ -28,6 +28,12 @@
       >
         Gotchi Pockets
       </router-link>
+      <router-link
+        :to="{ name: 'lending-index' }"
+        class="site-banner__link"
+      >
+        Lending
+      </router-link>
       <!--
       <router-link
         :to="{ name: 'rf-index' }"

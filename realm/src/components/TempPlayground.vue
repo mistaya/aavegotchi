@@ -8,6 +8,9 @@
       <br>
       <br>
       It seems like it might be useful to keep around for a little while, so I gave it a proper home.
+      <br>
+      <br>
+      You might also be interested in the new Lending Manager page :)
     </div>
   </div>
 </template>

@@ -7,7 +7,7 @@
         <a
           href="https://app.aavegotchi.com/lending"
           target="_blank"
-          rel="noopener nofollow"
+          rel="noopener"
         >
           Gotchi Lending
           <SiteIcon name="open-window" />
@@ -151,6 +151,7 @@
                 <td>
                   <a
                     :href="`https://app.aavegotchi.com/lending/${result.id}`"
+                    rel="noopener"
                     target="_blank"
                   >
                     {{ result.id }}
@@ -187,6 +188,7 @@
                 <td>
                   <a
                     :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
+                    rel="noopener"
                     target="_blank"
                   >
                     {{ result.gotchi.name }}
@@ -230,7 +232,7 @@ export default {
 
     const tablePaging = ref({
       page: 0,
-      pageSize: 25
+      pageSize: 50
     })
 
     const withWhitelist = ref(false)

@@ -44,56 +44,62 @@
       <div style="margin-bottom: 20px;">
         <a
           :href="`https://app.aavegotchi.com/aavegotchis/${encodeURIComponent(address)}`"
-          rel="nofollow noopener"
+          rel="noopener"
           target="_blank"
         >
           View on aavegotchi.com
           <SiteIcon name="open-window" />
         </a>
       </div>
-      <div>
-        TODO Fetch gotchis and display table of lending status
-      </div>
+      <LendingManagerGotchis
+        :key="address"
+        :address="address"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import EthAddress from './EthAddress.vue'
+import LendingManagerGotchis from './LendingManagerGotchis.vue'
 
 export default {
   components: {
-    EthAddress
+    EthAddress,
+    LendingManagerGotchis
   },
   props: {
     address: { type: String, default: null }
   },
-  data () {
-    return {
-      inputAddress: ''
-    }
-  },
-  computed: {
-    urlNoAddress () {
-      return this.$router.resolve({ name: 'lending-manager' }).href
-    },
-    invalidAddress () {
-      return !this.address || this.address.length !== 42
-    }
-  },
-  methods: {
-    enterAddress () {
-      this.$router.push({
+  setup (props) {
+    const router = useRouter()
+    const inputAddress = ref('')
+    const urlNoAddress = router.resolve({ name: 'lending-manager' }).href
+    const invalidAddress = computed(() => !props.address || props.address.length !== 42)
+
+    const enterAddress = () => {
+      router.push({
         name: 'lending-manager',
         query: {
-          address: this.inputAddress
+          address: inputAddress.value
         }
       })
-    },
-    clearAddress () {
-      this.$router.push({
+    }
+
+    const clearAddress = () => {
+      router.push({
         name: 'lending-manager'
       })
+    }
+
+    return {
+      inputAddress,
+      urlNoAddress,
+      invalidAddress,
+      enterAddress,
+      clearAddress
     }
   }
 }

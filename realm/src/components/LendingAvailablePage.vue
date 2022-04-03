@@ -6,7 +6,7 @@
       (Confused what this is? You can rent a gotchi to
       <a
         href="https://blog.aavegotchi.com/play-to-earn-guide-the-gotchiverse-alpha-launch/"
-        rel="noopener nofollow"
+        rel="noopener"
         target="_blank"
       >
         play and earn
@@ -16,7 +16,7 @@
       <a
         href="https://app.aavegotchi.com/lending"
         target="_blank"
-        rel="noopener nofollow"
+        rel="noopener"
       >
         Gotchi Lending
         <SiteIcon name="open-window" />

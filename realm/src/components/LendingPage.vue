@@ -15,14 +15,13 @@
       >
         Activity
       </router-link>
-      <!--
+
       <router-link
         :to="{ name: 'lending-manager' }"
         class="site-banner__link"
       >
         Manager
       </router-link>
-    -->
     </div>
     <router-view></router-view>
   </div>
