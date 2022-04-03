@@ -31,7 +31,7 @@
 const ensureSubPage = function (to, next) {
   if (to.name === 'lending-index') {
     next({
-      name: 'lending-available'
+      name: 'lending-activity'
     })
   } else {
     next()
