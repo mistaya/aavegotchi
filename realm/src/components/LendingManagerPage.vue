@@ -9,9 +9,16 @@
           icon
         />
       </template>
+      <template v-else-if="thirdPartyAddress">
+        for Third-Party
+        <EthAddress
+          :address="thirdPartyAddress"
+          icon
+        />
+      </template>
     </h2>
-    <template v-if="address">
-      <div v-if="invalidAddress">
+    <template v-if="address || thirdPartyAddress">
+      <div v-if="!hasValidAddress">
         Invalid address
       </div>
       <div>(<a :href="urlNoAddress" @click.prevent="clearAddress">Use another address</a>)
@@ -36,9 +43,32 @@
           Use this address
         </SiteButton>
       </form>
+
+      <div style="margin: 15px 0 15px 40px">
+        -- OR --
+      </div>
+
+      <form
+        style="display: flex; flex-wrap: wrap; column-gap: 10px;"
+        @submit.prevent="enterThirdPartyAddress"
+      >
+        <label>
+          Third-Party receiving share:
+          <input
+            v-model="inputThirdPartyAddress"
+            type="text"
+          />
+        </label>
+        <SiteButton
+          type="submit"
+          :disabled="!inputThirdPartyAddress"
+        >
+          Use this address
+        </SiteButton>
+      </form>
     </template>
     <div
-      v-if="!invalidAddress"
+      v-if="hasValidAddress"
       style="margin-top: 20px;"
     >
       <div style="margin-bottom: 20px;">
@@ -54,6 +84,7 @@
       <LendingManagerGotchis
         :key="address"
         :address="address"
+        :thirdPartyAddress="thirdPartyAddress"
       />
     </div>
   </div>
@@ -71,13 +102,26 @@ export default {
     LendingManagerGotchis
   },
   props: {
-    address: { type: String, default: null }
+    address: { type: String, default: null },
+    thirdPartyAddress: { type: String, default: null }
   },
   setup (props) {
     const router = useRouter()
-    const inputAddress = ref('')
     const urlNoAddress = router.resolve({ name: 'lending-manager' }).href
-    const invalidAddress = computed(() => !props.address || props.address.length !== 42)
+
+    const inputAddress = ref('')
+    const inputThirdPartyAddress = ref('')
+
+    const validAddress = computed(() => props.address?.length === 42)
+    const validThirdPartyAddress = computed(() => props.thirdPartyAddress?.length === 42)
+
+    const hasValidAddress = computed(() => validAddress.value || validThirdPartyAddress.value)
+
+    const clearAddress = () => {
+      router.push({
+        name: 'lending-manager'
+      })
+    }
 
     const enterAddress = () => {
       router.push({
@@ -88,18 +132,23 @@ export default {
       })
     }
 
-    const clearAddress = () => {
+    const enterThirdPartyAddress = () => {
       router.push({
-        name: 'lending-manager'
+        name: 'lending-manager',
+        query: {
+          thirdPartyAddress: inputThirdPartyAddress.value
+        }
       })
     }
 
     return {
-      inputAddress,
       urlNoAddress,
-      invalidAddress,
+      clearAddress,
+      inputAddress,
+      inputThirdPartyAddress,
       enterAddress,
-      clearAddress
+      enterThirdPartyAddress,
+      hasValidAddress
     }
   }
 }

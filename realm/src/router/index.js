@@ -143,7 +143,10 @@ const routes = [
         path: 'manager',
         name: 'lending-manager',
         component: LendingManagerPage,
-        props: route => ({ address: route.query.address }),
+        props: route => ({
+          address: route.query.address,
+          thirdPartyAddress: route.query.thirdPartyAddress
+        }),
         meta: {
           head: {
             title: 'Gotchi Lending Manager',

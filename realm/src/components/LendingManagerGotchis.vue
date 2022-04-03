@@ -34,9 +34,12 @@
             <th>Upfront GHST</th>
             <th>Owner %</th>
             <th>Borrower %</th>
-            <th>Other %</th>
+            <th>Third-Party %</th>
             <th>Whitelist ID</th>
-            <th>Other Address</th>
+            <th>Third-Party Address</th>
+            <th v-if="!address">
+              Owner
+            </th>
             <th>Borrower</th>
           </tr>
         </template>
@@ -145,6 +148,15 @@
                 shortest
               />
             </td>
+            <td v-if="!address">
+              <EthAddress
+                v-if="row.listing"
+                :address="row.listing.lender"
+                icon
+                polygonscan
+                shortest
+              />
+            </td>
             <td>
               <EthAddress
                 v-if="row.isLended"
@@ -181,14 +193,19 @@ export default {
     SiteTable
   },
   props: {
-    address: { type: String, default: null }
+    address: { type: String, default: null },
+    thirdPartyAddress: { type: String, default: null }
   },
   setup (props) {
-    const addressLc = computed(() => props.address.toLowerCase())
+    const addressLc = computed(() => props.address?.toLowerCase())
+    const thirdPartyAddressLc = computed(() => props.thirdPartyAddress?.toLowerCase())
+
     const { status: ownedGotchisStatus, setLoading: setOwnedGotchisLoading } = useStatus()
     const ownedGotchis = ref(null)
+
     const { status: listingsStatus, setLoading: setListingsLoading } = useStatus()
     const listedGotchis = ref({})
+
     const status = computed(() => ({
       loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading,
       error: ownedGotchisStatus.value.error || listingsStatus.value.error,
@@ -202,6 +219,13 @@ export default {
 
     const fetchOwnedGotchis = function () {
       const [isStale, setLoaded, setError] = setOwnedGotchisLoading()
+
+      if (!props.address) {
+        // Don't need to fetch owned gotchis if we're searching by the third party address
+        ownedGotchis.value = []
+        setLoaded()
+        return
+      }
 
       fetch(SUBGRAPH_URL, {
         method: 'POST',
@@ -245,36 +269,42 @@ export default {
       let lastIdNum = 0
       let fetchedListings = []
 
+      const lenderQuery = props.address ? `, lender: "${addressLc.value}"` : ''
+      const thirdPartyQuery = props.thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddressLc.value}"` : ''
+
       const fetchFromSubgraph = function () {
+        const query = `{
+          gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: id, where: { id_gt: ${lastIdNum}, cancelled: false, completed: false ${lenderQuery} ${thirdPartyQuery} }) {
+            id
+            gotchi {
+              id
+              name
+              escrow
+            }
+
+            lender
+            upfrontCost
+            period
+            tokensToShare
+            splitOwner
+            splitBorrower
+            splitOther
+
+            thirdPartyAddress
+            whitelistId
+            whitelistMembers
+
+            timeCreated
+            timeAgreed
+            borrower
+            lastClaimed
+          }
+        }`
+
         fetch(SUBGRAPH_URL, {
           method: 'POST',
           body: JSON.stringify({
-            query: `{
-              gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: id, where: { id_gt: ${lastIdNum}, lender: "${addressLc.value}", cancelled: false, completed: false }) {
-                id
-                gotchi {
-                  id
-                  name
-                  escrow
-                }
-
-                upfrontCost
-                period
-                tokensToShare
-                splitOwner
-                splitBorrower
-                splitOther
-
-                thirdPartyAddress
-                whitelistId
-                whitelistMembers
-
-                timeCreated
-                timeAgreed
-                borrower
-                lastClaimed
-              }
-            }`
+            query
           })
         })
           .then(async response => {
