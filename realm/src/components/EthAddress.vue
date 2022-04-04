@@ -15,7 +15,7 @@
       <CopyToClipboard :text="address" />
       <a
         v-if="polygonscan"
-        :href="`https://polygonscan.com/address/${address}`"
+        :href="`https://polygonscan.com/address/${address}${polygonscan === 'erc20' ? '#tokentxns' : ''}`"
         target="_blank"
         rel="nofollow noopener noreferrer"
         title="open in polygonscan"
@@ -41,7 +41,7 @@ export default {
   },
   props: {
     address: { type: String, required: true },
-    polygonscan: { type: Boolean, default: false },
+    polygonscan: { type: [Boolean, String], default: false },
     icon: { type: Boolean, default: false },
     shortest: { type: Boolean, default: false }
   },

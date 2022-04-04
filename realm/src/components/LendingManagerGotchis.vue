@@ -105,7 +105,7 @@
             <td>
               <EthAddress
                 :address="row.gotchi.escrow"
-                polygonscan
+                polygonscan="erc20"
                 shortest
               />
             </td>
@@ -144,7 +144,7 @@
                 v-if="row.listing && row.listing.thirdPartyAddress !== '0x0000000000000000000000000000000000000000'"
                 :address="row.listing.thirdPartyAddress"
                 icon
-                polygonscan
+                polygonscan="erc20"
                 shortest
               />
             </td>
@@ -153,7 +153,7 @@
                 v-if="row.listing"
                 :address="row.listing.lender"
                 icon
-                polygonscan
+                polygonscan="erc20"
                 shortest
               />
             </td>
@@ -162,7 +162,7 @@
                 v-if="row.isLended"
                 :address="row.listing.borrower"
                 icon
-                polygonscan
+                polygonscan="erc20"
                 shortest
               />
             </td>

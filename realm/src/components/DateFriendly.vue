@@ -1,12 +1,12 @@
 <template>
-  <span>
+  <span :title="preciseDate">
     {{ friendlyDate }}
   </span>
 </template>
 
 <script>
 import { computed } from 'vue'
-import { formatDistanceStrict, max } from 'date-fns'
+import { formatDistanceStrict, max, format } from 'date-fns'
 import useReactiveDate from '@/data/useReactiveDate'
 
 export default {
@@ -32,8 +32,14 @@ export default {
       return str
     })
 
+    const preciseDate = computed(() => format(
+      props.date,
+      'PPP ppp'
+    ))
+
     return {
-      friendlyDate
+      friendlyDate,
+      preciseDate
     }
   }
 }
