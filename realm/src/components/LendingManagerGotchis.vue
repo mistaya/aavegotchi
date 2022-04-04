@@ -7,21 +7,51 @@
       Error fetching data
     </template>
     <template v-if="status.loaded">
-      <SiteButton
-        type="button"
-        @click="fetchData"
+      <div
+        v-if="whitelistIds && whitelistIds.length > 1"
+        style="margin-top: 30px;"
       >
-        Refresh data
-      </SiteButton>
+        <label>
+          Filter by whitelist:
+          <select v-model="tableFilters.whitelistId">
+            <option value=""></option>
+            <option
+              v-for="id in whitelistIds"
+              :key="id"
+              :value="id"
+            >
+              {{ id }}
+            </option>
+            <option value="public">
+              public
+            </option>
+          </select>
+        </label>
+      </div>
 
       <div style="margin-top: 20px; font-size: 0.9em">
         Note: the FUD, FOMO, ALPHA, KEK in the table currently only shows the total <i>claimed</i> amounts, it doesn't include alchemica that is still sitting in the gotchi pocket.
       </div>
 
+      <SiteButton
+        type="button"
+        style="margin-top: 20px"
+        @click="fetchData"
+      >
+        Refresh data
+      </SiteButton>
+
+      <div
+        v-if="numFilteredGotchis === 0"
+        style="margin-top: 20px;"
+      >
+        No gotchis found.
+      </div>
       <SiteTable
+        v-else
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
-        :numResults="tableGotchis.length"
+        :numResults="numFilteredGotchis"
       >
         <template #headers>
           <tr>
@@ -127,7 +157,7 @@
               :key="type"
             >
               <span
-                v-if="row.alchemica"
+                v-if="row.alchemica && row.isLended"
                 :class="{
                   'zero-value': row.alchemica[type] === '0'
                 }"
@@ -514,9 +544,44 @@ export default {
       return orderBy(rows, ['finishTimestamp'], ['asc'])
     })
 
-    const tableGotchisFiltered = computed(() => {
-      return tableGotchis.value
+    const tableFilters = ref({
+      whitelistId: ''
     })
+
+    const whitelistIds = computed(() => {
+      const ids = {}
+      for (const row of tableGotchis.value) {
+        if (row.listing?.whitelistId) {
+          ids[row.listing.whitelistId] = true
+        }
+      }
+      return Object.keys(ids)
+    })
+
+    watch(
+      () => whitelistIds.value,
+      () => {
+        if (!status.value.loaded) { return }
+        if (tableFilters.value.whitelistId && !whitelistIds.value.includes(tableFilters.value.whitelistId)) {
+          tableFilters.value.whitelistId = ''
+        }
+      }
+    )
+
+    const tableGotchisFiltered = computed(() => {
+      let result = tableGotchis.value
+      if (tableFilters.value.whitelistId) {
+        const whitelistId = tableFilters.value.whitelistId
+        if (tableFilters.value.whitelistId === 'public') {
+          result = result.filter(row => row.listing && !row.listing.whitelistId)
+        } else {
+          result = result.filter(row => row.listing && row.listing.whitelistId === whitelistId)
+        }
+      }
+      return result
+    })
+
+    const numFilteredGotchis = computed(() => tableGotchisFiltered.value?.length)
 
     const tableGotchisSorted = computed(() => {
       const { column, direction } = tableSort.value
@@ -553,9 +618,11 @@ export default {
     return {
       status,
       ownedGotchis,
-      tableGotchis,
+      numFilteredGotchis,
       tableSort,
       tablePaging,
+      tableFilters,
+      whitelistIds,
       rowsToDisplay,
       friendlyDuration,
       friendlyGhst,
