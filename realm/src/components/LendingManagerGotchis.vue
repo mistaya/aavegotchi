@@ -31,8 +31,20 @@
             <th>Listing ID</th>
             <th>Listing Posted</th>
             <th>Lending Started</th>
-            <th>Lending Expires</th>
-            <th>Last Claimed</th>
+            <th>
+              Lending Expires
+              <SortToggle
+                :sort="tableSort.column === 'finishTimestamp' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'finishTimestamp' : null; tableSort.direction = $event"
+              />
+            </th>
+            <th>
+              Last Claimed
+              <SortToggle
+                :sort="tableSort.column === 'lastClaimedTimestamp' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'lastClaimedTimestamp' : null; tableSort.direction = $event"
+              />
+            </th>
             <th>Claimed FUD</th>
             <th>Claimed FOMO</th>
             <th>Claimed ALPHA</th>
@@ -203,6 +215,7 @@ import useStatus from '@/data/useStatus'
 import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import SiteTable from './SiteTable.vue'
+import SortToggle from './SortToggle.vue'
 
 const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
@@ -212,7 +225,8 @@ export default {
   components: {
     EthAddress,
     DateFriendly,
-    SiteTable
+    SiteTable,
+    SortToggle
   },
   props: {
     address: { type: String, default: null },
@@ -236,6 +250,11 @@ export default {
       error: ownedGotchisStatus.value.error || listingsStatus.value.error || earningsStatus.value.error,
       loaded: ownedGotchisStatus.value.loaded && listingsStatus.value.loaded && earningsStatus.value.loaded
     }))
+
+    const tableSort = ref({
+      column: 'finishTimestamp',
+      direction: 'asc'
+    })
 
     const tablePaging = ref({
       page: 0,
@@ -463,6 +482,10 @@ export default {
           // if not lended, make up a 'far future' timestamp to help with sorting listed and unlisted gotchis
           : (isListed ? Number.MAX_SAFE_INTEGER - 1 : Number.MAX_SAFE_INTEGER)
         const lastClaimedDate = item.listing && item.listing.lastClaimed !== '0' ? new Date(item.listing.lastClaimed * 1000) : null
+        const lastClaimedTimestamp = isLended
+          ? item.listing.lastClaimed * 1000
+          // if not lended, make up a 'far past' timestamp to help with sorting listed and unlisted gotchis
+          : (isListed ? Number.MIN_SAFE_INTEGER + 1 : Number.MIN_SAFE_INTEGER)
         const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
         let alchemica = null
         if (earningsForListing) {
@@ -483,15 +506,28 @@ export default {
           createdDate,
           finishDate,
           finishTimestamp,
-          lastClaimedDate
+          lastClaimedDate,
+          lastClaimedTimestamp
         }
       })
 
       return orderBy(rows, ['finishTimestamp'], ['asc'])
     })
 
+    const tableGotchisFiltered = computed(() => {
+      return tableGotchis.value
+    })
+
+    const tableGotchisSorted = computed(() => {
+      const { column, direction } = tableSort.value
+      if (!column) { return tableGotchisFiltered.value }
+      return orderBy(tableGotchisFiltered.value, [column], [direction])
+    })
+
     watch(
       () => ({
+        sortColumn: tableSort.value.column,
+        sortDirection: tableSort.value.direction,
         pageSize: tablePaging.value.pageSize,
         tableGotchis: tableGotchis.value
       }),
@@ -501,7 +537,7 @@ export default {
     const rowsToDisplay = computed(() => {
       const start = tablePaging.value.page * tablePaging.value.pageSize
       const end = start + tablePaging.value.pageSize
-      return tableGotchis.value.slice(start, end)
+      return tableGotchisSorted.value.slice(start, end)
     })
 
     const friendlyDuration = function (periodString) {
@@ -518,6 +554,7 @@ export default {
       status,
       ownedGotchis,
       tableGotchis,
+      tableSort,
       tablePaging,
       rowsToDisplay,
       friendlyDuration,
