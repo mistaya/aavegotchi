@@ -14,6 +14,10 @@
         Refresh data
       </SiteButton>
 
+      <div style="margin-top: 20px; font-size: 0.9em">
+        Note: the FUD, FOMO, ALPHA, KEK in the table currently only shows the total <i>claimed</i> amounts, it doesn't include alchemica that is still sitting in the gotchi pocket.
+      </div>
+
       <SiteTable
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
@@ -29,6 +33,10 @@
             <th>Lending Started</th>
             <th>Lending Expires</th>
             <th>Last Claimed</th>
+            <th>Claimed FUD</th>
+            <th>Claimed FOMO</th>
+            <th>Claimed ALPHA</th>
+            <th>Claimed KEK</th>
             <th>Gotchi Pocket</th>
             <th>Lending Duration</th>
             <th>Upfront GHST</th>
@@ -101,6 +109,19 @@
                 v-if="row.lastClaimedDate"
                 :date="row.lastClaimedDate"
               />
+            </td>
+            <td
+              v-for="type in ['fud', 'fomo', 'alpha', 'kek']"
+              :key="type"
+            >
+              <span
+                v-if="row.alchemica"
+                :class="{
+                  'zero-value': row.alchemica[type] === '0'
+                }"
+              >
+                {{ row.alchemica[type] }}
+              </span>
             </td>
             <td>
               <EthAddress
@@ -184,6 +205,7 @@ import EthAddress from './EthAddress.vue'
 import SiteTable from './SiteTable.vue'
 
 const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
+const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
 const FETCH_PAGE_SIZE = 1000
 
 export default {
@@ -204,12 +226,15 @@ export default {
     const ownedGotchis = ref(null)
 
     const { status: listingsStatus, setLoading: setListingsLoading } = useStatus()
-    const listedGotchis = ref({})
+    const listedGotchis = ref(null)
+
+    const { status: earningsStatus, setLoading: setEarningsLoading } = useStatus()
+    const earnings = ref({})
 
     const status = computed(() => ({
-      loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading,
-      error: ownedGotchisStatus.value.error || listingsStatus.value.error,
-      loaded: ownedGotchisStatus.value.loaded && listingsStatus.value.loaded
+      loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading || earningsStatus.value.loading,
+      error: ownedGotchisStatus.value.error || listingsStatus.value.error || earningsStatus.value.error,
+      loaded: ownedGotchisStatus.value.loaded && listingsStatus.value.loaded && earningsStatus.value.loaded
     }))
 
     const tablePaging = ref({
@@ -344,6 +369,78 @@ export default {
       fetchFromSubgraph()
     }
 
+    const fetchEarnings = function () {
+      const [isStale, setLoaded, setError] = setEarningsLoading()
+      let fetchedLendings = []
+      const lendingIds = listedGotchis.value.map(({ listing }) => listing.id)
+      let nextIndex = 0
+
+      const fetchFromSubgraph = function () {
+        const idsToFetch = lendingIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
+        const query = `{
+          gotchiLendings(first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
+            id
+            claimedFUD
+            claimedFOMO
+            claimedALPHA
+            claimedKEK
+          }
+        }`
+
+        fetch(LENDING_SUBGRAPH_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            query
+          })
+        })
+          .then(async response => {
+            if (isStale()) { console.log('Stale request, ignoring'); return }
+            if (!response.ok) {
+              setError('There was an error fetching earnings')
+              return
+            }
+            const responseJson = await response.json()
+            // console.log({ responseJson })
+            if (responseJson.data?.gotchiLendings) {
+              fetchedLendings = fetchedLendings.concat(responseJson.data.gotchiLendings)
+              if (responseJson.data.gotchiLendings.length < FETCH_PAGE_SIZE) {
+                // finished fetching all pages
+                earnings.value = Object.fromEntries(
+                  fetchedLendings.map(item => {
+                    const { id, ...earnings } = item
+                    return [id, earnings]
+                  })
+                )
+                // console.log('earnings', earnings.value)
+                setLoaded()
+                return
+              }
+              // fetch the next page of results
+              nextIndex += FETCH_PAGE_SIZE
+              fetchFromSubgraph()
+            } else {
+              console.error('Unexpected response', responseJson)
+              setError('Unexpected response')
+            }
+          })
+          .catch(error => {
+            console.error(error)
+            setError('There was an error fetching earnings')
+          })
+      }
+
+      fetchFromSubgraph()
+    }
+
+    watch(
+      () => listingsStatus.value.loaded,
+      () => {
+        if (listingsStatus.value.loaded) {
+          fetchEarnings()
+        }
+      }
+    )
+
     const fetchData = function () {
       fetchOwnedGotchis()
       fetchListings()
@@ -366,9 +463,20 @@ export default {
           // if not lended, make up a 'far future' timestamp to help with sorting listed and unlisted gotchis
           : (isListed ? Number.MAX_SAFE_INTEGER - 1 : Number.MAX_SAFE_INTEGER)
         const lastClaimedDate = item.listing && item.listing.lastClaimed !== '0' ? new Date(item.listing.lastClaimed * 1000) : null
+        const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
+        let alchemica = null
+        if (earningsForListing) {
+          alchemica = {
+            fud: new BigNumber(earningsForListing.claimedFUD || 0).div(10e17).toString(),
+            fomo: new BigNumber(earningsForListing.claimedFOMO || 0).div(10e17).toString(),
+            alpha: new BigNumber(earningsForListing.claimedALPHA || 0).div(10e17).toString(),
+            kek: new BigNumber(earningsForListing.claimedKEK || 0).div(10e17).toString()
+          }
+        }
         return {
           gotchi: item.gotchi,
           listing: item.listing,
+          alchemica,
           isListed,
           isLended,
           agreedDate,
@@ -421,4 +529,7 @@ export default {
 </script>
 
 <style scoped>
+  .zero-value {
+    opacity: 0.5;
+  }
 </style>
