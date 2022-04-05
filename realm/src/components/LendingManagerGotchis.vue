@@ -30,7 +30,17 @@
       </div>
 
       <div style="margin-top: 20px; font-size: 0.9em">
-        Note: the FUD, FOMO, ALPHA, KEK in the table currently only shows the total <i>claimed</i> amounts, it doesn't include alchemica that is still sitting in the gotchi pocket.
+        <div
+          v-if="balancesStatus.error"
+          style="margin-bottom: 10px; font-weight: bold"
+        >
+          <SiteIcon name="warning-triangle" />
+          There was an error fetching pocket balances.
+        </div>
+        <div>
+          Note: the FUD, FOMO, ALPHA, KEK in the table shows the total amount claimed plus any amount in the gotchi pocket. We can't yet see alchemica that has been collected but not withdrawn through a vortex.
+          <br>This data is gathered from several sources, so may not be totally up-to-date.
+        </div>
       </div>
 
       <SiteButton
@@ -75,10 +85,23 @@
                 @update:sort="tableSort.column = $event ? 'lastClaimedTimestamp' : null; tableSort.direction = $event"
               />
             </th>
-            <th>Claimed FUD</th>
-            <th>Claimed FOMO</th>
-            <th>Claimed ALPHA</th>
-            <th>Claimed KEK</th>
+            <th
+              v-for="type in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+              :key="type"
+            >
+              {{ type }}
+              <SortToggle
+                :sort="tableSort.column === `totalAlchemica ${type}` ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? `totalAlchemica ${type}` : null; tableSort.direction = $event"
+              />
+            </th>
+            <th title="Calculated by rarity (not market price): 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD">
+              'Total'
+              <SortToggle
+                :sort="tableSort.column === 'totalAlchemica NORMALIZED' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'totalAlchemica NORMALIZED' : null; tableSort.direction = $event"
+              />
+            </th>
             <th>Gotchi Pocket</th>
             <th>Lending Duration</th>
             <th>Upfront GHST</th>
@@ -153,17 +176,30 @@
               />
             </td>
             <td
-              v-for="type in ['fud', 'fomo', 'alpha', 'kek']"
+              v-for="type in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
               :key="type"
             >
-              <span
-                v-if="row.alchemica && row.isLended"
-                :class="{
-                  'zero-value': row.alchemica[type] === '0'
-                }"
-              >
-                {{ row.alchemica[type] }}
-              </span>
+              <template v-if="row.isLended && row.totalAlchemica">
+                <div
+                  :class="{
+                    'zero-value': row.totalAlchemica[type].isZero()
+                  }"
+                  :title="(!row.earnedAlchemica[type].isZero() || (row.escrowAlchemica[type] && !row.escrowAlchemica[type].isZero())) ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type]}` : null"
+                >
+                  {{ row.totalAlchemica[type] }}
+                </div>
+              </template>
+            </td>
+            <td>
+              <template v-if="row.isLended && row.totalAlchemica">
+                <div
+                  :class="{
+                    'zero-value': row.totalAlchemica.NORMALIZED.isZero()
+                  }"
+                >
+                  {{ row.totalAlchemica.NORMALIZED }}
+                </div>
+              </template>
             </td>
             <td>
               <EthAddress
@@ -242,6 +278,7 @@ import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
 
 import useStatus from '@/data/useStatus'
+import useAddressBalances from '@/data/useAddressBalances'
 import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import SiteTable from './SiteTable.vue'
@@ -275,10 +312,18 @@ export default {
     const { status: earningsStatus, setLoading: setEarningsLoading } = useStatus()
     const earnings = ref({})
 
+    const {
+      setAddresses: setBalancesAddresses,
+      balances,
+      fetchStatus: balancesStatus,
+      fetchBalances
+    } = useAddressBalances({ tokenLabels: ['FUD', 'FOMO', 'ALPHA', 'KEK'] })
+
     const status = computed(() => ({
-      loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading || earningsStatus.value.loading,
+      loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading || earningsStatus.value.loading || balancesStatus.value.loading,
       error: ownedGotchisStatus.value.error || listingsStatus.value.error || earningsStatus.value.error,
-      loaded: ownedGotchisStatus.value.loaded && listingsStatus.value.loaded && earningsStatus.value.loaded
+      loaded: ownedGotchisStatus.value.loaded && listingsStatus.value.loaded && earningsStatus.value.loaded &&
+        (balancesStatus.value.loaded || balancesStatus.value.error) // allow balances fetch to fail
     }))
 
     const tableSort = ref({
@@ -359,14 +404,12 @@ export default {
             lender
             upfrontCost
             period
-            tokensToShare
             splitOwner
             splitBorrower
             splitOther
 
             thirdPartyAddress
             whitelistId
-            whitelistMembers
 
             timeCreated
             timeAgreed
@@ -490,6 +533,24 @@ export default {
       }
     )
 
+    const lendedGotchis = computed(() => {
+      if (!listingsStatus.value.loaded) { return null }
+      return listedGotchis.value.filter(item => item.listing.timeAgreed !== '0')
+    })
+
+    // We only need to fetch pocket balances for lended gotchis
+    watch(
+      () => lendedGotchis.value,
+      () => {
+        if (lendedGotchis.value) {
+          const escrowAddresses = lendedGotchis.value.map(item => item.gotchi.escrow)
+          // console.log('Set escrowAddresses and fetch balances', escrowAddresses)
+          setBalancesAddresses(escrowAddresses)
+          fetchBalances()
+        }
+      }
+    )
+
     const fetchData = function () {
       fetchOwnedGotchis()
       fetchListings()
@@ -501,7 +562,8 @@ export default {
       if (!status.value.loaded) { return [] }
       const listedGotchiIds = listedGotchis.value.map(item => item.gotchi.id)
       const ownedUnlistedGotchis = ownedGotchis.value.filter(item => !listedGotchiIds.includes(item.gotchi.id))
-      const rows = ownedUnlistedGotchis.concat(listedGotchis.value).map(item => {
+      const allGotchis = ownedUnlistedGotchis.concat(listedGotchis.value)
+      const rows = allGotchis.map(item => {
         const isListed = item.listing && item.listing.timeAgreed === '0'
         const isLended = item.listing && item.listing.timeAgreed !== '0'
         const createdDate = item.listing ? new Date(item.listing.timeCreated * 1000) : null
@@ -517,19 +579,35 @@ export default {
           // if not lended, make up a 'far past' timestamp to help with sorting listed and unlisted gotchis
           : (isListed ? Number.MIN_SAFE_INTEGER + 1 : Number.MIN_SAFE_INTEGER)
         const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
-        let alchemica = null
-        if (earningsForListing) {
-          alchemica = {
-            fud: new BigNumber(earningsForListing.claimedFUD || 0).div(10e17).toString(),
-            fomo: new BigNumber(earningsForListing.claimedFOMO || 0).div(10e17).toString(),
-            alpha: new BigNumber(earningsForListing.claimedALPHA || 0).div(10e17).toString(),
-            kek: new BigNumber(earningsForListing.claimedKEK || 0).div(10e17).toString()
+        const balancesForGotchi = balances.value[item.gotchi.escrow]
+        const totalAlchemica = {}
+        const earnedAlchemica = {}
+        const escrowAlchemica = {}
+        for (const token of ['FUD', 'FOMO', 'ALPHA', 'KEK']) {
+          let total = new BigNumber(0)
+          if (earningsForListing) {
+            const earned = new BigNumber(earningsForListing[`claimed${token}`] || 0).div(10e17)
+            earnedAlchemica[token] = earned
+            total = total.plus(earned)
           }
+          if (balancesForGotchi) {
+            const balance = balancesForGotchi[token] || 0
+            escrowAlchemica[token] = balance
+            total = total.plus(balance)
+          }
+          totalAlchemica[token] = total
         }
+        totalAlchemica.NORMALIZED = totalAlchemica.FUD
+          .plus(totalAlchemica.FOMO.times(2))
+          .plus(totalAlchemica.ALPHA.times(4))
+          .plus(totalAlchemica.KEK.times(10))
+
         return {
           gotchi: item.gotchi,
           listing: item.listing,
-          alchemica,
+          totalAlchemica,
+          earnedAlchemica,
+          escrowAlchemica,
           isListed,
           isLended,
           agreedDate,
@@ -586,6 +664,10 @@ export default {
     const tableGotchisSorted = computed(() => {
       const { column, direction } = tableSort.value
       if (!column) { return tableGotchisFiltered.value }
+      if (column.startsWith('totalAlchemica')) {
+        const type = column.split(' ')[1]
+        return orderBy(tableGotchisFiltered.value, [row => row.totalAlchemica[type]?.toNumber() || 0], [direction])
+      }
       return orderBy(tableGotchisFiltered.value, [column], [direction])
     })
 
@@ -594,7 +676,7 @@ export default {
         sortColumn: tableSort.value.column,
         sortDirection: tableSort.value.direction,
         pageSize: tablePaging.value.pageSize,
-        tableGotchis: tableGotchis.value
+        tableGotchisFiltered: tableGotchisFiltered.value
       }),
       () => { tablePaging.value.page = 0 }
     )
@@ -617,6 +699,7 @@ export default {
 
     return {
       status,
+      balancesStatus,
       ownedGotchis,
       numFilteredGotchis,
       tableSort,
