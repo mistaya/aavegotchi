@@ -20,6 +20,7 @@ const LendingPage = () => import(/* webpackChunkName: "lending" */ '@/components
 const LendingAvailablePage = () => import(/* webpackChunkName: "lending-available" */ '@/components/LendingAvailablePage.vue')
 const LendingActivityPage = () => import(/* webpackChunkName: "lending-activity" */ '@/components/LendingActivityPage.vue')
 const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/components/LendingManagerPage.vue')
+const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/components/LendingExportPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
 
 const { headData } = useSiteHead()
@@ -151,6 +152,17 @@ const routes = [
           head: {
             title: 'Gotchi Lending Manager',
             description: 'Management overview of your gotchi lendings'
+          }
+        }
+      },
+      {
+        path: 'export',
+        name: 'lending-export',
+        component: LendingExportPage,
+        meta: {
+          head: {
+            title: 'Gotchi Lending Exports',
+            description: 'Export gotchi lendings data'
           }
         }
       }

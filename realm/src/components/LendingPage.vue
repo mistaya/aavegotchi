@@ -22,6 +22,13 @@
       >
         Manager
       </router-link>
+
+      <router-link
+        :to="{ name: 'lending-export' }"
+        class="site-banner__link"
+      >
+        Export
+      </router-link>
     </div>
     <router-view></router-view>
   </div>

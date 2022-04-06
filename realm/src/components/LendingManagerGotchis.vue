@@ -98,7 +98,7 @@
               />
             </th>
             <th title="Calculated by rarity (not market price): 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD">
-              'Total'
+              'Total' (FUD-equiv)
               <SortToggle
                 :sort="tableSort.column === 'totalAlchemica NORMALIZED' ? tableSort.direction : null"
                 @update:sort="tableSort.column = $event ? 'totalAlchemica NORMALIZED' : null; tableSort.direction = $event"
