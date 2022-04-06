@@ -40,6 +40,8 @@
         <div>
           Note: the FUD, FOMO, ALPHA, KEK in the table shows the total amount claimed plus any amount in the gotchi pocket. We can't yet see alchemica that has been collected but not withdrawn through a vortex.
           <br>This data is gathered from several sources, so may not be totally up-to-date.
+          <br>
+          <br>The 'Total' column is the same collected alchemica converted to a FUD-equivalent amount, as a single measure for comparison/sorting. This is done by using the intrinsic rarity of each alchemica type, <i>not</i> their market price: i.e. 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD.
         </div>
       </div>
 
@@ -108,12 +110,34 @@
             <th>Owner %</th>
             <th>Borrower %</th>
             <th>Third-Party %</th>
-            <th>Whitelist ID</th>
-            <th>Third-Party Address</th>
+            <th>
+              Whitelist ID
+              <SortToggle
+                :sort="tableSort.column === 'listing whitelistId' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing whitelistId' : null; tableSort.direction = $event"
+              />
+            </th>
+            <th>
+              Third-Party Address
+              <SortToggle
+                :sort="tableSort.column === 'listing thirdPartyAddress' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing thirdPartyAddress' : null; tableSort.direction = $event"
+              />
+            </th>
             <th v-if="!address">
               Owner
+              <SortToggle
+                :sort="tableSort.column === 'listing lender' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing lender' : null; tableSort.direction = $event"
+              />
             </th>
-            <th>Borrower</th>
+            <th>
+              Borrower
+              <SortToggle
+                :sort="tableSort.column === 'listing borrower' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing borrower' : null; tableSort.direction = $event"
+              />
+            </th>
           </tr>
         </template>
         <template #rows>
@@ -667,6 +691,9 @@ export default {
       if (column.startsWith('totalAlchemica')) {
         const type = column.split(' ')[1]
         return orderBy(tableGotchisFiltered.value, [row => row.totalAlchemica[type]?.toNumber() || 0], [direction])
+      } else if (column.startsWith('listing')) {
+        const property = column.split(' ')[1]
+        return orderBy(tableGotchisFiltered.value, [row => row.listing?.[property]], [direction])
       }
       return orderBy(tableGotchisFiltered.value, [column], [direction])
     })

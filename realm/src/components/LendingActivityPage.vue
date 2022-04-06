@@ -303,7 +303,7 @@ export default {
         })
         .catch(error => {
           console.error(error)
-          setError('There was an error fetching parcels')
+          setError('There was an error fetching lendings')
         })
     }
 
