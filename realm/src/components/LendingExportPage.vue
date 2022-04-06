@@ -3,7 +3,7 @@
     <h2>Gotchi Lending Exports</h2>
     <div>
       <div style="margin-bottom: 30px;">
-        This page will fetch current and historical lending data and let you save it as CSV for further analysis.
+        This page will fetch current and historical lending data and let you save it as CSV for further analysis (in Excel or any spreadsheet).
         <br>It does <b>NOT</b> include unclaimed pocket balances, or alchemica that is still in-game and hasn't been withdrawn through a vortex.
         <br>
         <br>All the following filters are optional, though please be considerate of the subgraphs if you're exporting a lot :)
