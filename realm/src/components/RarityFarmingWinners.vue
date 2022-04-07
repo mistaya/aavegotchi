@@ -262,7 +262,7 @@ export default {
     round: { type: String, required: true }
   },
   setup (props) {
-    const debug = ref(true)
+    const debug = ref(false)
 
     const { seasonInfo, roundInfo, fetchStatus, winners } = useRarityFarming(props.season, props.round)
 
