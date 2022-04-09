@@ -37,12 +37,16 @@
           <SiteIcon name="warning-triangle" />
           There was an error fetching pocket balances.
         </div>
-        <div>
-          Note: the FUD, FOMO, ALPHA, KEK in the table shows the total amount claimed plus any amount in the gotchi pocket. We can't yet see alchemica that has been collected but not withdrawn through a vortex.
-          <br>This data is gathered from several sources, so may not be totally up-to-date.
+        <details>
+          <summary>
+            About this data
+          </summary>
+          The FUD, FOMO, ALPHA, KEK in the table shows what's visible on the blockchain: the total amount claimed plus any amount in the gotchi pocket (withdrawn).
+          <br>We can't yet see alchemica that has been collected in-game but not withdrawn through a vortex, or withdrawals that are stuck in a queue and haven't been sent yet. So your scholars may be more active than this shows!
+          <br>This data is gathered from several sources, so may not be totally up-to-date. Thanks to sudeep#3648 on discord for the claimed-alchemica subgraph!
           <br>
           <br>The 'Total' column is the same collected alchemica converted to a FUD-equivalent amount, as a single measure for comparison/sorting. This is done by using the intrinsic rarity of each alchemica type, <i>not</i> their market price: i.e. 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD.
-        </div>
+        </details>
       </div>
 
       <SiteButton

@@ -330,12 +330,12 @@ export default {
 
     const friendlyDuration = function (periodString) {
       const hours = (periodString - 0) / (60 * 60)
-      return `${hours} hr${hours !== 1 ? 's' : ''}`
+      return `${hours.toFixed(4) - 0} hr${hours !== 1 ? 's' : ''}`
     }
 
     const friendlyGhst = function (upfrontCost) {
       const cost = new BigNumber(upfrontCost).div(10e17)
-      return `${cost.toString()} GHST`
+      return `${cost.decimalPlaces(4).toString()} GHST`
     }
 
     return {
