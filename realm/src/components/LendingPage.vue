@@ -1,14 +1,12 @@
 <template>
   <div>
     <div class="lending-nav site-banner site-banner--secondary">
-      <!--
       <router-link
         :to="{ name: 'lending-available' }"
         class="site-banner__link"
       >
         Available
       </router-link>
-    -->
       <router-link
         :to="{ name: 'lending-activity' }"
         class="site-banner__link"

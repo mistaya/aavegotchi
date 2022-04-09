@@ -22,6 +22,7 @@ import arrowUpSvg from '!!raw-loader!./icons/icon-arrow-up.svg'
 import arrowDownSvg from '!!raw-loader!./icons/icon-arrow-down.svg'
 import arrowLeftSvg from '!!raw-loader!./icons/icon-arrow-left.svg'
 import arrowRightSvg from '!!raw-loader!./icons/icon-arrow-right.svg'
+import arrowUpDownSvg from '!!raw-loader!./icons/icon-arrow-up-down.svg'
 import arrowLeftmostSvg from '!!raw-loader!./icons/icon-arrow-leftmost.svg'
 import arrowRightmostSvg from '!!raw-loader!./icons/icon-arrow-rightmost.svg'
 import openWindowSvg from '!!raw-loader!./icons/icon-open-window.svg'
@@ -38,6 +39,7 @@ const icons = [
   { id: 'arrow-down', svg: arrowDownSvg },
   { id: 'arrow-left', svg: arrowLeftSvg },
   { id: 'arrow-right', svg: arrowRightSvg },
+  { id: 'arrow-up-down', svg: arrowUpDownSvg },
   { id: 'arrow-leftmost', svg: arrowLeftmostSvg },
   { id: 'arrow-rightmost', svg: arrowRightmostSvg },
   { id: 'open-window', svg: openWindowSvg },

@@ -7,7 +7,7 @@
   >
     <template v-if="!sort">
       <SiteIcon
-        name="arrow-up"
+        name="arrow-up-down"
       />
       <span class="sr-only">Sort</span>
     </template>
@@ -26,14 +26,15 @@
 <script>
 export default {
   props: {
-    sort: { type: String, default: null /* null, 'asc' or 'desc' */ }
+    sort: { type: String, default: null /* null, 'asc' or 'desc' */ },
+    defaultDirection: { type: String, default: 'desc' }
   },
   methods: {
     nextSort () {
       if (!this.sort) {
-        this.$emit('update:sort', 'desc')
-      } else if (this.sort === 'desc') {
-        this.$emit('update:sort', 'asc')
+        this.$emit('update:sort', this.defaultDirection)
+      } else if (this.sort === this.defaultDirection) {
+        this.$emit('update:sort', this.defaultDirection === 'desc' ? 'asc' : 'desc')
       } else {
         this.$emit('update:sort', null)
       }

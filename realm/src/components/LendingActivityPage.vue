@@ -41,11 +41,12 @@
         </div>
         <div>
           <label>
-            Owner % &ge;
+            Owner &ge;
             <input
               v-model.lazy="ownerSplit"
               type="text"
             />
+            %
           </label>
           <span style="font-size: 0.9em">
             (press Enter or click outside field to search)
@@ -53,20 +54,22 @@
         </div>
         <div>
           <label>
-            Borrower % &ge;
+            Borrower &ge;
             <input
               v-model.lazy="borrowerSplit"
               type="text"
             />
+            %
           </label>
         </div>
         <div>
           <label>
-            Other % &ge;
+            Other &ge;
             <input
               v-model.lazy="otherSplit"
               type="text"
             />
+            %
           </label>
         </div>
         <div>
