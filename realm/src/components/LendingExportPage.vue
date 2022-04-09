@@ -50,6 +50,35 @@
             />
           </label>
         </div>
+        <div>
+          Lendings posted between:
+          <label>
+            <input
+              v-model="filters.startDate"
+              type="date"
+            />
+            <span class="sr-only">
+              start date
+            </span>
+          </label>
+          and
+          <label>
+            <input
+              v-model="filters.endDate"
+              type="date"
+            />
+            <span class="sr-only">
+              end date
+            </span>
+          </label>
+        </div>
+        <div
+          v-if="filtersEmpty"
+          style="margin: 15px 0; background: rgba(255, 220, 150, 0.4); padding: 5px;"
+        >
+          <SiteIcon name="warning-triangle" />
+          Warning: no filters are set, which will export ALL lendings!
+        </div>
         <SiteButton type="submit">
           Fetch Data
         </SiteButton>
@@ -87,8 +116,13 @@
 <script>
 import { ref, computed, watch } from 'vue'
 import BigNumber from 'bignumber.js'
+import orderBy from 'lodash.orderby'
+import add from 'date-fns/add'
+import isValid from 'date-fns/isValid'
+import parseISO from 'date-fns/parseISO'
 import useStatus from '@/data/useStatus'
 import LendingsExport from './LendingsExport.vue'
+import SiteIcon from './SiteIcon.vue'
 
 const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
@@ -96,7 +130,8 @@ const FETCH_PAGE_SIZE = 1000
 
 export default {
   components: {
-    LendingsExport
+    LendingsExport,
+    SiteIcon
   },
   setup () {
     const { status: lendingsStatus, setLoading: setLendingsLoading } = useStatus()
@@ -116,7 +151,13 @@ export default {
       borrowerAddress: null,
       thirdPartyAddress: null,
       whitelistId: null,
-      includePockets: false
+      startDate: null,
+      endDate: null
+    })
+
+    const filtersEmpty = computed(() => {
+      const f = filters.value
+      return !f.lenderAddress && !f.borrowerAddress && !f.thirdPartyAddress && !f.whitelistId && !f.startDate && !f.endDate
     })
 
     const fetchLendings = function () {
@@ -124,11 +165,26 @@ export default {
       let lastIdNum = 0
       let fetchedLendings = []
 
-      const { lenderAddress, borrowerAddress, thirdPartyAddress, whitelistId } = filters.value
+      const { lenderAddress, borrowerAddress, thirdPartyAddress, whitelistId, startDate, endDate } = filters.value
       const whitelistQuery = whitelistId ? `, whitelistId: "${whitelistId}"` : ''
       const lenderQuery = lenderAddress ? `, lender: "${lenderAddress.toLowerCase()}"` : ''
       const borrowerQuery = borrowerAddress ? `, borrower: "${borrowerAddress.toLowerCase()}"` : ''
       const thirdPartyQuery = thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddress.toLowerCase()}"` : ''
+
+      // Interpret dates in local timezone, and also export them that way.
+      // Treat range as inclusive
+      // Timestamp for specified date is at the beginning of the day.
+      const startDateLocal = parseISO(startDate)
+      let endDateLocal = parseISO(endDate)
+      let startDateQuery = ''
+      let endDateQuery = ''
+      if (isValid(startDateLocal)) {
+        startDateQuery = `, timeCreated_gte: ${startDateLocal.getTime() / 1000}`
+      }
+      if (isValid(endDateLocal)) {
+        endDateLocal = add(endDateLocal, { days: 1 })
+        endDateQuery = `, timeCreated_lt: ${endDateLocal.getTime() / 1000}`
+      }
 
       const fetchFromSubgraph = function () {
         const query = `
@@ -140,6 +196,8 @@ export default {
           ${lenderQuery}
           ${borrowerQuery}
           ${thirdPartyQuery}
+          ${startDateQuery}
+          ${endDateQuery}
         }) {
           id
           rentDuration
@@ -184,17 +242,21 @@ export default {
 
               if (responseJson.data.gotchiLendings.length < FETCH_PAGE_SIZE) {
                 // finished fetching all pages
-                lendings.value = fetchedLendings.map(item => {
-                  return {
-                    ...item,
-                    gotchiName: item.gotchi.name,
-                    periodHours: item.period / (60 * 60),
-                    timeAgreed: item.timeAgreed ? new Date(item.timeAgreed * 1000) : null,
-                    timeCreated: item.timeCreated ? new Date(item.timeCreated * 1000) : null,
-                    lastClaimed: item.lastClaimed ? new Date(item.lastClaimed * 1000) : null,
-                    upfrontCost: new BigNumber(item.upfrontCost).div(10e17).toString()
-                  }
-                })
+                lendings.value = orderBy(
+                  fetchedLendings.map(item => {
+                    return {
+                      ...item,
+                      gotchiName: item.gotchi.name,
+                      periodHours: item.period / (60 * 60),
+                      timeAgreed: item.timeAgreed ? new Date(item.timeAgreed * 1000) : null,
+                      timeCreated: item.timeCreated ? new Date(item.timeCreated * 1000) : null,
+                      lastClaimed: item.lastClaimed && item.lastClaimed !== '0' ? new Date(item.lastClaimed * 1000) : null,
+                      upfrontCost: new BigNumber(item.upfrontCost).div(10e17).toString()
+                    }
+                  }),
+                  ['timeCreated'],
+                  ['asc']
+                )
                 console.log('listings', lendings.value)
                 setLoaded()
                 return
@@ -314,6 +376,7 @@ export default {
 
     return {
       filters,
+      filtersEmpty,
       fetchData,
       status,
       lendings,
