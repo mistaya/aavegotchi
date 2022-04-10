@@ -5,7 +5,8 @@ import initialGotchisUrl from './pockets/assetGotchis.json'
 // Fetch all gotchis to find their escrow addresses
 const gotchis = ref([])
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
 const FETCH_PAGE_SIZE = 1000
 
 const { status: fetchStatus, setLoading } = useStatus()
@@ -22,6 +23,34 @@ const fetchGotchis = function () {
   const [isStale, setLoaded, setError] = setLoading()
   let lastIdNum = 0
   let fetchedGotchis = []
+  const fetchingLendings = []
+
+  const fetchLendings = function (lendingIds) {
+    // we want to know about borrowed gotchis, not just listed lendings
+    return fetch(SUBGRAPH_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        query: `{
+          gotchiLendings(first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(lendingIds)}, timeAgreed_not: "0", cancelled: false }) {
+            id
+            lender
+            originalOwner
+          }
+        }`
+      })
+    }).then(async response => {
+      if (isStale()) { console.log('Stale request, ignoring'); return }
+      if (!response.ok) {
+        throw new Error('There was an error fetching lendings')
+      }
+      const responseJson = await response.json()
+      if (responseJson.data?.gotchiLendings) {
+        return responseJson.data.gotchiLendings
+      } else {
+        throw new Error('Unexpected lendings response')
+      }
+    })
+  }
   const fetchGotchisFromSubgraph = function () {
     fetch(SUBGRAPH_URL, {
       method: 'POST',
@@ -32,6 +61,7 @@ const fetchGotchis = function () {
             owner {
               id
             }
+            lending
             name
             collateral
             stakedAmount
@@ -49,10 +79,37 @@ const fetchGotchis = function () {
       const responseJson = await response.json()
       if (responseJson.data?.aavegotchis) {
         fetchedGotchis = fetchedGotchis.concat(responseJson.data.aavegotchis)
+        const lendingIds = responseJson.data.aavegotchis.map(({ lending }) => lending).filter(id => id)
+        fetchingLendings.push(fetchLendings(lendingIds))
         if (responseJson.data.aavegotchis.length < FETCH_PAGE_SIZE) {
-          // finished fetching all pages
-          setGotchis(fetchedGotchis)
-          setLoaded()
+          // finished fetching all gotchi pages
+          // now wait for all lending data
+          Promise.all(
+            fetchingLendings
+          ).then(lendings => {
+            if (isStale()) { console.log('Stale request, ignoring'); return }
+            const lendingsById = Object.fromEntries(
+              [...lendings]
+                .flat()
+                .map(lending => [lending.id, lending])
+            )
+            // merge lending data into gotchis
+            for (const gotchi of fetchedGotchis) {
+              if (gotchi.lending && lendingsById[gotchi.lending]) {
+                const lending = lendingsById[gotchi.lending]
+                gotchi.lender = lending.lender
+                if (lending.originalOwner !== lending.lender) {
+                  gotchi.originalOwner = lending.originalOwner
+                }
+              }
+            }
+            setGotchis(fetchedGotchis)
+            setLoaded()
+          }).catch(e => {
+            if (isStale()) { console.log('Stale request, ignoring'); return }
+            console.error('lendings error', e)
+            setError(e.message)
+          })
           return
         }
         // fetch the next page of results
@@ -76,7 +133,7 @@ fetch(initialGotchisUrl)
   .then(response => response.json())
   .then(json => {
     if (isStale()) { return }
-    setGotchis(json, new Date(1648747014033))
+    setGotchis(json, new Date(1649591747177))
     setLoaded()
   }).catch(error => {
     console.error(error)
