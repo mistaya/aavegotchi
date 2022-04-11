@@ -193,6 +193,7 @@
             <th>
               Gotchi ID
               <SortToggle
+                defaultDirection="asc"
                 :sort="gotchisSort.column === 'idNum' ? gotchisSort.direction : null"
                 @update:sort="gotchisSort.column = $event ? 'idNum' : null; gotchisSort.direction = $event"
               />
@@ -205,14 +206,26 @@
               />
             </th>
             <th>
-              Owner
-              <SortToggle
-                :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
-                @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
-              />
-              <div v-if="hasVaultOwners || hasEthereumGotchiOwners">
+              <div style="white-space: nowrap;">
+                Borrower
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="gotchisSort.column === 'borrower' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'borrower' : null; gotchisSort.direction = $event"
+                />
+              </div>
+              <div style="white-space: nowrap;">
+                Owner / Lender
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="gotchisSort.column === 'owner' ? gotchisSort.direction : null"
+                  @update:sort="gotchisSort.column = $event ? 'owner' : null; gotchisSort.direction = $event"
+                />
+              </div>
+              <div style="white-space: nowrap;">
                 True Owner
                 <SortToggle
+                  defaultDirection="asc"
                   :sort="gotchisSort.column === 'trueOwner' ? gotchisSort.direction : null"
                   @update:sort="gotchisSort.column = $event ? 'trueOwner' : null; gotchisSort.direction = $event"
                 />
@@ -282,22 +295,30 @@
               {{ gotchi.name }}
             </td>
             <td>
-              <EthAddress
-                :address="gotchi.owner"
+              <div
+                v-if="borrowersByGotchi[gotchi.id]"
+                style="display: flex; align-items: center;"
+              >
+                <SiteIcon
+                  name="clock"
+                  style="margin-right: 4px;"
+                />
+                <EthAddress
+                  :address="borrowersByGotchi[gotchi.id]"
+                  icon
+                />
+              </div>
+               <EthAddress
+                :address="ownersByGotchi[gotchi.id]"
                 icon
+                style="margin-left: 20px;"
               />
-              <div v-if="hasVaultOwners && vaultOwners[gotchi.id]">
-                <EthAddress
-                  :address="vaultOwners[gotchi.id]"
-                  icon
-                />
-              </div>
-              <div v-else-if="hasEthereumGotchiOwners && ethereumGotchiOwners[gotchi.id]">
-                <EthAddress
-                  :address="ethereumGotchiOwners[gotchi.id]"
-                  icon
-                />
-              </div>
+               <EthAddress
+                v-if="trueOwnersByGotchi[gotchi.id] && trueOwnersByGotchi[gotchi.id] !== ownersByGotchi[gotchi.id]"
+                :address="trueOwnersByGotchi[gotchi.id]"
+                icon
+                style="margin-left: 20px;"
+              />
             </td>
             <td>
               {{ gotchi.collateral }}
@@ -423,18 +444,24 @@ export default {
       fetchPrices()
     }
 
+    const hasEthereumGotchiOwners = computed(() => ethereumGotchiOwnersFetchStatus.value.loaded)
+    const hasVaultOwners = computed(() => vaultOwnersFetchStatus.value.loaded)
+
     const gotchisData = computed(() => {
       return gotchis.value.map(g => {
         const collateral = collaterals[g.collateral.toLowerCase()]
         const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : new BigNumber(0)
         const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : new BigNumber(0)
         const excessStake = stakedAmount.minus(minimumStake)
+        const owner = g.owner?.id
         return {
           id: g.id,
           idNum: g.id - 0,
           name: g.name,
           nameLowerCase: g.name.toLowerCase(),
-          owner: g.owner?.id,
+          owner,
+          lender: g.lender,
+          originalOwner: g.originalOwner,
           collateralId: collateral.id,
           collateral: collateral?.label || g.collateral,
           stakedAmount,
@@ -443,6 +470,40 @@ export default {
           escrow: g.escrow
         }
       })
+    })
+
+    const borrowersByGotchi = computed(() => {
+      return Object.fromEntries(
+        gotchisData.value
+          .filter(g => g.lender) // look for borrowed gotchis
+          .map(g => [g.id, g.owner]) // the borrower is temporarily the owner
+      )
+    })
+
+    // owners may be the true owner or the vault/ethereum
+    const ownersByGotchi = computed(() => {
+      return Object.fromEntries(
+        gotchisData.value.map(g => [g.id, g.lender || g.owner])
+      )
+    })
+
+    const trueOwnersByGotchi = computed(() => {
+      const checkVaultOwner = hasVaultOwners.value
+      const vaultOwnerFor = vaultOwners.value
+      const checkEthereumOwner = hasEthereumGotchiOwners.value
+      const ethereumOwnerFor = ethereumGotchiOwners.value
+      return Object.fromEntries(
+        gotchisData.value.map(g => {
+          if (g.lender) {
+            return [g.id, g.originalOwner || g.lender]
+          }
+          // Not borrowed: look up ethereum/vault owners
+          return [
+            g.id,
+            (checkVaultOwner && vaultOwnerFor[g.id]) || (checkEthereumOwner && ethereumOwnerFor[g.id]) || g.owner
+          ]
+        })
+      )
     })
 
     const formQuery = ref('')
@@ -470,16 +531,15 @@ export default {
     const gotchisFiltered = computed(() => {
       const query = gotchisQueryCleaned.value
       if (!query) { return gotchisData.value }
-      const checkVaultOwner = hasVaultOwners.value
-      const vaultOwnerFor = vaultOwners.value
-      const checkEthereumOwner = hasEthereumGotchiOwners.value
-      const ethereumOwnerFor = ethereumGotchiOwners.value
+      const borrowers = borrowersByGotchi.value
+      const owners = ownersByGotchi.value
+      const trueOwners = trueOwnersByGotchi.value
       return gotchisData.value.filter(g =>
         g.id === query ||
-        g.owner === query ||
         g.nameLowerCase.includes(query) ||
-        (checkVaultOwner && vaultOwnerFor[g.id] === query) ||
-        (checkEthereumOwner && ethereumOwnerFor[g.id] === query)
+        borrowers[g.id] === query ||
+        owners[g.id] === query ||
+        trueOwners[g.id] === query
       )
     })
 
@@ -498,11 +558,17 @@ export default {
         const usdValueFor = gotchisUsdValues.value
         return orderBy(gotchisFiltered.value, [g => usdValueFor[g.id][`${column}Sortable`] || 0], [direction])
       }
+      if (column === 'borrower') {
+        const borrowers = borrowersByGotchi.value
+        return orderBy(gotchisFiltered.value, [g => borrowers[g.id]], [direction])
+      }
+      if (column === 'owner') {
+        const owners = ownersByGotchi.value
+        return orderBy(gotchisFiltered.value, [g => owners[g.id]], [direction])
+      }
       if (column === 'trueOwner') {
-        if (!hasVaultOwners.value && !hasEthereumGotchiOwners.value) { return gotchisFiltered.value }
-        const vaultOwnerFor = vaultOwners.value
-        const ethereumOwnerFor = ethereumGotchiOwners.value
-        return orderBy(gotchisFiltered.value, [g => vaultOwnerFor[g.id] || ethereumOwnerFor[g.id] || g.owner], [direction])
+        const trueOwners = trueOwnersByGotchi.value
+        return orderBy(gotchisFiltered.value, [g => trueOwners[g.id]], [direction])
       }
       return orderBy(gotchisFiltered.value, [column], [direction])
     })
@@ -665,9 +731,6 @@ export default {
       return sortableByGotchi
     })
 
-    const hasEthereumGotchiOwners = computed(() => ethereumGotchiOwnersFetchStatus.value.loaded)
-    const hasVaultOwners = computed(() => vaultOwnersFetchStatus.value.loaded)
-
     return {
       gotchisFetchStatus,
       dashboardDisplayMode,
@@ -679,10 +742,9 @@ export default {
       balanceTokens,
       balanceTotals,
       balances,
-      ethereumGotchiOwners,
-      hasEthereumGotchiOwners,
-      vaultOwners,
-      hasVaultOwners,
+      borrowersByGotchi,
+      ownersByGotchi,
+      trueOwnersByGotchi,
       formQuery,
       gotchisQuery,
       gotchisPaging,
