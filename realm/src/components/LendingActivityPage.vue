@@ -221,7 +221,7 @@ import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from '@/components/EthAddress.vue'
 import SiteTable from '@/components/SiteTable.vue'
 
-const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
 
 export default {
   components: {
@@ -260,7 +260,6 @@ export default {
       const query = `
       {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: "0", cancelled: false, ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery} ${periodQuery} }) {
         id
-        rentDuration
         upfrontCost
         period
         gotchi {

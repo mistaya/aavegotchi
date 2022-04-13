@@ -280,7 +280,7 @@ const TOKEN_ADDRESSES = {
   GHST: tokensList.find(({ label }) => label === 'GHST').id
 }
 
-const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
 
 export default {
   components: {
@@ -377,7 +377,6 @@ export default {
         ${tokensQuery}
       }) {
         id
-        rentDuration
         upfrontCost
         period
         tokensToShare

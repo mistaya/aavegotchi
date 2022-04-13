@@ -312,7 +312,7 @@ import EthAddress from './EthAddress.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
 
-const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
 const FETCH_PAGE_SIZE = 1000
 
