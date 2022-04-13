@@ -313,6 +313,7 @@ import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
 
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
+const OWNER_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
 const FETCH_PAGE_SIZE = 1000
 
@@ -374,7 +375,7 @@ export default {
         return
       }
 
-      fetch(SUBGRAPH_URL, {
+      fetch(OWNER_SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
           query: `{
