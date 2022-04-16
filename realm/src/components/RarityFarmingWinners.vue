@@ -268,12 +268,12 @@
                 :address="row.gotchi.owner"
                 icon
               />
-              <br>
-              <EthAddress
-                v-if="row.gotchi.realOwner"
-                :address="row.gotchi.realOwner"
-                icon
-              />
+              <div v-if="row.gotchi.realOwner && row.gotchi.realOwner !== row.gotchi.owner">
+                <EthAddress
+                  :address="row.gotchi.realOwner"
+                  icon
+                />
+              </div>
             </td>
             <td v-if="showExtended">
               {{ row.gotchi.hauntId}}

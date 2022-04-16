@@ -14,15 +14,19 @@ const RF_BLOCKS = {
     rnd2: {
       polygon: 26308346,
       eth: 14449396
+    },
+    rnd3: {
+      polygon: 26854118,
+      eth: 14539158
     }
   }
 }
 
 // Params for this run
 // - round
-const BLOCKS = RF_BLOCKS.szn3.rnd1
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd1.json'
-const GOTCHIS_FILENAME = 'rnd1Gotchis'
+const BLOCKS = RF_BLOCKS.szn3.rnd3
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd3.json'
+const GOTCHIS_FILENAME = 'rnd3Gotchis'
 // - season
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
 const NUM_ROUNDS = 4
@@ -150,10 +154,29 @@ const fetchRoundData = async function () {
 
 const fetchGotchiOwners = async function () {
   const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
+  // First look up lent-out gotchis
+  const gotchiIds = gotchis.map(gotchi => gotchi.id)
+  const gotchiIdToLending = await fetchGotchiLendings(gotchiIds)
+  console.log(`Found ${Object.keys(gotchiIdToLending).length} lent-out gotchis`)
+
+  // If the gotchi has an active lending, those details contain the borrower/lender/originalOwner (handles Vault)
+  for (const gotchi of gotchis) {
+    const lending = gotchiIdToLending[gotchi.id]
+    if (!lending) { continue }
+    gotchi.borrower = lending.borrower
+    gotchi.owner = lending.lender
+    gotchi.realOwner = lending.originalOwner
+  }
+
+  // For non-lent-out gotchis:
   // Find owners of gotchis bridged to Ethereum or in the Vault
   const ethGotchis = []
   const vaultGotchis = []
   for (const gotchi of gotchis) {
+    if (gotchiIdToLending[gotchi.id]) {
+      // lent-out gotchi already dealt with
+      continue
+    }
     if (gotchi.owner === ETH_BRIDGE_ADDRESS) {
       ethGotchis.push(gotchi)
     } else if (gotchi.owner === VAULT_ADDRESS) {
@@ -174,6 +197,63 @@ const fetchGotchiOwners = async function () {
 
   await writeJsonFile(`${GOTCHIS_FILENAME}.json`, gotchis)
   console.log(`Written result to ${GOTCHIS_FILENAME}.json`)
+}
+
+const fetchGotchiLendings = async function (gotchiIds) {
+  const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
+  return new Promise((resolve, reject) => {
+    let results = []
+    let nextIndex = 0
+    const fetchFromSubgraph = function () {
+      const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
+      console.log(`Fetching batch of ${idsToFetch.length} potential gotchi lendings... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${BLOCKS.polygon}`)
+      axios.post(LENDING_SUBGRAPH_URL, {
+        query: `{
+          gotchiLendings(
+            block: { number: ${BLOCKS.polygon} },
+            first: ${FETCH_PAGE_SIZE},
+            where: {
+              cancelled: false,
+              completed: false,
+              timeAgreed_gt: 0,
+              gotchiTokenId_in: ${JSON.stringify(idsToFetch)}
+            }
+          ) {
+            id
+            gotchiTokenId,
+            borrower
+            lender
+            originalOwner
+          }
+        }`
+      }).then(async response => {
+        if (response.data.data?.gotchiLendings) {
+          results = results.concat(response.data.data.gotchiLendings)
+          console.log(`Received ${response.data.data.gotchiLendings.length} lendings; total ${results.length}`)
+          if (nextIndex + FETCH_PAGE_SIZE >= gotchiIds.length) {
+            // finished fetching all pages
+            console.log(`Fetched all ${results.length} gotchi lendings in ${gotchiIds.length} potential gotchis`)
+            const gotchiIdToLending = Object.fromEntries(
+              results.map(r => [r.gotchiTokenId, r])
+            )
+            resolve(gotchiIdToLending)
+            return
+          }
+          // fetch the next page of results
+          nextIndex += FETCH_PAGE_SIZE
+          fetchFromSubgraph()
+        } else {
+          console.error('Unexpected response', response.data?.errors)
+          reject(new Error('Unexpected response from graph'))
+        }
+      }).catch(error => {
+        console.error(error)
+        reject(new Error('Error fetching from graph'))
+      })
+    }
+
+    fetchFromSubgraph()
+  })
 }
 
 const fetchEthGotchiOwners = function (gotchiIds) {
@@ -229,6 +309,7 @@ const fetchEthGotchiOwners = function (gotchiIds) {
 }
 
 const fetchVaultGotchiOwners = function (gotchiIds) {
+  // TODO this subgraph is no longer accurate since lendings started
   const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
   return new Promise((resolve, reject) => {
     let results = []

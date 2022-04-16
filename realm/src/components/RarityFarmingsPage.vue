@@ -17,7 +17,7 @@
       <div>
         Season 3:
         <router-link
-          v-for="round in ['1', '2']"
+          v-for="round in ['1', '2', '3']"
           :key="round"
           :to="{ name: 'rf', params: { season: '3', round } }"
           class="site-banner__link"
@@ -38,7 +38,7 @@ const ensureRFRoute = function (to, next) {
       name: 'rf',
       params: {
         season: '3',
-        round: '2'
+        round: '3'
       }
     })
   } else {

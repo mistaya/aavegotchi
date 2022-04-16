@@ -30,7 +30,7 @@ export default {
   },
   props: {
     season: { type: String, default: '3' },
-    round: { type: String, default: '2' }
+    round: { type: String, default: '3' }
   },
   setup (props) {
     // The router-view that loads this uses a key with the season and round,
