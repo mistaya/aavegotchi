@@ -13,7 +13,9 @@
       </div>
 
       <div style="margin-top: 20px">
-        Select a leaderboard:
+        <b style="margin-right: 8px">
+          Select a leaderboard:
+        </b>
         <SiteButton
           v-for="board in seasonInfo.leaderboards"
           :key="board.id"
@@ -26,7 +28,7 @@
         </SiteButton>
       </div>
 
-      <div style="margin-top: 20px">
+      <div style="margin-top: 5px; font-size: 0.9em">
         The tiebreaker for this leaderboard was
         <b>{{ tiebreakerLabel }}</b>
       </div>
@@ -44,41 +46,65 @@
             </SiteButton>
           </label>
         </form>
-        <div style="margin-top: 20px;">
-          <label>
-            <input
-              v-model="showImages"
-              type="checkbox"
-            />
-            Display gotchi images
-          </label>
-        </div>
-        <div style="margin-top: 10px;">
-          <label>
-            <input
-              v-model="showExtended"
-              type="checkbox"
-            />
-            Display more columns
-          </label>
-        </div>
-        <div
-          v-if="currentLeaderboardId === 'rarity'"
-          style="margin-top: 10px;"
+        <form
+          @submit.prevent="jumpToRank"
+          style="margin-top: 10px"
         >
           <label>
+            <i>or</i> -  Jump to Rank #
             <input
-              v-model="debug"
-              type="checkbox"
+              v-model="rankQuery"
+              type="text"
+              style="width: 100px"
             />
-            <span style="opacity: 0.5;">
-              (devs) Display alternate Rarity Scores for debugging
-            </span>
+            <SiteButton type="submit">
+              Go There
+            </SiteButton>
           </label>
-        </div>
+        </form>
+        <details style="margin-top: 20px; display: inline-block;">
+          <summary>
+            Advanced table config
+          </summary>
+          <div style="margin-top: 10px; margin-left: 12px;">
+            <div>
+              <label>
+                <input
+                  v-model="showImages"
+                  type="checkbox"
+                />
+                Display gotchi images
+              </label>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>
+                <input
+                  v-model="showExtended"
+                  type="checkbox"
+                />
+                Display more columns
+              </label>
+            </div>
+            <div
+              v-if="currentLeaderboardId === 'rarity'"
+              style="margin-top: 10px;"
+            >
+              <label>
+                <input
+                  v-model="debug"
+                  type="checkbox"
+                />
+                <span style="opacity: 0.5;">
+                  (devs) Display alternate Rarity Scores for Wearable Set debugging
+                </span>
+              </label>
+            </div>
+          </div>
+        </details>
       </div>
 
       <SiteTable
+        ref="tableRef"
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
@@ -289,7 +315,7 @@
 </template>
 
 <script>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import useRarityFarming from '@/data/useRarityFarming'
 import EthAddress from './EthAddress.vue'
 import NumberDisplay from './NumberDisplay.vue'
@@ -370,6 +396,37 @@ export default {
       }),
       () => { tablePaging.value.page = 0 }
     )
+
+    const tableRef = ref(null)
+    const rankQuery = ref('')
+
+    const jumpToRank = async function () {
+      if (currentQueryCleaned.value) {
+        // clear any query before jumping to a rank
+        currentQuery.value = ''
+        inputQuery.value = ''
+        // wait for this to update the paging
+        await nextTick()
+      }
+      const rankNumber = rankQuery.value - 0
+      if (!Number.isNaN(rankNumber)) {
+        let rowIndex = rankNumber - 1
+        if (rowIndex < 0) {
+          rowIndex = 0
+        } else if (rowIndex >= currentLeaderboardIdWinners.value.length) {
+          rowIndex = currentLeaderboardIdWinners.value.length - 1
+        }
+        tablePaging.value.page = Math.floor(rowIndex / tablePaging.value.pageSize)
+        const pageRowIndex = rowIndex % tablePaging.value.pageSize
+        await nextTick()
+        if (tableRef.value?.$el) {
+          const row = tableRef.value.$el.querySelectorAll('tbody > tr')[pageRowIndex]
+          if (row?.scrollIntoView) {
+            row.scrollIntoView()
+          }
+        }
+      }
+    }
 
     const winnersByLeaderboard = computed(() => {
       if (!fetchStatus.value.loaded) { return {} }
@@ -454,7 +511,10 @@ export default {
       traitColumnsToShow,
       inputQuery,
       currentQuery,
+      rankQuery,
+      jumpToRank,
       tablePaging,
+      tableRef,
       numFilteredGotchis,
       rowsToDisplay
     }
@@ -469,11 +529,15 @@ export default {
   }
 
   .gotchis-table-filters {
-    margin: 50px 0 30px;
+    margin: 30px 0 30px;
+    text-align: center;
   }
 
   .rf-table td {
     vertical-align: top;
+  }
+  .rf-table :deep(tbody tr) {
+    scroll-margin-top: 40px;
   }
 
   /* debugging */
