@@ -1,4 +1,4 @@
-const { readJsonFile } = require('./fileUtils.js')
+const { readJsonFile } = require('../../fileUtils.js')
 const { ethers } = require('ethers')
 const { Provider, Contract } = require('ethers-multicall')
 
@@ -10,7 +10,7 @@ let contract = null
 
 const initContract = async function () {
   // https://raw.githubusercontent.com/aavegotchi/aavegotchi-contracts/master/diamondABI/diamond.json
-  const diamondAbi = await readJsonFile('./diamondAbi.json')
+  const diamondAbi = await readJsonFile('./diamond/diamondAbi.json')
   const diamondAddress = '0x86935F11C86623deC8a25696E1C19a8659CbF95d'
   contract = new Contract(
     diamondAddress,

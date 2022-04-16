@@ -1,8 +1,8 @@
 const axios = require('axios')
-const { writeJsonFile, readJsonFile } = require('../fileUtils.js')
+const { writeJsonFile, readJsonFile, writeTextFile } = require('../fileUtils.js')
 const BigNumber = require('bignumber.js')
 const setHelpers = require('./sets/setHelpers.js')
-// const diamond = require('./diamond/diamond.js')
+const diamond = require('./diamond/diamond.js')
 
 // Snapshot blocks
 const RF_BLOCKS = {
@@ -20,13 +20,13 @@ const RF_BLOCKS = {
 
 // Params for this run
 // - round
-const BLOCKS = RF_BLOCKS.szn3.rnd2
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd2.json'
-const GOTCHIS_FILENAME = 'rnd2Gotchis'
+const BLOCKS = RF_BLOCKS.szn3.rnd1
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd1.json'
+const GOTCHIS_FILENAME = 'rnd1Gotchis'
 // - season
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
 const NUM_ROUNDS = 4
-// const GOTCHI_IMAGES_FOLDER = './svgs'
+const GOTCHI_IMAGES_FOLDER = './svgs'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -301,24 +301,6 @@ const manuallyCalculateBRS = async function () {
   console.log(`Written result to ${GOTCHIS_FILENAME}_fixed.json`)
 }
 
-const runAll = async function () {
-  await fetchRoundData()
-  await fetchGotchiOwners()
-  await manuallyCalculateBRS()
-}
-// ----------------------------------------------------
-//  Uncomment One of the below functions to run
-// ----------------------------------------------------
-
-// runAll()
-// fetchRoundData()
-// fetchGotchiOwners()
-manuallyCalculateBRS()
-
-// ----------------------------------------------------
-/*
-// This works, but takes up too much space storing the images
-
 const gotchiHideDefaultBgSvg = `
     <style>
         .gotchi-bg { display: none }
@@ -360,6 +342,21 @@ const fetchGotchiImages = async function () {
   await Promise.all(writingFiles)
   console.log(`Written svgs to ${GOTCHI_IMAGES_FOLDER}`)
 }
-*/
 
-// fetchGotchiImages()
+const runAll = async function () {
+  await fetchRoundData()
+  await fetchGotchiOwners()
+  await manuallyCalculateBRS()
+}
+// ----------------------------------------------------
+//  Uncomment One of the below functions to run
+// ----------------------------------------------------
+
+// runAll()
+// fetchRoundData()
+// fetchGotchiOwners()
+// manuallyCalculateBRS()
+
+fetchGotchiImages()
+
+// ----------------------------------------------------

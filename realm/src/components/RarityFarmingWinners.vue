@@ -26,6 +26,11 @@
         </SiteButton>
       </div>
 
+      <div style="margin-top: 20px">
+        The tiebreaker for this leaderboard was
+        <b>{{ tiebreakerLabel }}</b>
+      </div>
+
       <div class="gotchis-table-filters">
         <form @submit.prevent="currentQuery = inputQuery">
           <label>
@@ -39,16 +44,36 @@
             </SiteButton>
           </label>
         </form>
+        <div style="margin-top: 20px;">
+          <label>
+            <input
+              v-model="showImages"
+              type="checkbox"
+            />
+            Display gotchi images
+          </label>
+        </div>
+        <div style="margin-top: 10px;">
+          <label>
+            <input
+              v-model="showExtended"
+              type="checkbox"
+            />
+            Display more columns
+          </label>
+        </div>
         <div
           v-if="currentLeaderboardId === 'rarity'"
-          style="margin-top: 20px;"
+          style="margin-top: 10px;"
         >
           <label>
             <input
               v-model="debug"
               type="checkbox"
             />
-            Display alternate Rarity Scores for debugging
+            <span style="opacity: 0.5;">
+              (devs) Display alternate Rarity Scores for debugging
+            </span>
           </label>
         </div>
       </div>
@@ -57,12 +82,12 @@
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
+        class="rf-table"
       >
         <template #headers>
           <th>Rank</th>
-          <th>ID</th>
-          <th>Name</th>
-          <!-- TODO add gotchi image -->
+          <th>Name, ID</th>
+          <th v-if="showImages"></th>
 
           <!-- for debugging Rarity/Set issues -->
           <template v-if="showDebugTable">
@@ -89,8 +114,12 @@
             </th>
           </template>
 
+          <th v-if="showExtended || currentLeaderboardId === 'rarity'">
+            Wearable Set
+          </th>
+
           <th
-            v-for="board in seasonInfo.leaderboards"
+            v-for="board in leaderboardColumnsToShow"
             :key="board.id"
           >
             {{ board.label }}
@@ -109,26 +138,29 @@
               ⭐
             </span>
           </th>
-          <th>
-            Wearable Set
-          </th>
-          <th>Reward (GHST)</th>
-          <th>Owner</th>
-          <th>Haunt</th>
+
           <th
-            v-for="(trait, index) in ['NRG', 'AGG', 'SPK', 'BRN', 'EYS', 'EYC']"
-            :key="trait"
+            v-for="trait in traitColumnsToShow"
+            :key="trait.label"
           >
-            {{ trait }}
+            {{ trait.label }}
             <span
-              v-if="currentLeaderboard.tiebreaker === 'trait' && index === roundInfo.tiebreakerTraitIndex"
+              v-if="currentLeaderboard.tiebreaker === 'trait' && trait.index === roundInfo.tiebreakerTraitIndex"
               title="tiebreaker"
               aria-label="tiebreaker"
             >
               ⭐
             </span>
           </th>
-          <th>Pocket Address</th>
+
+          <th>Reward (GHST)</th>
+          <th>Owner</th>
+          <th v-if="showExtended">
+            Haunt
+          </th>
+          <th v-if="showExtended">
+            Pocket Address
+          </th>
         </template>
         <template #rows>
           <tr
@@ -139,6 +171,8 @@
               {{ row.ranking }}
             </td>
             <td>
+              {{ row.gotchi.name }}
+              <br />
               <a
                 :href="`https://app.aavegotchi.com/gotchi/${row.gotchi.id}`"
                 target="_blank"
@@ -146,8 +180,12 @@
                 {{ row.gotchi.id }}
               </a>
             </td>
-            <td>
-              {{ row.gotchi.name }}
+            <td v-if="showImages">
+            <img
+              :src="`/resources/rf/s${season}/r${round}/${row.gotchi.id}.svg`"
+              alt=""
+              style="width: 100px; height: 100px"
+            />
             </td>
 
             <!-- For debugging Rarity/Set issues -->
@@ -193,18 +231,32 @@
               </td>
             </template>
 
-            <td>
-              {{ row.gotchi.withSetsRarityScoreRF }}
-            </td>
-            <td>
-              {{ row.gotchi.kinship }}
-            </td>
-            <td>
-              {{ row.gotchi.experience }}
-            </td>
-            <td>
+            <td v-if="showExtended || currentLeaderboardId === 'rarity'">
               {{ row.gotchi.equippedSetNameRF }}
             </td>
+
+            <td
+              v-for="board in leaderboardColumnsToShow"
+              :key="board.id"
+            >
+              <template v-if="board.id === 'rarity'">
+                {{ row.gotchi.withSetsRarityScoreRF }}
+              </template>
+              <template v-else-if="board.id === 'kinship'">
+                {{ row.gotchi.kinship }}
+              </template>
+              <template v-else-if="board.id === 'xp'">
+                {{ row.gotchi.experience }}
+              </template>
+            </td>
+
+            <td
+              v-for="trait in traitColumnsToShow"
+              :key="trait.label"
+            >
+              {{ row.gotchi.withSetsNumericTraitsRF[trait.index] }}
+            </td>
+
             <td>
               <NumberDisplay
                 :number="row.reward.toNumber()"
@@ -223,16 +275,10 @@
                 icon
               />
             </td>
-            <td>
+            <td v-if="showExtended">
               {{ row.gotchi.hauntId}}
             </td>
-            <td
-              v-for="(trait, index) in row.gotchi.withSetsNumericTraits"
-              :key="index"
-            >
-              {{ trait }}
-            </td>
-            <td>
+            <td v-if="showExtended">
               <EthAddress :address="row.gotchi.escrow" shortest polygonscan />
             </td>
           </tr>
@@ -250,6 +296,8 @@ import NumberDisplay from './NumberDisplay.vue'
 import SiteButton from './SiteButton.vue'
 import SiteTable from './SiteTable.vue'
 
+const TRAITS = ['NRG', 'AGG', 'SPK', 'BRN', 'EYS', 'EYC']
+
 export default {
   components: {
     EthAddress,
@@ -262,6 +310,8 @@ export default {
     round: { type: String, required: true }
   },
   setup (props) {
+    const showImages = ref(true)
+    const showExtended = ref(false)
     const debug = ref(false)
 
     const { seasonInfo, roundInfo, fetchStatus, winners } = useRarityFarming(props.season, props.round)
@@ -270,6 +320,39 @@ export default {
 
     const currentLeaderboardId = ref(seasonInfo.leaderboards[0].id)
     const currentLeaderboard = computed(() => seasonInfo.leaderboards.find(board => board.id === currentLeaderboardId.value))
+
+    const tiebreakerLabel = computed(() => {
+      if (currentLeaderboard.value.tiebreaker === 'trait') {
+        return TRAITS[roundInfo.tiebreakerTraitIndex]
+      }
+      if (currentLeaderboard.value.tiebreaker === 'kinship') {
+        return 'Kinship'
+      }
+      if (currentLeaderboard.value.tiebreaker === 'xp') {
+        return 'XP'
+      }
+      return ''
+    })
+
+    const leaderboardColumnsToShow = computed(() => {
+      if (showExtended.value) {
+        return seasonInfo.leaderboards
+      }
+      return seasonInfo.leaderboards.filter(
+        board => board.id === currentLeaderboardId.value || board.id === currentLeaderboard.value.tiebreaker
+      )
+    })
+
+    const traitColumnsToShow = computed(() => {
+      const traits = TRAITS.map((label, index) => ({ index, label }))
+      if (showExtended.value) {
+        return traits
+      }
+      if (currentLeaderboard.value.tiebreaker !== 'trait') {
+        return []
+      }
+      return [traits[roundInfo.tiebreakerTraitIndex]]
+    })
 
     const inputQuery = ref('')
     const currentQuery = ref('')
@@ -310,6 +393,7 @@ export default {
         mapByLeaderboard[board.id].sort((a, b) => a.ranking - b.ranking)
       }
       // TODO Debug/Sanity check: check that rarity farming leaderboard is ordered by withSetsRarityScore
+      /*
       let lastScore = 100000
       for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
         if (gotchi.withSetsRarityScoreBest > lastScore) {
@@ -321,6 +405,7 @@ export default {
         // log the score used by ranking as the 'last score'
         lastScore = gotchi.withSetsRarityScoreRF
       }
+      */
       return mapByLeaderboard
     })
 
@@ -355,13 +440,18 @@ export default {
 
     return {
       debug,
+      showImages,
+      showExtended,
       showDebugTable,
       seasonInfo,
       roundInfo,
+      tiebreakerLabel,
       fetchStatus,
       numUniqueWinners,
       currentLeaderboardId,
       currentLeaderboard,
+      leaderboardColumnsToShow,
+      traitColumnsToShow,
       inputQuery,
       currentQuery,
       tablePaging,
@@ -380,7 +470,10 @@ export default {
 
   .gotchis-table-filters {
     margin: 50px 0 30px;
-    text-align: center;
+  }
+
+  .rf-table td {
+    vertical-align: top;
   }
 
   /* debugging */
