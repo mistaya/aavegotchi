@@ -1,3 +1,9 @@
+## https://docs.netlify.com/routing/redirects/rewrites-proxies/
+[[redirects]]
+  from = "/resources/*"
+  to = "https://mistaya.github.io/aadventure_resources/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
