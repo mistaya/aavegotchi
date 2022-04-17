@@ -1,17 +1,29 @@
 <template>
   <span :title="preciseDate">
-    {{ friendlyDate }}
+    <template v-if="enableToggle">
+      <a
+        href="#"
+        class="date-friendly__toggle"
+        @click.prevent="longDisplay = !longDisplay"
+      >
+        {{ longDisplay ? preciseDate : friendlyDate }}
+      </a>
+    </template>
+    <template v-else>
+      {{ friendlyDate }}
+    </template>
   </span>
 </template>
 
 <script>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { formatDistanceStrict, max, format } from 'date-fns'
 import useReactiveDate from '@/data/useReactiveDate'
 
 export default {
   props: {
-    date: { type: Date, required: true }
+    date: { type: Date, required: true },
+    enableToggle: { type: Boolean, default: false }
   },
   setup (props) {
     const { tickerDate } = useReactiveDate()
@@ -34,16 +46,22 @@ export default {
 
     const preciseDate = computed(() => format(
       props.date,
-      'PPP ppp'
+      'PP p z'
     ))
+
+    const longDisplay = ref(false)
 
     return {
       friendlyDate,
-      preciseDate
+      preciseDate,
+      longDisplay
     }
   }
 }
 </script>
 
 <style scoped>
+  .date-friendly__toggle {
+    text-decoration-style: dotted;
+  }
 </style>

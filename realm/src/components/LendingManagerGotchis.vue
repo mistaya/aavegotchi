@@ -77,7 +77,7 @@
             <th>Listing ID</th>
             <th>Listing Posted</th>
             <th>Lending Started</th>
-            <th>
+            <th style="min-width: 120px">
               Lending Expires
               <SortToggle
                 :sort="tableSort.column === 'finishTimestamp' ? tableSort.direction : null"
@@ -195,6 +195,7 @@
               <DateFriendly
                 v-if="row.finishDate"
                 :date="row.finishDate"
+                enableToggle
               />
             </td>
             <td>
