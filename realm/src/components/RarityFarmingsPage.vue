@@ -1,28 +1,18 @@
 <template>
   <div>
     <div class="rf-nav site-banner site-banner--secondary">
-      <!--
-      <div>
-        Season 2:
+      <div
+        v-for="[seasonId, season] in Object.entries(SEASONS)"
+        :key="seasonId"
+      >
+        Season {{ seasonId }}:
         <router-link
-          v-for="round in ['1', '2', '3', '4']"
-          :key="round"
-          :to="{ name: 'rf', params: { season: '2', round } }"
+          v-for="roundId in Object.keys(season.rounds)"
+          :key="roundId"
+          :to="{ name: 'rf', params: { season: seasonId, round: roundId } }"
           class="site-banner__link"
         >
-          <span class="sr-only">Season 2</span> Round {{ round }}
-        </router-link>
-      </div>
-      -->
-      <div>
-        Season 3:
-        <router-link
-          v-for="round in ['1', '2', '3']"
-          :key="round"
-          :to="{ name: 'rf', params: { season: '3', round } }"
-          class="site-banner__link"
-        >
-          <span class="sr-only">Season 3</span> Round {{ round }}
+          <span class="sr-only">Season {{ seasonId }}</span> Round {{ roundId }}
         </router-link>
       </div>
     </div>
@@ -31,14 +21,15 @@
 </template>
 
 <script>
+import { SEASONS, latestSeason, latestRound } from '@/data/useRarityFarming'
+
 const ensureRFRoute = function (to, next) {
   if (!to.params?.season || !to.params?.round) {
-    // TODO pick latest RF round automatically
     next({
       name: 'rf',
       params: {
-        season: '3',
-        round: '3'
+        season: latestSeason,
+        round: latestRound
       }
     })
   } else {
@@ -51,6 +42,11 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
     ensureRFRoute(to, next)
+  },
+  setup () {
+    return {
+      SEASONS
+    }
   }
 }
 </script>

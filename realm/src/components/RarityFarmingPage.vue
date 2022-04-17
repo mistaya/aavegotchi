@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import useRarityFarming from '@/data/useRarityFarming'
+import useRarityFarming, { latestSeason, latestRound } from '@/data/useRarityFarming'
 import RarityFarmingInfo from './RarityFarmingInfo.vue'
 import RarityFarmingWinners from './RarityFarmingWinners.vue'
 
@@ -29,8 +29,8 @@ export default {
     RarityFarmingWinners
   },
   props: {
-    season: { type: String, default: '3' },
-    round: { type: String, default: '3' }
+    season: { type: String, default: latestSeason },
+    round: { type: String, default: latestRound }
   },
   setup (props) {
     // The router-view that loads this uses a key with the season and round,

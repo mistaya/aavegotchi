@@ -34,14 +34,12 @@
       >
         Lending
       </router-link>
-      <!--
       <router-link
         :to="{ name: 'rf-index' }"
         class="site-banner__link"
       >
         Rarity Farming
       </router-link>
-      -->
     </nav>
   </header>
 </template>

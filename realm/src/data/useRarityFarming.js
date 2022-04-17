@@ -60,6 +60,14 @@ const SEASONS = {
 
 const allResults = {}
 
+const latestSeason = Object.keys(SEASONS).pop()
+const latestRound = Object.keys(SEASONS[latestSeason].rounds).pop()
+export {
+  SEASONS,
+  latestSeason,
+  latestRound
+}
+
 export default function useRarityFarming (seasonId, roundId) {
   if (allResults[seasonId]?.[roundId]) { return allResults[seasonId][roundId] }
 
