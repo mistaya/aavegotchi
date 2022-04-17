@@ -3,6 +3,7 @@ const { writeJsonFile, readJsonFile, writeTextFile } = require('../fileUtils.js'
 const BigNumber = require('bignumber.js')
 const setHelpers = require('./sets/setHelpers.js')
 const diamond = require('./diamond/diamond.js')
+const vaultContract = require('./vault/vaultContract.js')
 
 // Snapshot blocks
 const RF_BLOCKS = {
@@ -308,7 +309,18 @@ const fetchEthGotchiOwners = function (gotchiIds) {
   })
 }
 
-const fetchVaultGotchiOwners = function (gotchiIds) {
+const fetchVaultGotchiOwners = async function (gotchiIds) {
+  const result = {}
+  const BATCH_SIZE = 500
+  for (let i = 0; i < gotchiIds.length; i += BATCH_SIZE) {
+    const batchGotchis = gotchiIds.slice(i, i + BATCH_SIZE)
+    console.log(`Fetching vault owners of gotchis #${i} to ${i + BATCH_SIZE - 1}`)
+    const ownersByGotchiId = await vaultContract.getGotchiOwners(batchGotchis)
+    Object.assign(result, ownersByGotchiId)
+  }
+  console.log(`Found vault owners for ${Object.keys(result).length} gotchis`)
+  return result
+  /*
   // TODO this subgraph is no longer accurate since lendings started
   const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
   return new Promise((resolve, reject) => {
@@ -359,6 +371,7 @@ const fetchVaultGotchiOwners = function (gotchiIds) {
 
     fetchFromSubgraph()
   })
+  */
 }
 
 const manuallyCalculateBRS = async function () {
@@ -433,11 +446,11 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-// runAll()
+runAll()
 // fetchRoundData()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-fetchGotchiImages()
+// fetchGotchiImages()
 
 // ----------------------------------------------------
