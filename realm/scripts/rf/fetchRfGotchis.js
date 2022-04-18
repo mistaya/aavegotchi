@@ -7,6 +7,47 @@ const vaultContract = require('./vault/vaultContract.js')
 
 // Snapshot blocks
 const RF_BLOCKS = {
+  // TODO S1 might have got leaderboard calcs from the subgraph
+  szn1: {
+    rnd1: {
+      polygon: 0,
+      eth: 0
+    },
+    rnd2: {
+      polygon: 0,
+      eth: 0
+    },
+    rnd3: {
+      polygon: 0,
+      eth: 0
+    },
+    rnd4: {
+      polygon: 0,
+      eth: 0
+    }
+  },
+  // Ethereum bridge opened 4 Oct 2021
+  // S2 leaderboard calcs used raritySortHelpers js in the github
+  szn2: {
+    rnd1: {
+      polygon: 20633778,
+      eth: 13493410
+    },
+    rnd2: {
+      polygon: 21170980,
+      eth: 13582557
+    },
+    rnd3: {
+      polygon: 21708942,
+      eth: 13671252
+    },
+    rnd4: {
+      polygon: 22242200,
+      eth: 13758913
+    }
+  },
+  // Gotchi Vault started Jan 2022
+  // S3 leaderboard calcs used raritySortHelpers js in the github
   szn3: {
     rnd1: {
       polygon: 25806267,
@@ -25,13 +66,13 @@ const RF_BLOCKS = {
 
 // Params for this run
 // - round
-const BLOCKS = RF_BLOCKS.szn3.rnd3
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd3.json'
-const GOTCHIS_FILENAME = 'rnd3Gotchis'
+const BLOCKS = RF_BLOCKS.szn2.rnd1
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn2/rnd1.json'
+const GOTCHIS_FILENAME = 'rnd1Gotchis'
 // - season
-const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
+const SEASON_REWARDS_FILE = '../../public/data/rf/szn2/rewards.json'
 const NUM_ROUNDS = 4
-const GOTCHI_IMAGES_FOLDER = './svgs'
+const GOTCHI_IMAGES_FOLDER = './r1'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -79,7 +120,7 @@ const fetchGotchis = function (gotchiIds) {
           gotchis = gotchis.concat(
             response.data.data.aavegotchis.map(gotchi => ({
               ...gotchi,
-              owner: gotchi.owner.id
+              owner: gotchi.owner?.id
             }))
           )
           console.log(`Received ${response.data.data.aavegotchis.length}; total ${gotchis.length}`)

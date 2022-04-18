@@ -145,19 +145,19 @@
           </th>
 
           <th
-            v-for="board in leaderboardColumnsToShow"
-            :key="board.id"
+            v-for="column in leaderboardColumnsToShow"
+            :key="column.id"
           >
-            {{ board.label }}
+            {{ column.label }}
             <span
-              v-if="board.id === currentLeaderboardId"
+              v-if="column.isLeaderboard"
               title="leaderboard"
               aria-label="leaderboard"
             >
               🌟
             </span>
             <span
-              v-if="board.id === currentLeaderboard.tiebreaker"
+              v-if="column.isTiebreaker"
               title="tiebreaker"
               aria-label="tiebreaker"
             >
@@ -291,6 +291,7 @@
             </td>
             <td>
               <EthAddress
+                v-if="row.gotchi.owner"
                 :address="row.gotchi.owner"
                 icon
               />
@@ -361,12 +362,26 @@ export default {
     })
 
     const leaderboardColumnsToShow = computed(() => {
-      if (showExtended.value) {
-        return seasonInfo.leaderboards
+      // No need to have both "Kinship" and "Rookie Kinship" columns, just use "Kinship"
+      let columns = seasonInfo.leaderboards.filter(board => !board.id.startsWith('rookie'))
+      // if currently showing a rookie board, show the equivalent basic column ('rookieKinship' -> 'kinship')
+      const simpleLeaderboardId = currentLeaderboardId.value.replace('rookie', '').toLowerCase()
+      const tiebreakerId = currentLeaderboard.value.tiebreaker
+      if (!showExtended.value) {
+        columns = columns.filter(
+          board => {
+            return board.id === simpleLeaderboardId || board.id === tiebreakerId
+          }
+        )
       }
-      return seasonInfo.leaderboards.filter(
-        board => board.id === currentLeaderboardId.value || board.id === currentLeaderboard.value.tiebreaker
-      )
+      // mark the main and tiebreaker columns
+      columns = columns.map(column => ({
+        ...column,
+        isLeaderboard: column.id === simpleLeaderboardId,
+        isTiebreaker: column.id === tiebreakerId
+      }))
+
+      return columns
     })
 
     const traitColumnsToShow = computed(() => {
@@ -429,6 +444,7 @@ export default {
     }
 
     const winnersByLeaderboard = computed(() => {
+      // window.winners = winners.value
       if (!fetchStatus.value.loaded) { return {} }
       const mapByLeaderboard = {}
       for (const board of seasonInfo.leaderboards) {
