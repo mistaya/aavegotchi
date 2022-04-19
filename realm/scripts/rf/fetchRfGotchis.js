@@ -362,8 +362,12 @@ const fetchVaultGotchiOwners = async function (gotchiIds) {
   console.log(`Found vault owners for ${Object.keys(result).length} gotchis`)
   return result
   /*
-  // TODO this subgraph is no longer accurate since lendings started
-  const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
+  // Alternate approach using subgraph.
+  // V1 subgraph is no longer accurate since lendings started:
+  // const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
+  // V2 subgraph:
+  const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchi-vault'
+
   return new Promise((resolve, reject) => {
     let results = []
     let nextIndex = 0
