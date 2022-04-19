@@ -3,32 +3,34 @@ const { writeJsonFile, readJsonFile, writeTextFile } = require('../fileUtils.js'
 const BigNumber = require('bignumber.js')
 const setHelpers = require('./sets/setHelpers.js')
 const diamond = require('./diamond/diamond.js')
-const vaultContract = require('./vault/vaultContract.js')
+// const vaultContract = require('./vault/vaultContract.js')
 
 // Snapshot blocks
-const RF_BLOCKS = {
+const SEASONS = {
   // TODO S1 might have got leaderboard calcs from the subgraph
   szn1: {
+    rfCalc: 'subgraph',
     rnd1: {
-      polygon: 0,
+      polygon: 14082019,
       eth: 0
     },
     rnd2: {
-      polygon: 0,
+      polygon: 14645055,
       eth: 0
     },
     rnd3: {
-      polygon: 0,
+      polygon: 15231396,
       eth: 0
     },
     rnd4: {
-      polygon: 0,
+      polygon: 15748551,
       eth: 0
     }
   },
   // Ethereum bridge opened 4 Oct 2021
   // S2 leaderboard calcs used raritySortHelpers js in the github
   szn2: {
+    rfCalc: 'js1',
     rnd1: {
       polygon: 20633778,
       eth: 13493410
@@ -49,6 +51,8 @@ const RF_BLOCKS = {
   // Gotchi Vault started Jan 2022
   // S3 leaderboard calcs used raritySortHelpers js in the github
   szn3: {
+    rfCalc: 'js1',
+    checkVault: true,
     rnd1: {
       polygon: 25806267,
       eth: 14359489
@@ -66,13 +70,14 @@ const RF_BLOCKS = {
 
 // Params for this run
 // - round
-const BLOCKS = RF_BLOCKS.szn2.rnd1
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn2/rnd1.json'
-const GOTCHIS_FILENAME = 'rnd1Gotchis'
+const BLOCKS = SEASONS.szn3.rnd3
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd3.json'
+const GOTCHIS_FILENAME = 'rnd3Gotchis'
+const GOTCHI_IMAGES_FOLDER = './r3'
 // - season
-const SEASON_REWARDS_FILE = '../../public/data/rf/szn2/rewards.json'
+const SEASON = SEASONS.szn3
+const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
 const NUM_ROUNDS = 4
-const GOTCHI_IMAGES_FOLDER = './r1'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -301,6 +306,11 @@ const fetchGotchiLendings = async function (gotchiIds) {
 const fetchEthGotchiOwners = function (gotchiIds) {
   const ETH_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-ethereum'
   return new Promise((resolve, reject) => {
+    if (!BLOCKS.eth) {
+      console.log('Not fetching ETH gotchi owners!')
+      resolve({})
+      return
+    }
     let results = []
     let nextIndex = 0
     const fetchFromSubgraph = function () {
@@ -351,6 +361,13 @@ const fetchEthGotchiOwners = function (gotchiIds) {
 }
 
 const fetchVaultGotchiOwners = async function (gotchiIds) {
+  if (!SEASON.checkVault) {
+    console.log('Not fetching Vault gotchi owners!')
+    return {}
+  }
+  // TEMP WORKAROUND ONLY: Fetching directly from the contract with multicall uses the latest block.
+  // To specify a custom block, need to use a fork https://github.com/joshstevens19/ethereum-multicall/issues/2
+  /*
   const result = {}
   const BATCH_SIZE = 500
   for (let i = 0; i < gotchiIds.length; i += BATCH_SIZE) {
@@ -361,7 +378,8 @@ const fetchVaultGotchiOwners = async function (gotchiIds) {
   }
   console.log(`Found vault owners for ${Object.keys(result).length} gotchis`)
   return result
-  /*
+  */
+
   // Alternate approach using subgraph.
   // V1 subgraph is no longer accurate since lendings started:
   // const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
@@ -416,7 +434,6 @@ const fetchVaultGotchiOwners = async function (gotchiIds) {
 
     fetchFromSubgraph()
   })
-  */
 }
 
 const manuallyCalculateBRS = async function () {
@@ -424,6 +441,13 @@ const manuallyCalculateBRS = async function () {
   await setHelpers.init()
   // The withSetsRarityScore from the graph seems to be buggy
   // Manually recalculate this: this introduces risk of getting a different result from the official one.
+  // Different rarity farming seasons used different approaches for calculating rarity.
+  const useJs1 = SEASON.rfCalc === 'js1'
+  const useSubgraph = SEASON.rfCalc === 'subgraph'
+  console.log('Using RF calculation approach', SEASON.rfCalc)
+  if (!useJs1 && !useSubgraph) {
+    console.error('Invalid RF calculation specified', SEASON.rfCalc)
+  }
   for (const gotchi of gotchis) {
     // The subgraph's sets are unreliable (withSetsNumericTraits, withSetsRarityScore, equippedSetID, equippedSetName)
     // Calculate sets and BRS manually
@@ -431,10 +455,18 @@ const manuallyCalculateBRS = async function () {
     gotchi.withSetsNumericTraitsBest = resultBest.numericTraits
     gotchi.withSetsRarityScoreBest = resultBest.rarityScore
     gotchi.equippedSetNameBest = resultBest.wearableSetName
-    const resultRF = setHelpers.calculateRF(gotchi)
-    gotchi.withSetsNumericTraitsRF = resultRF.numericTraits
-    gotchi.withSetsRarityScoreRF = resultRF.rarityScore
-    gotchi.equippedSetNameRF = resultRF.wearableSetName
+    if (useSubgraph) {
+      // copy subgraph values
+      gotchi.withSetsNumericTraitsRF = gotchi.withSetsNumericTraits
+      gotchi.withSetsRarityScoreRF = gotchi.withSetsRarityScore
+      gotchi.equippedSetNameRF = gotchi.equippedSetName
+    } else if (useJs1) {
+      // reproduce the RF JS calculation
+      const resultRF = setHelpers.calculateRF(gotchi)
+      gotchi.withSetsNumericTraitsRF = resultRF.numericTraits
+      gotchi.withSetsRarityScoreRF = resultRF.rarityScore
+      gotchi.equippedSetNameRF = resultRF.wearableSetName
+    }
   }
   await writeJsonFile(`${GOTCHIS_FILENAME}_fixed.json`, gotchis)
   console.log(`Written result to ${GOTCHIS_FILENAME}_fixed.json`)
