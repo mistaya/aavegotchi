@@ -37,29 +37,29 @@ const SEASONS = {
       '1': {
         id: '1',
         jsonUrl: `${BASE_DATA_URL}/szn1/rnd1Gotchis.json`,
-        endDate: new Date('2021-01-01T14:00Z'),
-        blockNumber: 0,
+        endDate: new Date('2021-05-04T14:00Z'),
+        blockNumber: 14082019,
         tiebreakerTraitIndex: 0
       },
       '2': {
         id: '2',
         jsonUrl: `${BASE_DATA_URL}/szn1/rnd2Gotchis.json`,
-        endDate: new Date('2021-01-01T14:00Z'),
-        blockNumber: 0,
+        endDate: new Date('2021-05-18T14:00Z'),
+        blockNumber: 14645055,
         tiebreakerTraitIndex: 1
       },
       '3': {
         id: '3',
         jsonUrl: `${BASE_DATA_URL}/szn1/rnd3Gotchis.json`,
-        endDate: new Date('2021-01-01T14:00Z'),
-        blockNumber: 0,
+        endDate: new Date('2021-06-02T06:41Z'),
+        blockNumber: 15231396,
         tiebreakerTraitIndex: 2
       },
       '4': {
         id: '4',
         jsonUrl: `${BASE_DATA_URL}/szn1/rnd4Gotchis.json`,
-        endDate: new Date('2021-01-01T14:00Z'),
-        blockNumber: 0,
+        endDate: new Date('2021-06-15T15:00Z'),
+        blockNumber: 15748551,
         tiebreakerTraitIndex: 3
       }
     }

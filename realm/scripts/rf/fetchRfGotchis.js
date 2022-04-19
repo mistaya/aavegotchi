@@ -8,6 +8,8 @@ const diamond = require('./diamond/diamond.js')
 // Snapshot blocks
 const SEASONS = {
   // TODO S1 might have got leaderboard calcs from the subgraph
+  // TODO none of the S1 leaderboards match up properly, even XP and kinship!
+  // What's wrong: the subgraph data, the block numbers, the rankings?
   szn1: {
     rfCalc: 'subgraph',
     rnd1: {
@@ -70,10 +72,10 @@ const SEASONS = {
 
 // Params for this run
 // - round
-const BLOCKS = SEASONS.szn3.rnd3
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd3.json'
-const GOTCHIS_FILENAME = 'rnd3Gotchis'
-const GOTCHI_IMAGES_FOLDER = './r3'
+const BLOCKS = SEASONS.szn3.rnd4
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd4.json'
+const GOTCHIS_FILENAME = 'rnd4Gotchis'
+const GOTCHI_IMAGES_FOLDER = './r4'
 // - season
 const SEASON = SEASONS.szn3
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
