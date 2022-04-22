@@ -7,23 +7,49 @@ const diamond = require('./diamond/diamond.js')
 
 // Snapshot blocks
 const SEASONS = {
-  // TODO S1 might have got leaderboard calcs from the subgraph
   // TODO none of the S1 leaderboards match up properly, even XP and kinship!
-  // What's wrong: the subgraph data, the block numbers, the rankings?
+  // What's wrong:
+  //     the RF algorithm used?
+  //         'subgraph' is perfectly in order (for BRS, though NOT correct for kinship tiebreaker)
+  //         'js1' results in ~530 gotchis out of order
+  //     the subgraph data? Could the kinship values in the subgraph NOW be different to THEN?
+  //     the block numbers? seems right, R1 matches on main site
+  //     the rankings? seems right: R1 Winklevoss and God of Earth total rewards match blockchain GHST
+  // - God of Earth is ranked as if it has kinship 51, but the data says 30
+  // - lots have a rank-kinship mismatch, e.g. around 50 kinship
+  // The S1 rewards data is the per-round amount, does not need to be divided by 4
   szn1: {
     rfCalc: 'subgraph',
+    // rfCalc: 'js1',
+    // rfCalc: 'best',
+    // Round 1: rfCalc = 'subgraph'
     rnd1: {
       polygon: 14082019,
       eth: 0
     },
+    // Round 2: rfCalc = 'subgraph'
     rnd2: {
       polygon: 14645055,
       eth: 0
     },
+    // TODO is this block correct?
+    //    when fetching gotchi details, couldn't find gotchis 3019 and 3023 in round 3
+    //    There are also a lot of gotchis out of order, and Felon is only 561 Rarity (expected ~800-900)
+    //    15231396 is Jun 2 6:41 AM UTC
+    //    https://discord.com/channels/732491344970383370/784303575593517087/849219624889483265
+    //      "RARITY FARMING ROUND 3 SNAPSHOT HAS BEEN MOVED TO  JUNE 2 AT 2PM UTC!"
+    // Round 3 rfCalc:
+    //    'subgraph' gives ~582 out of order
+    //    'js1' gives ~141 out of order
+    //    'best' gives ~106 out of order
     rnd3: {
       polygon: 15231396,
       eth: 0
     },
+    // Round 4:
+    //    'subgraph' gives ~500 out of order
+    //    'js1' gives ~38 out of order
+    //    'best' gives only 1 out of order: QUEEN #752 who is 523 between 573's.
     rnd4: {
       polygon: 15748551,
       eth: 0
@@ -66,6 +92,10 @@ const SEASONS = {
     rnd3: {
       polygon: 26854118,
       eth: 14539158
+    },
+    rnd4: {
+      polygon: 27404025,
+      eth: 14635098
     }
   }
 }
@@ -79,7 +109,7 @@ const GOTCHI_IMAGES_FOLDER = './r4'
 // - season
 const SEASON = SEASONS.szn3
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
-const NUM_ROUNDS = 4
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2 and 3
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -190,7 +220,7 @@ const fetchRoundData = async function () {
           console.error(`Couldn't find reward for ranking index ${i} in ${type}`)
         } else {
           const seasonRewardForPosition = seasonRewards[type][i]
-          gotchi.leaderboards[type].reward = (new BigNumber(seasonRewardForPosition)).div(NUM_ROUNDS).toString()
+          gotchi.leaderboards[type].reward = (new BigNumber(seasonRewardForPosition)).div(NUM_ROUNDS_REWARDS).toString()
         }
       }
     }
@@ -446,8 +476,9 @@ const manuallyCalculateBRS = async function () {
   // Different rarity farming seasons used different approaches for calculating rarity.
   const useJs1 = SEASON.rfCalc === 'js1'
   const useSubgraph = SEASON.rfCalc === 'subgraph'
+  const useBest = SEASON.rfCalc === 'best'
   console.log('Using RF calculation approach', SEASON.rfCalc)
-  if (!useJs1 && !useSubgraph) {
+  if (!useJs1 && !useSubgraph && !useBest) {
     console.error('Invalid RF calculation specified', SEASON.rfCalc)
   }
   for (const gotchi of gotchis) {
@@ -468,6 +499,11 @@ const manuallyCalculateBRS = async function () {
       gotchi.withSetsNumericTraitsRF = resultRF.numericTraits
       gotchi.withSetsRarityScoreRF = resultRF.rarityScore
       gotchi.equippedSetNameRF = resultRF.wearableSetName
+    } else if (useBest) {
+      // use the best calc
+      gotchi.withSetsNumericTraitsRF = gotchi.withSetsNumericTraitsBest
+      gotchi.withSetsRarityScoreRF = gotchi.withSetsRarityScoreBest
+      gotchi.equippedSetNameRF = gotchi.equippedSetNameBest
     }
   }
   await writeJsonFile(`${GOTCHIS_FILENAME}_fixed.json`, gotchis)
@@ -525,11 +561,11 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-runAll()
+// runAll()
 // fetchRoundData()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-// fetchGotchiImages()
+fetchGotchiImages()
 
 // ----------------------------------------------------
