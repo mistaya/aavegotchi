@@ -385,6 +385,7 @@ export default {
                 id
                 name
                 escrow
+                status
               }
             }
           }`
@@ -399,7 +400,9 @@ export default {
           const responseJson = await response.json()
           // console.log({ responseJson })
           if (responseJson.data?.user?.gotchisOwned) {
-            ownedGotchis.value = responseJson.data.user.gotchisOwned.map(item => ({ gotchi: item }))
+            ownedGotchis.value = responseJson.data.user.gotchisOwned
+              .filter(({ status }) => status === '3') // only summoned and live gotchis
+              .map(item => ({ gotchi: item }))
             // console.log('ownedGotchis', ownedGotchis.value)
             setLoaded()
           } else {
