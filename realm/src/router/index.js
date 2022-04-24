@@ -146,7 +146,8 @@ const routes = [
         component: LendingManagerPage,
         props: route => ({
           address: route.query.address,
-          thirdPartyAddress: route.query.thirdPartyAddress
+          thirdPartyAddress: route.query.thirdPartyAddress,
+          vaultOwnerAddress: route.query.vaultOwnerAddress
         }),
         meta: {
           head: {

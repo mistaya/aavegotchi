@@ -16,8 +16,15 @@
           icon
         />
       </template>
+      <template v-else-if="vaultOwnerAddress">
+        for Vault Depositor
+        <EthAddress
+          :address="vaultOwnerAddress"
+          icon
+        />
+      </template>
     </h2>
-    <template v-if="address || thirdPartyAddress">
+    <template v-if="address || thirdPartyAddress || vaultOwnerAddress">
       <div v-if="!hasValidAddress">
         Invalid address
       </div>
@@ -66,6 +73,29 @@
           Use this address
         </SiteButton>
       </form>
+
+      <div style="margin: 15px 0 15px 40px">
+        -- OR --
+      </div>
+
+      <form
+        style="display: flex; flex-wrap: wrap; column-gap: 10px;"
+        @submit.prevent="enterVaultOwnerAddress"
+      >
+        <label>
+          Depositor of Vault gotchis:
+          <input
+            v-model="inputVaultOwnerAddress"
+            type="text"
+          />
+        </label>
+        <SiteButton
+          type="submit"
+          :disabled="!inputVaultOwnerAddress"
+        >
+          Use this address
+        </SiteButton>
+      </form>
     </template>
     <div
       v-if="hasValidAddress"
@@ -85,6 +115,7 @@
         :key="address"
         :address="address"
         :thirdPartyAddress="thirdPartyAddress"
+        :vaultOwnerAddress="vaultOwnerAddress"
       />
     </div>
   </div>
@@ -103,7 +134,8 @@ export default {
   },
   props: {
     address: { type: String, default: null },
-    thirdPartyAddress: { type: String, default: null }
+    thirdPartyAddress: { type: String, default: null },
+    vaultOwnerAddress: { type: String, default: null }
   },
   setup (props) {
     const router = useRouter()
@@ -111,11 +143,13 @@ export default {
 
     const inputAddress = ref('')
     const inputThirdPartyAddress = ref('')
+    const inputVaultOwnerAddress = ref('')
 
     const validAddress = computed(() => props.address?.length === 42)
     const validThirdPartyAddress = computed(() => props.thirdPartyAddress?.length === 42)
+    const validVaultOwnerAddress = computed(() => props.vaultOwnerAddress?.length === 42)
 
-    const hasValidAddress = computed(() => validAddress.value || validThirdPartyAddress.value)
+    const hasValidAddress = computed(() => validAddress.value || validThirdPartyAddress.value || validVaultOwnerAddress.value)
 
     const clearAddress = () => {
       router.push({
@@ -141,13 +175,24 @@ export default {
       })
     }
 
+    const enterVaultOwnerAddress = () => {
+      router.push({
+        name: 'lending-manager',
+        query: {
+          vaultOwnerAddress: inputVaultOwnerAddress.value
+        }
+      })
+    }
+
     return {
       urlNoAddress,
       clearAddress,
       inputAddress,
       inputThirdPartyAddress,
+      inputVaultOwnerAddress,
       enterAddress,
       enterThirdPartyAddress,
+      enterVaultOwnerAddress,
       hasValidAddress
     }
   }

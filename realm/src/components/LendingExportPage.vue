@@ -20,6 +20,7 @@
             <input
               v-model="filters.lenderAddress"
               type="text"
+              :disabled="!!filters.vaultOwnerAddress"
             />
           </label>
         </div>
@@ -37,6 +38,15 @@
             Third-Party Address
             <input
               v-model="filters.thirdPartyAddress"
+              type="text"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Vault Depositor Address
+            <input
+              v-model="filters.vaultOwnerAddress"
               type="text"
             />
           </label>
@@ -127,6 +137,7 @@ import SiteIcon from './SiteIcon.vue'
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
 const FETCH_PAGE_SIZE = 1000
+const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
 
 export default {
   components: {
@@ -150,6 +161,7 @@ export default {
       lenderAddress: null,
       borrowerAddress: null,
       thirdPartyAddress: null,
+      vaultOwnerAddress: null,
       whitelistId: null,
       startDate: null,
       endDate: null
@@ -157,7 +169,7 @@ export default {
 
     const filtersEmpty = computed(() => {
       const f = filters.value
-      return !f.lenderAddress && !f.borrowerAddress && !f.thirdPartyAddress && !f.whitelistId && !f.startDate && !f.endDate
+      return !f.lenderAddress && !f.borrowerAddress && !f.thirdPartyAddress && !f.vaultOwnerAddress && !f.whitelistId && !f.startDate && !f.endDate
     })
 
     const fetchLendings = function () {
@@ -165,11 +177,12 @@ export default {
       let lastIdNum = 0
       let fetchedLendings = []
 
-      const { lenderAddress, borrowerAddress, thirdPartyAddress, whitelistId, startDate, endDate } = filters.value
+      const { lenderAddress, borrowerAddress, thirdPartyAddress, vaultOwnerAddress, whitelistId, startDate, endDate } = filters.value
       const whitelistQuery = whitelistId ? `, whitelistId: "${whitelistId}"` : ''
-      const lenderQuery = lenderAddress ? `, lender: "${lenderAddress.toLowerCase()}"` : ''
+      const lenderQuery = lenderAddress && !vaultOwnerAddress ? `, lender: "${lenderAddress.toLowerCase()}"` : ''
       const borrowerQuery = borrowerAddress ? `, borrower: "${borrowerAddress.toLowerCase()}"` : ''
       const thirdPartyQuery = thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddress.toLowerCase()}"` : ''
+      const vaultOwnerQuery = vaultOwnerAddress ? `, originalOwner: "${vaultOwnerAddress.toLowerCase()}", lender: "${VAULT_ADDRESS}"` : ''
 
       // Interpret dates in local timezone, and also export them that way.
       // Treat range as inclusive
@@ -196,6 +209,7 @@ export default {
           ${lenderQuery}
           ${borrowerQuery}
           ${thirdPartyQuery}
+          ${vaultOwnerQuery}
           ${startDateQuery}
           ${endDateQuery}
         }) {
@@ -214,6 +228,7 @@ export default {
           lastClaimed
           completed
 
+          originalOwner
           lender
           borrower
           thirdPartyAddress

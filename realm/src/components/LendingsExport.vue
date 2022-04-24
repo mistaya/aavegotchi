@@ -80,7 +80,8 @@ export default {
       'shareFOMO',
       'shareALPHA',
       'shareKEK',
-      'shareGHST'
+      'shareGHST',
+      'originalOwner'
     ]
     const getRows = function () {
       return props.lendings.map(item => {
@@ -115,7 +116,8 @@ export default {
           tokensToShare.includes(TOKEN_ADDRESSES.FOMO) ? 'Y' : '',
           tokensToShare.includes(TOKEN_ADDRESSES.ALPHA) ? 'Y' : '',
           tokensToShare.includes(TOKEN_ADDRESSES.KEK) ? 'Y' : '',
-          tokensToShare.includes(TOKEN_ADDRESSES.GHST) ? 'Y' : ''
+          tokensToShare.includes(TOKEN_ADDRESSES.GHST) ? 'Y' : '',
+          item.originalOwner
         ]
       })
     }

@@ -317,6 +317,7 @@ const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotc
 const OWNER_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
 const FETCH_PAGE_SIZE = 1000
+const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
 
 export default {
   components: {
@@ -327,11 +328,13 @@ export default {
   },
   props: {
     address: { type: String, default: null },
-    thirdPartyAddress: { type: String, default: null }
+    thirdPartyAddress: { type: String, default: null },
+    vaultOwnerAddress: { type: String, default: null }
   },
   setup (props) {
     const addressLc = computed(() => props.address?.toLowerCase())
     const thirdPartyAddressLc = computed(() => props.thirdPartyAddress?.toLowerCase())
+    const vaultOwnerAddressLc = computed(() => props.vaultOwnerAddress?.toLowerCase())
 
     const { status: ownedGotchisStatus, setLoading: setOwnedGotchisLoading } = useStatus()
     const ownedGotchis = ref(null)
@@ -376,6 +379,9 @@ export default {
         return
       }
 
+      // TODO currently gotchis borrowed by the 'manager' address are included on this page.
+      // When the subgraphs are merged, check to see if there's a simple way
+      // to query for gotchis that are truly owned by an address (not borrowed by them)
       fetch(OWNER_SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
@@ -421,18 +427,27 @@ export default {
       let lastIdNum = 0
       let fetchedListings = []
 
-      const lenderQuery = props.address ? `, lender: "${addressLc.value}"` : ''
+      const lenderQuery = props.address && !props.vaultOwnerAddress ? `, lender: "${addressLc.value}"` : ''
       const thirdPartyQuery = props.thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddressLc.value}"` : ''
+      const vaultOwnerQuery = props.vaultOwnerAddress ? `, originalOwner: "${vaultOwnerAddressLc.value}", lender: "${VAULT_ADDRESS}"` : ''
 
       const fetchFromSubgraph = function () {
         const query = `{
-          gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: id, where: { id_gt: ${lastIdNum}, cancelled: false, completed: false ${lenderQuery} ${thirdPartyQuery} }) {
+          gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: id, where: {
+            id_gt: ${lastIdNum},
+            cancelled: false,
+            completed: false
+            ${lenderQuery}
+            ${thirdPartyQuery}
+            ${vaultOwnerQuery}
+          }) {
             id
             gotchi {
               id
               name
               escrow
             }
+            originalOwner
 
             lender
             upfrontCost
@@ -460,7 +475,7 @@ export default {
           .then(async response => {
             if (isStale()) { console.log('Stale request, ignoring'); return }
             if (!response.ok) {
-              setError('There was an error fetching non-lended gotchis')
+              setError('There was an error fetching gotchi lendings')
               return
             }
             const responseJson = await response.json()
@@ -487,7 +502,7 @@ export default {
           })
           .catch(error => {
             console.error(error)
-            setError('There was an error fetching non-lended gotchis')
+            setError('There was an error fetching gotchi lendings')
           })
       }
 
