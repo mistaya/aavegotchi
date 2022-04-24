@@ -9,7 +9,10 @@
           <DataFetcherParcelOwners />
         </div>
 
-        <details class="filter-container">
+        <details
+          ref="refDetailsColorScheme"
+          class="filter-container"
+        >
           <summary>
             <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
           </summary>
@@ -211,16 +214,33 @@
           </div>
         </details>
 
-        <MapConfig v-model="mapConfig" />
-        <FilterBaazaar v-model="filters.baazaar" />
-        <FilterSize v-model="filters.size" />
-        <FilterWalls v-model="filters.walls" />
-        <FilterDistricts v-model="filters.districts" />
-        <FilterRoads v-model="filters.roads" />
-        <FilterParcelIds v-model="filters.parcelIds" />
-        <FilterParcelNames v-model="filters.parcelNames" />
-        <FilterBoosts v-model="filters.boosts" />
-        <FilterOwners v-model="filters.owners" />
+        <MapConfig
+          ref="refDetailsMapConfig"
+          v-model="mapConfig"
+        />
+
+        <details
+          ref="refDetailsFilters"
+          class="filter-container"
+        >
+          <summary>
+            <h3>Parcel Filters</h3>
+          </summary>
+          <div style="margin: 15px 0 0 15px">
+            <FilterBaazaar
+              v-model="filters.baazaar"
+              @requestBaazaarColorScheme="colorScheme.colorBy = 'baazaarPrice'"
+            />
+            <FilterSize v-model="filters.size" />
+            <FilterWalls v-model="filters.walls" />
+            <FilterDistricts v-model="filters.districts" />
+            <FilterRoads v-model="filters.roads" />
+            <FilterParcelIds v-model="filters.parcelIds" />
+            <FilterParcelNames v-model="filters.parcelNames" />
+            <FilterBoosts v-model="filters.boosts" />
+            <FilterOwners v-model="filters.owners" />
+          </div>
+        </details>
 
         <section style="padding: 0 10px 20px 0;">
           <PaartnerParcelDetails
@@ -647,6 +667,10 @@ export default {
       }
     })
 
+    const refDetailsColorScheme = ref(null)
+    const refDetailsMapConfig = ref(null)
+    const refDetailsFilters = ref(null)
+
     const selectedParcelPaartnerId = ref(null)
 
     const onClickParcel = (parcel) => {
@@ -656,6 +680,12 @@ export default {
       } else {
         selectedParcelId.value = parcel.id
         selectedParcelPaartnerId.value = null
+      }
+      // collapse all map config so the parcel details are easily visible
+      for (const refDetails of [refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
+        if (refDetails?.hasAttribute('open')) {
+          refDetails.removeAttribute('open')
+        }
       }
     }
 
@@ -683,6 +713,9 @@ export default {
 
     return {
       parcelsFetchStatus,
+      refDetailsColorScheme,
+      refDetailsMapConfig,
+      refDetailsFilters,
       mapConfig,
       filters,
       colorScheme,

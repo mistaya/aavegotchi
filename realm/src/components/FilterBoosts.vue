@@ -1,7 +1,7 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h3>Filter by Alchemica Boost</h3>
+      <h4>Filter by Alchemica Boost</h4>
     </summary>
 
     <div

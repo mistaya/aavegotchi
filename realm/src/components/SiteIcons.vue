@@ -28,6 +28,7 @@ import arrowRightmostSvg from '!!raw-loader!./icons/icon-arrow-rightmost.svg'
 import openWindowSvg from '!!raw-loader!./icons/icon-open-window.svg'
 import checkSvg from '!!raw-loader!./icons/icon-check.svg'
 import warningTriangleSvg from '!!raw-loader!./icons/icon-warning-triangle.svg'
+import infoSvg from '!!raw-loader!./icons/icon-info-empty.svg'
 import twitterSvg from '!!raw-loader!./icons/icon-twitter.svg'
 import clockSvg from '!!raw-loader!./icons/icon-clock.svg'
 import sunSvg from '!!raw-loader!./icons/icon-sun.svg'
@@ -46,6 +47,7 @@ const icons = [
   { id: 'open-window', svg: openWindowSvg },
   { id: 'check', svg: checkSvg },
   { id: 'warning-triangle', svg: warningTriangleSvg },
+  { id: 'info', svg: infoSvg },
   { id: 'twitter', svg: twitterSvg },
   { id: 'clock', svg: clockSvg },
   { id: 'sun', svg: sunSvg },

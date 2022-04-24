@@ -85,8 +85,10 @@ export default {
   }
   :deep(details.filter-container summary) {
     margin-bottom: 5px;
+    cursor: pointer;
   }
-  :deep(details.filter-container summary h3) {
+  :deep(details.filter-container summary h3),
+  :deep(details.filter-container summary h4) {
     display: inline;
   }
 </style>

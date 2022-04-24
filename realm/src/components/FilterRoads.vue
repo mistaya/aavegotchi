@@ -4,7 +4,7 @@
     class="filter-container"
   >
     <summary>
-      <h3>Filter by Roads/Corners</h3>
+      <h4>Filter by Roads/Corners</h4>
     </summary>
 
     <div style="margin-bottom: 8px">

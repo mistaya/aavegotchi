@@ -1,7 +1,7 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h3>Filter by Parcel ID</h3>
+      <h4>Filter by Parcel ID</h4>
     </summary>
 
     <label>

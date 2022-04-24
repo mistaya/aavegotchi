@@ -12,7 +12,10 @@
             style="margin-bottom: 20px; margin-right: 10px;"
           />
 
-          <details class="config-details">
+          <details
+            ref="refDetailsColorScheme"
+            class="config-details"
+          >
             <summary>
               <h3>Color Scheme: {{ colorSchemeLabel }}</h3>
             </summary>
@@ -196,18 +199,32 @@
             </div>
           </details>
 
-          <MapConfig v-model="mapConfig" />
-          <FilterSize v-model="filters.size" />
-          <FilterWalls v-model="filters.walls" />
-          <FilterDistricts
-            :districts="auctionInfo.districts"
-            v-model="filters.districts"
+          <MapConfig
+            v-model="mapConfig"
+            ref="refDetailsMapConfig"
           />
-          <FilterRoads v-model="filters.roads" />
-          <FilterBoosts v-model="filters.boosts" />
-          <FilterBidders v-model="filters.bidders" />
-          <FilterParcelIds v-model="filters.parcelIds" />
-          <FilterParcelNames v-model="filters.parcelNames" />
+
+          <details
+            ref="refDetailsFilters"
+            class="filter-container"
+          >
+            <summary>
+              <h3>Parcel Filters</h3>
+            </summary>
+            <div style="margin: 15px 0 0 15px">
+              <FilterSize v-model="filters.size" />
+              <FilterWalls v-model="filters.walls" />
+              <FilterDistricts
+                :districts="auctionInfo.districts"
+                v-model="filters.districts"
+              />
+              <FilterRoads v-model="filters.roads" />
+              <FilterBoosts v-model="filters.boosts" />
+              <FilterBidders v-model="filters.bidders" />
+              <FilterParcelIds v-model="filters.parcelIds" />
+              <FilterParcelNames v-model="filters.parcelNames" />
+            </div>
+          </details>
         </section>
 
         <section style="padding: 0 10px 20px 0;">
@@ -484,6 +501,10 @@ export default {
       parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
     )
 
+    const refDetailsColorScheme = ref(null)
+    const refDetailsMapConfig = ref(null)
+    const refDetailsFilters = ref(null)
+
     const selectedParcelPaartnerId = ref(null)
 
     const onClickParcel = (parcel) => {
@@ -493,6 +514,12 @@ export default {
       } else {
         selectedParcelId.value = parcel.id
         selectedParcelPaartnerId.value = null
+      }
+      // collapse all map config so the parcel details are easily visible
+      for (const refDetails of [refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
+        if (refDetails?.hasAttribute('open')) {
+          refDetails.removeAttribute('open')
+        }
       }
     }
 
@@ -585,6 +612,9 @@ export default {
       selectedParcelPaartnerId,
       SCALE_NAMES,
       SCALE_GRADIENTS,
+      refDetailsColorScheme,
+      refDetailsMapConfig,
+      refDetailsFilters,
       mapConfig,
       filters,
       colorSchemeOptions,

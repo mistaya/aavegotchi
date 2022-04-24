@@ -1,7 +1,7 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h3>Filter by District</h3>
+      <h4>Filter by District</h4>
     </summary>
 
     <div style="margin-bottom: 8px">

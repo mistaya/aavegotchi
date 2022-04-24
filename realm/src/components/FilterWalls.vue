@@ -1,7 +1,7 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h3>Filter by Walls</h3>
+      <h4>Filter by Walls</h4>
     </summary>
 
     <div

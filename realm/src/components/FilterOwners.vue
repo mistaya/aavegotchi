@@ -1,7 +1,7 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h3>Filter by Owner</h3>
+      <h4>Filter by Owner</h4>
     </summary>
 
     <label>

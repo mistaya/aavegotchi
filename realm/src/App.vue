@@ -134,7 +134,7 @@ export default {
 
   h4 {
     margin: 10px 0 5px 0;
-    font-size: 1em;
+    font-size: 0.9em;
     font-weight: normal;
     font-style: italic;
   }
