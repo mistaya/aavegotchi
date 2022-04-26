@@ -201,7 +201,13 @@
                 <td>
                   <EthAddress icon :address="result.lender" />
                 </td>
-                <td>
+                <td style="white-space: nowrap;">
+                  <router-link
+                    :to="{ name: 'lending-borrower', query: { address: result.borrower } }"
+                    style="margin-right: 5px;"
+                  >
+                    view
+                  </router-link>
                   <EthAddress icon :address="result.borrower" />
                 </td>
               </tr>

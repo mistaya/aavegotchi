@@ -105,12 +105,14 @@ export default {
   .site-table {
     margin: 0 auto;
   }
-  .site-table :deep(thead th) {
+  .site-table :deep(thead tr th) {
+    background-color: var(--site-background-color--transparent);
+    color: var(--site-text-color--subtle);
+  }
+  .site-table :deep(thead tr:last-child th) {
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: var(--site-background-color--transparent);
-    color: var(--site-text-color--subtle);
   }
   .site-table :deep(td),
   .site-table :deep(th) {

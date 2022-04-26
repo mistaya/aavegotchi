@@ -75,6 +75,7 @@ export default {
     --rarity-color--mythical: rgb(255, 150, 255);
     --rarity-color--godlike: rgb(81, 255, 168);
 
+    --site-border-color--transparent: rgba(0, 0, 0, 0.25);
     --site-background-color: white;
     --site-background-color--transparent: rgba(255, 255, 255, 0.9);
     --site-background-color--alternate: #eee;
@@ -87,6 +88,7 @@ export default {
     --site-selection-text-color: black;
   }
   .site-dark-mode {
+    --site-border-color--transparent: rgba(255, 255, 255, 0.25);
     --site-background-color: rgb(20, 20, 20);
     --site-background-color--transparent: rgba(20, 20, 20, 0.9);
     --site-background-color--alternate: #333;

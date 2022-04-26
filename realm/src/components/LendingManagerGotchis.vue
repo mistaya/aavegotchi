@@ -285,7 +285,14 @@
                 shortest
               />
             </td>
-            <td>
+            <td style="white-space: nowrap;">
+              <router-link
+                v-if="row.isLended"
+                :to="{ name: 'lending-borrower', query: { address: row.listing.borrower } }"
+                style="margin-right: 5px;"
+              >
+                view
+              </router-link>
               <EthAddress
                 v-if="row.isLended"
                 :address="row.listing.borrower"

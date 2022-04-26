@@ -15,6 +15,13 @@
       </router-link>
 
       <router-link
+        :to="{ name: 'lending-borrower' }"
+        class="site-banner__link"
+      >
+        Borrower
+      </router-link>
+
+      <router-link
         :to="{ name: 'lending-manager' }"
         class="site-banner__link"
       >

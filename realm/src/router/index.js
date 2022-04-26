@@ -19,6 +19,7 @@ const RarityFarmingPage = () => import(/* webpackChunkName: "rf" */ '@/component
 const LendingPage = () => import(/* webpackChunkName: "lending" */ '@/components/LendingPage.vue')
 const LendingAvailablePage = () => import(/* webpackChunkName: "lending-available" */ '@/components/LendingAvailablePage.vue')
 const LendingActivityPage = () => import(/* webpackChunkName: "lending-activity" */ '@/components/LendingActivityPage.vue')
+const LendingBorrowerPage = () => import(/* webpackChunkName: "lending-borrower" */ '@/components/LendingBorrowerPage.vue')
 const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/components/LendingManagerPage.vue')
 const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/components/LendingExportPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
@@ -137,6 +138,20 @@ const routes = [
           head: {
             title: 'Gotchi Lending Activity',
             description: 'See recently-agreed gotchi lendings'
+          }
+        }
+      },
+      {
+        path: 'borrower',
+        name: 'lending-borrower',
+        component: LendingBorrowerPage,
+        props: route => ({
+          address: route.query.address
+        }),
+        meta: {
+          head: {
+            title: 'Gotchi Borrower',
+            description: 'Overview of your borrowed gotchis'
           }
         }
       },

@@ -1,34 +1,51 @@
 <template>
   <div>
-    <h2>
-      Lending Manager
+    <div style="margin-bottom: 10px;">
+      <h2 style="display: inline; margin-right: 15px;">
+        Lending Manager
+        <template v-if="address">
+          for
+          <EthAddress
+            :address="address"
+            icon
+          />
+        </template>
+        <template v-else-if="thirdPartyAddress">
+          for Third-Party
+          <EthAddress
+            :address="thirdPartyAddress"
+            icon
+          />
+        </template>
+        <template v-else-if="vaultOwnerAddress">
+          for Vault Depositor
+          <EthAddress
+            :address="vaultOwnerAddress"
+            icon
+          />
+        </template>
+      </h2>
       <template v-if="address">
-        for
-        <EthAddress
-          :address="address"
-          icon
-        />
+        (<a
+            :href="urlNoAddress"
+            @click.prevent="clearAddress"
+          >Use another address</a>)
       </template>
-      <template v-else-if="thirdPartyAddress">
-        for Third-Party
-        <EthAddress
-          :address="thirdPartyAddress"
-          icon
-        />
-      </template>
-      <template v-else-if="vaultOwnerAddress">
-        for Vault Depositor
-        <EthAddress
-          :address="vaultOwnerAddress"
-          icon
-        />
-      </template>
-    </h2>
+    </div>
     <template v-if="address || thirdPartyAddress || vaultOwnerAddress">
       <div v-if="!hasValidAddress">
         Invalid address
       </div>
-      <div>(<a :href="urlNoAddress" @click.prevent="clearAddress">Use another address</a>)
+      <div>
+        <a
+          v-if="hasValidAddress"
+          :href="`https://app.aavegotchi.com/aavegotchis/${encodeURIComponent(address)}`"
+          rel="noopener"
+          target="_blank"
+        >
+          View on aavegotchi.com
+          <SiteIcon name="open-window" />
+        </a>
       </div>
     </template>
     <template v-else>
@@ -101,16 +118,6 @@
       v-if="hasValidAddress"
       style="margin-top: 20px;"
     >
-      <div style="margin-bottom: 20px;">
-        <a
-          :href="`https://app.aavegotchi.com/aavegotchis/${encodeURIComponent(address)}`"
-          rel="noopener"
-          target="_blank"
-        >
-          View on aavegotchi.com
-          <SiteIcon name="open-window" />
-        </a>
-      </div>
       <LendingManagerGotchis
         :key="address"
         :address="address"
