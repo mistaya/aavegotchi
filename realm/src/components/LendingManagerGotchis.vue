@@ -68,6 +68,7 @@
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
+        :scrollingBreakpoint="1800"
       >
         <template #headers>
           <tr>

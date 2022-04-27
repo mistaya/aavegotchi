@@ -127,6 +127,7 @@
             v-model:pageSize="tablePaging.pageSize"
             :numResults="results.length"
             itemsLabel="listings"
+            :scrollingBreakpoint="1300"
           >
             <template #headers>
               <tr>

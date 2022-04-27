@@ -176,6 +176,7 @@
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numGotchis"
         itemsLabel="borrowings"
+        :scrollingBreakpoint="1900"
         class="lending-borrower-table"
       >
         <template #headers>

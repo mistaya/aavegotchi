@@ -187,6 +187,7 @@
         v-model:page="gotchisPaging.page"
         v-model:pageSize="gotchisPaging.pageSize"
         :numResults="numFilteredGotchis"
+        :scrollingBreakpoint="1300"
       >
         <template #headers>
           <tr>

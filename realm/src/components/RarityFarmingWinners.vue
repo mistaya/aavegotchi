@@ -108,6 +108,7 @@
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
+        :scrollingBreakpoint="scrollingBreakpoint"
         class="rf-table"
       >
         <template #headers>
@@ -511,6 +512,21 @@ export default {
 
     const showDebugTable = computed(() => debug.value && currentLeaderboardId.value === 'rarity')
 
+    const scrollingBreakpoint = computed(() => {
+      // keep this in 100 increments
+      let minWidth = 900
+      if (showImages.value) {
+        minWidth += 100
+      }
+      if (showExtended.value) {
+        minWidth += 400
+      }
+      if (showDebugTable.value) {
+        minWidth += 900
+      }
+      return minWidth
+    })
+
     return {
       debug,
       showImages,
@@ -531,6 +547,7 @@ export default {
       jumpToRank,
       tablePaging,
       tableRef,
+      scrollingBreakpoint,
       numFilteredGotchis,
       rowsToDisplay
     }

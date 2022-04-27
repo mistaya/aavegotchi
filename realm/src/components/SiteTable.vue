@@ -10,7 +10,10 @@
     <div class="site-table-scroll-text">
       (Scroll the table sideways to see more columns)
     </div>
-    <div class="site-table-wrapper visible-scrollbar">
+    <div
+      class="site-table-wrapper visible-scrollbar"
+      :class="`site-table-wrapper--breakpoint-${scrollingBreakpoint}`"
+    >
       <table class="site-table">
         <thead>
           <slot name="headers"></slot>
@@ -38,11 +41,11 @@ export default {
     PagingControls
   },
   props: {
-    // TODO set the magic number for horizontal scrolling here
     page: { type: Number, default: 0 },
     pageSize: { type: Number, default: 10 },
     numResults: { type: Number, required: true },
-    itemsLabel: { type: String, default: 'gotchis' }
+    itemsLabel: { type: String, default: 'gotchis' },
+    scrollingBreakpoint: { type: Number, default: 1300 }
   }
 }
 </script>
@@ -57,7 +60,10 @@ export default {
      let the table flow normally in the layout, with
      sticky headers.
 
-     1100px width: this magic number needs adjusting for changes
+     The magic breakpoint number needs adjusting for changes, but
+     we can't do that in a variable way.
+     Instead define a set of rules with different breakpoints and
+     opt-in using classes.
 
      When the screen is narrower, allow horizontal scrolling.
 
@@ -72,12 +78,165 @@ export default {
      can fit on the viewport at once. (This also reenables the
      sticky headers, as a height is defined.)
    */
-  @media (max-width: 1300px) {
-    .site-table-wrapper {
+  @media (max-width: 800px) {
+    .site-table-wrapper--breakpoint-800 {
       position: relative;
       overflow: auto;
     }
-    .device--no-touch .site-table-wrapper {
+    .device--no-touch .site-table-wrapper--breakpoint-800 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 900px) {
+    .site-table-wrapper--breakpoint-900 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-900 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1000px) {
+    .site-table-wrapper--breakpoint-1000 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1000 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1100px) {
+    .site-table-wrapper--breakpoint-1100 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1100 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1200px) {
+    .site-table-wrapper--breakpoint-1200 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1200 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1300px) {
+    .site-table-wrapper--breakpoint-1300 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1300 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1400px) {
+    .site-table-wrapper--breakpoint-1400 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1400 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1500px) {
+    .site-table-wrapper--breakpoint-1500 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1500 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1600px) {
+    .site-table-wrapper--breakpoint-1600 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1600 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1700px) {
+    .site-table-wrapper--breakpoint-1700 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1700 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1800px) {
+    .site-table-wrapper--breakpoint-1800 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1800 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 1900px) {
+    .site-table-wrapper--breakpoint-1900 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-1900 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 2000px) {
+    .site-table-wrapper--breakpoint-2000 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-2000 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 2100px) {
+    .site-table-wrapper--breakpoint-2100 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-2100 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 2200px) {
+    .site-table-wrapper--breakpoint-2200 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-2200 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 2300px) {
+    .site-table-wrapper--breakpoint-2300 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-2300 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 2400px) {
+    .site-table-wrapper--breakpoint-2400 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-2400 {
+      max-height: 90vh;
+    }
+  }
+  @media (max-width: 2500px) {
+    .site-table-wrapper--breakpoint-2500 {
+      position: relative;
+      overflow: auto;
+    }
+    .device--no-touch .site-table-wrapper--breakpoint-2500 {
       max-height: 90vh;
     }
   }
