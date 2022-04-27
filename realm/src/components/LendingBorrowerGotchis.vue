@@ -112,6 +112,22 @@
                 {{ stats.totalAlchemicaEarned[token] }}
                 {{ token }}
               </div>
+              <div
+                v-if="pricesStatus.loaded"
+                style="display: flex; align-items: center; margin: 8px 10px 5px 5px;"
+              >
+                <span style="align-self: flex-start; margin-right: 4px;">
+                  =
+                </span>
+                <CryptoIcon
+                  :address="TOKEN_ADDRESSES.GHST"
+                  style="margin-right: 5px; align-self: flex-start;"
+                />
+                {{ stats.totalNormalizedAlchemicaEarnedGhst.decimalPlaces(2) }}
+                GHST-value
+                <br>
+                ({{ stats.normalizedGhstEarnedPerHour.decimalPlaces(2) }} GHST / hour)
+              </div>
             </div>
           </div>
           <div style="margin-top: 20px">
