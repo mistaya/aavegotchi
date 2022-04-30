@@ -197,6 +197,17 @@
                 </div>
               </div>
             </div>
+
+            <div v-if="colorScheme.colorBy === 'highlight'">
+              <label>
+                Parcel color:
+                <input
+                  type="color"
+                  :value="colorScheme.highlight"
+                  @input="debouncedSetHighlight($event.target.value)"
+                >
+              </label>
+            </div>
           </details>
 
           <MapConfig
@@ -273,6 +284,7 @@
 <script>
 import { ref, computed, nextTick } from 'vue'
 import BigNumber from 'bignumber.js'
+import debounce from 'lodash.debounce'
 import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
@@ -343,7 +355,8 @@ export default {
       { id: 'price', label: 'Parcel Price (GHST)' },
       { id: 'bidder', label: 'Bidder Address' },
       { id: 'whaleGhst', label: 'Whales (total GHST spent)' },
-      { id: 'whalePx', label: 'Whales (total pixel area)' }
+      { id: 'whalePx', label: 'Whales (total pixel area)' },
+      { id: 'highlight', label: 'Simple highlight' }
     ]
     const colorScheme = ref({
       colorBy: 'price', // or 'bidder'
@@ -378,9 +391,13 @@ export default {
         scaleName: 'inferno',
         min: 0,
         max: 75_000
-      }
+      },
+      highlight: '#ffa500'
     })
     const colorSchemeLabel = computed(() => colorSchemeOptions.find(option => option.id === colorScheme.value.colorBy)?.label)
+    const debouncedSetHighlight = debounce((color) => {
+      colorScheme.value.highlight = color
+    }, 300)
 
     const priceScalesBySize = computed(() => {
       const scales = {}
@@ -462,6 +479,8 @@ export default {
         getColor = parcel => {
           return whalePxScale.value(whalesPx.value[parcelAuctions.value[parcel.id].highestBidder] || 0)
         }
+      } else if (colorBy === 'highlight') {
+        getColor = parcel => colorScheme.value.highlight
       }
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => [
@@ -625,6 +644,7 @@ export default {
       colorSchemeOptions,
       colorScheme,
       colorSchemeLabel,
+      debouncedSetHighlight,
       mapRef,
       zoomToParcel
     }
