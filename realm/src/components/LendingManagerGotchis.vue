@@ -68,7 +68,7 @@
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
-        :scrollingBreakpoint="1800"
+        :scrollingBreakpoint="1900"
       >
         <template #headers>
           <tr>
@@ -107,6 +107,13 @@
               <SortToggle
                 :sort="tableSort.column === 'totalAlchemica NORMALIZED' ? tableSort.direction : null"
                 @update:sort="tableSort.column = $event ? 'totalAlchemica NORMALIZED' : null; tableSort.direction = $event"
+              />
+            </th>
+            <th style="min-width: 90px;">
+              FUD-equiv Per Hour
+              <SortToggle
+                :sort="tableSort.column === 'totalAlchemica NORMALIZED_PER_HOUR' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'totalAlchemica NORMALIZED_PER_HOUR' : null; tableSort.direction = $event"
               />
             </th>
             <th>Gotchi Pocket</th>
@@ -228,6 +235,17 @@
                   }"
                 >
                   {{ row.totalAlchemica.NORMALIZED }}
+                </div>
+              </template>
+            </td>
+            <td>
+              <template v-if="row.isLended && row.totalAlchemica">
+                <div
+                  :class="{
+                    'zero-value': row.totalAlchemica.NORMALIZED_PER_HOUR.isZero()
+                  }"
+                >
+                  {{ row.totalAlchemica.NORMALIZED_PER_HOUR.decimalPlaces(1) }}
                 </div>
               </template>
             </td>
@@ -607,7 +625,10 @@ export default {
       }
     )
 
+    const fetchTimestamp = ref(0)
+
     const fetchData = function () {
+      fetchTimestamp.value = Date.now()
       fetchOwnedGotchis()
       fetchListings()
     }
@@ -619,6 +640,7 @@ export default {
       const listedGotchiIds = listedGotchis.value.map(item => item.gotchi.id)
       const ownedUnlistedGotchis = ownedGotchis.value.filter(item => !listedGotchiIds.includes(item.gotchi.id))
       const allGotchis = ownedUnlistedGotchis.concat(listedGotchis.value)
+      const fetchTimestampSeconds = fetchTimestamp.value / 1000
       const rows = allGotchis.map(item => {
         const isListed = item.listing && item.listing.timeAgreed === '0'
         const isLended = item.listing && item.listing.timeAgreed !== '0'
@@ -629,6 +651,7 @@ export default {
           ? ((item.listing.timeAgreed - 0) + (item.listing.period - 0)) * 1000
           // if not lended, make up a 'far future' timestamp to help with sorting listed and unlisted gotchis
           : (isListed ? Number.MAX_SAFE_INTEGER - 1 : Number.MAX_SAFE_INTEGER)
+        const actualPeriod = isLended ? fetchTimestampSeconds - (item.listing.timeAgreed - 0) : 0
         const lastClaimedDate = item.listing && item.listing.lastClaimed !== '0' ? new Date(item.listing.lastClaimed * 1000) : null
         const lastClaimedTimestamp = isLended
           ? item.listing.lastClaimed * 1000
@@ -657,6 +680,7 @@ export default {
           .plus(totalAlchemica.FOMO.times(2))
           .plus(totalAlchemica.ALPHA.times(4))
           .plus(totalAlchemica.KEK.times(10))
+        totalAlchemica.NORMALIZED_PER_HOUR = totalAlchemica.NORMALIZED.dividedBy(actualPeriod / (60 * 60))
 
         return {
           gotchi: item.gotchi,
