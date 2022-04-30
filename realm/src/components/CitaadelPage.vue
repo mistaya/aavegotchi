@@ -232,6 +232,7 @@
               @requestBaazaarColorScheme="colorScheme.colorBy = 'baazaarPrice'"
             />
             <FilterSize v-model="filters.size" />
+            <FilterBaazaarPrice v-model="filters.baazaarPrice" />
             <FilterWalls v-model="filters.walls" />
             <FilterDistricts v-model="filters.districts" />
             <FilterRoads v-model="filters.roads" />
@@ -323,6 +324,7 @@ import ParcelsExport from './ParcelsExport.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
+import FilterBaazaarPrice, { getDefaultValue as getDefaultBaazarPriceValue, getFilter as getBaazaarPriceFilter } from './FilterBaazaarPrice.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
 import FilterWalls, { getFilter as getWallsFilter } from './FilterWalls.vue'
 import FilterDistricts, { DISTRICTS, getDefaultValue as getDefaultDistrictsValue, getFilter as getDistrictsFilter } from './FilterDistricts.vue'
@@ -345,6 +347,7 @@ export default {
     CitaadelMap,
     MapConfig,
     FilterBaazaar,
+    FilterBaazaarPrice,
     FilterSize,
     FilterWalls,
     FilterDistricts,
@@ -372,6 +375,7 @@ export default {
     const mapConfig = ref(getDefaultMapConfigValue())
     const filters = ref({
       baazaar: getDefaultBaazarValue(),
+      baazaarPrice: getDefaultBaazarPriceValue(),
       size: [...SIZES],
       walls: WALLS.map(wall => wall.id),
       districts: getDefaultDistrictsValue([...DISTRICTS]),
@@ -613,6 +617,7 @@ export default {
       const idFilter = getParcelIdsFilter(filters.value.parcelIds)
       const nameFilter = getParcelNamesFilter(filters.value.parcelNames)
       const baazaarFilter = getBaazaarFilter(listingsByParcelId.value, filters.value.baazaar)
+      const baazaarPriceFilter = getBaazaarPriceFilter(listingsByParcelId.value, filters.value.baazaarPrice)
       const sizesFilter = getSizesFilter(filters.value.size)
       const wallsFilter = getWallsFilter(filters.value.walls)
       const districtsFilter = getDistrictsFilter(DISTRICTS, filters.value.districts)
@@ -620,7 +625,7 @@ export default {
       const boostsFilter = getBoostsFilter(filters.value.boosts)
       const ownersFilter = getOwnersFilter(ownersByParcelId.value, filters.value.owners)
 
-      const applyFilters = [idFilter, nameFilter, baazaarFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter]
 
       let numMatches = 0
       const result = Object.fromEntries(
