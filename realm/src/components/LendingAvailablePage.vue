@@ -110,6 +110,7 @@
         <br><b>May 18th onwards</b> is when Alchemica will start dropping again, but it will be different, as the real game will be starting!
         <br>Join the <a href="https://discord.gg/aavegotchi" target="_blank" rel="noopener">Discord</a> and read the <a href="https://blog.aavegotchi.com/" target="_blank" rel="noopener">official blog</a> to keep up-to-date with announcements.
       </div>
+      <br>
 
       <template v-if="status.loading">
         Fetching, please wait...
