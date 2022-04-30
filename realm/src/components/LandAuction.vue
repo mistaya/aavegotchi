@@ -213,6 +213,7 @@
             </summary>
             <div style="margin: 15px 0 0 15px">
               <FilterSize v-model="filters.size" />
+              <FilterAuctionPrice v-model="filters.price" />
               <FilterWalls v-model="filters.walls" />
               <FilterDistricts
                 :districts="auctionInfo.districts"
@@ -292,6 +293,7 @@ import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcel
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterBidders, { getFilter as getBiddersFilter } from './FilterBidders.vue'
+import FilterAuctionPrice, { getDefaultValue as getDefaultAuctionPriceValue, getFilter as getAuctionPriceFilter } from './FilterAuctionPrice.vue'
 
 export default {
   components: {
@@ -310,7 +312,8 @@ export default {
     FilterParcelIds,
     FilterParcelNames,
     FilterBoosts,
-    FilterBidders
+    FilterBidders,
+    FilterAuctionPrice
   },
   props: {
     auctionId: { type: String, default: '1' }
@@ -331,6 +334,7 @@ export default {
       walls: WALLS.map(wall => wall.id),
       boosts: getDefaultBoostsValue(),
       bidders: [],
+      price: getDefaultAuctionPriceValue(),
       parcelIds: [],
       parcelNames: []
     })
@@ -479,8 +483,9 @@ export default {
       const roadsFilter = getRoadsFilter(filters.value.roads)
       const boostsFilter = getBoostsFilter(filters.value.boosts)
       const biddersFilter = getBiddersFilter(parcelAuctions.value, filters.value.bidders)
+      const priceFilter = getAuctionPriceFilter(parcelAuctions.value, filters.value.price)
 
-      const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, priceFilter]
 
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {
