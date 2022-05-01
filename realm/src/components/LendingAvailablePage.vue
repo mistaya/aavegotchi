@@ -104,7 +104,7 @@
         <SiteIcon name="warning-triangle" style="margin-right: 5px" />
         <b>WARNING:</b> there is currently NO alchemica dropping in the gotchiverse: the April playdrop event is finished.
         <br>
-        <br>You can still borrow a gotchi to try out the gotchiverse, craft LE Aaltars or Tiles, or play minigames, but <b>there is nothing to earn right now</b>.
+        <br>You can still borrow a gotchi to try out the gotchiverse, craft LE Tiles, or play minigames, but <b>there is nothing to earn right now</b>.
         <br>
         <br><b>May 7th (2pm UTC)</b> is the <b>next gotchiverse play-to-earn opportunity</b>: <a href="https://blog.aavegotchi.com/the-gotchiverse-two-major-releases-confirmed-for-may/" target="_blank" rel="noopener">a social/PvP event</a>.
         <br><b>May 18th onwards</b> is when Alchemica will start dropping again, but it will be different, as the real game will be starting!
