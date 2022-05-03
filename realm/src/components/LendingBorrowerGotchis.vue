@@ -245,8 +245,8 @@
             <th style="min-width: 120px">
               Finishes
               <SortToggle
-                :sort="tableSort.column === 'finishTimestamp' ? tableSort.direction : null"
-                @update:sort="tableSort.column = $event ? 'finishTimestamp' : null; tableSort.direction = $event"
+                :sort="tableSort.column === 'actualFinishTimestamp' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'actualFinishTimestamp' : null; tableSort.direction = $event"
               />
             </th>
             <th class="with-left-border">Agreed</th>
@@ -323,7 +323,7 @@
                 style="margin-right: 5px;"
               />
               <DateFriendly
-                :date="row.finishDate"
+                :date="row.actualFinishDate"
                 enableToggle
               />
             </td>
@@ -800,11 +800,11 @@ export default {
         const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
         const createdDate = new Date(item.listing.timeCreated * 1000)
         const agreedDate = new Date(item.listing.timeAgreed * 1000)
-        const finishDate = new Date(((item.listing.timeAgreed - 0) + (item.listing.period - 0)) * 1000)
-        const finishTimestamp = !isComplete
+        const actualFinishTimestamp = !isComplete
           ? ((item.listing.timeAgreed - 0) + (item.listing.period - 0)) * 1000
           // for finished listings, use the actual period
           : ((item.listing.timeAgreed - 0) + (earningsForListing.actualPeriod - 0)) * 1000
+        const actualFinishDate = new Date(actualFinishTimestamp)
         const lastClaimedDate = item.listing && item.listing.lastClaimed !== '0' ? new Date(item.listing.lastClaimed * 1000) : null
         const lastClaimedTimestamp = item.listing.lastClaimed * 1000
         const balancesForGotchi = balances.value[item.gotchi.escrow]
@@ -872,21 +872,21 @@ export default {
           escrowAlchemica,
           agreedDate,
           createdDate,
-          finishDate,
-          finishTimestamp,
+          actualFinishDate,
+          actualFinishTimestamp,
           lastClaimedDate,
           lastClaimedTimestamp,
           actualPeriod
         }
       })
 
-      return orderBy(rows, ['finishTimestamp'], ['desc'])
+      return orderBy(rows, ['actualFinishTimestamp'], ['desc'])
     })
 
     const numGotchis = computed(() => tableGotchis.value?.length)
 
     const tableSort = ref({
-      column: 'finishTimestamp',
+      column: 'actualFinishTimestamp',
       direction: 'desc'
     })
 
