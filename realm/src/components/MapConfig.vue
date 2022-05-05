@@ -28,6 +28,7 @@
         v-for="feature in [
           { id: 'Roads', label: 'roads' },
           { id: 'Walls', label: 'walls' },
+          { id: 'Districts', label: 'districts' },
           { id: 'Paartners', label: 'paartner parcels' },
           { id: 'Landmarks', label: 'landmarks' },
           { id: 'AlchemicaFud', label: 'FUD deposits' },
@@ -82,6 +83,7 @@ const DEFAULT_COLORS = {
   light: {
     colorRoads: '#bbbbbb',
     colorWalls: '#000000',
+    colorDistricts: '#FA34F3',
     colorPaartners: '#bf91ff',
     colorLandmarks: '#FA34F3',
     colorAlchemicaFud: '#C8E4C8',
@@ -93,6 +95,7 @@ const DEFAULT_COLORS = {
   dark: {
     colorRoads: '#4A4A4A',
     colorWalls: '#A3A3A3',
+    colorDistricts: '#FA34F3',
     colorPaartners: '#bf91ff',
     colorLandmarks: '#FA34F3',
     colorAlchemicaFud: '#475C47',
@@ -110,6 +113,7 @@ const getDefaultValue = function () {
     unmatchedDisplay: 'outline', /* or 'hide' */
     showRoads: true,
     showWalls: true,
+    showDistricts: false,
     showPaartners: true,
     showLandmarks: true,
     showAlchemicaFud: true,

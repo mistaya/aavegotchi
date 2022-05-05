@@ -1,5 +1,71 @@
 <template>
   <div>
+    <!-- svg text rendering is very slow to handle zooming, so instead use symbols for the district numbers -->
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      style="display: none;"
+    >
+      <symbol
+        id="symbol-number-0"
+        viewBox="0 0 5.059 7.183"
+      >
+        <path d="M33.67 27.039q0 1.746-.646 2.671-.64.92-1.896.92-1.256 0-1.887-.915-.63-.92-.63-2.676 0-1.804.615-2.698.615-.894 1.933-.894 1.286 0 1.896.904.615.9.615 2.688zm-.946 0q0-1.499-.366-2.166-.362-.671-1.2-.671-.857 0-1.234.661-.372.662-.372 2.176 0 1.472.377 2.155.382.676 1.209.676.822 0 1.204-.697.382-.698.382-2.134zm-2.19.62v-1.287h1.214v1.287z" style="stroke-width:.26458332" transform="translate(-28.611 -23.447)" aria-label="0"/>
+      </symbol>
+      <symbol
+        id="symbol-number-1"
+        viewBox="0 0 5.075 6.971"
+      >
+        <path d="M28.782 30.527v-.75h2.268v-5.276q-.191.403-.91.703-.712.3-1.405.3v-.765q.765 0 1.442-.336.682-.336.95-.847h.858v6.221h1.825v.75z" style="stroke-width:.26458332" transform="translate(-28.735 -23.556)" aria-label="1"/>
+      </symbol>
+      <symbol
+        id="symbol-number-2"
+        viewBox="0 0 4.8575845 7.0796709"
+      >
+        <path d="M28.714 30.527v-.605q.254-.563.786-1.132.537-.573 1.457-1.307.822-.656 1.184-1.142.361-.486.361-.935 0-.574-.356-.884-.357-.31-1.018-.31-.59 0-.956.325-.362.32-.43.905l-.95-.088q.103-.879.718-1.39.615-.517 1.618-.517 1.1 0 1.715.496t.615 1.406q0 .594-.392 1.188-.393.59-1.174 1.21-1.064.847-1.477 1.25-.409.398-.58.775h3.737v.755z" style="stroke-width:.26458332" transform="translate(-28.714 -23.447)" aria-label="2"/>
+      </symbol>
+      <symbol
+        id="symbol-number-3"
+        viewBox="0 0 5.018 7.183"
+      >
+        <path d="M33.65 28.615q0 .96-.652 1.488-.65.527-1.819.527-1.106 0-1.767-.501-.661-.501-.78-1.473l.96-.088q.187 1.292 1.587 1.292.703 0 1.101-.325.403-.326.403-.951 0-.388-.238-.651-.232-.27-.635-.409-.403-.144-.905-.144h-.527v-.806h.507q.444 0 .811-.145.372-.15.584-.419.212-.268.212-.635 0-.548-.346-.853-.341-.31-1.018-.31-.615 0-.998.315-.377.315-.439.889l-.935-.072q.103-.894.739-1.396.64-.5 1.643-.5 1.096 0 1.7.485.61.48.61 1.343 0 .615-.408 1.07-.409.455-1.117.6v.02q.78.088 1.251.548.475.46.475 1.1z" style="stroke-width:.26458332" transform="translate(-28.632 -23.447)" aria-label="3"/>
+      </symbol>
+      <symbol
+        id="symbol-number-4"
+        viewBox="0 0 5.281 6.971"
+      >
+        <path d="M32.812 28.878v1.649h-.93v-1.649h-3.38v-.723l3.282-4.6h1.028v4.59h.972v.733zm-.93-4.315-2.584 3.582h2.584z" style="stroke-width:.26458332" transform="translate(-28.503 -23.556)" aria-label="4"/>
+      </symbol>
+      <symbol
+        id="symbol-number-5"
+        viewBox="0 0 5.018 7.075"
+      >
+        <path d="M33.65 28.232q0 .719-.305 1.261-.305.543-.894.843-.584.294-1.385.294-1.018 0-1.644-.444-.625-.445-.79-1.287l.94-.109q.295 1.08 1.514 1.08.729 0 1.163-.434.434-.434.434-1.183 0-.64-.429-1.049-.429-.408-1.147-.408-.377 0-.703.119-.325.118-.65.403h-.91l.242-3.762h4.14v.749h-3.282l-.15 2.196q.605-.465 1.504-.465 1.054 0 1.7.61.651.605.651 1.586z" style="stroke-width:.26458332" transform="translate(-28.632 -23.556)" aria-label="5"/>
+      </symbol>
+      <symbol
+        id="symbol-number-6"
+        viewBox="0 0 4.883 7.183"
+      >
+        <path d="M33.634 28.222q0 1.096-.63 1.752-.626.656-1.721.656-1.22 0-1.876-.889-.656-.894-.656-2.532 0-1.798.682-2.78.682-.982 1.922-.982 1.649 0 2.077 1.483l-.888.16q-.274-.888-1.2-.888-.79 0-1.23.718-.438.718-.438 2.015.253-.47.713-.713.46-.248 1.054-.248.992 0 1.592.615.599.61.599 1.633zm-.946.041q0-.744-.398-1.157-.392-.414-1.07-.414-.382 0-.723.176-.34.17-.537.48-.191.306-.191.693 0 .786.413 1.313.419.527 1.07.527.656 0 1.044-.434.392-.434.392-1.184z" style="stroke-width:.26458332" transform="translate(-28.75 -23.447)" aria-label="6"/>
+      </symbol>
+      <symbol
+        id="symbol-number-7"
+        viewBox="0 0 4.708 6.971"
+      >
+        <path d="M33.494 24.274q-2.444 3.514-2.444 6.253h-.971q0-1.36.63-2.93.636-1.576 1.886-3.292h-3.808v-.75h4.707z" style="stroke-width:.26458332" transform="translate(-28.787 -23.556)" aria-label="7"/>
+      </symbol>
+      <symbol
+        id="symbol-number-8"
+        viewBox="0 0 4.966 7.183"
+      >
+        <path d="M33.624 28.573q0 .951-.646 1.504-.641.553-1.835.553-1.168 0-1.83-.542-.655-.543-.655-1.504 0-.667.408-1.132.408-.47 1.044-.579v-.02q-.58-.14-.93-.59-.352-.45-.352-1.028 0-.506.284-.92.29-.413.812-.64.522-.228 1.198-.228.708 0 1.236.233.527.227.806.635.279.409.279.93 0 .584-.357 1.034-.356.45-.935.563v.02q.672.11 1.07.57.403.454.403 1.141zm-1.148-3.276q0-.573-.351-.863-.346-.294-1.003-.294-.635 0-.992.294-.351.295-.351.863 0 .574.356.889.357.315.998.315 1.343 0 1.343-1.204zm.181 3.189q0-.62-.403-.951-.403-.336-1.132-.336-.702 0-1.105.362-.398.356-.398.945 0 .698.387 1.065.393.362 1.148.362.76 0 1.131-.357.372-.357.372-1.09z" style="stroke-width:.26458332" transform="translate(-28.658 -23.447)" aria-label="8"/>
+      </symbol>
+      <symbol
+        id="symbol-number-9"
+        viewBox="0 0 4.889 7.183"
+      >
+        <path d="M33.587 26.894q0 1.788-.687 2.765-.687.971-1.948.971-.853 0-1.37-.356-.511-.362-.733-1.163l.889-.14q.279.91 1.23.91.795 0 1.24-.718.45-.724.46-1.995-.207.465-.708.75-.502.278-1.101.278-.977 0-1.571-.656-.59-.662-.59-1.72 0-1.096.647-1.732.651-.64 1.777-.64 2.465 0 2.465 3.446zm-1.012-.822q0-.832-.414-1.348-.413-.522-1.07-.522-.671 0-1.059.45-.387.449-.387 1.167 0 .739.387 1.194.388.45 1.05.45.392 0 .738-.176.352-.181.553-.496.202-.32.202-.719z" style="stroke-width:.26458332" transform="translate(-28.699 -23.447)" aria-label="9"/>
+      </symbol>
+    </svg>
     <div
       ref="svgContainerRef"
       class="map-svg-container"
@@ -269,6 +335,30 @@
               :fill="parcelColors[parcel.id] || parcelFallbackFill"
             />
           </a>
+          <g
+            v-show="mapConfig.showDistricts"
+            :style="{
+              '--map-district--color': mapConfig.colorDistricts,
+            }"
+          >
+            <g
+              v-for="district in DISTRICTS"
+              :key="district.id"
+              :transform="`translate(${district.x} ${district.y})`"
+            >
+              <rect
+                :width="district.width"
+                :height="district.height"
+                class="district-border"
+              />
+              <use
+                v-for="number in district.id"
+                :key="`district-label_${district.id}_${number}`"
+                :xlink:href="`#symbol-number-${number}`"
+                class="district-label"
+              ></use>
+            </g>
+          </g>
           <template v-if="selectedParcel">
             <rect
               class="selected-parcel"
@@ -315,6 +405,7 @@ import svgPanZoom from 'svg-pan-zoom'
 import Hammer from 'hammerjs'
 import { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
+import DISTRICTS from '@/data/parcels/districts.json'
 import useColorScheme from '@/data/useColorScheme'
 
 const CITAADEL_WIDTH = 9504
@@ -521,6 +612,7 @@ export default {
     return {
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
+      DISTRICTS,
       parcelFallbackFill,
       paartnerParcels,
       svgContainerRef,
@@ -588,6 +680,23 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .district-border {
+    pointer-events: none;
+    stroke: var(--map-district--color);
+    stroke-width: 10px;
+    fill: none;
+    opacity: 0.5;
+  }
+  .district-label {
+    pointer-events: none;
+    fill: var(--map-district--color);
+    opacity: 0.5;
+    transform: translate(0px, 20px) scale(0.2);
+  }
+  .district-label + .district-label {
+    transform: translate(140px, 20px) scale(0.2);
   }
 
   .parcel {
