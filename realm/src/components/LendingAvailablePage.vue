@@ -100,7 +100,6 @@
         </div>
       </fieldset>
 
-      <!--
       <div class="lending-warning">
         <SiteIcon name="warning-triangle" style="margin-right: 5px" />
         <b>WARNING:</b> there is currently NO alchemica dropping in the gotchiverse: the April playdrop event is finished.
@@ -112,7 +111,6 @@
         <br>Join the <a href="https://discord.gg/aavegotchi" target="_blank" rel="noopener">Discord</a> and read the <a href="https://blog.aavegotchi.com/" target="_blank" rel="noopener">official blog</a> to keep up-to-date with announcements.
       </div>
       <br>
-      -->
 
       <template v-if="status.loading">
         Fetching, please wait...
