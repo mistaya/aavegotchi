@@ -107,8 +107,8 @@
         <br>
         <br>You can still borrow a gotchi to try out the gotchiverse, craft LE Tiles, or play minigames, but <b>there is nothing to earn right now</b>.
         <br>
-        <br><b>May 7th (2pm UTC)</b> is the <b>next gotchiverse play-to-earn opportunity</b>: <a href="https://blog.aavegotchi.com/the-gotchiverse-two-major-releases-confirmed-for-may/" target="_blank" rel="noopener">a social/PvP event</a>.
-        <br><b>May 18th onwards</b> is when Alchemica will start dropping again, but it will be different, as the real game will be starting!
+        <br>Before May 18th, there will be a few <i>short</i> events when alchemica will drop: check the announcements in Discord to find out when.
+        <br><b>May 18th onwards</b> is when Alchemica will start dropping frequently again, but it will be different, as the real game will be starting!
         <br>Join the <a href="https://discord.gg/aavegotchi" target="_blank" rel="noopener">Discord</a> and read the <a href="https://blog.aavegotchi.com/" target="_blank" rel="noopener">official blog</a> to keep up-to-date with announcements.
       </div>
       <br>
