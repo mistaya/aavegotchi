@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="land-auctions">
     <div class="land-auctions-nav site-banner site-banner--secondary">
       <router-link
         :to="{ name: 'land-auction', params: { auctionId: '1' } }"
@@ -42,6 +42,12 @@ export default {
 </script>
 
 <style scoped>
+  .land-auctions {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto minmax(10px, 1fr);
+  }
+
   .land-auctions-nav {
     /* TODO this is a workaround to cover the padding from the <main> element */
     margin: -9px -10px 10px -10px;

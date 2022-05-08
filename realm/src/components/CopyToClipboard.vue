@@ -47,11 +47,12 @@ export default {
 
 <style scoped>
   .copy-to-clipboard {
+    position: relative;
     display: inline-block;
   }
   .copy-to-clipboard__input {
     width: 10px; /* a minimum width is needed for copying to work in chrome */
-    height: 1px;
+    height: 10px; /* a minimum height is needed for copying to work in safari */
     opacity: 0;
     pointer-events: none;
     position: absolute;

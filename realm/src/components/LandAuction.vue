@@ -256,25 +256,55 @@
         </section>
 
       </template>
+      <template #top>
+        <div style="display: inline-block; margin-bottom: 8px;">
+          <template v-if="numParcelsMatchingFilters === numParcelsToDisplay">
+            Matched all
+            <NumberDisplay :number="numParcelsMatchingFilters" />
+            parcels
+          </template>
+          <template v-else-if="numParcelsMatchingFilters === 0">
+            No parcels matched your filters
+          </template>
+          <template v-else>
+            Matched
+            <NumberDisplay :number="numParcelsMatchingFilters" />
+            parcels
+          </template>
+        </div>
+      </template>
       <template #main="{ viewMode }">
         <CitaadelMap
           ref="mapRef"
-          v-show="viewMode === 'map'"
+          v-show="viewMode === 'map' || viewMode === 'both'"
           :viewBox="auctionInfo.display.viewBox"
           :aspectRatio="auctionInfo.display.aspectRatio"
           :mapConfig="mapConfig"
           :parcels="parcelsToDisplay"
-          :parcelsMatchingFilters="parcelsMatchingFilters"
+          :parcelsMatchingFilters="parcelsMatchingFilters.result"
           :parcelColors="parcelColors"
           :selectedParcel="selectedParcel?.parcel"
           @click:parcel="onClickParcel"
         />
         <ParcelList
-          v-show="viewMode === 'list'"
-          class="parcel-list"
+          v-if="viewMode === 'list'"
+          class="parcel-list parcel-list--mode-list"
           :parcels="parcelsList"
           :auctionsByParcelId="auctionsByParcelId"
+          :selectedParcelId="selectedParcelId"
           @click:parcel="onClickParcel"
+        />
+      </template>
+      <template #sidebar2="{ viewMode }">
+        <ParcelList
+          v-if="viewMode === 'both'"
+          class="parcel-list parcel-list--mode-both"
+          :parcels="parcelsList"
+          :auctionsByParcelId="auctionsByParcelId"
+          :selectedParcelId="selectedParcelId"
+          parcelIcon="zoom-in"
+          compact
+          @click:parcel="onClickParcelFromSidebar"
         />
       </template>
     </LayoutMapWithFilters>
@@ -289,6 +319,7 @@ import useParcels from '@/data/useParcels'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
+import NumberDisplay from './NumberDisplay.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DataFetcherAuctions from './DataFetcherAuctions.vue'
@@ -311,6 +342,7 @@ export default {
   components: {
     PrereqParcels,
     LayoutMapWithFilters,
+    NumberDisplay,
     DataFetcherAuctions,
     PaartnerParcelDetails,
     ParcelDetails,
@@ -456,6 +488,7 @@ export default {
       // console.timeEnd('parcelsToDisplay')
       return result
     })
+    const numParcelsToDisplay = computed(() => parcelsToDisplay.value.length)
 
     const parcelColors = computed(() => {
       // console.time('parcelColors')
@@ -506,6 +539,7 @@ export default {
 
       const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, priceFilter]
 
+      let numMatches = 0
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {
           let show = true
@@ -514,15 +548,17 @@ export default {
               show = false
             }
           }
+          if (show) { numMatches++ }
           return [parcel.id, show]
         })
       )
       // console.timeEnd('parcelsMatchingFilters')
-      return result
+      return { result, numMatches }
     })
 
+    const numParcelsMatchingFilters = computed(() => parcelsMatchingFilters.value.numMatches)
     const parcelsList = computed(() =>
-      parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
+      parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
     )
 
     const refDetailsColorScheme = ref(null)
@@ -545,6 +581,11 @@ export default {
           refDetails.removeAttribute('open')
         }
       }
+    }
+
+    const onClickParcelFromSidebar = (parcel) => {
+      onClickParcel(parcel)
+      zoomToParcel(parcel.id, { viewMode: 'both' })
     }
 
     const selectedParcel = computed(() => {
@@ -627,10 +668,13 @@ export default {
       auctionInfo,
       parcelsToDisplay,
       parcelsMatchingFilters,
+      numParcelsToDisplay,
+      numParcelsMatchingFilters,
       parcelColors,
       auctionsByParcelId,
       parcelsList,
       onClickParcel,
+      onClickParcelFromSidebar,
       selectedParcelId,
       selectedParcel,
       selectedParcelPaartnerId,
@@ -653,8 +697,11 @@ export default {
 </script>
 
 <style scoped>
-  .parcel-list {
-    margin: 15px 0 50px;
+  .parcel-list--mode-list {
+    margin: 10px 0 50px;
+  }
+  .parcel-list--mode-both {
+    margin: 5px 0 0 15px;
   }
 
   .config-details {

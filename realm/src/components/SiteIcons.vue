@@ -26,6 +26,7 @@ import arrowUpDownSvg from '!!raw-loader!./icons/icon-arrow-up-down.svg'
 import arrowLeftmostSvg from '!!raw-loader!./icons/icon-arrow-leftmost.svg'
 import arrowRightmostSvg from '!!raw-loader!./icons/icon-arrow-rightmost.svg'
 import openWindowSvg from '!!raw-loader!./icons/icon-open-window.svg'
+import zoomInSvg from '!!raw-loader!./icons/icon-zoom-in.svg'
 import checkSvg from '!!raw-loader!./icons/icon-check.svg'
 import warningTriangleSvg from '!!raw-loader!./icons/icon-warning-triangle.svg'
 import infoSvg from '!!raw-loader!./icons/icon-info-empty.svg'
@@ -45,6 +46,7 @@ const icons = [
   { id: 'arrow-leftmost', svg: arrowLeftmostSvg },
   { id: 'arrow-rightmost', svg: arrowRightmostSvg },
   { id: 'open-window', svg: openWindowSvg },
+  { id: 'zoom-in', svg: zoomInSvg },
   { id: 'check', svg: checkSvg },
   { id: 'warning-triangle', svg: warningTriangleSvg },
   { id: 'info', svg: infoSvg },

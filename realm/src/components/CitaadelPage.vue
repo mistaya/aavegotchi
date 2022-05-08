@@ -1,6 +1,6 @@
 <template>
   <PrereqParcels>
-    <LayoutMapWithFilters>
+    <LayoutMapWithFilters class="citaadel-page">
       <template #sidebar="{ viewMode, setViewModeMap }">
         <h1>The Citaadel</h1>
 
@@ -263,26 +263,35 @@
         </section>
       </template>
       <template #top>
-        <template v-if="numParcelsMatchingFilters === numParcelsToDisplay">
-          Matched all {{ numParcelsMatchingFilters }} parcels
-        </template>
-        <template v-else-if="numParcelsMatchingFilters === 0">
-          No parcels matched your filters, out of {{ numParcelsToDisplay }} parcels
-        </template>
-        <template v-else>
-          Matched {{ numParcelsMatchingFilters }} parcels ({{ percentParcelsMatchingFilters }}% of {{ numParcelsToDisplay }} currently available)
-        </template>
-        <template v-if="numParcelsMatchingFilters > 0">
-          <ParcelsExport
-            :parcels="parcelsList"
-            style="float: right;"
-          />
-        </template>
+        <ParcelsExport
+          v-if="numParcelsMatchingFilters > 0"
+          :parcels="parcelsList"
+          style="float: right; margin: 0 0 8px 10px"
+        />
+        <div style="display: inline-block; margin-bottom: 8px;">
+          <template v-if="numParcelsMatchingFilters === numParcelsToDisplay">
+            Matched all
+            <NumberDisplay :number="numParcelsMatchingFilters" />
+            parcels
+          </template>
+          <template v-else-if="numParcelsMatchingFilters === 0">
+            No parcels matched your filters, out of
+            <NumberDisplay :number="numParcelsToDisplay" />
+            parcels
+          </template>
+          <template v-else>
+            Matched
+            <NumberDisplay :number="numParcelsMatchingFilters" />
+            parcels (<NumberDisplay :number="percentParcelsMatchingFilters" />% of
+            <NumberDisplay :number="numParcelsToDisplay" />
+            currently available)
+          </template>
+        </div>
       </template>
       <template #main="{ viewMode }">
         <CitaadelMap
           ref="mapRef"
-          v-show="viewMode === 'map'"
+          v-show="viewMode === 'map' || viewMode === 'both'"
           :mapConfig="mapConfig"
           :parcels="parcelsToDisplay"
           :parcelsMatchingFilters="parcelsMatchingFilters.result"
@@ -291,13 +300,28 @@
           @click:parcel="onClickParcel"
         />
         <ParcelList
-          v-show="viewMode === 'list'"
-          class="parcel-list"
+          v-if="viewMode === 'list'"
+          class="parcel-list parcel-list--mode-list"
           :parcels="parcelsList"
           :ownersByParcelId="ownersByParcelId"
           :listingsByParcelId="listingsByParcelId"
           :salesByParcelId="salesByParcelId"
+          :selectedParcelId="selectedParcelId"
           @click:parcel="onClickParcel"
+        />
+      </template>
+      <template #sidebar2="{ viewMode }">
+        <ParcelList
+          v-if="viewMode === 'both'"
+          class="parcel-list parcel-list--mode-both"
+          :parcels="parcelsList"
+          :ownersByParcelId="ownersByParcelId"
+          :listingsByParcelId="listingsByParcelId"
+          :salesByParcelId="salesByParcelId"
+          :selectedParcelId="selectedParcelId"
+          parcelIcon="zoom-in"
+          compact
+          @click:parcel="onClickParcelFromSidebar"
         />
       </template>
     </LayoutMapWithFilters>
@@ -313,6 +337,7 @@ import useParcelPrices from '@/data/useParcelPrices'
 import useParcelOwners from '@/data/useParcelOwners'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
+import NumberDisplay from './NumberDisplay.vue'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
 import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
@@ -340,6 +365,7 @@ export default {
     LayoutMapWithFilters,
     DataFetcherBaazaarListings,
     DataFetcherParcelOwners,
+    NumberDisplay,
     PaartnerParcelDetails,
     ParcelDetails,
     ParcelList,
@@ -694,6 +720,11 @@ export default {
       }
     }
 
+    const onClickParcelFromSidebar = (parcel) => {
+      onClickParcel(parcel)
+      zoomToParcel(parcel.id, { viewMode: 'both' })
+    }
+
     const parcelsList = computed(() => parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id]))
 
     const mapRef = ref(null)
@@ -737,6 +768,7 @@ export default {
       percentParcelsMatchingFilters,
       parcelColors,
       onClickParcel,
+      onClickParcelFromSidebar,
       selectedParcelId,
       selectedParcel,
       selectedParcelPaartnerId,
@@ -761,8 +793,14 @@ export default {
     width: 60px;
   }
 
-  .parcel-list {
-    margin-top: 10px;
-    margin-bottom: 50px;
+  .citaadel-page {
+    height: 100%;
+  }
+
+  .parcel-list--mode-list {
+    margin: 10px 0 50px;
+  }
+  .parcel-list--mode-both {
+    margin: 5px 0 0 15px;
   }
 </style>

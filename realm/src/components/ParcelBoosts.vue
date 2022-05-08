@@ -85,6 +85,8 @@ export default {
     margin: 0 0 -5px 0;
     padding: 0;
     font-variant: all-small-caps;
+    font-size: 0.9em;
+    white-space: nowrap;
   }
 
   .parcel-boost {
@@ -95,14 +97,16 @@ export default {
     vertical-align: middle;
 
     border: 1px solid var(--boost-color);
-    padding: 0 7px 2px 7px;
+    padding: 0 5px 2px 5px;
     background: var(--boost-color-bg);
   }
   .parcel-boost:first-child {
+    padding-left: 7px;
     border-top-left-radius: 0.75em;
     border-bottom-left-radius: 0.75em;
   }
   .parcel-boost:last-child {
+    padding-right: 7px;
     border-top-right-radius: 0.75em;
     border-bottom-right-radius: 0.75em;
   }

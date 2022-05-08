@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="citaadel-map">
     <!-- svg text rendering is very slow to handle zooming, so instead use symbols for the district numbers -->
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -388,14 +388,12 @@
     </div>
     <SiteButton
       type="button"
+      class="reset-zoom-button"
       style="margin-top: 8px"
       @click="resetZoom"
     >
       Reset map zoom
     </SiteButton>
-    <span class="map-footer-total">
-      {{ parcels.length }} parcels total
-    </span>
   </div>
 </template>
 
@@ -656,6 +654,10 @@ export default {
     stroke: inherit;
   }
 
+  .citaadel-map {
+    position: relative;
+  }
+
   .map-svg-container {
     /* performance: if the browser decides that this needs to be made into a layer;
      e.g. due to something else overlaying it, it can cause a temporary lock-up.
@@ -734,13 +736,6 @@ export default {
     filter: none;
   }
 
-  .map-footer-total {
-    margin-left: 20px;
-    font-size: 0.9em;
-    font-style: italic;
-    color: var(--site-text-color--subtle);
-  }
-
   @keyframes pulse {
     0%   {
       transform: scale(1);
@@ -753,6 +748,15 @@ export default {
     100% {
       transform: scale(32);
       opacity: 0;
+    }
+  }
+
+  /* when map is filling the screen height, position the reset button over the map to maximise vertical map size */
+  @media (min-height: 600px) and (min-width: 1100px) {
+    .reset-zoom-button {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
     }
   }
 </style>

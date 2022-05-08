@@ -65,7 +65,7 @@ export default {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 10px 0 13px;
+    padding: 8px 0 10px;
   }
   footer > div {
     flex: 0 0 auto;

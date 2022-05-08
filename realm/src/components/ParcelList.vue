@@ -4,7 +4,7 @@
       No parcels found.
     </template>
     <template v-else>
-      <div style="margin-top: 20px; margin-left: 10px;">
+      <div style="margin-left: 10px;">
         <label>
           Sort by:
           <select v-model="listParcelsOrder">
@@ -23,102 +23,132 @@
         :numItems="numParcels"
         itemsLabel="parcels"
       />
-      <ul class="parcels-list">
+      <ul
+        class="parcels-list"
+        :class="{
+          'parcels-list--compact': compact
+        }"
+      >
         <li
           v-for="(parcel, index) in listParcelsToDisplay"
           :key="parcel.id"
           class="parcels-list-item"
-          :class="`parcel-size--${parcel.sizeLabel.toLowerCase()}`"
+          :class="{
+            [`parcel-size--${parcel.sizeLabel.toLowerCase()}`]: true,
+            'parcels-list-item--selected': parcel.id === selectedParcelId
+          }"
         >
           <div class="parcel-index">
             {{ (paging.page * paging.pageSize) + index + 1 }}.
           </div>
-          <div class="parcel-info">
-            <div>
+
+          <div class="parcel-details">
+            <a
+              href="#"
+              class="parcel-id"
+              @click.prevent="$emit('click:parcel', parcel)"
+            >
+              <SiteIcon
+                :name="parcelIcon"
+                class="id-icon"
+              />
+              {{ parcel.id }}
+            </a>
+
+            <div
+              v-if="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id] || auctionsByParcelId?.[parcel.id]"
+              class="parcel-owner"
+            >
+              <EthIcon
+                :address="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder"
+                style="width: 15px"
+                :title="`Owner: ${ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder}`"
+              />
+            </div>
+
+            <div class="parcel-district">
+              D{{ parcel.district }}
+            </div>
+
+            <div class="parcel-size">
+              &nbsp;{{ parcel.sizeLabel }}
+            </div>
+
+            <ParcelBoosts
+              v-if="parcel.hasBoost"
+              :fomo="parcel.fomoBoost"
+              :fud="parcel.fudBoost"
+              :alpha="parcel.alphaBoost"
+              :kek="parcel.kekBoost"
+              class="parcel-boosts"
+            />
+
+            <div class="parcel-name">
+              {{ parcel.parcelHash }}
+            </div>
+
+            <div
+              class="parcel-auction"
+              v-if="auctionsByParcelId?.[parcel.id]"
+            >
               <a
-                href="#"
-                class="parcel-id"
-                @click.prevent="$emit('click:parcel', parcel)"
+                :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
+                target="_blank"
               >
-                {{ parcel.id }}
+                <span>
+                  Last bid:
+                  <NumberDisplay :number="auctionsByParcelId[parcel.id].highestBidGhst" />
+                  GHST
+                </span>
+                <SiteIcon name="open-window" :size="13" />
               </a>
-              <span class="parcel-name">
-                {{ parcel.parcelHash }}
-              </span>
-              <span
-                v-if="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id] || auctionsByParcelId?.[parcel.id]"
-                class="parcel-owner"
-              >
-                <EthIcon
-                  :address="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder"
-                  style="width: 15px"
-                  :title="`Owner: ${ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder}`"
-                />
+              <span class="parcel-auction__time">
+                (<DateFriendly :date="new Date(auctionsByParcelId[parcel.id].lastBidTime * 1000)" />)
               </span>
             </div>
 
-            <div>
-              <span class="parcel-district">
-                D{{ parcel.district }}
-              </span>
-              <span class="parcel-size">
-                &nbsp;{{ parcel.sizeLabel }}
-              </span>
-              <ParcelBoosts
-                v-if="parcel.hasBoost"
-                :fomo="parcel.fomoBoost"
-                :fud="parcel.fudBoost"
-                :alpha="parcel.alphaBoost"
-                :kek="parcel.kekBoost"
-                class="parcel-boosts"
-              />
-            </div>
-          </div>
-          <div
-            class="parcel-auction"
-            v-if="auctionsByParcelId?.[parcel.id]"
-          >
-            <a
-              :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
-              target="_blank"
-            >
-              Last bid: {{ auctionsByParcelId[parcel.id].highestBidGhst }} GHST
-              (<DateFriendly :date="new Date(auctionsByParcelId[parcel.id].lastBidTime * 1000)" />)
-            </a>
-          </div>
-          <div
-            class="parcel-baazaar"
-            v-if="listingsByParcelId?.[parcel.id] || salesByParcelId?.[parcel.id]"
-          >
             <div
-              v-if="listingsByParcelId?.[parcel.id]"
-              class="parcel-baazaar-listing parcel-baazaar-listing--current"
+              class="parcel-baazaar"
+              v-if="listingsByParcelId?.[parcel.id] || salesByParcelId?.[parcel.id]"
             >
-              <a
-                :href="`https://app.aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
-                target="_blank"
+              <div
+                v-if="listingsByParcelId?.[parcel.id]"
+                class="parcel-baazaar-listing parcel-baazaar-listing--current"
               >
-                <span>
-                  Listed for {{ listingsByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                <a
+                  :href="`https://app.aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
+                  target="_blank"
+                >
+                  <span>
+                    Listed for
+                    <NumberDisplay :number="listingsByParcelId[parcel.id].priceInGhst" />
+                    GHST
+                  </span>
+                  <SiteIcon name="open-window" :size="13" />
+                </a>
+                <span class="parcel-baazaar-listing__time">
+                  (<DateFriendly :date="listingsByParcelId[parcel.id].dateCreated" />)
                 </span>
-                <SiteIcon name="open-window" />
-              </a>
-              (<DateFriendly :date="listingsByParcelId[parcel.id].dateCreated" />)
-            </div>
-            <div
-              v-if="salesByParcelId[parcel.id]"
-              class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
-            >
-              <a
-                :href="`https://app.aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
-                target="_blank"
+              </div>
+              <div
+                v-if="salesByParcelId[parcel.id]"
+                class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
               >
-                <span>
-                  Last sold for {{ salesByParcelId[parcel.id].priceInGhst.toString() }} GHST
+                <a
+                  :href="`https://app.aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
+                  target="_blank"
+                >
+                  <span>
+                    Last sold for
+                    <NumberDisplay :number="salesByParcelId[parcel.id].priceInGhst" />
+                    GHST
+                  </span>
+                  <SiteIcon name="open-window" :size="13" />
+                </a>
+                <span class="parcel-baazaar-listing__time">
+                  (<DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />)
                 </span>
-                <SiteIcon name="open-window" />
-              </a>
-              (<DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />)
+              </div>
             </div>
           </div>
         </li>
@@ -137,6 +167,7 @@ import { ref, computed, watch } from 'vue'
 import { sort } from 'fast-sort'
 import DateFriendly from './DateFriendly.vue'
 import EthIcon from './EthIcon.vue'
+import NumberDisplay from './NumberDisplay.vue'
 import PagingControls from './PagingControls.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 
@@ -144,6 +175,7 @@ export default {
   components: {
     EthIcon,
     DateFriendly,
+    NumberDisplay,
     PagingControls,
     ParcelBoosts
   },
@@ -152,7 +184,11 @@ export default {
     ownersByParcelId: { type: Object, default: null },
     listingsByParcelId: { type: Object, default: null },
     salesByParcelId: { type: Object, default: null },
-    auctionsByParcelId: { type: Object, default: null }
+    auctionsByParcelId: { type: Object, default: null },
+    selectedParcelId: { type: String, default: null },
+    parcelIcon: { type: String, default: 'info' },
+    /* ideally we would use container queries. But this 'compact' hint will do for now. */
+    compact: { type: Boolean, default: false }
   },
   setup (props) {
     const numParcels = computed(() => props.parcels.length)
@@ -273,12 +309,31 @@ export default {
     --parcel-color-bg: rgba(0,0,0,0.15);
 
     position: relative;
-    margin: 0 0 10px 0;
-    padding: 7px 20px;
+    display: grid;
+    grid-template-columns: auto minmax(10px, 1fr);
+    column-gap: 8px;
+
+    margin: 0 0 15px 0;
+    border: 1px solid rgba(0,0,0,0);
+    border-left-width: 4px;
+    border-left-color: var(--parcel-color-bg);
+    padding: 8px 20px 8px 8px;
+    background: linear-gradient(to right, var(--parcel-color-bg), transparent var(--parcel-width), transparent 100%);
+    background-clip: padding-box;
+  }
+  .parcels-list-item--selected {
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+    border-color: var(--parcel-color-bg);
+    border-left-color: var(--site-selection-background-color);
+  }
+  .parcel-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    background: linear-gradient(to right, var(--parcel-color-bg), transparent var(--parcel-width), transparent 100%);
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 8px;
   }
   .parcels-list-item.parcel-size--humble {
     --parcel-width: 10%;
@@ -297,41 +352,36 @@ export default {
   }
 
   .parcels-list-item .parcel-index {
-    padding-top: 10px;
     opacity: 0.3;
-  }
-  .parcels-list-item .parcel-info > div {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-    padding: 2px 0;
-  }
-  .parcels-list-item .parcel-name {
-    font-family: monospace;
-  }
-  .parcels-list-item .parcel-district {
-    margin-right: 5px;
-  }
-  .parcels-list-item .parcel-size {
-    margin-right: 10px;
   }
   .parcels-list-item .parcel-size {
     text-transform: capitalize;
   }
+  .parcels-list-item .parcel-name {
+    font-family: monospace;
+    font-size: 0.9em;
+  }
   .parcels-list-item .parcel-auction,
   .parcels-list-item .parcel-baazaar {
-    padding-top: 3px;
+    width: 100%;
   }
-  .parcels-list-item .parcel-baazaar-listing .icon {
-    width: 13px;
+  .parcels-list--compact .parcels-list-item .parcel-name {
+    width: 100%;
   }
+  .parcels-list-item a.parcel-id,
+  .parcels-list-item .parcel-auction a,
   .parcels-list-item .parcel-baazaar-listing a {
     display: inline-flex;
     align-items: center;
     gap: 5px;
   }
-  .parcels-list-item .parcel-baazaar-listing a > * {
-    flex: 0 0 auto;
+  .parcels-list-item a.parcel-id .id-icon {
+    margin-top: -3px;
+  }
+  .parcel-auction__time,
+  .parcel-baazaar-listing__time {
+    margin-left: 5px;
+    font-size: 0.85em;
+    color: var(--site-text-color--subtle);
   }
 </style>

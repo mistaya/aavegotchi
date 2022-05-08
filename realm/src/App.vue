@@ -2,7 +2,8 @@
   <div
     class="app-layout"
     :class="{
-      'device--no-touch': deviceNoTouch
+      'device--no-touch': deviceNoTouch,
+      'app-layout--large-screen-fit-height': largeScreenFitHeight
     }"
   >
     <SiteHead />
@@ -19,6 +20,7 @@
 </template>
 
 <script>
+import useAppLayout from './useAppLayout'
 import usePageLoading from '@/router/usePageLoading'
 import SiteHead from '@/components/SiteHead.vue'
 import SiteIcons from '@/components/SiteIcons.vue'
@@ -35,10 +37,12 @@ export default {
   },
   setup: function () {
     const { pageLoading } = usePageLoading()
+    const { largeScreenFitHeight } = useAppLayout()
 
     return {
       pageLoading,
-      deviceNoTouch: !('ontouchstart' in document.documentElement)
+      deviceNoTouch: !('ontouchstart' in document.documentElement),
+      largeScreenFitHeight
     }
   }
 }
@@ -317,5 +321,10 @@ export default {
     display: grid;
     grid-template-columns: minmax(10px, 1fr);
     grid-template-rows: auto 1fr auto;
+  }
+  @media (min-height: 600px) and (min-width: 1100px) {
+    .app-layout--large-screen-fit-height {
+      grid-template-rows: auto minmax(10px, 1fr) auto;
+    }
   }
 </style>

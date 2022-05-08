@@ -5,7 +5,7 @@
   >
     <SiteButton
       type="button"
-      style="float: right; display: flex;"
+      style="position: absolute; top: 5px; right: 5px; display: flex;"
       title="Close"
       @click="$emit('close')"
     >
@@ -13,11 +13,14 @@
       <SiteIcon name="cancel" />
     </SiteButton>
 
-    <h2>Parcel details:</h2>
+    <h2 style="margin: 0 0 10px 0">Parcel details:</h2>
 
-    ID: {{ parcel.id }}
+    <div>
+      <span class="parcel-details__label">ID:</span>
+      {{ parcel.id }}
+    </div>
 
-    <div style="display: flex; margin-top: 5px; margin-bottom: 5px;">
+    <div style="display: flex;">
       <SiteButton
         type="button"
         style="margin-right: 10px"
@@ -43,16 +46,29 @@
       </SiteButton>
     </div>
 
-    Name: {{ parcel.parcelHash }}
-    <br>Size: {{ parcel.sizeLabel }}
-    <br>District: {{ parcel.district }}
+    <div>
+      <span class="parcel-details__label">Name:</span>
+      <span class="parcel-name">{{ parcel.parcelHash }}</span>
+    </div>
+
+    <div>
+      <span class="parcel-details__label">Size:</span>
+      <span class="parcel-size">{{ parcel.sizeLabel }}</span>
+    </div>
+
+    <div>
+      <span class="parcel-details__label">District:</span>
+      {{ parcel.district }}
+    </div>
 
     <div v-if="auction">
       <a
         :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
         target="_blank"
       >
-        Last bid: {{ auction.highestBidGhst }} GHST
+        Last bid:
+        <NumberDisplay :number="auction.highestBidGhst" />
+        GHST
       </a>
       <br>Bidder:
       <EthAddress
@@ -60,38 +76,51 @@
         icon
       />
     </div>
+
     <div v-if="owner">
-      Owner:
+      <span class="parcel-details__label">Owner:</span>
       <EthAddress
         :address="owner"
         icon
       />
     </div>
-    <div v-if="listing">
-      <a
-        :href="`https://app.aavegotchi.com/baazaar/erc721/${listing.id}`"
-        target="_blank"
-      >
-        Currently listed on Baazaar for
-        {{ listing.priceInGhst.toString() }} GHST
-      </a>
+
+    <div v-if="listing || lastSale">
+      <span class="parcel-details__label">Baazaar:</span>
+
+      <template v-if="listing">
+        <a
+          :href="`https://app.aavegotchi.com/baazaar/erc721/${listing.id}`"
+          target="_blank"
+        >
+          Listed for
+          <NumberDisplay :number="listing.priceInGhst" />
+          GHST
+        </a>
+      </template>
+      <template v-if="lastSale">
+        <a
+          :href="`https://app.aavegotchi.com/baazaar/erc721/${lastSale.id}`"
+          target="_blank"
+        >
+          Last sold for
+          <NumberDisplay :number="lastSale.priceInGhst" />
+          GHST
+        </a>
+        <span class="parcel-details__time">
+          (<DateFriendly :date="lastSale.datePurchased" />)
+        </span>
+      </template>
     </div>
-    <div v-if="lastSale">
-      <a
-        :href="`https://app.aavegotchi.com/baazaar/erc721/${lastSale.id}`"
-        target="_blank"
-      >
-        Last sold on Baazaar
-        <DateFriendly :date="lastSale.datePurchased" />
-        for
-        {{ lastSale.priceInGhst.toString() }} GHST
-      </a>
-    </div>
+
     <div v-if="auctionPrice">
-      Auction price: {{ auctionPrice }} GHST
+      <span class="parcel-details__label">Auction price:</span>
+      <NumberDisplay :number="auctionPrice" />
+      GHST
     </div>
+
     <div>
-      Boosts:
+      <span class="parcel-details__label">Boosts:</span>
       <ParcelBoosts
         v-if="parcel.hasBoost"
         :fud="parcel.fudBoost"
@@ -103,12 +132,20 @@
         None
       </template>
     </div>
+
+    <div class="parcel-coords">
+      Coordinates:
+      ({{ parcel.coordinateX }},
+      {{ parcel.coordinateY }})
+      <br>Dimensions: {{ parcel.width }} x {{ parcel.height }}
+    </div>
   </div>
 </template>
 
 <script>
 import DateFriendly from './DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
+import NumberDisplay from './NumberDisplay.vue'
 import FlagSelectedIcon from './FlagSelectedIcon.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 
@@ -116,6 +153,7 @@ export default {
   components: {
     DateFriendly,
     EthAddress,
+    NumberDisplay,
     FlagSelectedIcon,
     ParcelBoosts
   },
@@ -133,10 +171,36 @@ export default {
 
 <style scoped>
   .parcel-details {
+    position: relative;
+    display: grid;
+    row-gap: 8px;
     padding: 10px 10px 15px 15px;
   }
 
   .selected-flag-toggle {
     display: inline-flex;
+  }
+
+  .parcel-details__label {
+    margin-right: 5px;
+    font-size: 0.9em;
+    color: var(--site-text-color--subtle);
+  }
+
+  .parcel-size {
+    text-transform: capitalize;
+  }
+  .parcel-name {
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+  .parcel-coords {
+    margin-top: 10px;
+    font-size: 0.8em;
+    color: var(--site-text-color--subtle);
+  }
+  .parcel-details__time {
+    margin-left: 5px;
+    font-size: 0.85em;
   }
 </style>

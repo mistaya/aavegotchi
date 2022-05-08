@@ -52,7 +52,7 @@ import useParcelLists from '@/data/useParcelLists'
 const { parcelListsById } = useParcelLists()
 
 const CORNER_LIST_ID = 'corner'
-const ROADSIDE_LIST_IDS = ['road32', 'road16', 'road8']
+const ROADSIDE_LIST_IDS = ['road32', 'road16'/* , 'road8', 'road2' */]
 const getDefaultValue = function () {
   return {
     selectionMode: 'none',

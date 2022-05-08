@@ -20,7 +20,7 @@ const maxDecimalsFormatter = new Intl.NumberFormat(navigator.language, {
 
 export default {
   props: {
-    number: { type: [Number, Object], required: true },
+    number: { type: [Number, Object, String], required: true },
     usd: { type: Boolean, default: false },
     maxDecimals: { type: Boolean, default: false }
   },
@@ -31,6 +31,9 @@ export default {
       return amountFormatter
     },
     formattedNumber () {
+      if (typeof this.number === 'string') {
+        return this.formatter.format(this.number - 0)
+      }
       return this.formatter.format(this.number)
     }
   }

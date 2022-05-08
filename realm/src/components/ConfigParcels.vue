@@ -1,132 +1,130 @@
 <template>
-  <div>
-    <h1>Config Parcels</h1>
-    <PrereqParcels>
-      <LayoutMapWithFilters>
-        <template #sidebar>
-          <section>
-            <h2>Custom Parcel Lists</h2>
+  <PrereqParcels>
+    <LayoutMapWithFilters style="height: 100%;">
+      <template #sidebar>
+        <h1>Config Parcels</h1>
+        <section>
+          <h2>Custom Parcel Lists</h2>
 
-            <div v-if="parcelListsFetchStatus.loading">
-              <LoadingSpinner style="position: relative; top: 2px; margin-right: 2px;" />
-              loading initial lists...
-            </div>
-            <div v-if="parcelListsFetchStatus.error">
-              Error fetching initial parcel lists
-            </div>
-            <div v-if="parcelListsFetchStatus.loaded">
-              <div style="margin-top: 20px">
-                <label>
-                  Select a list to edit:
-                  <br>
-                  <select v-model="selectedListId">
-                    <option value="">
-                      --- Select List ---
-                    </option>
-                    <option
-                      v-for="availableList in availableLists"
-                      :key="availableList.id"
-                      :value="availableList.id"
-                    >
-                      {{ availableList.label }}
-                    </option>
-                  </select>
-                </label>
-              </div>
-
-              <div
-                v-if="selectedList"
-                style="margin: 20px 0"
-              >
-                {{ selectedList.label }} has {{ selectedList.parcels.length }} parcel IDs
-
-                <div style="margin-top: 10px; margin-bottom: 10px;">
-                  <label>
-                    Label:
-                    <input
-                      v-model="selectedList.label"
-                      type="text"
-                    >
-                  </label>
-                </div>
-                <div>
-                  <label>
-                    Parcel IDs:
-                    <TextareaList
-                      :modelValue="selectedList.parcels"
-                      :delimiterRegexp="/[^0-9]+/"
-                      @update:modelValue="selectedList.parcels = $event"
-                    />
-                  </label>
-                </div>
-              </div>
+          <div v-if="parcelListsFetchStatus.loading">
+            <LoadingSpinner style="position: relative; top: 2px; margin-right: 2px;" />
+            loading initial lists...
+          </div>
+          <div v-if="parcelListsFetchStatus.error">
+            Error fetching initial parcel lists
+          </div>
+          <div v-if="parcelListsFetchStatus.loaded">
+            <div style="margin-top: 20px">
+              <label>
+                Select a list to edit:
+                <br>
+                <select v-model="selectedListId">
+                  <option value="">
+                    --- Select List ---
+                  </option>
+                  <option
+                    v-for="availableList in availableLists"
+                    :key="availableList.id"
+                    :value="availableList.id"
+                  >
+                    {{ availableList.label }}
+                  </option>
+                </select>
+              </label>
             </div>
 
-            <div style="margin: 20px 0">
-              <h3>Add new list</h3>
+            <div
+              v-if="selectedList"
+              style="margin: 20px 0"
+            >
+              {{ selectedList.label }} has {{ selectedList.parcels.length }} parcel IDs
 
-              <div style="margin-bottom: 10px">
-                <label>
-                  ID:
-                  <input
-                    v-model="newListId"
-                    type="text"
-                  />
-                </label>
-              </div>
-
-              <div style="margin-bottom: 10px">
+              <div style="margin-top: 10px; margin-bottom: 10px;">
                 <label>
                   Label:
                   <input
-                    v-model="newListLabel"
+                    v-model="selectedList.label"
                     type="text"
+                  >
+                </label>
+              </div>
+              <div>
+                <label>
+                  Parcel IDs:
+                  <TextareaList
+                    :modelValue="selectedList.parcels"
+                    :delimiterRegexp="/[^0-9]+/"
+                    @update:modelValue="selectedList.parcels = $event"
                   />
                 </label>
               </div>
+            </div>
+          </div>
 
-              <div style="margin-bottom: 10px">
-                <SiteButton
-                  type="button"
-                  :disabled="!canAddNewList"
-                  @click="addNewList"
-                >
-                  Add List
-                </SiteButton>
-              </div>
+          <div style="margin: 20px 0">
+            <h3>Add new list</h3>
+
+            <div style="margin-bottom: 10px">
+              <label>
+                ID:
+                <input
+                  v-model="newListId"
+                  type="text"
+                />
+              </label>
             </div>
 
-            <div style="margin: 20px 0 10px 0;">
+            <div style="margin-bottom: 10px">
+              <label>
+                Label:
+                <input
+                  v-model="newListLabel"
+                  type="text"
+                />
+              </label>
+            </div>
+
+            <div style="margin-bottom: 10px">
               <SiteButton
                 type="button"
-                :aria-pressed="`${showJson}`"
-                @click="showJson = !showJson"
+                :disabled="!canAddNewList"
+                @click="addNewList"
               >
-                {{ showJson ? 'Hide' : 'Show' }}
-                JSON
+                Add List
               </SiteButton>
             </div>
+          </div>
 
-            <textarea
-              v-if="showJson"
-              :value="listsJson"
-              style="width: 95%; min-height: 200px;"
-            />
-          </section>
-        </template>
-        <template #top>
-        </template>
-        <template #main>
-          <CitaadelMap
-            :parcels="parcelsToDisplay"
-            :parcelsMatchingFilters="parcelsMatchingFilters"
-            :parcelColors="parcelColors"
-            @click:parcel="onClickParcel"
+          <div style="margin: 20px 0 10px 0;">
+            <SiteButton
+              type="button"
+              :aria-pressed="`${showJson}`"
+              @click="showJson = !showJson"
+            >
+              {{ showJson ? 'Hide' : 'Show' }}
+              JSON
+            </SiteButton>
+          </div>
+
+          <textarea
+            v-if="showJson"
+            :value="listsJson"
+            style="width: 95%; min-height: 200px;"
           />
-        </template>
-      </LayoutMapWithFilters>
-    </PrereqParcels>
-  </div>
+        </section>
+      </template>
+      <template #top>
+      </template>
+      <template #main>
+        <CitaadelMap
+          :parcels="parcelsToDisplay"
+          :parcelsMatchingFilters="parcelsMatchingFilters"
+          :parcelColors="parcelColors"
+          @click:parcel="onClickParcel"
+        />
+      </template>
+    </LayoutMapWithFilters>
+  </PrereqParcels>
 </template>
 
 <script>
