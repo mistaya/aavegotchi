@@ -100,7 +100,7 @@
         </div>
       </fieldset>
 
-      <div class="lending-warning" style="display: none;">
+      <div class="lending-warning">
         <SiteIcon name="warning-triangle" style="margin-right: 5px" />
         <b>WARNING:</b> there is currently NO alchemica dropping in the gotchiverse: the April playdrop event is finished.
         <br>
