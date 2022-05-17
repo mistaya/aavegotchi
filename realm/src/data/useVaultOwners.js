@@ -56,7 +56,12 @@ const fetchOwners = function () {
           // finished fetching all pages
           setOwnersByGotchi(
             Object.fromEntries(
-              aavegotchis.map(({ id, owner }) => [id + '', owner.id])
+              aavegotchis.map(({ id, owner }) => {
+                if (!owner) {
+                  console.warn('No vault owner found for gotchi', id)
+                }
+                return [id + '', owner?.id]
+              })
             )
           )
           lastFetchDate.value = new Date()
@@ -84,7 +89,7 @@ fetch(initialOwnersUrl)
   .then(response => response.json())
   .then(json => {
     if (isStale()) { return }
-    setOwnersByGotchi(json, new Date(1649591747177))
+    setOwnersByGotchi(json, new Date(1652807964671))
     setLoaded()
   }).catch(error => {
     console.error(error)

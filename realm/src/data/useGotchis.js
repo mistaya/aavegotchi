@@ -5,8 +5,7 @@ import initialGotchisUrl from './pockets/assetGotchis.json'
 // Fetch all gotchis to find their escrow addresses
 const gotchis = ref([])
 
-// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-const SUBGRAPH_URL = 'https://static.138.182.90.157.clients.your-server.de/subgraphs/name/aavegotchi/aavegotchi-core-matic-lending-four'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 const FETCH_PAGE_SIZE = 1000
 
 const { status: fetchStatus, setLoading } = useStatus()
@@ -133,7 +132,7 @@ fetch(initialGotchisUrl)
   .then(response => response.json())
   .then(json => {
     if (isStale()) { return }
-    setGotchis(json, new Date(1649591747177))
+    setGotchis(json, new Date(1652807964671))
     setLoaded()
   }).catch(error => {
     console.error(error)
