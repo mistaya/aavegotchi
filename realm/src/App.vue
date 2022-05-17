@@ -313,6 +313,36 @@ export default {
     --site-card-border-color: #444;
     --site-card-background-color: rgba(209, 164, 209, 0.05);
   }
+
+  .site-alertbox {
+    --site-alertbox-border-color: var(--site-border-color--transparent);
+    --site-alertbox-background-color: var(--site-background-color--transparent);
+    display: inline-flex;
+    align-items: flex-start;
+    column-gap: 5px;
+    border: 1px solid var(--site-alertbox-border-color);
+    border-radius: 5px;
+    padding: 15px;
+    background-color: var(--site-alertbox-background-color);
+  }
+  .site-alertbox > svg {
+    flex: none;
+  }
+  .site-alertbox > div {
+    flex: 1 1 auto;
+  }
+  .site-alertbox--compact {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+  .site-alertbox--info {
+    --site-alertbox-border-color: rgba(50, 100, 205, 0.5);
+    --site-alertbox-background-color: rgba(50, 100, 205, 0.15);
+  }
+  .site-alertbox--warning {
+    --site-alertbox-border-color: rgba(255, 150, 0, 0.5);
+    --site-alertbox-background-color: rgba(255, 150, 0, 0.15);
+  }
 </style>
 
 <style scoped>

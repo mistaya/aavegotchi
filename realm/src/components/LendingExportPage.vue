@@ -9,6 +9,16 @@
         <br>All the following filters are optional, though please be considerate of the subgraphs if you're exporting a lot :)
       </div>
 
+      <div style="margin-bottom: 30px;">
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            Due to a bug with lending data between 13-17 May 2022, the reported <code>timeEnded</code> (and therefore <code>actualPeriod</code>) are now likely to be <b>wrong</b> for lendings that finished during this period, and also for many of the first 15000 lendings (these now incorrectly appear to have finished between 13-17 May).
+            <br>I will try to add a workaround for the first 15000 lendings later, but the ones from 13-17 May might not be practical to fix.
+          </div>
+        </div>
+      </div>
+
       <form
         class="lending-filters"
         style="margin-bottom: 30px;"
@@ -82,12 +92,15 @@
             </span>
           </label>
         </div>
-        <div
-          v-if="filtersEmpty"
-          style="margin: 15px 0; background: rgba(255, 220, 150, 0.4); padding: 5px;"
-        >
-          <SiteIcon name="warning-triangle" />
-          Warning: no filters are set, which will export ALL lendings!
+        <div>
+          <div
+            v-if="filtersEmpty"
+            style="margin: 15px 0;"
+            class="site-alertbox site-alertbox--warning"
+          >
+            <SiteIcon name="warning-triangle" />
+            Warning: no filters are set, which will export ALL lendings!
+          </div>
         </div>
         <SiteButton type="submit">
           Fetch Data

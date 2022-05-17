@@ -100,15 +100,16 @@
         </div>
       </fieldset>
 
-      <div class="lending-warning">
-        <SiteIcon name="warning-triangle" style="margin-right: 5px" />
-        <b>WARNING:</b> there is currently NO alchemica dropping in the gotchiverse: the April playdrop event is finished.
-        <br>
-        <br>You can still borrow a gotchi to try out the gotchiverse, craft LE Tiles, or play minigames, but <b>there is nothing to earn right now</b>.
-        <br>
-        <br>Before May 18th, there will be a few <i>short</i> events when alchemica will drop: check the announcements in Discord to find out when.
-        <br><b>May 18th onwards</b> is when Alchemica will start dropping frequently again, but it will be different, as the real game will be starting!
-        <br>Join the <a href="https://discord.gg/aavegotchi" target="_blank" rel="noopener">Discord</a> and read the <a href="https://blog.aavegotchi.com/" target="_blank" rel="noopener">official blog</a> to keep up-to-date with announcements.
+      <div class="site-alertbox site-alertbox--warning" style="margin-bottom: 20px">
+        <SiteIcon name="warning-triangle" />
+        <div>
+          <b>WARNING:</b> there is currently NO alchemica dropping in the gotchiverse: the April playdrop event is finished.
+          <br>
+          <br>You can still borrow a gotchi to try out the gotchiverse, craft LE Tiles, or play minigames, but <b>there is nothing to earn right now</b>.
+          <br>
+          <br><b>May 18th onwards</b> is when Alchemica will start dropping frequently again, but it will be different, as the real game will be starting!
+          <br>Join the <a href="https://discord.gg/aavegotchi" target="_blank" rel="noopener">Discord</a> and read the <a href="https://blog.aavegotchi.com/" target="_blank" rel="noopener">official blog</a> to keep up-to-date with announcements.
+        </div>
       </div>
       <br>
 
@@ -495,14 +496,5 @@ export default {
   }
   .shared-token-icon {
     opacity: 0.6;
-  }
-
-  .lending-warning {
-    display: inline-block;
-    margin: 0 0 20px;
-    border: 1px solid rgba(255, 150, 0, 0.5);
-    border-radius: 5px;
-    padding: 20px;
-    background-color: rgba(255, 150, 0, 0.15);
   }
 </style>

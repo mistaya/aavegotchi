@@ -170,6 +170,16 @@
           <br>
           <br>GHST-equivalent values are calculated using current prices, <i>not</i> the prices at the time of collection.
         </details>
+
+        <div style="margin-top: 20px;">
+          <div class="site-alertbox site-alertbox--warning">
+            <SiteIcon name="warning-triangle" />
+            <div>
+              Due to a bug with lending data between 13-17 May 2022, the reported Finish time (and therefore "Actual Duration" and "Per Hour" calculations) are now likely to be <b>wrong</b> for lendings that finished during this period, and also for many of the first 15000 lendings (these now incorrectly appear to have finished between 13-17 May).
+              <br>I will try to add a workaround for the first 15000 lendings later, but the ones from 13-17 May might not be practical to fix.
+            </div>
+          </div>
+        </div>
       </div>
 
       <SiteButton
@@ -848,9 +858,11 @@ export default {
           : new BigNumber(0)
 
         const actualPeriod = isComplete ? (earningsForListing.actualPeriod - 0) : (Date.now() / 1000) - (item.listing.timeAgreed - 0)
-        totalAlchemica.SUM_PER_HOUR = totalAlchemica.SUM.dividedBy(actualPeriod / (60 * 60))
-        totalAlchemica.NORMALIZED_PER_HOUR = totalAlchemica.NORMALIZED.dividedBy(actualPeriod / (60 * 60))
-        totalAlchemica.NORMALIZED_GHST_PER_HOUR = totalAlchemica.NORMALIZED_GHST.dividedBy(actualPeriod / (60 * 60))
+        const actualPeriodIsZero = actualPeriod - 0 === 0
+        const bigNumZero = new BigNumber(0)
+        totalAlchemica.SUM_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.SUM.dividedBy(actualPeriod / (60 * 60))
+        totalAlchemica.NORMALIZED_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.NORMALIZED.dividedBy(actualPeriod / (60 * 60))
+        totalAlchemica.NORMALIZED_GHST_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.NORMALIZED_GHST.dividedBy(actualPeriod / (60 * 60))
 
         if (isBorrowerSharing) {
           const percentage = (borrowerPercentage - 0) / 100
