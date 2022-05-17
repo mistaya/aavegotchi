@@ -175,8 +175,8 @@
           <div class="site-alertbox site-alertbox--warning">
             <SiteIcon name="warning-triangle" />
             <div>
-              Due to a bug with lending data between 13-17 May 2022, the reported Finish time (and therefore "Actual Duration" and "Per Hour" calculations) are now likely to be <b>wrong</b> for lendings that finished during this period, and also for many of the first 15000 lendings (these now incorrectly appear to have finished between 13-17 May).
-              <br>I will try to add a workaround for the first 15000 lendings later, but the ones from 13-17 May might not be practical to fix.
+              Due to a bug with lending data between 13-17 May 2022, the reported Finish time (and therefore "Actual Duration" and "Per Hour" calculations) are now likely to be <b>wrong</b> for lendings that finished during this period, and also for many of the first 25000 lendings (these now incorrectly appear to have finished between 13-17 May).
+              <br>I will try to add a workaround for the first 25000 lendings later, but the ones from 13-17 May might not be practical to fix.
             </div>
           </div>
         </div>
