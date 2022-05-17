@@ -9,6 +9,7 @@
         :viewMode="viewMode"
         :setViewModeMap="setViewModeMap"
         :setViewModeList="setViewModeList"
+        :setViewModeBoth="setViewModeBoth"
       ></slot>
     </div>
     <div class="layout-container__main">

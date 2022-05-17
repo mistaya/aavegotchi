@@ -15,6 +15,16 @@
 
     <h2 style="margin: 0 0 10px 0">Parcel details:</h2>
 
+    <div
+      v-if="auction && !auction.hasAuction"
+      class="site-alertbox site-alertbox--info site-alertbox--compact"
+    >
+      <SiteIcon name="info" />
+      <div>
+        Not being auctioned.
+      </div>
+    </div>
+
     <div>
       <span class="parcel-details__label">ID:</span>
       {{ parcel.id }}
@@ -61,21 +71,28 @@
       {{ parcel.district }}
     </div>
 
-    <div v-if="auction">
-      <a
-        :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
-        target="_blank"
-      >
-        Last bid:
-        <NumberDisplay :number="auction.highestBidGhst" />
-        GHST
-      </a>
-      <br>Bidder:
-      <EthAddress
-        :address="auction.highestBidder"
-        icon
-      />
-    </div>
+    <template v-if="auction && auction.hasAuction">
+      <div>
+        <span class="parcel-details__label">Last bid:</span>
+        <a
+          :href="`https://gotchiverse.io/auction?tokenId=${parcel.id}`"
+          target="_blank"
+        >
+          <NumberDisplay :number="auction.highestBidGhst" />
+          GHST
+        </a>
+        <span class="parcel-details__time">
+          (<DateFriendly :date="auction.lastBidTime" />)
+        </span>
+      </div>
+      <div>
+        <span class="parcel-details__label">Bidder:</span>
+        <EthAddress
+          :address="auction.highestBidder"
+          icon
+        />
+      </div>
+    </template>
 
     <div v-if="owner">
       <span class="parcel-details__label">Owner:</span>
@@ -85,33 +102,31 @@
       />
     </div>
 
-    <div v-if="listing || lastSale">
-      <span class="parcel-details__label">Baazaar:</span>
+    <div v-if="listing">
+      <span class="parcel-details__label">Listed at:</span>
+      <a
+        :href="`https://app.aavegotchi.com/baazaar/erc721/${listing.id}`"
+        target="_blank"
+      >
+        <NumberDisplay :number="listing.priceInGhst" />
+        GHST
+      </a>
+      <span class="parcel-details__time">
+        (<DateFriendly :date="listing.dateCreated" />)
+      </span>
+    </div>
 
-      <span class="parcel-details__baazaar-links">
-        <span v-if="listing">
-          <a
-            :href="`https://app.aavegotchi.com/baazaar/erc721/${listing.id}`"
-            target="_blank"
-          >
-            Listed for
-            <NumberDisplay :number="listing.priceInGhst" />
-            GHST
-          </a>
-        </span>
-        <span v-if="lastSale">
-          <a
-            :href="`https://app.aavegotchi.com/baazaar/erc721/${lastSale.id}`"
-            target="_blank"
-          >
-            Last sold for
-            <NumberDisplay :number="lastSale.priceInGhst" />
-            GHST
-          </a>
-          <span class="parcel-details__time">
-            (<DateFriendly :date="lastSale.datePurchased" />)
-          </span>
-        </span>
+    <div v-if="lastSale">
+      <span class="parcel-details__label">Last sold:</span>
+      <a
+        :href="`https://app.aavegotchi.com/baazaar/erc721/${lastSale.id}`"
+        target="_blank"
+      >
+        <NumberDisplay :number="lastSale.priceInGhst" />
+        GHST
+      </a>
+      <span class="parcel-details__time">
+        (<DateFriendly :date="lastSale.datePurchased" />)
       </span>
     </div>
 
@@ -204,8 +219,5 @@ export default {
   .parcel-details__time {
     margin-left: 5px;
     font-size: 0.85em;
-  }
-  .parcel-details__baazaar-links > span:not(:last-child) {
-    margin-right: 10px;
   }
 </style>

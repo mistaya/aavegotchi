@@ -20,6 +20,7 @@ const AUCTIONS = {
       minX: 3160,
       maxX: 4235
     },
+    hasOldDistricts: false,
     display: {
       viewBox: '0 0 5000 5500',
       aspectRatio: 10 / 8
@@ -36,6 +37,24 @@ const AUCTIONS = {
       minX: 5200,
       maxX: 6336
     },
+    hasOldDistricts: false,
+    display: {
+      viewBox: '6600 1000 2500 4400',
+      aspectRatio: 10 / 8
+    }
+  },
+  '3': {
+    id: 3,
+    jsonUrl: auction2JsonUrl,
+    days: '2-5 Dec 2021 (TODO)',
+    startTime: 1638446400000, // before auction start time
+    endTime: 1638734400000, // after last hammer-time parcel auction ends
+    districts: ['1', '7', '8', '9', '10', '11', '12', '27', '28', '29', '30'],
+    district1Bounds: {
+      minX: 5200,
+      maxX: 6336
+    },
+    hasOldDistricts: true,
     display: {
       viewBox: '6600 1000 2500 4400',
       aspectRatio: 10 / 8

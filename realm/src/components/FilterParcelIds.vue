@@ -1,7 +1,9 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h4>Filter by Parcel ID</h4>
+      <h4>
+        <slot name="heading">Filter by Parcel ID</slot>
+      </h4>
     </summary>
 
     <label>
@@ -21,9 +23,12 @@
 <script>
 import TextareaList from './TextareaList.vue'
 
-const getFilter = function (idsArray) {
+const getFilter = function (idsArray, requireMatch) {
   if (idsArray?.length) {
     return (parcel) => idsArray.includes(parcel.tokenId)
+  }
+  if (requireMatch) {
+    return () => false
   }
   return () => true
 }

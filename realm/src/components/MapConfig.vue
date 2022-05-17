@@ -47,12 +47,11 @@
           />
           {{ feature.label }}
         </label>
-        <input
-          type="color"
+        <InputColor
           :aria-label="`Color for ${feature.label}`"
-          :value="modelValue[`color${feature.id}`]"
-          @input="debouncedColorChanged($event.target.value, `color${feature.id}`)"
-        >
+          :modelValue="modelValue[`color${feature.id}`]"
+          @update:modelValue="colorChanged($event, `color${feature.id}`)"
+        />
       </div>
       <div style="margin-top: 10px">
         <label style="margin-right: 7px">
@@ -63,12 +62,11 @@
           />
           Same color for all deposits:
         </label>
-        <input
-          type="color"
+        <InputColor
           :aria-label="`Color for all alchemica deposits`"
-          :value="modelValue.colorAlchemica"
-          @input="debouncedColorChanged($event.target.value, 'colorAlchemica')"
-        >
+          :modelValue="modelValue.colorAlchemica"
+          @update:modelValue="colorChanged($event, 'colorAlchemica')"
+        />
       </div>
     </div>
   </details>
@@ -76,8 +74,8 @@
 
 <script>
 import { watch } from 'vue'
-import debounce from 'lodash.debounce'
 import useColorScheme from '@/data/useColorScheme'
+import InputColor from './InputColor.vue'
 
 const DEFAULT_COLORS = {
   light: {
@@ -85,24 +83,29 @@ const DEFAULT_COLORS = {
     colorWalls: '#000000',
     colorDistricts: '#FA34F3',
     colorPaartners: '#bf91ff',
-    colorLandmarks: '#FA34F3',
+    colorLandmarks: '#5DFD7D',
     colorAlchemicaFud: '#C8E4C8',
     colorAlchemicaFomo: '#F0DAD1',
     colorAlchemicaAlpha: '#D7EEEE',
     colorAlchemicaKek: '#F0D9F2',
-    colorAlchemica: '#E3E3E3'
+    colorAlchemica: '#E3E3E3',
+    // These colors are set by other UI, but stored here to take advantage of the color scheme management
+    colorNotInAuction: '#eeeeee',
+    colorMyParcels: '#FA34F3'
   },
   dark: {
     colorRoads: '#4A4A4A',
     colorWalls: '#A3A3A3',
     colorDistricts: '#FA34F3',
     colorPaartners: '#bf91ff',
-    colorLandmarks: '#FA34F3',
+    colorLandmarks: '#5DFD7D',
     colorAlchemicaFud: '#475C47',
     colorAlchemicaFomo: '#5B4A43',
     colorAlchemicaAlpha: '#476262',
     colorAlchemicaKek: '#533A55',
-    colorAlchemica: '#292929'
+    colorAlchemica: '#292929',
+    colorNotInAuction: '#222222',
+    colorMyParcels: '#FA34F3'
   }
 }
 
@@ -128,6 +131,7 @@ const getDefaultValue = function () {
 export { getDefaultValue }
 
 export default {
+  components: { InputColor },
   props: {
     modelValue: { type: Object, default: getDefaultValue }
   },
@@ -156,12 +160,6 @@ export default {
       }
     )
     return {}
-  },
-  created () {
-    this.debouncedColorChanged = debounce(this.colorChanged, 300)
-  },
-  unmounted () {
-    this.debouncedColorChanged.cancel()
   },
   methods: {
     unmatchedDisplayChanged (unmatchedDisplay) {

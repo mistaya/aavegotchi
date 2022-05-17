@@ -1,13 +1,18 @@
 <template>
   <PrereqParcels>
     <LayoutMapWithFilters class="citaadel-page">
-      <template #sidebar="{ viewMode, setViewModeMap }">
+      <template #sidebar="{ viewMode, setViewModeBoth }">
         <h1>The Citaadel</h1>
 
         <div style="margin-bottom: 20px; margin-right: 10px;">
           <DataFetcherBaazaarListings />
           <DataFetcherParcelOwners />
         </div>
+
+        <MapConfig
+          ref="refDetailsMapConfig"
+          v-model="mapConfig"
+        />
 
         <details
           ref="refDetailsColorScheme"
@@ -205,19 +210,12 @@
           <div v-if="colorScheme.colorBy === 'highlight'">
             <label>
               Parcel color:
-              <input
-                type="color"
-                :value="colorScheme.highlight"
-                @input="debouncedSetHighlight($event.target.value)"
-              >
+              <InputColor
+                v-model="colorScheme.highlight"
+              />
             </label>
           </div>
         </details>
-
-        <MapConfig
-          ref="refDetailsMapConfig"
-          v-model="mapConfig"
-        />
 
         <details
           ref="refDetailsFilters"
@@ -243,6 +241,14 @@
           </div>
         </details>
 
+        <MapMyParcels
+          ref="refDetailsMyParcels"
+          v-model:color="mapConfig.colorMyParcels"
+          v-model:filterOwners="myFilters.owners"
+          v-model:filterParcelIds="myFilters.parcelIds"
+          v-model:filterParcelNames="myFilters.parcelNames"
+        />
+
         <section style="padding: 0 10px 20px 0;">
           <PaartnerParcelDetails
             v-if="selectedParcelPaartnerId"
@@ -258,7 +264,7 @@
             :owner="selectedParcel.owner"
             v-model:flagSelected="mapConfig.flagSelected"
             @close="selectedParcelId = null"
-            @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeMap })"
+            @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeBoth })"
           />
         </section>
       </template>
@@ -294,35 +300,80 @@
           v-show="viewMode === 'map' || viewMode === 'both'"
           :mapConfig="mapConfig"
           :parcels="parcelsToDisplay"
-          :parcelsMatchingFilters="parcelsMatchingFilters.result"
+          :parcelsMatchingFilters="parcelsMatchingFiltersForMap"
           :parcelColors="parcelColors"
           :selectedParcel="selectedParcel?.parcel"
           @click:parcel="onClickParcel"
         />
-        <ParcelList
-          v-if="viewMode === 'list'"
-          class="parcel-list parcel-list--mode-list"
-          :parcels="parcelsList"
-          :ownersByParcelId="ownersByParcelId"
-          :listingsByParcelId="listingsByParcelId"
-          :salesByParcelId="salesByParcelId"
-          :selectedParcelId="selectedParcelId"
-          @click:parcel="onClickParcel"
-        />
+        <template v-if="viewMode === 'list'">
+          <div class="list-selections">
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'matches'}`"
+              @click="selectedList = 'matches'"
+            >
+              Matching Parcels
+            </SiteButton>
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'my'}`"
+              @click="selectedList = 'my'"
+            >
+              My Parcels
+            </SiteButton>
+          </div>
+          <ParcelList
+            :key="selectedList"
+            class="parcel-list parcel-list--mode-list"
+            :parcels="selectedList === 'matches' ? parcelsList : myParcelsList"
+            :ownersByParcelId="ownersByParcelId"
+            :listingsByParcelId="listingsByParcelId"
+            :salesByParcelId="salesByParcelId"
+            :selectedParcelId="selectedParcelId"
+            :disableSorting="selectedList === 'my'"
+            @click:parcel="onClickParcel"
+          />
+        </template>
       </template>
       <template #sidebar2="{ viewMode }">
-        <ParcelList
-          v-if="viewMode === 'both'"
-          class="parcel-list parcel-list--mode-both"
-          :parcels="parcelsList"
-          :ownersByParcelId="ownersByParcelId"
-          :listingsByParcelId="listingsByParcelId"
-          :salesByParcelId="salesByParcelId"
-          :selectedParcelId="selectedParcelId"
-          parcelIcon="zoom-in"
-          compact
-          @click:parcel="onClickParcelFromSidebar"
-        />
+        <template v-if="viewMode === 'both'">
+          <div
+            class="list-selections"
+            style="margin-left: 15px;"
+          >
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'matches'}`"
+              @click="selectedList = 'matches'"
+            >
+              Matching Parcels
+            </SiteButton>
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'my'}`"
+              @click="selectedList = 'my'"
+            >
+              My Parcels
+            </SiteButton>
+          </div>
+          <ParcelList
+            :key="selectedList"
+            class="parcel-list parcel-list--mode-both"
+            :parcels="selectedList === 'matches' ? parcelsList : myParcelsList"
+            :ownersByParcelId="ownersByParcelId"
+            :listingsByParcelId="listingsByParcelId"
+            :salesByParcelId="salesByParcelId"
+            :selectedParcelId="selectedParcelId"
+            :disableSorting="selectedList === 'my'"
+            parcelIcon="zoom-in"
+            compact
+            @click:parcel="onClickParcelFromSidebar"
+          />
+        </template>
       </template>
     </LayoutMapWithFilters>
   </PrereqParcels>
@@ -330,7 +381,6 @@
 
 <script>
 import { ref, computed, watch, nextTick } from 'vue'
-import debounce from 'lodash.debounce'
 import useParcels from '@/data/useParcels'
 import useBaazaarListings from '@/data/useBaazaarListings'
 import useParcelPrices from '@/data/useParcelPrices'
@@ -348,6 +398,7 @@ import ParcelList from './ParcelList.vue'
 import ParcelsExport from './ParcelsExport.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
+import MapMyParcels from './MapMyParcels.vue'
 import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
 import FilterBaazaarPrice, { getDefaultValue as getDefaultBaazarPriceValue, getFilter as getBaazaarPriceFilter } from './FilterBaazaarPrice.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
@@ -358,6 +409,7 @@ import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcel
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterOwners, { getFilter as getOwnersFilter } from './FilterOwners.vue'
+import InputColor from './InputColor.vue'
 
 export default {
   components: {
@@ -372,6 +424,7 @@ export default {
     ParcelsExport,
     CitaadelMap,
     MapConfig,
+    MapMyParcels,
     FilterBaazaar,
     FilterBaazaarPrice,
     FilterSize,
@@ -381,7 +434,8 @@ export default {
     FilterParcelIds,
     FilterParcelNames,
     FilterBoosts,
-    FilterOwners
+    FilterOwners,
+    InputColor
   },
   setup () {
     const {
@@ -399,6 +453,7 @@ export default {
     } = useParcelOwners()
 
     const mapConfig = ref(getDefaultMapConfigValue())
+
     const filters = ref({
       baazaar: getDefaultBaazarValue(),
       baazaarPrice: getDefaultBaazarPriceValue(),
@@ -411,6 +466,12 @@ export default {
       boosts: getDefaultBoostsValue(),
       owners: []
     })
+    const myFilters = ref({
+      parcelIds: [],
+      parcelNames: [],
+      owners: []
+    })
+
     const colorSchemeOptions = [
       { id: 'lastPrice', label: 'Last Sold Price (GHST)' },
       { id: 'baazaarPrice', label: 'Baazaar Listing Price (GHST)' },
@@ -467,9 +528,6 @@ export default {
       highlight: '#ffa500'
     })
     const colorSchemeLabel = computed(() => colorSchemeOptions.find(option => option.id === colorScheme.value.colorBy)?.label)
-    const debouncedSetHighlight = debounce((color) => {
-      colorScheme.value.highlight = color
-    }, 300)
 
     // Watch for settings that require extra data to be fetched,
     // and fetch that data if necessary
@@ -506,9 +564,9 @@ export default {
       }
     )
     watch(
-      () => filters.value.owners,
-      ownersFilter => {
-        if (ownersFilter?.length) {
+      () => [filters.value.owners, myFilters.value.owners],
+      ([ownersFilter, ownersMyFilter]) => {
+        if (ownersFilter?.length || ownersMyFilter?.length) {
           prereqOwners()
         }
       }
@@ -627,14 +685,49 @@ export default {
       } else if (colorBy === 'highlight') {
         getColor = parcel => colorScheme.value.highlight
       }
+      const myMatchingParcels = parcelsMatchingMyFilters.value.result
+      const colorMyParcels = mapConfig.value.colorMyParcels
       const result = Object.fromEntries(
-        parcelsToDisplay.value.map(parcel => [
-          parcel.id,
-          getColor(parcel) || null
-        ])
+        parcelsToDisplay.value.map(parcel => {
+          // 'My Parcels' has highest priority
+          const color = myMatchingParcels[parcel.id] ? colorMyParcels : getColor(parcel) || null
+          return [
+            parcel.id,
+            color
+          ]
+        })
       )
       // console.timeEnd('parcelColors')
       return result
+    })
+
+    const parcelsMatchingMyFilters = computed(() => {
+      // console.time('parcelsMatchingMyFilters')
+      const idFilter = getParcelIdsFilter(myFilters.value.parcelIds, true)
+      const nameFilter = getParcelNamesFilter(myFilters.value.parcelNames, true)
+      const ownersFilter = getOwnersFilter(ownersByParcelId.value, myFilters.value.owners, true)
+
+      const applyFilters = [idFilter, nameFilter, ownersFilter]
+
+      let numMatches = 0
+      const result = Object.fromEntries(
+        parcelsToDisplay.value.map(parcel => {
+          // show parcel if it matches any of the filters
+          // default to hide if no filters are set
+          let show = false
+          for (let i = 0; !show && i < applyFilters.length; i++) {
+            if (applyFilters[i](parcel)) {
+              show = true
+            }
+          }
+          if (show) {
+            numMatches++
+          }
+          return show ? [parcel.id, parcel] : null
+        }).filter(entry => entry) // only include matches in the final object
+      )
+      // console.timeEnd('parcelsMatchingMyFilters')
+      return { result, numMatches }
     })
 
     const parcelsMatchingFilters = computed(() => {
@@ -656,6 +749,8 @@ export default {
       let numMatches = 0
       const result = Object.fromEntries(
         parcelsToDisplay.value.map(parcel => {
+          // show parcel if it matches all of the filters
+          // default to show if no filters are set
           let show = true
           for (let i = 0; show && i < applyFilters.length; i++) {
             if (!applyFilters[i](parcel)) {
@@ -698,6 +793,7 @@ export default {
       }
     })
 
+    const refDetailsMyParcels = ref(null)
     const refDetailsColorScheme = ref(null)
     const refDetailsMapConfig = ref(null)
     const refDetailsFilters = ref(null)
@@ -713,7 +809,7 @@ export default {
         selectedParcelPaartnerId.value = null
       }
       // collapse all map config so the parcel details are easily visible
-      for (const refDetails of [refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
+      for (const refDetails of [refDetailsMyParcels.value?.$el, refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
         if (refDetails?.hasAttribute('open')) {
           refDetails.removeAttribute('open')
         }
@@ -725,11 +821,27 @@ export default {
       zoomToParcel(parcel.id, { viewMode: 'both' })
     }
 
+    const selectedList = ref('matches')
+
     const parcelsList = computed(() => parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id]))
+    const myParcelsList = computed(() =>
+      Object.keys(parcelsMatchingMyFilters.value.result).map(parcelId => parcelsById.value[parcelId])
+    )
 
     const mapRef = ref(null)
 
-    const zoomToParcel = async function (parcelId, { viewMode, setViewModeMap }) {
+    const parcelsMatchingFiltersForMap = computed(() => {
+      // combine 'My Parcels' with the matching parcels, so the map applies colors to them all
+      if (parcelsMatchingMyFilters.value.numMatches) {
+        return {
+          ...parcelsMatchingFilters.value.result,
+          ...parcelsMatchingMyFilters.value.result
+        }
+      }
+      return parcelsMatchingFilters.value.result
+    })
+
+    const zoomToParcel = async function (parcelId, { viewMode, setViewModeBoth }) {
       const doZoom = () => {
         const parcel = parcelsById.value[parcelId]
         if (parcel && mapRef.value?.zoomToPoint) {
@@ -740,7 +852,7 @@ export default {
         }
       }
       if (viewMode === 'list') {
-        setViewModeMap()
+        setViewModeBoth()
         nextTick(doZoom)
       } else {
         doZoom()
@@ -749,20 +861,21 @@ export default {
 
     return {
       parcelsFetchStatus,
+      refDetailsMyParcels,
       refDetailsColorScheme,
       refDetailsMapConfig,
       refDetailsFilters,
       mapConfig,
       filters,
+      myFilters,
       colorScheme,
       colorSchemeLabel,
       colorSchemeOptions,
-      debouncedSetHighlight,
       SCALE_NAMES,
       SCALE_GRADIENTS,
       baazaarListingsFetchStatus,
       parcelsToDisplay,
-      parcelsMatchingFilters,
+      parcelsMatchingFiltersForMap,
       numParcelsToDisplay,
       numParcelsMatchingFilters,
       percentParcelsMatchingFilters,
@@ -772,7 +885,9 @@ export default {
       selectedParcelId,
       selectedParcel,
       selectedParcelPaartnerId,
+      selectedList,
       parcelsList,
+      myParcelsList,
       ownersByParcelId,
       listingsByParcelId,
       salesByParcelId,
@@ -802,5 +917,14 @@ export default {
   }
   .parcel-list--mode-both {
     margin: 5px 0 0 15px;
+  }
+
+  .list-selections {
+    margin-bottom: 2px;
+  }
+  .list-selection {
+    margin-right: 10px;
+    margin-bottom: 8px;
+    padding: 2px 8px;
   }
 </style>

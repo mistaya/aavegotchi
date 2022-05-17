@@ -1,7 +1,9 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h4>Filter by Bidder</h4>
+      <h4>
+        <slot name="heading">Filter by Bidder</slot>
+      </h4>
     </summary>
 
     <label>
@@ -21,13 +23,16 @@
 <script>
 import TextareaList from './TextareaList.vue'
 
-const getFilter = function (parcelAuctionsByParcelId, idsArray) {
+const getFilter = function (parcelAuctionsByParcelId, idsArray, requireMatch) {
   if (idsArray?.length) {
     const idsLowercase = idsArray.map(id => id.toLowerCase())
     return (parcel) => {
       const bidder = parcelAuctionsByParcelId[parcel.id]?.highestBidder
       return bidder && idsLowercase.includes(bidder)
     }
+  }
+  if (requireMatch) {
+    return () => false
   }
   return () => true
 }

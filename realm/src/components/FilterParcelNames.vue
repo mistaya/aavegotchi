@@ -1,7 +1,9 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h4>Filter by Parcel Name</h4>
+      <h4>
+        <slot name="heading">Filter by Parcel Name</slot>
+      </h4>
     </summary>
 
     <label>
@@ -22,7 +24,7 @@
 <script>
 import TextareaList from './TextareaList.vue'
 
-const getFilter = function (namesArray) {
+const getFilter = function (namesArray, requireMatch) {
   if (namesArray?.length) {
     const names = namesArray.map(name => ({ name, full: name.split('-').length === 3 }))
     return (parcel) => {
@@ -41,6 +43,9 @@ const getFilter = function (namesArray) {
       }
       return hasAnyName
     }
+  }
+  if (requireMatch) {
+    return () => false
   }
   return () => true
 }

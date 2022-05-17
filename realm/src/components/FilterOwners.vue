@@ -1,7 +1,9 @@
 <template>
   <details class="filter-container">
     <summary>
-      <h4>Filter by Owner</h4>
+      <h4>
+        <slot name="heading">Filter by Owner</slot>
+      </h4>
     </summary>
 
     <label>
@@ -21,13 +23,16 @@
 <script>
 import TextareaList from './TextareaList.vue'
 
-const getFilter = function (ownersByParcelId, idsArray) {
+const getFilter = function (ownersByParcelId, idsArray, requireMatch) {
   if (idsArray?.length) {
     const idsLowercase = idsArray.map(id => id.toLowerCase())
     return (parcel) => {
       const owner = ownersByParcelId[parcel.id]
       return owner && idsLowercase.includes(owner)
     }
+  }
+  if (requireMatch) {
+    return () => false
   }
   return () => true
 }

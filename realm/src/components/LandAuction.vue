@@ -1,15 +1,24 @@
 <template>
   <PrereqParcels>
     <LayoutMapWithFilters>
-      <template #sidebar="{ viewMode, setViewModeMap }">
+      <template #sidebar="{ viewMode, setViewModeBoth }">
         <section>
           <h2 style="margin-bottom: 10px">
             Auction {{ auctionId }} ({{ auctionInfo.days }})
           </h2>
 
-          <DataFetcherAuctions
-            :auctionId="auctionId"
-            style="margin-bottom: 20px; margin-right: 10px;"
+          <div style="margin-bottom: 15px; margin-right: 10px;">
+            <DataFetcherAuctions
+              :auctionId="auctionId"
+            />
+            <DataFetcherParcelOwners
+              v-if="auctionInfo.hasOldDistricts"
+            />
+          </div>
+
+          <MapConfig
+            v-model="mapConfig"
+            ref="refDetailsMapConfig"
           />
 
           <details
@@ -201,19 +210,12 @@
             <div v-if="colorScheme.colorBy === 'highlight'">
               <label>
                 Parcel color:
-                <input
-                  type="color"
-                  :value="colorScheme.highlight"
-                  @input="debouncedSetHighlight($event.target.value)"
-                >
+                <InputColor
+                  v-model="colorScheme.highlight"
+                />
               </label>
             </div>
           </details>
-
-          <MapConfig
-            v-model="mapConfig"
-            ref="refDetailsMapConfig"
-          />
 
           <details
             ref="refDetailsFilters"
@@ -223,6 +225,33 @@
               <h3>Parcel Filters</h3>
             </summary>
             <div style="margin: 15px 0 0 15px">
+
+              <details
+                v-if="auctionInfo.hasOldDistricts"
+                class="filter-container"
+              >
+                <summary>
+                  <h4>Parcels Not in Auction</h4>
+                </summary>
+                <label style="display: flex; align-items: flex-start; margin-top: 10px">
+                  <input
+                    v-model="filters.includeNonAuctionParcels"
+                    type="checkbox"
+                  >
+                  <span style="flex: 1 1 auto; margin-left: 5px">
+                    Show parcels that aren't in this auction
+                  </span>
+                </label>
+                <div style="margin-top: 10px;">
+                  <label>
+                    Color:
+                    <InputColor
+                      v-model="mapConfig.colorNotInAuction"
+                    />
+                  </label>
+                </div>
+              </details>
+
               <FilterSize v-model="filters.size" />
               <FilterAuctionPrice v-model="filters.price" />
               <FilterWalls v-model="filters.walls" />
@@ -237,6 +266,16 @@
               <FilterParcelNames v-model="filters.parcelNames" />
             </div>
           </details>
+
+          <MapMyParcels
+            v-if="auctionInfo.hasOldDistricts"
+            ref="refDetailsMyParcels"
+            v-model:color="mapConfig.colorMyParcels"
+            v-model:filterOwners="myFilters.owners"
+            v-model:filterBidders="myFilters.bidders"
+            v-model:filterParcelIds="myFilters.parcelIds"
+            v-model:filterParcelNames="myFilters.parcelNames"
+          />
         </section>
 
         <section style="padding: 0 10px 20px 0;">
@@ -249,26 +288,27 @@
             v-if="selectedParcel"
             :parcel="selectedParcel.parcel"
             :auction="selectedParcel.auction"
+            :owner="ownersByParcelId[selectedParcelId]"
             v-model:flagSelected="mapConfig.flagSelected"
             @close="selectedParcelId = null"
-            @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeMap })"
+            @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeBoth })"
           />
         </section>
 
       </template>
       <template #top>
         <div style="display: inline-block; margin-bottom: 8px;">
-          <template v-if="numParcelsMatchingFilters === numParcelsToDisplay">
+          <template v-if="numAuctionParcelsMatchingFilters === numAuctionParcels">
             Matched all
-            <NumberDisplay :number="numParcelsMatchingFilters" />
+            <NumberDisplay :number="numAuctionParcelsMatchingFilters" />
             parcels
           </template>
-          <template v-else-if="numParcelsMatchingFilters === 0">
+          <template v-else-if="numAuctionParcelsMatchingFilters === 0">
             No parcels matched your filters
           </template>
           <template v-else>
             Matched
-            <NumberDisplay :number="numParcelsMatchingFilters" />
+            <NumberDisplay :number="numAuctionParcelsMatchingFilters" />
             parcels
           </template>
         </div>
@@ -280,32 +320,81 @@
           :viewBox="auctionInfo.display.viewBox"
           :aspectRatio="auctionInfo.display.aspectRatio"
           :mapConfig="mapConfig"
-          :parcels="parcelsToDisplay"
-          :parcelsMatchingFilters="parcelsMatchingFilters.result"
+          :parcels="parcelsForMap"
+          :parcelsMatchingFilters="parcelsMatchingFiltersForMap"
           :parcelColors="parcelColors"
           :selectedParcel="selectedParcel?.parcel"
           @click:parcel="onClickParcel"
         />
-        <ParcelList
-          v-if="viewMode === 'list'"
-          class="parcel-list parcel-list--mode-list"
-          :parcels="parcelsList"
-          :auctionsByParcelId="auctionsByParcelId"
-          :selectedParcelId="selectedParcelId"
-          @click:parcel="onClickParcel"
-        />
+        <template v-if="viewMode === 'list'">
+          <div
+            v-if="auctionInfo.hasOldDistricts"
+            class="list-selections"
+          >
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'matches'}`"
+              @click="selectedList = 'matches'"
+            >
+              Matching Parcels
+            </SiteButton>
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'my'}`"
+              @click="selectedList = 'my'"
+            >
+              My Parcels
+            </SiteButton>
+          </div>
+          <ParcelList
+            :key="selectedList"
+            class="parcel-list parcel-list--mode-list"
+            :parcels="selectedList === 'matches' ? parcelsList : myParcelsList"
+            :auctionsByParcelId="auctionsByParcelId"
+            :selectedParcelId="selectedParcelId"
+            :disableSorting="selectedList === 'my'"
+            @click:parcel="onClickParcel"
+          />
+        </template>
       </template>
       <template #sidebar2="{ viewMode }">
-        <ParcelList
-          v-if="viewMode === 'both'"
-          class="parcel-list parcel-list--mode-both"
-          :parcels="parcelsList"
-          :auctionsByParcelId="auctionsByParcelId"
-          :selectedParcelId="selectedParcelId"
-          parcelIcon="zoom-in"
-          compact
-          @click:parcel="onClickParcelFromSidebar"
-        />
+        <template v-if="viewMode === 'both'">
+          <div
+            v-if="auctionInfo.hasOldDistricts"
+            class="list-selections"
+            style="margin-left: 15px;"
+          >
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'matches'}`"
+              @click="selectedList = 'matches'"
+            >
+              Matching Parcels
+            </SiteButton>
+            <SiteButton
+              type="button"
+              class="list-selection"
+              :aria-pressed="`${selectedList === 'my'}`"
+              @click="selectedList = 'my'"
+            >
+              My Parcels
+            </SiteButton>
+          </div>
+          <ParcelList
+            :key="selectedList"
+            class="parcel-list parcel-list--mode-both"
+            :parcels="selectedList === 'matches' ? parcelsList : myParcelsList"
+            :auctionsByParcelId="auctionsByParcelId"
+            :selectedParcelId="selectedParcelId"
+            :disableSorting="selectedList === 'my'"
+            parcelIcon="zoom-in"
+            compact
+            @click:parcel="onClickParcelFromSidebar"
+          />
+        </template>
       </template>
     </LayoutMapWithFilters>
   </PrereqParcels>
@@ -314,8 +403,8 @@
 <script>
 import { ref, computed, nextTick } from 'vue'
 import BigNumber from 'bignumber.js'
-import debounce from 'lodash.debounce'
 import useParcels from '@/data/useParcels'
+import useParcelOwners from '@/data/useParcelOwners'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
@@ -323,11 +412,13 @@ import NumberDisplay from './NumberDisplay.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DataFetcherAuctions from './DataFetcherAuctions.vue'
+import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
 import ParcelList from './ParcelList.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
+import MapMyParcels from './MapMyParcels.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
 import FilterWalls, { getFilter as getWallsFilter } from './FilterWalls.vue'
 import FilterDistricts, { getDefaultValue as getDefaultDistrictsValue, getFilter as getDistrictsFilter } from './FilterDistricts.vue'
@@ -337,6 +428,22 @@ import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterPa
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterBidders, { getFilter as getBiddersFilter } from './FilterBidders.vue'
 import FilterAuctionPrice, { getDefaultValue as getDefaultAuctionPriceValue, getFilter as getAuctionPriceFilter } from './FilterAuctionPrice.vue'
+import InputColor from './InputColor.vue'
+import { getFilter as getOwnersFilter } from './FilterOwners.vue'
+
+// TODO for next land auction:
+// - better styling of the list toggle: more like tabs? secondary style?
+//   -- refactor duplicate code / create tabs/button-group component
+// - are there other list orderings that would be useful, particularly for My Parcels?
+// - easier 'copy parcel ids' for matched parcels - or just use existing export?
+// - make display of data fetching more compact/collapsible
+// - hammertime filter to only show parcels with unfinished auctions
+//    is there a completed boolean? how is endTime populated?
+//    lastBidTime, hammerTimeDuration, endTime: this filter needs reactive Date, efficiency?
+//    extendedEndTime = lastBidTime + hammerTimeDuration
+//    finished if now > extendedEndTime
+//    new sort option: finishing soonest?
+// - for auctions, reduce 'My Parcels' to only auctioned + adjacent districts?
 
 export default {
   components: {
@@ -344,11 +451,13 @@ export default {
     LayoutMapWithFilters,
     NumberDisplay,
     DataFetcherAuctions,
+    DataFetcherParcelOwners,
     PaartnerParcelDetails,
     ParcelDetails,
     ParcelList,
     CitaadelMap,
     MapConfig,
+    MapMyParcels,
     FilterSize,
     FilterWalls,
     FilterDistricts,
@@ -357,7 +466,8 @@ export default {
     FilterParcelNames,
     FilterBoosts,
     FilterBidders,
-    FilterAuctionPrice
+    FilterAuctionPrice,
+    InputColor
   },
   props: {
     auctionId: { type: String, default: '1' }
@@ -365,13 +475,32 @@ export default {
   setup (props) {
     // console.time('setup')
     const selectedParcelId = ref(null)
-    const { parcelsById } = useParcels()
+    const {
+      parcelsById
+    } = useParcels()
     const {
       auctionInfo,
       auctionsByParcelId
     } = useAuctions(props.auctionId)
+
+    // Owners of all parcels
+    const {
+      ownersByParcelId,
+      fetchOwners,
+      fetchStatus: ownersFetchStatus
+    } = useParcelOwners()
+
+    // When old parcels are present on the map,
+    // we need to fetch owners for all parcels,
+    // to enable 'My parcels' from all districts to be found and shown
+    // and also to display a selected parcel's owner in ParcelDetails.
+    if (auctionInfo.hasOldDistricts && !ownersFetchStatus.value.loaded && !ownersFetchStatus.value.loading) {
+      fetchOwners()
+    }
+
     const mapConfig = ref(getDefaultMapConfigValue())
     const filters = ref({
+      includeNonAuctionParcels: auctionInfo.hasOldDistricts,
       size: [...SIZES],
       districts: getDefaultDistrictsValue(auctionInfo.districts),
       roads: getDefaultRoadsValue(),
@@ -381,6 +510,13 @@ export default {
       price: getDefaultAuctionPriceValue(),
       parcelIds: [],
       parcelNames: []
+    })
+
+    const myFilters = ref({
+      bidders: [],
+      parcelIds: [],
+      parcelNames: [],
+      owners: auctionInfo.hasOldDistricts ? [] : null
     })
 
     const colorSchemeOptions = [
@@ -427,9 +563,6 @@ export default {
       highlight: '#ffa500'
     })
     const colorSchemeLabel = computed(() => colorSchemeOptions.find(option => option.id === colorScheme.value.colorBy)?.label)
-    const debouncedSetHighlight = debounce((color) => {
-      colorScheme.value.highlight = color
-    }, 300)
 
     const priceScalesBySize = computed(() => {
       const scales = {}
@@ -475,20 +608,30 @@ export default {
               hasAuction: !!auction,
               highestBid,
               highestBidGhst,
-              highestBidder: auction?.highestBidder
+              highestBidder: auction?.highestBidder,
+              lastBidTime: auction?.lastBidTime ? new Date(auction.lastBidTime * 1000) : null
             }
           ]
         })
       )
     })
 
-    const parcelsToDisplay = computed(() => {
-      // console.time('parcelsToDisplay')
+    const parcelsInAuction = computed(() => {
+      // console.time('parcelsInAuction')
+      // parcels with auctions:
       const result = Object.values(parcelsById.value).filter(parcel => parcelAuctions.value[parcel.id]?.hasAuction)
-      // console.timeEnd('parcelsToDisplay')
+      // console.timeEnd('parcelsInAuction')
       return result
     })
-    const numParcelsToDisplay = computed(() => parcelsToDisplay.value.length)
+    const numAuctionParcels = computed(() => parcelsInAuction.value.length)
+
+    const allDisplayableParcels = computed(() => {
+      // console.time('allDisplayableParcels')
+      // parcels in auction districts:
+      const result = Object.values(parcelsById.value).filter(parcel => parcelAuctions.value[parcel.id])
+      // console.timeEnd('allDisplayableParcels')
+      return result
+    })
 
     const parcelColors = computed(() => {
       // console.time('parcelColors')
@@ -515,14 +658,53 @@ export default {
       } else if (colorBy === 'highlight') {
         getColor = parcel => colorScheme.value.highlight
       }
+      const colorNotInAuction = mapConfig.value.colorNotInAuction
+      const parcelsToColor = filters.value.includeNonAuctionParcels ? allDisplayableParcels : parcelsInAuction
       const result = Object.fromEntries(
-        parcelsToDisplay.value.map(parcel => [
+        parcelsToColor.value.map(parcel => [
           parcel.id,
-          parcelAuctions.value[parcel.id].hasAuction ? getColor(parcel) : 'white'
+          parcelAuctions.value[parcel.id].hasAuction ? getColor(parcel) : colorNotInAuction
         ])
       )
+      // 'My Parcels' has highest priority, and may also include parcels outside the original list
+      const myMatchingParcels = parcelsMatchingMyFilters.value.result
+      const colorMyParcels = mapConfig.value.colorMyParcels
+      for (const parcelId in myMatchingParcels) {
+        result[parcelId] = colorMyParcels
+      }
       // console.timeEnd('parcelColors')
       return result
+    })
+
+    const parcelsMatchingMyFilters = computed(() => {
+      // console.time('parcelsMatchingMyFilters')
+      const idFilter = getParcelIdsFilter(myFilters.value.parcelIds, true)
+      const nameFilter = getParcelNamesFilter(myFilters.value.parcelNames, true)
+      const biddersFilter = getBiddersFilter(parcelAuctions.value, myFilters.value.bidders, true)
+      const ownersFilter = getOwnersFilter(ownersByParcelId.value, myFilters.value.owners, true)
+
+      const applyFilters = [idFilter, nameFilter, biddersFilter, ownersFilter]
+
+      let numMatches = 0
+      const parcelsToFilter = Object.values(parcelsById.value)
+      const result = Object.fromEntries(
+        parcelsToFilter.map(parcel => {
+          // show parcel if it matches any of the filters
+          // default to hide if no filters are set
+          let show = false
+          for (let i = 0; !show && i < applyFilters.length; i++) {
+            if (applyFilters[i](parcel)) {
+              show = true
+            }
+          }
+          if (show) {
+            numMatches++
+          }
+          return show ? [parcel.id, parcel] : null
+        }).filter(entry => entry) // only include matches in the final object
+      )
+      // console.timeEnd('parcelsMatchingMyFilters')
+      return { result, numMatches }
     })
 
     const parcelsMatchingFilters = computed(() => {
@@ -539,28 +721,66 @@ export default {
 
       const applyFilters = [idFilter, nameFilter, biddersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, priceFilter]
 
-      let numMatches = 0
+      let numAuctionMatches = 0
+      const includeNonAuctionParcels = filters.value.includeNonAuctionParcels
+      const parcelsToFilter = includeNonAuctionParcels ? allDisplayableParcels : parcelsInAuction
       const result = Object.fromEntries(
-        parcelsToDisplay.value.map(parcel => {
+        parcelsToFilter.value.map(parcel => {
+          // show parcel if it matches all of the filters
+          // default to show if no filters are set
           let show = true
           for (let i = 0; show && i < applyFilters.length; i++) {
             if (!applyFilters[i](parcel)) {
               show = false
             }
           }
-          if (show) { numMatches++ }
+          // We're only interested in the number of auctioned parcels
+          if (show && (!includeNonAuctionParcels || parcelAuctions.value[parcel.id].hasAuction)) {
+            numAuctionMatches++
+          }
           return [parcel.id, show]
         })
       )
       // console.timeEnd('parcelsMatchingFilters')
-      return { result, numMatches }
+      return { result, numAuctionMatches }
     })
 
-    const numParcelsMatchingFilters = computed(() => parcelsMatchingFilters.value.numMatches)
+    const numAuctionParcelsMatchingFilters = computed(() => parcelsMatchingFilters.value.numAuctionMatches)
+
+    const selectedList = ref('matches')
+
     const parcelsList = computed(() =>
-      parcelsToDisplay.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
+      parcelsInAuction.value.filter(parcel => parcelsMatchingFilters.value.result[parcel.id] && parcelAuctions.value[parcel.id].hasAuction)
+    )
+    const myParcelsList = computed(() =>
+      Object.keys(parcelsMatchingMyFilters.value.result).map(parcelId => parcelsById.value[parcelId])
     )
 
+    const parcelsForMap = computed(() => {
+      const parcels = filters.value.includeNonAuctionParcels ? allDisplayableParcels.value : parcelsInAuction.value
+      const parcelsForMapById = {}
+      for (const parcel of parcels) {
+        parcelsForMapById[parcel.id] = parcel
+      }
+      // myParcels can be from any district: merge them in
+      if (parcelsMatchingMyFilters.value.numMatches) {
+        Object.assign(parcelsForMapById, parcelsMatchingMyFilters.value.result)
+      }
+      return Object.values(parcelsForMapById)
+    })
+
+    const parcelsMatchingFiltersForMap = computed(() => {
+      // combine 'My Parcels' with the matching parcels, so the map applies colors to them all
+      if (parcelsMatchingMyFilters.value.numMatches) {
+        return {
+          ...parcelsMatchingFilters.value.result,
+          ...parcelsMatchingMyFilters.value.result
+        }
+      }
+      return parcelsMatchingFilters.value.result
+    })
+
+    const refDetailsMyParcels = ref(null)
     const refDetailsColorScheme = ref(null)
     const refDetailsMapConfig = ref(null)
     const refDetailsFilters = ref(null)
@@ -576,7 +796,7 @@ export default {
         selectedParcelPaartnerId.value = null
       }
       // collapse all map config so the parcel details are easily visible
-      for (const refDetails of [refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
+      for (const refDetails of [refDetailsMyParcels.value?.$el, refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
         if (refDetails?.hasAttribute('open')) {
           refDetails.removeAttribute('open')
         }
@@ -625,7 +845,7 @@ export default {
         reasonable: 16 * 16,
         spacious: 32 * 64
       }
-      for (const parcel of parcelsToDisplay.value) {
+      for (const parcel of parcelsInAuction.value) {
         const auction = parcelAuctions.value[parcel.id]
         const bidder = auction.highestBidder
         if (!totalPerBidder[bidder]) {
@@ -644,7 +864,7 @@ export default {
 
     const mapRef = ref(null)
 
-    const zoomToParcel = async function (parcelId, { viewMode, setViewModeMap }) {
+    const zoomToParcel = async function (parcelId, { viewMode, setViewModeBoth }) {
       const doZoom = () => {
         const parcel = parcelsById.value[parcelId]
         if (parcel && mapRef.value?.zoomToPoint) {
@@ -655,7 +875,7 @@ export default {
         }
       }
       if (viewMode === 'list') {
-        setViewModeMap()
+        setViewModeBoth()
         nextTick(doZoom)
       } else {
         doZoom()
@@ -666,13 +886,16 @@ export default {
     // console.time('mount')
     return {
       auctionInfo,
-      parcelsToDisplay,
-      parcelsMatchingFilters,
-      numParcelsToDisplay,
-      numParcelsMatchingFilters,
+      ownersByParcelId,
+      parcelsMatchingFiltersForMap,
+      parcelsForMap,
+      numAuctionParcels,
+      numAuctionParcelsMatchingFilters,
       parcelColors,
       auctionsByParcelId,
+      selectedList,
       parcelsList,
+      myParcelsList,
       onClickParcel,
       onClickParcelFromSidebar,
       selectedParcelId,
@@ -680,15 +903,16 @@ export default {
       selectedParcelPaartnerId,
       SCALE_NAMES,
       SCALE_GRADIENTS,
+      refDetailsMyParcels,
       refDetailsColorScheme,
       refDetailsMapConfig,
       refDetailsFilters,
       mapConfig,
+      myFilters,
       filters,
       colorSchemeOptions,
       colorScheme,
       colorSchemeLabel,
-      debouncedSetHighlight,
       mapRef,
       zoomToParcel
     }
@@ -725,5 +949,14 @@ export default {
   }
   .range-input {
     width: 60px;
+  }
+
+  .list-selections {
+    margin-bottom: 2px;
+  }
+  .list-selection {
+    margin-right: 10px;
+    margin-bottom: 8px;
+    padding: 2px 8px;
   }
 </style>

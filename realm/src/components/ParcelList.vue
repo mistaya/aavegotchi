@@ -4,7 +4,10 @@
       No parcels found.
     </template>
     <template v-else>
-      <div style="margin-left: 10px;">
+      <div
+        v-if="LIST_PARCELS_ORDERS.length"
+        style="margin-left: 10px;"
+      >
         <label>
           Sort by:
           <select v-model="listParcelsOrder">
@@ -188,7 +191,8 @@ export default {
     selectedParcelId: { type: String, default: null },
     parcelIcon: { type: String, default: 'info' },
     /* ideally we would use container queries. But this 'compact' hint will do for now. */
-    compact: { type: Boolean, default: false }
+    compact: { type: Boolean, default: false },
+    disableSorting: { type: Boolean, default: false }
   },
   setup (props) {
     const numParcels = computed(() => props.parcels.length)
@@ -198,41 +202,43 @@ export default {
       pageSize: 100
     })
     const LIST_PARCELS_ORDERS = []
-    if (props.auctionsByParcelId) {
-      LIST_PARCELS_ORDERS.push({
-        id: 'auctionPrice',
-        label: 'Cheapest Parcels (Auction)',
-        sort: { asc: p => props.auctionsByParcelId[p.id]?.highestBidGhst - 0 }
-      })
-      LIST_PARCELS_ORDERS.push({
-        id: 'auctionDate',
-        label: 'Recent Bids (Auction)',
-        sort: { desc: p => props.auctionsByParcelId[p.id]?.lastBidTime - 0 }
-      })
-    }
-    if (props.listingsByParcelId) {
-      LIST_PARCELS_ORDERS.push({
-        id: 'listingPrice',
-        label: 'Cheapest Listings (Baazaar)',
-        sort: { asc: p => props.listingsByParcelId[p.id]?.priceInGhstJsNum }
-      })
-      LIST_PARCELS_ORDERS.push({
-        id: 'listingDate',
-        label: 'Recent Listings (Baazaar)',
-        sort: { desc: p => props.listingsByParcelId[p.id]?.dateCreated }
-      })
-    }
-    if (props.salesByParcelId) {
-      LIST_PARCELS_ORDERS.push({
-        id: 'salePrice',
-        label: 'Cheapest Sales (Baazaar)',
-        sort: { asc: p => props.salesByParcelId[p.id]?.priceInGhstJsNum }
-      })
-      LIST_PARCELS_ORDERS.push({
-        id: 'saleDate',
-        label: 'Recent Sales (Baazaar)',
-        sort: { desc: p => props.salesByParcelId[p.id]?.datePurchased }
-      })
+    if (!props.disableSorting) {
+      if (props.auctionsByParcelId) {
+        LIST_PARCELS_ORDERS.push({
+          id: 'auctionPrice',
+          label: 'Cheapest Parcels (Auction)',
+          sort: { asc: p => props.auctionsByParcelId[p.id]?.highestBidGhst - 0 }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'auctionDate',
+          label: 'Recent Bids (Auction)',
+          sort: { desc: p => props.auctionsByParcelId[p.id]?.lastBidTime - 0 }
+        })
+      }
+      if (props.listingsByParcelId) {
+        LIST_PARCELS_ORDERS.push({
+          id: 'listingPrice',
+          label: 'Cheapest Listings (Baazaar)',
+          sort: { asc: p => props.listingsByParcelId[p.id]?.priceInGhstJsNum }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'listingDate',
+          label: 'Recent Listings (Baazaar)',
+          sort: { desc: p => props.listingsByParcelId[p.id]?.dateCreated }
+        })
+      }
+      if (props.salesByParcelId) {
+        LIST_PARCELS_ORDERS.push({
+          id: 'salePrice',
+          label: 'Cheapest Sales (Baazaar)',
+          sort: { asc: p => props.salesByParcelId[p.id]?.priceInGhstJsNum }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'saleDate',
+          label: 'Recent Sales (Baazaar)',
+          sort: { desc: p => props.salesByParcelId[p.id]?.datePurchased }
+        })
+      }
     }
 
     const listParcelsOrder = ref(LIST_PARCELS_ORDERS[0]?.id)
