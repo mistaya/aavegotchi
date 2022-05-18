@@ -100,8 +100,6 @@
         </div>
       </fieldset>
 
-      <br>
-
       <template v-if="status.loading">
         Fetching, please wait...
       </template>

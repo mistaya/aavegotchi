@@ -383,6 +383,26 @@
               }"
             />
           </template>
+          <template v-if="marker">
+            <circle
+              class="marker-1"
+              :cx="marker.coordinateX"
+              :cy="marker.coordinateY"
+              r="4"
+              stroke="none"
+              stroke-width="0px"
+              fill="#FA34F3"
+            />
+            <circle
+              class="marker-2"
+              :cx="marker.coordinateX"
+              :cy="marker.coordinateY"
+              r="32"
+              stroke="#FA34F3"
+              stroke-width="10px"
+              fill="none"
+            />
+          </template>
         </g>
       </svg>
     </div>
@@ -418,6 +438,7 @@ export default {
     parcelsMatchingFilters: { type: Object, default: () => ({}) }, /* parcel Id => boolean show */
     parcelColors: { type: Object, default: () => ({}) }, /* parcel Id => color */
     selectedParcel: { type: Object, default: null },
+    marker: { type: Object, default: null },
     mapConfig: { type: Object, default: getDefaultMapConfigValue() }
   },
   setup (props, { emit }) {
@@ -713,7 +734,9 @@ export default {
     fill: var(--map-parcel--unmatched-fill-color);
   }
   .selected-parcel,
-  .selected-parcel-flag {
+  .selected-parcel-flag,
+  .marker-1,
+  .marker-2 {
     pointer-events: none;
   }
   .map-svg--flag-selected .selected-parcel-flag {

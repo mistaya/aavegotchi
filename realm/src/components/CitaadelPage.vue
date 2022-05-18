@@ -249,6 +249,49 @@
           v-model:filterParcelNames="myFilters.parcelNames"
         />
 
+        <details
+          ref="refCoordinates"
+          class="filter-container"
+        >
+          <summary>
+            <h3>Where am I?</h3>
+          </summary>
+
+          <div style="margin-bottom: 10px; margin-left: 10px;">
+            If you're lost in the Gotchiverse, while you're in the game press F3 to see debug info.
+
+            <div style="margin-top: 10px;">
+              <label>
+                Then copy the Map Coordinates here:
+                <input
+                  v-model="coordinatesText"
+                  placeholder="(346880, 161984)"
+                />
+              </label>
+            </div>
+
+            <div
+              v-if="coordinatesParsed"
+              style="margin-top: 10px;"
+            >
+              <SiteButton
+                type="button"
+                style="margin-right: 10px;"
+                @click="zoomToCoordinates"
+              >
+                Zoom there
+              </SiteButton>
+
+              <SiteButton
+                type="button"
+                @click="clearCoordinates"
+              >
+                Clear
+              </SiteButton>
+            </div>
+          </div>
+        </details>
+
         <section style="padding: 0 10px 20px 0;">
           <PaartnerParcelDetails
             v-if="selectedParcelPaartnerId"
@@ -303,6 +346,7 @@
           :parcelsMatchingFilters="parcelsMatchingFiltersForMap"
           :parcelColors="parcelColors"
           :selectedParcel="selectedParcel?.parcel"
+          :marker="mapMarker"
           @click:parcel="onClickParcel"
         />
         <template v-if="viewMode === 'list'">
@@ -797,6 +841,7 @@ export default {
     const refDetailsColorScheme = ref(null)
     const refDetailsMapConfig = ref(null)
     const refDetailsFilters = ref(null)
+    const refCoordinates = ref(null)
 
     const selectedParcelPaartnerId = ref(null)
 
@@ -809,7 +854,7 @@ export default {
         selectedParcelPaartnerId.value = null
       }
       // collapse all map config so the parcel details are easily visible
-      for (const refDetails of [refDetailsMyParcels.value?.$el, refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value]) {
+      for (const refDetails of [refDetailsMyParcels.value?.$el, refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value, refCoordinates.value]) {
         if (refDetails?.hasAttribute('open')) {
           refDetails.removeAttribute('open')
         }
@@ -859,12 +904,54 @@ export default {
       }
     }
 
+    const coordinatesText = ref('')
+    const coordinatesRegexp = /\((\d+), (\d+)\)/
+    const coordinatesParsed = computed(() => {
+      if (!coordinatesText.value) { return null }
+      const matches = coordinatesText.value.match(coordinatesRegexp)
+      if (matches?.[1] && matches[2]) {
+        return {
+          x: Math.round(matches[1] / 64),
+          y: Math.round(matches[2] / 64)
+        }
+      }
+      return null
+    })
+    const mapMarker = computed(() => {
+      if (!coordinatesParsed.value) { return null }
+      return {
+        coordinateX: coordinatesParsed.value.x,
+        coordinateY: coordinatesParsed.value.y
+      }
+    })
+    const zoomToCoordinates = function () {
+      const coords = coordinatesParsed.value
+      if (coords && mapRef.value?.zoomToPoint) {
+        mapRef.value.zoomToPoint(coords)
+      }
+    }
+    const clearCoordinates = function () {
+      coordinatesText.value = ''
+      if (refCoordinates.value?.hasAttribute('open')) {
+        refCoordinates.value.removeAttribute('open')
+      }
+    }
+    watch(
+      () => coordinatesParsed.value,
+      () => {
+        if (coordinatesParsed.value) {
+          zoomToCoordinates()
+        }
+      }
+    )
+
     return {
       parcelsFetchStatus,
       refDetailsMyParcels,
       refDetailsColorScheme,
       refDetailsMapConfig,
       refDetailsFilters,
+      refCoordinates,
       mapConfig,
       filters,
       myFilters,
@@ -892,7 +979,12 @@ export default {
       listingsByParcelId,
       salesByParcelId,
       mapRef,
-      zoomToParcel
+      zoomToParcel,
+      coordinatesText,
+      coordinatesParsed,
+      zoomToCoordinates,
+      clearCoordinates,
+      mapMarker
     }
   }
 }
