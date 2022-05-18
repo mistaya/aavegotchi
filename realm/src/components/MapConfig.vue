@@ -116,7 +116,7 @@ const getDefaultValue = function () {
     unmatchedDisplay: 'outline', /* or 'hide' */
     showRoads: true,
     showWalls: true,
-    showDistricts: false,
+    showDistricts: true,
     showPaartners: true,
     showLandmarks: true,
     showAlchemicaFud: true,
