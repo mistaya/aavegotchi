@@ -100,17 +100,6 @@
         </div>
       </fieldset>
 
-      <div class="site-alertbox site-alertbox--warning" style="margin-bottom: 20px">
-        <SiteIcon name="warning-triangle" />
-        <div>
-          <b>WARNING:</b> there is currently NO alchemica dropping in the gotchiverse: the April playdrop event is finished.
-          <br>
-          <br>You can still borrow a gotchi to try out the gotchiverse, craft LE Tiles, or play minigames, but <b>there is nothing to earn right now</b>.
-          <br>
-          <br><b>May 18th onwards</b> is when Alchemica will start dropping frequently again, but it will be different, as the real game will be starting!
-          <br>Join the <a href="https://discord.gg/aavegotchi" target="_blank" rel="noopener">Discord</a> and read the <a href="https://blog.aavegotchi.com/" target="_blank" rel="noopener">official blog</a> to keep up-to-date with announcements.
-        </div>
-      </div>
       <br>
 
       <template v-if="status.loading">
