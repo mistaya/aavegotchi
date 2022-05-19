@@ -30,6 +30,27 @@ const initContract = function () {
       ],
       stateMutability: 'view',
       type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_parcelId',
+          type: 'uint256'
+        }
+      ],
+      name: 'getParcelLastChanneled',
+      outputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
     }
   ]
   contract = new ethers.Contract(
@@ -45,6 +66,17 @@ const realm = {
       initContract()
     }
     return contract.getLastChanneled(gotchiId).then(
+      result => {
+        return result - 0 // result is a BigNumber
+      },
+      error => { throw error }
+    )
+  },
+  getParcelLastChanneled: async function (parcelId) {
+    if (!contract) {
+      initContract()
+    }
+    return contract.getParcelLastChanneled(parcelId).then(
       result => {
         return result - 0 // result is a BigNumber
       },
