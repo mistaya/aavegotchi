@@ -182,6 +182,13 @@
                 <th v-if="!filters.noWhitelist">
                   Whitelist
                 </th>
+                <th>
+                  Kinship
+                  <SortToggle
+                    :sort="tableSort.column === 'gotchiKinship' ? tableSort.direction : null"
+                    @update:sort="tableSort.column = $event ? 'gotchiKinship' : null; tableSort.direction = $event"
+                  />
+                </th>
                 <th>Gotchi</th>
                 <th>Owner</th>
               </tr>
@@ -236,6 +243,9 @@
                 </td>
                 <td v-if="!filters.noWhitelist">
                   {{ result.whitelistId }}
+                </td>
+                <td>
+                  {{ result.gotchiKinship }}
                 </td>
                 <td>
                   <a
@@ -384,6 +394,7 @@ export default {
         gotchi {
           name
         }
+        gotchiKinship
         timeCreated
         lender
         splitBorrower
