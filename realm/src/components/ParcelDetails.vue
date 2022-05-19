@@ -154,6 +154,9 @@
       Coordinates:
       ({{ parcel.coordinateX }},
       {{ parcel.coordinateY }})
+      <br>Gotchiverse Coords:
+      ({{ parcel.coordinateX * 64 }},
+      {{ parcel.coordinateY * 64 }})
       <br>Dimensions: {{ parcel.width }} x {{ parcel.height }}
     </div>
   </div>
