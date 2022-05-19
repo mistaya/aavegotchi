@@ -36,14 +36,14 @@
         v-if="gotchiStatus.loaded"
         class="site-alertbox site-alertbox--info"
       >
-        <template v-if="!lastChanneled">
+        <div v-if="!lastChanneled">
           Couldn't find a last-channeled date for gotchi {{ gotchiIdFetched }}
-        </template>
-        <template v-else>
+        </div>
+        <div v-else>
           Gotchi {{ gotchiIdFetched }} last channeled:
           <DatePrecise :date="lastChanneled" />
           (approx <DateFriendly :date="lastChanneled" />)
-        </template>
+        </div>
       </div>
     </div>
     <div style="margin-top: 30px;">
@@ -84,14 +84,14 @@
         v-if="parcelStatus.loaded"
         class="site-alertbox site-alertbox--info"
       >
-        <template v-if="!parcelLastChanneled">
+        <div v-if="!parcelLastChanneled">
           Couldn't find a last-channeled date for parcel {{ parcelIdFetched }}
-        </template>
-        <template v-else>
+        </div>
+        <div v-else>
           Parcel {{ parcelIdFetched }} last channeled:
           <DatePrecise :date="parcelLastChanneled" />
           (approx <DateFriendly :date="parcelLastChanneled" />)
-        </template>
+        </div>
       </div>
     </div>
   </div>
