@@ -8,7 +8,9 @@ import useStatus from '@/data/useStatus'
 
 const ownersByParcelId = ref({})
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+// core-matic has the wrong parcel owners for transferred parcels
+// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
 const FETCH_PAGE_SIZE = 1000
 
 const resetOwners = function () {
