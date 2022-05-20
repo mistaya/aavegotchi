@@ -66,12 +66,6 @@
           <a href="https://app.aavegotchi.com/my-realm">
             https://app.aavegotchi.com/my-realm
           </a>
-          <br>
-          Keep an eye on Jarrod's WAGMI Warriors
-          <a href="https://gotchilending.com/">
-            https://gotchilending.com/
-          </a>
-          where you may find a better parcel channeling overview soon!
         </div>
       </form>
       <div v-if="parcelStatus.loading">
@@ -92,6 +86,20 @@
           <DatePrecise :date="parcelLastChanneled" />
           (approx <DateFriendly :date="parcelLastChanneled" />)
         </div>
+      </div>
+    </div>
+    <div
+      class="site-alertbox site-alertbox--info"
+      style="margin-top: 30px;"
+    >
+      <SiteIcon name="info" />
+      <div>
+        If you have a lot of gotchis or parcels to look up, Jarrod's WAGMI Warriors
+        <a href="https://gotchilending.com/">
+          https://gotchilending.com/
+        </a>
+        allows you to see all of them at once for an address.
+        <br>See <a href="https://twitter.com/WagmiWarriors/status/1527490105627136000">what it looks like</a>.
       </div>
     </div>
   </div>
