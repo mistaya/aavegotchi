@@ -127,7 +127,7 @@
             v-model:pageSize="tablePaging.pageSize"
             :numResults="results.length"
             itemsLabel="listings"
-            :scrollingBreakpoint="1400"
+            :scrollingBreakpoint="1500"
           >
             <template #headers>
               <tr>
@@ -142,6 +142,7 @@
                 <th v-if="withWhitelist">
                   Whitelist
                 </th>
+                <th>Kinship</th>
                 <th>Gotchi</th>
                 <th>Borrower</th>
                 <th>Owner</th>
@@ -189,6 +190,9 @@
                 </td>
                 <td v-if="withWhitelist">
                   {{ result.whitelistId }}
+                </td>
+                <td>
+                  {{ result.gotchiKinship }}
                 </td>
                 <td>
                   <a
@@ -289,6 +293,7 @@ export default {
         splitBorrower
         splitOwner
         gotchiTokenId
+        gotchiKinship
         whitelistId
       }}
       `

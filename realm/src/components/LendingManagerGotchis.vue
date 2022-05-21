@@ -68,7 +68,7 @@
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
-        :scrollingBreakpoint="1900"
+        :scrollingBreakpoint="2000"
       >
         <template #headers>
           <tr>
@@ -117,6 +117,13 @@
               />
             </th>
             <th>Gotchi Pocket</th>
+            <th>
+              Kinship
+              <SortToggle
+                :sort="tableSort.column === 'gotchi kinship' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'gotchi kinship' : null; tableSort.direction = $event"
+              />
+            </th>
             <th>Lending Duration</th>
             <th>Upfront GHST</th>
             <th>Owner %</th>
@@ -255,6 +262,9 @@
                 polygonscan="erc20"
                 shortest
               />
+            </td>
+            <td>
+              {{ row.gotchi.kinship }}
             </td>
             <td>
               <template v-if="row.listing">
@@ -417,6 +427,7 @@ export default {
                 name
                 escrow
                 status
+                kinship
               }
               gotchisBorrowed
             }
@@ -473,6 +484,7 @@ export default {
               id
               name
               escrow
+              kinship
             }
             originalOwner
 
@@ -751,6 +763,9 @@ export default {
       } else if (column.startsWith('listing')) {
         const property = column.split(' ')[1]
         return orderBy(tableGotchisFiltered.value, [row => row.listing?.[property]], [direction])
+      } else if (column.startsWith('gotchi')) {
+        const property = column.split(' ')[1]
+        return orderBy(tableGotchisFiltered.value, [row => row.gotchi[property]], [direction])
       }
       return orderBy(tableGotchisFiltered.value, [column], [direction])
     })

@@ -235,6 +235,7 @@ export default {
           gotchi {
             name
           }
+          gotchiKinship
 
           timeCreated
           timeAgreed

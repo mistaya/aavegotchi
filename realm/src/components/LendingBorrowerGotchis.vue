@@ -202,7 +202,7 @@
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numGotchis"
         itemsLabel="borrowings"
-        :scrollingBreakpoint="2100"
+        :scrollingBreakpoint="2200"
         class="lending-borrower-table"
       >
         <template #headers>
@@ -241,6 +241,8 @@
                   Earned
                 </SiteButton>
               </div>
+            </th>
+            <th class="with-left-border">
             </th>
             <th
               colspan="7"
@@ -286,6 +288,7 @@
             <th v-if="pricesStatus.loaded">
               GHST-equiv Per Hour
             </th>
+            <th class="with-left-border">Kinship</th>
             <th class="with-left-border">Listing ID</th>
             <th>Upfront GHST</th>
             <th>Borrower %</th>
@@ -497,6 +500,9 @@
               </template>
             </td>
             <td class="with-left-border">
+              {{ row.listing.gotchiKinship }}
+            </td>
+            <td class="with-left-border">
               <a
                 :href="`https://app.aavegotchi.com/lending/${row.listing.id}`"
                 rel="noopener"
@@ -659,6 +665,7 @@ export default {
               name
               escrow
             }
+            gotchiKinship
 
             lender
             originalOwner
