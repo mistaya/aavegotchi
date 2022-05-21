@@ -127,7 +127,7 @@
             v-model:pageSize="tablePaging.pageSize"
             :numResults="results.length"
             itemsLabel="listings"
-            :scrollingBreakpoint="1300"
+            :scrollingBreakpoint="1400"
           >
             <template #headers>
               <tr>
@@ -143,8 +143,9 @@
                   Whitelist
                 </th>
                 <th>Gotchi</th>
-                <th>Owner</th>
                 <th>Borrower</th>
+                <th>Owner</th>
+                <th>Original Owner</th>
               </tr>
             </template>
             <template #rows>
@@ -199,9 +200,6 @@
                     #{{ result.gotchiTokenId }}
                   </a>
                 </td>
-                <td>
-                  <EthAddress icon :address="result.lender" />
-                </td>
                 <td style="white-space: nowrap;">
                   <router-link
                     :to="{ name: 'lending-borrower', query: { address: result.borrower } }"
@@ -210,6 +208,16 @@
                     view
                   </router-link>
                   <EthAddress icon :address="result.borrower" />
+                </td>
+                <td>
+                  <EthAddress icon :address="result.lender" />
+                </td>
+                <td>
+                  <EthAddress
+                    v-if="result.originalOwner && result.originalOwner !== result.lender"
+                    icon
+                    :address="result.originalOwner"
+                  />
                 </td>
               </tr>
             </template>
@@ -275,6 +283,7 @@ export default {
         timeCreated
         timeAgreed
         lender
+        originalOwner
         borrower
         splitOther
         splitBorrower

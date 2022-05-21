@@ -202,7 +202,7 @@
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numGotchis"
         itemsLabel="borrowings"
-        :scrollingBreakpoint="1900"
+        :scrollingBreakpoint="2100"
         class="lending-borrower-table"
       >
         <template #headers>
@@ -297,6 +297,9 @@
             </th>
             <th>
               Owner
+            </th>
+            <th>
+              Original Owner
             </th>
             <th>Gotchi Pocket</th>
           </tr>
@@ -524,7 +527,14 @@
               <EthAddress
                 :address="row.listing.lender"
                 icon
-                polygonscan="erc20"
+                shortest
+              />
+            </td>
+            <td>
+              <EthAddress
+                v-if="row.listing.originalOwner && row.listing.originalOwner !== row.listing.lender"
+                :address="row.listing.originalOwner"
+                icon
                 shortest
               />
             </td>
@@ -651,6 +661,7 @@ export default {
             }
 
             lender
+            originalOwner
             upfrontCost
             period
             splitOwner

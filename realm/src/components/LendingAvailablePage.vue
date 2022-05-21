@@ -142,7 +142,7 @@
             v-model:pageSize="tablePaging.pageSize"
             :numResults="results.length"
             itemsLabel="listings"
-            :scrollingBreakpoint="1000"
+            :scrollingBreakpoint="1200"
           >
             <template #headers>
               <tr>
@@ -191,6 +191,7 @@
                 </th>
                 <th>Gotchi</th>
                 <th>Owner</th>
+                <th>Original Owner</th>
               </tr>
             </template>
             <template #rows>
@@ -259,6 +260,13 @@
                 </td>
                 <td>
                   <EthAddress icon :address="result.lender" />
+                </td>
+                <td>
+                  <EthAddress
+                    v-if="result.originalOwner && result.originalOwner !== result.lender"
+                    icon
+                    :address="result.originalOwner"
+                  />
                 </td>
               </tr>
             </template>
@@ -397,6 +405,7 @@ export default {
         gotchiKinship
         timeCreated
         lender
+        originalOwner
         splitBorrower
         gotchiTokenId
         whitelistId
