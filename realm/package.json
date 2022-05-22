@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "imagemin": "imagemin src/assets/wearablesets --out-dir=public/wearablesets"
+    "imagemin": "imagemin src/assets/wearablesets --out-dir=public/wearablesets",
+    "imagemin2": "imagemin src/assets/paartnerLogos --out-dir=public/paartners"
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",

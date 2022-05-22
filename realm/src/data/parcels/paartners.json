@@ -3,36 +3,70 @@
     "id": "aave",
     "label": "AAVE",
     "website": "https://app.aave.com",
-    "twitter": "AaveAave"
+    "twitter": "AaveAave",
+    "logo": "svg"
   },
   "cgu": {
     "id": "cgu",
     "label": "Crypto Gaming United",
     "website": "https://www.cgu.io",
-    "twitter": "cryptogamingutd"
+    "twitter": "cryptogamingutd",
+    "logo": "svg"
   },
   "flamingo": {
     "id": "flamingo",
     "label": "Flamingo",
     "website": "https://flamingodao.xyz",
-    "twitter": "FLAMINGODAO"
+    "twitter": "FLAMINGODAO",
+    "logo": "svg"
   },
   "readyplayerdao": {
     "id": "readyplayerdao",
     "label": "Ready Player DAO",
     "website": "https://readyplayerdao.xyz",
-    "twitter": "ReadyPlayerDAO"
+    "twitter": "ReadyPlayerDAO",
+    "logo": "svg"
   },
   "blackpool": {
     "id": "blackpool",
     "label": "BlackPool",
     "website": "https://blackpool.finance",
-    "twitter": "BlackpoolHQ"
+    "twitter": "BlackpoolHQ",
+    "logo": "svg"
   },
   "yggsea": {
     "id": "yggsea",
     "label": "YGGSEA",
     "website": "https://yggsea.io",
-    "twitter": "yggsea"
+    "twitter": "yggsea",
+    "logo": "svg"
+  },
+  "ordengg": {
+    "id": "ordengg",
+    "label": "ordenGG",
+    "website": "https://fireball.gg",
+    "twitter": "orden_gg",
+    "logo": "png"
+  },
+  "metaguild": {
+    "id": "metaguild",
+    "label": "Metaguild",
+    "website": "https://metaguild.com",
+    "twitter": "MetaguildCom",
+    "logo": "png"
+  },
+  "neon": {
+    "id": "neon",
+    "label": "Neon DAO",
+    "website": "https://neondao.xyz",
+    "twitter": "neon_dao",
+    "logo": "png"
+  },
+  "ygg": {
+    "id": "ygg",
+    "label": "Yield Guild Games",
+    "website": "https://yieldguild.io",
+    "twitter": "YieldGuild",
+    "logo": "png"
   }
 }

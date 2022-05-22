@@ -13,7 +13,7 @@
     },
     {
         "id": "p3",
-        "paartner": null,
+        "paartner": "metaguild",
         "x": 7300,
         "y": 1616
     } ,
@@ -31,7 +31,7 @@
     },
     {
         "id": "p6",
-        "paartner": null,
+        "paartner": "neon",
         "x": 3512,
         "y": 2660
     },
@@ -43,13 +43,13 @@
     },
     {
         "id": "p8",
-        "paartner": null,
+        "paartner": "ordengg",
         "x": 6000,
         "y": 3536
     },
     {
         "id": "p9",
-        "paartner": null,
+        "paartner": "ygg",
         "x": 4848,
         "y": 3600
     },

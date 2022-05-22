@@ -423,9 +423,9 @@ import svgPanZoom from 'svg-pan-zoom'
 import Hammer from 'hammerjs'
 import { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
+import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
 import DISTRICTS from '@/data/parcels/districts.json'
 import useColorScheme from '@/data/useColorScheme'
-
 const CITAADEL_WIDTH = 9504
 const CITAADEL_HEIGHT = 6336
 const CITAADEL_ASPECT_RATIO = CITAADEL_WIDTH / CITAADEL_HEIGHT
@@ -451,10 +451,13 @@ export default {
     const parcelFallbackFill = computed(() => colorScheme.value === 'light' ? '#eee' : '#222')
 
     const paartnerParcels = computed(() => {
-      return PAARTNER_PARCELS.map(parcel => ({
-        ...parcel,
-        logoUrl: parcel.paartner ? require(`./paartnerLogos/${parcel.paartner}.svg`) : null
-      }))
+      return PAARTNER_PARCELS.map(parcel => {
+        const fileType = PAARTNER_DETAILS[parcel.paartner]?.logo
+        return {
+          ...parcel,
+          logoUrl: parcel.paartner ? `/paartners/${parcel.paartner}.${fileType}` : null
+        }
+      })
     })
 
     // Workaround to avoid click-selections while dragging to pan

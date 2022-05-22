@@ -53,11 +53,25 @@
         @{{ paartnerDetails.twitter }} twitter
       </a>
     </div>
+
+    <div
+      v-if="parcel"
+      class="parcel-coords"
+    >
+      Coordinates:
+      ({{ parcel.x }},
+      {{ parcel.y }})
+      <br>Gotchiverse Coords:
+      ({{ parcel.x * 64 }},
+      {{ parcel.y * 64 }})
+      <br>Dimensions: 64 x 64
+    </div>
   </div>
 </template>
 
 <script>
 import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
+import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 
 export default {
   props: {
@@ -66,11 +80,14 @@ export default {
   computed: {
     paartnerDetails () {
       const details = PAARTNER_DETAILS[this.paartner]
-      const logoUrl = require(`./paartnerLogos/${details.id}.svg`)
+      const logoUrl = `/paartners/${details.id}.${details.logo}`
       return {
         ...details,
         logoUrl
       }
+    },
+    parcel () {
+      return PAARTNER_PARCELS.find(parcel => parcel.paartner === this.paartner)
     }
   }
 }
@@ -87,5 +104,11 @@ export default {
     max-height: 50px;
     margin-right: 15px;
     margin-bottom: 10px;
+  }
+
+  .parcel-coords {
+    margin-top: 10px;
+    font-size: 0.8em;
+    color: var(--site-text-color--subtle);
   }
 </style>
