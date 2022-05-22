@@ -371,6 +371,24 @@
               :fill="parcelColors[parcel.id] || parcelFallbackFill"
             />
           </a>
+          <g v-show="mapConfig.showVortexes">
+            <a
+              v-for="(vortex, index) in VORTEXES"
+              :key="`vortex_${index}`"
+              xlink:href="#"
+              @mousedown="onMouseDownParcel"
+              @click.prevent="onClickVortex($event, vortex)"
+            >
+              <image
+                href="/map/vortex.svg"
+                :x="vortex.x - (38.8 / 2)"
+                :y="vortex.y - (30.8 / 2)"
+                width="38.8"
+                height="30.8"
+                class="vortex"
+              />
+            </a>
+          </g>
           <g
             v-show="mapConfig.showDistricts"
             :style="{
@@ -461,6 +479,7 @@ import { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
 import DISTRICTS from '@/data/parcels/districts.json'
+import VORTEXES from '@/data/parcels/vortexes.json'
 import useColorScheme from '@/data/useColorScheme'
 const CITAADEL_WIDTH = 9504
 const CITAADEL_HEIGHT = 6336
@@ -504,6 +523,11 @@ export default {
     const onClickParcel = function (evt, parcel) {
       if (lastMousedown && evt.clientX === lastMousedown.x && evt.clientY === lastMousedown.y) {
         emit('click:parcel', parcel)
+      }
+    }
+    const onClickVortex = function (evt, vortex) {
+      if (lastMousedown && evt.clientX === lastMousedown.x && evt.clientY === lastMousedown.y) {
+        emit('click:vortex', vortex)
       }
     }
 
@@ -671,6 +695,7 @@ export default {
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
       DISTRICTS,
+      VORTEXES,
       parcelFallbackFill,
       paartnerParcels,
       svgContainerRef,
@@ -679,6 +704,7 @@ export default {
       resetZoom,
       onMouseDownParcel,
       onClickParcel,
+      onClickVortex,
       zoomToPoint // public method
     }
   }
@@ -759,6 +785,11 @@ export default {
   }
   .district-label + .district-label {
     transform: translate(140px, 20px) scale(0.2);
+  }
+
+  .vortex {
+    opacity: 0.8;
+    clip-path: ellipse(20px 14px at 50% 50%);
   }
 
   .parcel {

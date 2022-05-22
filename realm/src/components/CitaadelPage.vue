@@ -309,6 +309,11 @@
             @close="selectedParcelId = null"
             @zoomToParcel="zoomToParcel(selectedParcelId, { viewMode, setViewModeBoth })"
           />
+          <VortexDetails
+            v-if="selectedVortex"
+            :vortex="selectedVortex"
+            @close="selectedVortex = null"
+          />
         </section>
       </template>
       <template #top>
@@ -348,6 +353,7 @@
           :selectedParcel="selectedParcel?.parcel"
           :marker="mapMarker"
           @click:parcel="onClickParcel"
+          @click:vortex="onClickVortex"
         />
         <template v-if="viewMode === 'list'">
           <div class="list-selections">
@@ -438,6 +444,7 @@ import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import PaartnerParcelDetails from './PaartnerParcelDetails.vue'
 import ParcelDetails from './ParcelDetails.vue'
+import VortexDetails from './VortexDetails.vue'
 import ParcelList from './ParcelList.vue'
 import ParcelsExport from './ParcelsExport.vue'
 import CitaadelMap from './CitaadelMap.vue'
@@ -464,6 +471,7 @@ export default {
     NumberDisplay,
     PaartnerParcelDetails,
     ParcelDetails,
+    VortexDetails,
     ParcelList,
     ParcelsExport,
     CitaadelMap,
@@ -844,8 +852,18 @@ export default {
     const refCoordinates = ref(null)
 
     const selectedParcelPaartnerId = ref(null)
+    const selectedVortex = ref(null)
 
+    const collapseAllConfig = function () {
+      // collapse all map config so the parcel details are easily visible
+      for (const refDetails of [refDetailsMyParcels.value?.$el, refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value, refCoordinates.value]) {
+        if (refDetails?.hasAttribute('open')) {
+          refDetails.removeAttribute('open')
+        }
+      }
+    }
     const onClickParcel = (parcel) => {
+      selectedVortex.value = null
       if (parcel.paartner) {
         selectedParcelPaartnerId.value = parcel.paartner
         selectedParcelId.value = null
@@ -853,12 +871,13 @@ export default {
         selectedParcelId.value = parcel.id
         selectedParcelPaartnerId.value = null
       }
-      // collapse all map config so the parcel details are easily visible
-      for (const refDetails of [refDetailsMyParcels.value?.$el, refDetailsColorScheme.value, refDetailsMapConfig.value?.$el, refDetailsFilters.value, refCoordinates.value]) {
-        if (refDetails?.hasAttribute('open')) {
-          refDetails.removeAttribute('open')
-        }
-      }
+      collapseAllConfig()
+    }
+    const onClickVortex = (vortex) => {
+      selectedVortex.value = vortex
+      selectedParcelPaartnerId.value = null
+      selectedParcelId.value = null
+      collapseAllConfig()
     }
 
     const onClickParcelFromSidebar = (parcel) => {
@@ -969,9 +988,11 @@ export default {
       parcelColors,
       onClickParcel,
       onClickParcelFromSidebar,
+      onClickVortex,
       selectedParcelId,
       selectedParcel,
       selectedParcelPaartnerId,
+      selectedVortex,
       selectedList,
       parcelsList,
       myParcelsList,

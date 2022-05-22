@@ -24,6 +24,22 @@
 
     <div style="margin-top: 15px">
       Map features - show...
+      <div style="margin-top: 5px">
+        <label style="margin-right: 7px">
+          <input
+            type="checkbox"
+            :checked="modelValue.showVortexes"
+            @input="showChanged($event.target.checked, 'showVortexes')"
+          />
+          Vortexes
+          <img
+            src="/map/vortex.svg"
+            width="31"
+            height="25"
+            alt=""
+          />
+        </label>
+      </div>
       <div
         v-for="feature in [
           { id: 'Roads', label: 'roads' },
@@ -119,6 +135,7 @@ const getDefaultValue = function () {
     showDistricts: true,
     showPaartners: true,
     showLandmarks: true,
+    showVortexes: true,
     showAlchemicaFud: true,
     showAlchemicaFomo: true,
     showAlchemicaAlpha: true,
