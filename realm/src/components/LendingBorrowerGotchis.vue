@@ -182,6 +182,13 @@
         </div>
       </div>
 
+      <div style="margin-top: 20px;">
+        <LendingLastChanneledFetchStatus
+          :fetchStatus="fetchChannelingStatus"
+          :lastFetchDate="lastFetchChannelingStatusDate"
+        />
+      </div>
+
       <SiteButton
         type="button"
         style="margin-top: 20px"
@@ -202,7 +209,7 @@
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numGotchis"
         itemsLabel="borrowings"
-        :scrollingBreakpoint="2200"
+        :scrollingBreakpoint="2300"
         class="lending-borrower-table"
       >
         <template #headers>
@@ -242,7 +249,11 @@
                 </SiteButton>
               </div>
             </th>
-            <th class="with-left-border">
+            <th
+              colspan="2"
+              class="with-left-border"
+            >
+              Gotchi
             </th>
             <th
               colspan="7"
@@ -288,8 +299,15 @@
             <th v-if="pricesStatus.loaded">
               GHST-equiv Per Hour
             </th>
-            <th class="with-left-border">Kinship</th>
-            <th class="with-left-border">Listing ID</th>
+            <th class="with-left-border">
+              Kinship
+            </th>
+            <th>
+              Last Channeled
+            </th>
+            <th class="with-left-border">
+              Listing ID
+            </th>
             <th>Upfront GHST</th>
             <th>Borrower %</th>
             <th>
@@ -502,6 +520,15 @@
             <td class="with-left-border">
               {{ row.listing.gotchiKinship }}
             </td>
+            <LendingLastChanneledCell
+              v-if="!row.listing.completed"
+              :gotchiId="row.gotchi.id"
+              :fetchStatus="fetchChannelingStatus"
+              :gotchiChannelingStatuses="gotchiChannelingStatuses"
+              enableCellHighlight
+            />
+            <td v-else>
+            </td>
             <td class="with-left-border">
               <a
                 :href="`https://app.aavegotchi.com/lending/${row.listing.id}`"
@@ -566,6 +593,7 @@ import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
 
 import useStatus from '@/data/useStatus'
+import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useAddressBalances from '@/data/useAddressBalances'
 import useTokenPrices from '@/data/useTokenPrices'
 import CryptoIcon from '@/components/CryptoIcon.vue'
@@ -575,6 +603,8 @@ import EthAddress from './EthAddress.vue'
 import SiteIcon from './SiteIcon.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
+import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
+import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 
 import tokens from '@/data/pockets/tokens.json'
 
@@ -599,13 +629,22 @@ export default {
     DateFriendly,
     SiteIcon,
     SiteTable,
-    SortToggle
+    SortToggle,
+    LendingLastChanneledFetchStatus,
+    LendingLastChanneledCell
   },
   props: {
     address: { type: String, default: null }
   },
   setup (props) {
     const addressLc = computed(() => props.address?.toLowerCase())
+
+    const {
+      fetchGotchiChannelingStatuses,
+      gotchiChannelingStatuses,
+      fetchStatus: fetchChannelingStatus,
+      lastFetchDate: lastFetchChannelingStatusDate
+    } = useGotchiChanneling()
 
     const { status: borrowedGotchisStatus, setLoading: setBorrowedGotchisLoading } = useStatus()
     const borrowedGotchis = ref(null)
@@ -811,6 +850,17 @@ export default {
           // console.log('Set escrowAddresses and fetch balances', escrowAddresses)
           setBalancesAddresses(escrowAddresses)
           fetchBalances()
+        }
+      }
+    )
+
+    watch(
+      () => status.value.loaded,
+      loaded => {
+        if (loaded) {
+          // we only need the channeling statuses for currently-borrowed gotchis
+          const gotchiIds = borrowedGotchis.value.filter(item => !item.listing.completed).map(item => item.gotchi.id)
+          fetchGotchiChannelingStatuses(gotchiIds)
         }
       }
     )
@@ -1064,7 +1114,10 @@ export default {
       rowsToDisplay,
       friendlyDuration,
       friendlyGhst,
-      fetchData
+      fetchData,
+      fetchChannelingStatus,
+      lastFetchChannelingStatusDate,
+      gotchiChannelingStatuses
     }
   }
 }

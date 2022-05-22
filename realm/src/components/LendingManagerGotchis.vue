@@ -49,6 +49,13 @@
         </details>
       </div>
 
+      <div style="margin-top: 20px">
+        <LendingLastChanneledFetchStatus
+          :fetchStatus="fetchChannelingStatus"
+          :lastFetchDate="lastFetchChannelingStatusDate"
+        />
+      </div>
+
       <SiteButton
         type="button"
         style="margin-top: 20px"
@@ -123,6 +130,9 @@
                 :sort="tableSort.column === 'gotchi kinship' ? tableSort.direction : null"
                 @update:sort="tableSort.column = $event ? 'gotchi kinship' : null; tableSort.direction = $event"
               />
+            </th>
+            <th>
+              Last Channeled
             </th>
             <th>Lending Duration</th>
             <th>Upfront GHST</th>
@@ -266,6 +276,12 @@
             <td>
               {{ row.gotchi.kinship }}
             </td>
+            <LendingLastChanneledCell
+              :gotchiId="row.gotchi.id"
+              :fetchStatus="fetchChannelingStatus"
+              :gotchiChannelingStatuses="gotchiChannelingStatuses"
+              enableCellHighlight
+            />
             <td>
               <template v-if="row.listing">
                 {{ friendlyDuration(row.listing.period) }}
@@ -343,11 +359,14 @@ import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
 
 import useStatus from '@/data/useStatus'
+import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useAddressBalances from '@/data/useAddressBalances'
 import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
+import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
+import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
 const OWNER_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
@@ -360,7 +379,9 @@ export default {
     EthAddress,
     DateFriendly,
     SiteTable,
-    SortToggle
+    SortToggle,
+    LendingLastChanneledFetchStatus,
+    LendingLastChanneledCell
   },
   props: {
     address: { type: String, default: null },
@@ -371,6 +392,13 @@ export default {
     const addressLc = computed(() => props.address?.toLowerCase())
     const thirdPartyAddressLc = computed(() => props.thirdPartyAddress?.toLowerCase())
     const vaultOwnerAddressLc = computed(() => props.vaultOwnerAddress?.toLowerCase())
+
+    const {
+      fetchGotchiChannelingStatuses,
+      gotchiChannelingStatuses,
+      fetchStatus: fetchChannelingStatus,
+      lastFetchDate: lastFetchChannelingStatusDate
+    } = useGotchiChanneling()
 
     const { status: ownedGotchisStatus, setLoading: setOwnedGotchisLoading } = useStatus()
     const ownedGotchis = ref(null)
@@ -638,6 +666,16 @@ export default {
       }
     )
 
+    watch(
+      () => status.value.loaded,
+      loaded => {
+        if (loaded) {
+          const gotchiIds = ownedGotchis.value.map(item => item.gotchi.id).concat(listedGotchis.value.map(item => item.gotchi.id))
+          fetchGotchiChannelingStatuses(gotchiIds)
+        }
+      }
+    )
+
     const fetchTimestamp = ref(0)
 
     const fetchData = function () {
@@ -808,7 +846,10 @@ export default {
       rowsToDisplay,
       friendlyDuration,
       friendlyGhst,
-      fetchData
+      fetchData,
+      fetchChannelingStatus,
+      lastFetchChannelingStatusDate,
+      gotchiChannelingStatuses
     }
   }
 }

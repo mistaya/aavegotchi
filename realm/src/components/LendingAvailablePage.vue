@@ -128,6 +128,11 @@
             </SiteButton>
           </div>
 
+          <LendingLastChanneledFetchStatus
+            :fetchStatus="fetchChannelingStatus"
+            :lastFetchDate="lastFetchChannelingStatusDate"
+          />
+
           <div style="margin-top: 30px; margin-bottom: 20px;">
             <SiteButton
               type="button"
@@ -189,6 +194,7 @@
                     @update:sort="tableSort.column = $event ? 'gotchiKinship' : null; tableSort.direction = $event"
                   />
                 </th>
+                <th>Last Channeled</th>
                 <th>Gotchi</th>
                 <th>Owner</th>
                 <th>Original Owner</th>
@@ -248,6 +254,12 @@
                 <td>
                   {{ result.gotchiKinship }}
                 </td>
+                <LendingLastChanneledCell
+                  :gotchiId="result.gotchiTokenId"
+                  :fetchStatus="fetchChannelingStatus"
+                  :gotchiChannelingStatuses="gotchiChannelingStatuses"
+                  enableCellHighlight
+                />
                 <td>
                   <a
                     :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
@@ -259,13 +271,14 @@
                   </a>
                 </td>
                 <td>
-                  <EthAddress icon :address="result.lender" />
+                  <EthAddress icon :address="result.lender" shortest />
                 </td>
                 <td>
                   <EthAddress
                     v-if="result.originalOwner && result.originalOwner !== result.lender"
                     icon
                     :address="result.originalOwner"
+                    shortest
                   />
                 </td>
               </tr>
@@ -281,6 +294,7 @@
 import BigNumber from 'bignumber.js'
 import { ref, computed, watch } from 'vue'
 import useStatus from '@/data/useStatus'
+import useGotchiChanneling from '@/data/useGotchiChanneling'
 import CryptoIcon from '@/components/CryptoIcon.vue'
 import CryptoIcons from '@/components/CryptoIcons.vue'
 import DateFriendly from '@/components/DateFriendly.vue'
@@ -288,6 +302,8 @@ import EthAddress from '@/components/EthAddress.vue'
 import SiteButton from '@/components/SiteButton.vue'
 import SiteTable from '@/components/SiteTable.vue'
 import SortToggle from '@/components/SortToggle.vue'
+import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
+import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 import tokens from '@/data/pockets/tokens.json'
 
 const tokensList = Object.values(tokens)
@@ -309,9 +325,18 @@ export default {
     EthAddress,
     SiteButton,
     SiteTable,
-    SortToggle
+    SortToggle,
+    LendingLastChanneledFetchStatus,
+    LendingLastChanneledCell
   },
   setup () {
+    const {
+      fetchGotchiChannelingStatuses,
+      gotchiChannelingStatuses,
+      fetchStatus: fetchChannelingStatus,
+      lastFetchDate: lastFetchChannelingStatusDate
+    } = useGotchiChanneling()
+
     const { status, setLoading } = useStatus()
     const results = ref([])
 
@@ -445,6 +470,15 @@ export default {
         })
     }
 
+    watch(
+      () => status.value.loaded,
+      loaded => {
+        if (loaded) {
+          fetchGotchiChannelingStatuses(results.value.map(result => result.gotchiTokenId))
+        }
+      }
+    )
+
     fetchLendings()
 
     watch(
@@ -486,6 +520,9 @@ export default {
       tablePaging,
       tableSort,
       results,
+      fetchChannelingStatus,
+      lastFetchChannelingStatusDate,
+      gotchiChannelingStatuses,
       rowsToDisplay,
       friendlyGhst,
       friendlyDuration

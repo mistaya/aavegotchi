@@ -113,6 +113,11 @@
             </SiteButton>
           </div>
 
+          <LendingLastChanneledFetchStatus
+            :fetchStatus="fetchChannelingStatus"
+            :lastFetchDate="lastFetchChannelingStatusDate"
+          />
+
           <div style="margin-top: 30px; margin-bottom: 20px;">
             <SiteButton
               type="button"
@@ -143,6 +148,7 @@
                   Whitelist
                 </th>
                 <th>Kinship</th>
+                <th>Last Channeled</th>
                 <th>Gotchi</th>
                 <th>Borrower</th>
                 <th>Owner</th>
@@ -194,6 +200,11 @@
                 <td>
                   {{ result.gotchiKinship }}
                 </td>
+                <LendingLastChanneledCell
+                  :gotchiId="result.gotchiTokenId"
+                  :fetchStatus="fetchChannelingStatus"
+                  :gotchiChannelingStatuses="gotchiChannelingStatuses"
+                />
                 <td>
                   <a
                     :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
@@ -211,16 +222,17 @@
                   >
                     view
                   </router-link>
-                  <EthAddress icon :address="result.borrower" />
+                  <EthAddress icon :address="result.borrower" shortest />
                 </td>
                 <td>
-                  <EthAddress icon :address="result.lender" />
+                  <EthAddress icon :address="result.lender" shortest />
                 </td>
                 <td>
                   <EthAddress
                     v-if="result.originalOwner && result.originalOwner !== result.lender"
                     icon
                     :address="result.originalOwner"
+                    shortest
                   />
                 </td>
               </tr>
@@ -236,9 +248,12 @@
 import BigNumber from 'bignumber.js'
 import { ref, computed, watch } from 'vue'
 import useStatus from '@/data/useStatus'
+import useGotchiChanneling from '@/data/useGotchiChanneling'
 import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from '@/components/EthAddress.vue'
 import SiteTable from '@/components/SiteTable.vue'
+import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
+import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
 
@@ -246,9 +261,18 @@ export default {
   components: {
     DateFriendly,
     EthAddress,
-    SiteTable
+    SiteTable,
+    LendingLastChanneledFetchStatus,
+    LendingLastChanneledCell
   },
   setup () {
+    const {
+      fetchGotchiChannelingStatuses,
+      gotchiChannelingStatuses,
+      fetchStatus: fetchChannelingStatus,
+      lastFetchDate: lastFetchChannelingStatusDate
+    } = useGotchiChanneling()
+
     const { status, setLoading } = useStatus()
     const results = ref([])
 
@@ -330,6 +354,15 @@ export default {
         })
     }
 
+    watch(
+      () => status.value.loaded,
+      loaded => {
+        if (loaded) {
+          fetchGotchiChannelingStatuses(results.value.map(result => result.gotchiTokenId))
+        }
+      }
+    )
+
     fetchLendings()
 
     watch(
@@ -373,6 +406,9 @@ export default {
       status,
       fetchLendings,
       results,
+      fetchChannelingStatus,
+      lastFetchChannelingStatusDate,
+      gotchiChannelingStatuses,
       rowsToDisplay,
       friendlyDuration,
       friendlyGhst

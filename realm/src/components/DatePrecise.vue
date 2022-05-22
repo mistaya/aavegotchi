@@ -15,7 +15,7 @@ export default {
   setup (props) {
     const preciseDate = computed(() => format(
       props.date,
-      'PPP ppp'
+      'PP p z'
     ))
 
     return {
