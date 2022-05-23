@@ -11,10 +11,10 @@
       ref="buttonRef"
       type="button"
       class="copy-to-clipboard__button"
-      title="copy address"
+      :title="label"
       @click="copyToClipboard"
     >
-      <span class="sr-only">copy address</span>
+      <span class="sr-only">{{ label }}</span>
       <SiteIcon name="copy" />
     </button>
   </div>
@@ -25,7 +25,8 @@ import { ref } from 'vue'
 
 export default {
   props: {
-    text: { type: String, default: '' }
+    text: { type: String, default: '' },
+    label: { type: String, default: 'copy address' }
   },
   setup () {
     const inputRef = ref(null)

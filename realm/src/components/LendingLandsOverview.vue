@@ -105,7 +105,10 @@
             </td>
             <td>
               {{ row.parcelHash }}
-              <CopyToClipboard :text="row.parcelHash" />
+              <CopyToClipboard
+                :text="row.parcelHash"
+                label="copy name"
+              />
             </td>
             <td>
               {{ row.district }}
