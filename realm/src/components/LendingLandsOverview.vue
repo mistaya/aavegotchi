@@ -8,6 +8,19 @@
     </template>
     <div v-if="status.loaded">
 
+      <div
+        v-if="numFilteredLands > 0"
+        style="margin-bottom: 30px;"
+      >
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            Warning: some Level 2 aaltars are affected by a bug where they behave as if they were Level 1.
+            <br>They still appear as Level 2 in the table below, but in reality their cooldowns will be 24h until Pixelcraft fixes the bug (hopefully soon!)
+          </div>
+        </div>
+      </div>
+
       <SiteButton
         type="button"
         @click="fetchOwnedLands"
