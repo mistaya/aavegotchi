@@ -16,10 +16,28 @@
       <router-view v-else />
     </main>
     <SiteFooter />
+    <div
+      class="site-global-alert"
+      v-if="pageLazyLoadError && !hideAlert"
+    >
+      <SiteButton
+        type="button"
+        style="position: absolute; top: 5px; right: 5px; display: flex;"
+        title="Close"
+        @click="hideAlert = true"
+      >
+        <span class="sr-only">Close</span>
+        <SiteIcon name="cancel" />
+      </SiteButton>
+      A new version of this website is available!
+      <br>
+      Please <a href="">refresh this page</a>.
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
 import useAppLayout from './useAppLayout'
 import usePageLoading from '@/router/usePageLoading'
 import SiteHead from '@/components/SiteHead.vue'
@@ -36,11 +54,14 @@ export default {
     SiteFooter
   },
   setup: function () {
-    const { pageLoading } = usePageLoading()
+    const { pageLoading, pageLazyLoadError } = usePageLoading()
     const { largeScreenFitHeight } = useAppLayout()
+    const hideAlert = ref(false)
 
     return {
       pageLoading,
+      pageLazyLoadError,
+      hideAlert,
       deviceNoTouch: !('ontouchstart' in document.documentElement),
       largeScreenFitHeight
     }
@@ -342,6 +363,16 @@ export default {
   .site-alertbox--warning {
     --site-alertbox-border-color: rgba(255, 150, 0, 0.5);
     --site-alertbox-background-color: rgba(255, 150, 0, 0.15);
+  }
+  .site-global-alert {
+    z-index: 1;
+    position: absolute;
+    top: 22px;
+    left: 50px;
+    border: 4px solid var(--site-form-accent-color);
+    padding: 35px 20px 20px 20px;
+    background: var(--site-background-color);
+    color: var(--site-text-color);
   }
 </style>
 

@@ -3,7 +3,7 @@ import useSiteHead from '@/data/useSiteHead'
 import usePageLoading from './usePageLoading'
 import NotFoundPage from './NotFoundPage.vue'
 
-const { pageLoading } = usePageLoading()
+const { pageLoading, pageLazyLoadError } = usePageLoading()
 
 const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/components/CitaadelPage.vue')
 const LandAuctionsPage = () => import(/* webpackChunkName: "land-auctions" */'@/components/LandAuctionsPage.vue')
@@ -262,6 +262,20 @@ router.beforeResolve((to, from, next) => {
   headData.value.pageTitle = to.meta?.head?.title || ''
   headData.value.description = to.meta?.head?.description || ''
   next()
+})
+
+// Production website can produce routing errors when new versions are deployed
+// but a user already has an old page open.
+// When they attempt to navigate, the lazy load will fail because
+// the old hashed file no longer exists on the server. This is a silent error by default.
+router.onError(error => {
+  if (error?.message && /loading chunk \d* failed/i.test(error.message)) {
+    console.log('Detected webpack lazy-load failure')
+    // enable this later
+    if (Date.now() < 0) {
+      pageLazyLoadError.value = true
+    }
+  }
 })
 
 export default router
