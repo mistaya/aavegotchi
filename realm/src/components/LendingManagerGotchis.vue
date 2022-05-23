@@ -29,7 +29,10 @@
         </label>
       </div>
 
-      <div style="margin-top: 20px; font-size: 0.9em">
+      <div
+        v-if="numFilteredGotchis > 0"
+        style="margin-top: 20px; font-size: 0.9em"
+      >
         <div
           v-if="balancesStatus.error"
           style="margin-bottom: 10px; font-weight: bold"
@@ -49,7 +52,10 @@
         </details>
       </div>
 
-      <div style="margin-top: 20px">
+      <div
+        v-if="numFilteredGotchis > 0"
+        style="margin-top: 20px"
+      >
         <LendingLastChanneledFetchStatus
           :fetchStatus="fetchChannelingStatus"
           :lastFetchDate="lastFetchChannelingStatusDate"

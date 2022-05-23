@@ -62,6 +62,11 @@ export default function () {
     // console.log('fetchGotchiChannelingStatuses', gotchiIds)
     resetResult()
     const [isStale, setLoaded, setError] = setLoading()
+    if (!gotchiIds || !gotchiIds.length) {
+      lastFetchDate.value = new Date()
+      setLoaded()
+      return
+    }
 
     let lastIndex = 0
     const newStatuses = {

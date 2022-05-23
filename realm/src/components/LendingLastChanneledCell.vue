@@ -13,17 +13,19 @@
           ?
         </template>
         <template v-else-if="fetchStatus.loaded && gotchiChannelingStatuses">
-          <SiteIcon
-            :name="gotchiChannelingStatuses.canChannel[gotchiId] ? 'pray' : 'moon'"
-            :alt="gotchiChannelingStatuses.canChannel[gotchiId] ? 'can channel' : 'cannot channel'"
-            style="margin-bottom: -2px; margin-right: 5px"
-          />
-          <template v-if="gotchiChannelingStatuses.dates[gotchiId]">
-            <DatePrecise :date="gotchiChannelingStatuses.dates[gotchiId]" />
-          </template>
-          <template v-else>
-            <span>Never</span>
-          </template>
+          <div :title="gotchiChannelingStatuses.canChannel[gotchiId] ? 'can channel' : 'cannot channel'">
+            <SiteIcon
+              :name="gotchiChannelingStatuses.canChannel[gotchiId] ? 'pray' : 'moon'"
+              :alt="gotchiChannelingStatuses.canChannel[gotchiId] ? 'can channel' : 'cannot channel'"
+              style="margin-bottom: -2px; margin-right: 5px"
+            />
+            <template v-if="gotchiChannelingStatuses.dates[gotchiId]">
+              <DatePrecise :date="gotchiChannelingStatuses.dates[gotchiId]" utc />
+            </template>
+            <template v-else>
+              <span>Never</span>
+            </template>
+          </div>
         </template>
       </template>
       <template v-else>

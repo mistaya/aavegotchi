@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="channeling-fetch-status">
     <div
       v-if="fetchStatus && fetchStatus.loading"
       class="site-alertbox site-alertbox--info"
@@ -28,7 +28,27 @@
       <div>
         Gotchis' last-channelling times were fetched from the subgraph
         <DateFriendly :date="lastFetchDate" />.
-        <br>Last gotchi reset (midnight UTC) was <DatePrecise :date="utcMidnight" />
+        <br>Last gotchi reset (midnight UTC) was <DatePrecise :date="utcMidnight" /> in your timezone.
+        <div class="channel-legend">
+          <div class="channel-legend-item">
+            <SiteIcon
+              name="pray"
+              class="channel-legend-icon"
+            />
+            <div class="channel-legend-text">
+              Gotchi hasn't channeled yet
+            </div>
+          </div>
+          <div class="channel-legend-item">
+            <SiteIcon
+              name="moon"
+              class="channel-legend-icon"
+            />
+            <div class="channel-legend-text">
+              Gotchi has already channeled
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -54,3 +74,25 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .channeling-fetch-status {
+    font-size: 0.9em;
+  }
+  .channel-legend {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px
+  }
+  .channel-legend-item {
+    display: flex;
+    gap: 4px;
+  }
+  .channel-legend-icon {
+    flex: none;
+  }
+  .channel-legend-text {
+    flex: 1 1 auto;
+  }
+</style>
