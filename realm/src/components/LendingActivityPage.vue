@@ -82,6 +82,15 @@
             hours
           </label>
         </div>
+        <div>
+          <label>
+            Kinship &ge;
+            <input
+              v-model.lazy="kinship"
+              type="text"
+            />
+          </label>
+        </div>
       </div>
 
       <template v-if="status.loading">
@@ -288,6 +297,7 @@ export default {
     const borrowerSplit = ref('')
     const otherSplit = ref('')
     const hours = ref('')
+    const kinship = ref('')
 
     const query = computed(() => {
       const whitelistQuery = `, whitelistId${withWhitelist.value ? '_not' : ''}: null`
@@ -300,8 +310,10 @@ export default {
       const otherSplitQuery = !Number.isNaN(otherSplitNum) && otherSplitNum > 0 ? `, splitOther_gte: "${otherSplitNum}"` : ''
       const hoursNum = hours.value - 0
       const periodQuery = !Number.isNaN(hoursNum) && hoursNum > 0 ? `, period_gte: "${hoursNum * 60 * 60}"` : ''
+      const kinshipNum = kinship.value - 0
+      const kinshipQuery = !Number.isNaN(kinshipNum) && kinshipNum > 0 ? `, gotchiKinship_gte: "${kinshipNum}"` : ''
       const query = `
-      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: "0", cancelled: false, ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery} ${periodQuery} }) {
+      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: "0", cancelled: false, ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery} ${periodQuery} ${kinshipQuery} }) {
         id
         upfrontCost
         period
@@ -403,6 +415,7 @@ export default {
       borrowerSplit,
       otherSplit,
       hours,
+      kinship,
       status,
       fetchLendings,
       results,

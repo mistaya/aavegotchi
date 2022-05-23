@@ -51,6 +51,15 @@
         </div>
         <div>
           <label>
+            Kinship &ge;
+            <input
+              v-model.lazy="filters.kinship"
+              type="text"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
             <input
               v-model="filters.noWhitelist"
               type="checkbox"
@@ -345,6 +354,7 @@ export default {
       upfrontMax: '',
       borrowerSplit: '',
       hours: '',
+      kinship: '',
       noWhitelist: true,
       allAlchemica: true,
       tokens: {
@@ -380,6 +390,8 @@ export default {
       const borrowerSplitQuery = !Number.isNaN(borrowerSplitNum) && borrowerSplitNum > 0 ? `, splitBorrower_gte: "${borrowerSplitNum}"` : ''
       const hoursNum = f.hours - 0
       const periodQuery = !Number.isNaN(hoursNum) && hoursNum > 0 ? `, period_gte: "${hoursNum * 60 * 60}"` : ''
+      const kinshipNum = f.kinship - 0
+      const kinshipQuery = !Number.isNaN(kinshipNum) && kinshipNum > 0 ? `, gotchiKinship_gte: "${kinshipNum}"` : ''
       let whitelistQuery = ''
       if (f.noWhitelist) {
         whitelistQuery = ', whitelistId: null'
@@ -419,6 +431,7 @@ export default {
         ${periodQuery}
         ${whitelistQuery}
         ${tokensQuery}
+        ${kinshipQuery}
       }) {
         id
         upfrontCost
