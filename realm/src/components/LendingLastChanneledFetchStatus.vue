@@ -83,7 +83,8 @@ export default {
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
-    gap: 16px
+    row-gap: 7px;
+    column-gap: 16px;
   }
   .channel-legend-item {
     display: flex;

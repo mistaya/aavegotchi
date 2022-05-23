@@ -27,6 +27,12 @@
           </router-link>
         </li>
       </ul>
+
+      And on the
+      <router-link :to="{ name: 'lending-lands' }">
+        Lending - Land Owner
+      </router-link>
+      page, you can see the altar-channeling status for all lands for an address.
     </div>
 
     <hr>
@@ -95,6 +101,13 @@
             https://app.aavegotchi.com/my-realm
           </a>
         </div>
+        <div>
+          Note: I will be removing this lookup soon, because this information is included on the
+          <router-link :to="{ name: 'lending-lands' }">
+            Lending - Land Owner
+          </router-link>
+          page.
+        </div>
       </form>
       <div v-if="parcelStatus.loading">
         Loading...
@@ -114,20 +127,6 @@
           <DatePrecise :date="parcelLastChanneled" />
           (approx <DateFriendly :date="parcelLastChanneled" />)
         </div>
-      </div>
-    </div>
-    <div
-      class="site-alertbox site-alertbox--info"
-      style="margin-top: 30px;"
-    >
-      <SiteIcon name="info" />
-      <div>
-        If you have a lot of gotchis or parcels to look up, Jarrod's WAGMI Warriors
-        <a href="https://gotchilending.com/">
-          https://gotchilending.com/
-        </a>
-        allows you to see all of them at once for an address: see <a href="https://twitter.com/WagmiWarriors/status/1527490105627136000">what it looks like</a>.
-        <br><a href="https://fireball.gg/">fireball.gg</a> now also lets you do this.
       </div>
     </div>
   </div>

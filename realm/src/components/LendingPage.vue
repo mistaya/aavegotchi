@@ -29,6 +29,13 @@
       </router-link>
 
       <router-link
+        :to="{ name: 'lending-lands' }"
+        class="site-banner__link"
+      >
+        Lands
+      </router-link>
+
+      <router-link
         :to="{ name: 'lending-export' }"
         class="site-banner__link"
       >

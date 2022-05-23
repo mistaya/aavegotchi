@@ -21,6 +21,7 @@ const LendingAvailablePage = () => import(/* webpackChunkName: "lending-availabl
 const LendingActivityPage = () => import(/* webpackChunkName: "lending-activity" */ '@/components/LendingActivityPage.vue')
 const LendingBorrowerPage = () => import(/* webpackChunkName: "lending-borrower" */ '@/components/LendingBorrowerPage.vue')
 const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/components/LendingManagerPage.vue')
+const LendingLandsPage = () => import(/* webpackChunkName: "lending-lands" */ '@/components/LendingLandsPage.vue')
 const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/components/LendingExportPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/components/TempPlayground.vue')
 
@@ -168,6 +169,20 @@ const routes = [
           head: {
             title: 'Gotchi Lending Manager',
             description: 'Management overview of your gotchi lendings'
+          }
+        }
+      },
+      {
+        path: 'lands',
+        name: 'lending-lands',
+        component: LendingLandsPage,
+        props: route => ({
+          address: route.query.address
+        }),
+        meta: {
+          head: {
+            title: 'Lands',
+            description: 'Overview of your lands with their channeling status'
           }
         }
       },
