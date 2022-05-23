@@ -474,7 +474,12 @@ export default {
             const borrowedGotchiIds = responseJson.data.user.gotchisBorrowed || []
             ownedGotchis.value = responseJson.data.user.gotchisOwned.filter(gotchi => !borrowedGotchiIds.includes(gotchi.id))
               .filter(({ status }) => status === '3') // only summoned and live gotchis
-              .map(item => ({ gotchi: item }))
+              .map(item => ({
+                gotchi: {
+                  ...item,
+                  kinship: item.kinship - 0 // make kinship a number so we can sort it
+                }
+              }))
             // console.log('ownedGotchis', ownedGotchis.value)
             setLoaded()
           } else {
@@ -553,7 +558,13 @@ export default {
                 // finished fetching all pages
                 listedGotchis.value = fetchedListings.map(item => {
                   const { gotchi, ...listing } = item
-                  return { gotchi, listing }
+                  return {
+                    gotchi: {
+                      ...gotchi,
+                      kinship: gotchi.kinship - 0 // make kinship a number so we can sort it
+                    },
+                    listing
+                  }
                 })
                 // console.log('listedGotchis', listedGotchis.value)
                 setLoaded()
