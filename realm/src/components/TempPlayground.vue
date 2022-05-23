@@ -1,7 +1,37 @@
 <template>
   <div>
     <h1>Gotchi channeling activity (temporary page)</h1>
-    <div>
+    <div style="margin-bottom: 20px;">
+      You can now see all gotchi last-channeled dates on these pages:
+      <ul>
+        <li>
+          <router-link :to="{ name: 'lending-available' }">
+            Available Lendings
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'lending-manager' }">
+            Lending Manager
+          </router-link>
+          (your own gotchis, whether you're lending them out or not)
+        </li>
+        <li>
+          <router-link :to="{ name: 'lending-borrower' }">
+            Borrower
+          </router-link>
+          (gotchis you have borrowed)
+        </li>
+        <li>
+          <router-link :to="{ name: 'lending-activity' }">
+            Lending Activity
+          </router-link>
+        </li>
+      </ul>
+    </div>
+
+    <hr>
+
+    <div style="margin-top: 20px;">
       <form
         style="margin-bottom: 10px;"
         @submit.prevent="submitGotchi"
@@ -18,12 +48,10 @@
         </SiteButton>
         <div style="margin-top: 10px">
           You can find your gotchi ID in its individual URL at
-          <a href="https://app.aavegotchi.com/aavegotchis/">https://app.aavegotchi.com/aavegotchis/</a>
-          , or through the
-          <router-link :to="{ name: 'lending-manager' }">
-            Lending Manager
-          </router-link>
-          on this site.
+          <a href="https://app.aavegotchi.com/aavegotchis/">https://app.aavegotchi.com/aavegotchis/</a>.
+        </div>
+        <div>
+          Note: I will be removing this lookup soon, because the main lending pages on this site now support it.
         </div>
       </form>
       <div v-if="gotchiStatus.loading">
@@ -98,8 +126,8 @@
         <a href="https://gotchilending.com/">
           https://gotchilending.com/
         </a>
-        allows you to see all of them at once for an address.
-        <br>See <a href="https://twitter.com/WagmiWarriors/status/1527490105627136000">what it looks like</a>.
+        allows you to see all of them at once for an address: see <a href="https://twitter.com/WagmiWarriors/status/1527490105627136000">what it looks like</a>.
+        <br><a href="https://fireball.gg/">fireball.gg</a> now also lets you do this.
       </div>
     </div>
   </div>
