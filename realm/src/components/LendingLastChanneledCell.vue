@@ -15,7 +15,7 @@
         <template v-else-if="fetchStatus.loaded && gotchiChannelingStatuses">
           <div :title="gotchiChannelingStatuses.canChannel[gotchiId] ? 'can channel' : 'cannot channel'">
             <SiteIcon
-              :name="gotchiChannelingStatuses.canChannel[gotchiId] ? 'pray' : 'moon'"
+              :name="gotchiChannelingStatuses.canChannel[gotchiId] ? 'channel' : 'moon'"
               :alt="gotchiChannelingStatuses.canChannel[gotchiId] ? 'can channel' : 'cannot channel'"
               style="margin-bottom: -2px; margin-right: 5px"
             />

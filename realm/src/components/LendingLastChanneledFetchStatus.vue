@@ -32,7 +32,7 @@
         <div class="channel-legend">
           <div class="channel-legend-item">
             <SiteIcon
-              name="pray"
+              name="channel"
               class="channel-legend-icon"
             />
             <div class="channel-legend-text">
