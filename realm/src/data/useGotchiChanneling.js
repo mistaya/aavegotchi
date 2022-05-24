@@ -26,8 +26,7 @@ const utcMidnight = computed(() => {
 const utcMidnightTimestampMs = computed(() => utcMidnight.value - 0)
 
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
-// limits: 500 results in error response. 400 seems ok, go a bit lower to be safe
-const FETCH_PAGE_SIZE = 350
+const FETCH_PAGE_SIZE = 1000
 
 export {
   utcMidnight,
@@ -74,28 +73,16 @@ export default function () {
       canChannel: {}
     }
     const fetchStatusesFromSubgraph = function () {
-      const queries = []
       const gotchiIdsToFetch = gotchiIds.slice(lastIndex, lastIndex + FETCH_PAGE_SIZE)
       lastIndex += gotchiIdsToFetch.length
-      for (const gotchiId of gotchiIdsToFetch) {
-        // we use separate queries to fetch the most recent event for each gotchi
-        // alias each query as `gGOTCHIID`
-        queries.push(`
-          g${gotchiId}:channelAlchemicaEvents(
-            first: 1,
-            orderBy: timestamp,
-            orderDirection: desc,
-            where: { gotchi: "${gotchiId}"}
-          ) {
-            timestamp
-          }
-        `)
-      }
       fetch(SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
           query: `{
-            ${queries.join('\n')}
+            gotchis (first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(gotchiIdsToFetch)}}) {
+              id
+              lastChanneledAlchemica
+            }
           }`
         })
       }).then(async response => {
@@ -105,19 +92,20 @@ export default function () {
           return
         }
         const responseJson = await response.json()
-        if (responseJson.data && Object.keys(responseJson.data)[0]?.startsWith('g')) {
-          for (const key in responseJson.data) {
-            if (key.startsWith('g')) {
-              const gotchiId = key.substring(1)
-              const resultsForGotchi = responseJson.data[key]
-              if (resultsForGotchi?.[0]?.timestamp) {
-                const timestampMs = resultsForGotchi[0].timestamp * 1000
-                newStatuses.dates[gotchiId] = new Date(timestampMs)
-                newStatuses.canChannel[gotchiId] = timestampMs < utcMidnightTimestampMs.value
-              } else if (resultsForGotchi?.length === 0) {
-                // no channeling events found: it can channel
-                newStatuses.canChannel[gotchiId] = true
-              }
+        if (responseJson.data?.gotchis) {
+          for (const gotchi of responseJson.data.gotchis) {
+            const gotchiId = gotchi.id
+            if (gotchi.lastChanneledAlchemica) {
+              const timestampMs = gotchi.lastChanneledAlchemica * 1000
+              newStatuses.dates[gotchiId] = new Date(timestampMs)
+              newStatuses.canChannel[gotchiId] = timestampMs < utcMidnightTimestampMs.value
+            }
+          }
+          // Gotchis that have never channeled will not be returned in the result.
+          // The negative result means that they can channel
+          for (const gotchiId of gotchiIdsToFetch) {
+            if (!newStatuses.dates[gotchiId]) {
+              newStatuses.canChannel[gotchiId] = true
             }
           }
 

@@ -309,7 +309,7 @@ export default {
           method: 'POST',
           body: JSON.stringify({
             query: `{
-              parcels (where: { id_in: ${JSON.stringify(landIdsToFetch)}}) {
+              parcels (first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(landIdsToFetch)}}) {
                 id
                 equippedInstallations
                 lastChanneledAlchemica
