@@ -35,6 +35,7 @@ import clockSvg from '!!raw-loader!./icons/icon-clock.svg'
 import sunSvg from '!!raw-loader!./icons/icon-sun.svg'
 import moonSvg from '!!raw-loader!./icons/icon-moon.svg'
 import praySvg from '!!raw-loader!./icons/icon-pray.svg'
+import homeSvg from '!!raw-loader!./icons/icon-home.svg'
 
 const icons = [
   { id: 'copy', svg: copySvg },
@@ -55,7 +56,8 @@ const icons = [
   { id: 'clock', svg: clockSvg },
   { id: 'sun', svg: sunSvg },
   { id: 'moon', svg: moonSvg },
-  { id: 'pray', svg: praySvg }
+  { id: 'pray', svg: praySvg },
+  { id: 'home', svg: homeSvg }
 ]
 icons.forEach(icon => {
   icon.viewBox = icon.svg.match(/viewBox="([^"]+)"/)?.[1]

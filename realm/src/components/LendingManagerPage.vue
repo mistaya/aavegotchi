@@ -36,16 +36,29 @@
       <div v-if="!hasValidAddress">
         Invalid address
       </div>
-      <div>
+      <div
+        v-else
+        style="line-height: 2em;"
+      >
         <a
-          v-if="hasValidAddress"
           :href="`https://app.aavegotchi.com/aavegotchis/${encodeURIComponent(address)}`"
           rel="noopener"
           target="_blank"
+          style="white-space: nowrap; margin-right: 20px;"
         >
-          View on aavegotchi.com
+          View gotchis on aavegotchi.com
           <SiteIcon name="open-window" />
         </a>
+
+        <router-link
+          v-if="address || vaultOwnerAddress"
+          :to="{ name: 'lending-lands', query: { address: address || vaultOwnerAddress } }"
+          style="white-space: nowrap;"
+        >
+          <SiteIcon name="home" style="margin-right: 2px" />
+          View lands belonging to
+          {{ (address || vaultOwnerAddress).substring(0, 5) }}
+        </router-link>
       </div>
     </template>
     <template v-else>

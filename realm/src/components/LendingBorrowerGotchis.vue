@@ -256,7 +256,13 @@
               Gotchi
             </th>
             <th
-              colspan="7"
+              colspan="2"
+              class="with-left-border"
+            >
+              Owner
+            </th>
+            <th
+              colspan="5"
               class="with-left-border"
             >
               Lending Details
@@ -306,6 +312,12 @@
               Last Channeled
             </th>
             <th class="with-left-border">
+              Owner
+            </th>
+            <th>
+              Original Owner
+            </th>
+            <th class="with-left-border">
               Listing ID
             </th>
             <th>Upfront GHST</th>
@@ -315,12 +327,6 @@
             </th>
             <th>
               Third-Party Address
-            </th>
-            <th>
-              Owner
-            </th>
-            <th>
-              Original Owner
             </th>
             <th>Gotchi Pocket</th>
           </tr>
@@ -529,6 +535,33 @@
             />
             <td v-else>
             </td>
+            <td
+              class="with-left-border"
+              style="white-space: nowrap;"
+            >
+              <EthAddress
+                :address="row.listing.lender"
+                icon
+                shortest
+              />
+              <LendingLandsIconLink
+                :address="row.listing.lender"
+                style="margin-left: 5px;"
+              />
+            </td>
+            <td style="white-space: nowrap;">
+              <template v-if="row.listing.originalOwner && row.listing.originalOwner !== row.listing.lender">
+                <EthAddress
+                  :address="row.listing.originalOwner"
+                  icon
+                  shortest
+                />
+                <LendingLandsIconLink
+                  :address="row.listing.originalOwner"
+                  style="margin-left: 5px;"
+                />
+              </template>
+            </td>
             <td class="with-left-border">
               <a
                 :href="`https://app.aavegotchi.com/lending/${row.listing.id}`"
@@ -553,21 +586,6 @@
                 :address="row.listing.thirdPartyAddress"
                 icon
                 polygonscan="erc20"
-                shortest
-              />
-            </td>
-            <td>
-              <EthAddress
-                :address="row.listing.lender"
-                icon
-                shortest
-              />
-            </td>
-            <td>
-              <EthAddress
-                v-if="row.listing.originalOwner && row.listing.originalOwner !== row.listing.lender"
-                :address="row.listing.originalOwner"
-                icon
                 shortest
               />
             </td>
@@ -603,6 +621,7 @@ import EthAddress from './EthAddress.vue'
 import SiteIcon from './SiteIcon.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
+import LendingLandsIconLink from '@/components/LendingLandsIconLink.vue'
 import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 
@@ -630,6 +649,7 @@ export default {
     SiteIcon,
     SiteTable,
     SortToggle,
+    LendingLandsIconLink,
     LendingLastChanneledFetchStatus,
     LendingLastChanneledCell
   },

@@ -279,16 +279,25 @@
                     #{{ result.gotchiTokenId }}
                   </a>
                 </td>
-                <td>
+                <td style="white-space: nowrap;">
                   <EthAddress icon :address="result.lender" shortest />
-                </td>
-                <td>
-                  <EthAddress
-                    v-if="result.originalOwner && result.originalOwner !== result.lender"
-                    icon
-                    :address="result.originalOwner"
-                    shortest
+                  <LendingLandsIconLink
+                    :address="result.lender"
+                    style="margin-left: 5px;"
                   />
+                </td>
+                <td style="white-space: nowrap;">
+                  <template v-if="result.originalOwner && result.originalOwner !== result.lender">
+                    <EthAddress
+                      icon
+                      :address="result.originalOwner"
+                      shortest
+                    />
+                    <LendingLandsIconLink
+                      :address="result.originalOwner"
+                      style="margin-left: 5px;"
+                    />
+                  </template>
                 </td>
               </tr>
             </template>
@@ -311,6 +320,7 @@ import EthAddress from '@/components/EthAddress.vue'
 import SiteButton from '@/components/SiteButton.vue'
 import SiteTable from '@/components/SiteTable.vue'
 import SortToggle from '@/components/SortToggle.vue'
+import LendingLandsIconLink from '@/components/LendingLandsIconLink.vue'
 import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 import tokens from '@/data/pockets/tokens.json'
@@ -335,6 +345,7 @@ export default {
     SiteButton,
     SiteTable,
     SortToggle,
+    LendingLandsIconLink,
     LendingLastChanneledFetchStatus,
     LendingLastChanneledCell
   },
