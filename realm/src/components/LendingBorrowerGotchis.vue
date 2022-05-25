@@ -556,10 +556,6 @@
                   icon
                   shortest
                 />
-                <LendingLandsIconLink
-                  :address="row.listing.originalOwner"
-                  style="margin-left: 5px;"
-                />
               </template>
             </td>
             <td class="with-left-border">

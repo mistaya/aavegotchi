@@ -25,7 +25,7 @@ const SPECIAL_ADDRESSES = {
   },
   [ADDRESS_GOTCHI_VAULT]: {
     url: gotchiVaultUrl,
-    title: 'In Gotchi Vault'
+    title: 'Gotchi Vault'
   }
 }
 
