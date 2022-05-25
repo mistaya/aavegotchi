@@ -284,8 +284,15 @@ router.beforeResolve((to, from, next) => {
 // When they attempt to navigate, the lazy load will fail because
 // the old hashed file no longer exists on the server. This is a silent error by default.
 router.onError(error => {
-  // "ChunkLoadError: Loading chunk XXXX failed.""
-  if (error?.message && error.message.indexOf('ChunkLoadError') !== -1) {
+  console.log('Router onError detected...', error)
+  if (
+    error &&
+    error.message &&
+    (
+      error.message.indexOf('Loading chunk') !== -1 ||
+      error.message.indexOf('Loading CSS chunk') !== -1
+    )
+  ) {
     console.log('Detected webpack lazy-load failure')
     // enable this later
     if (Date.now() < 0) {
