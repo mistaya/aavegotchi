@@ -488,6 +488,9 @@ export default {
               }))
             // console.log('ownedGotchis', ownedGotchis.value)
             setLoaded()
+          } else if (responseJson.data?.user === null) {
+            ownedGotchis.value = []
+            setLoaded()
           } else {
             console.error('Unexpected response', responseJson)
             setError('Unexpected response')
