@@ -64,10 +64,6 @@
                   @update:sort="tableSort.column = $event ? 'aaltar level' : null; tableSort.direction = $event"
                 />
               </th>
-              <th v-if="parcelAccessRightsStatus.loaded">
-                Channeling Access
-              </th>
-              <th>Cooldown</th>
               <th style="min-width: 100px;">
                 Aaltar ready
                 <SortToggle
@@ -76,6 +72,10 @@
                   @update:sort="tableSort.column = $event ? 'details cooldownTimestamp' : null; tableSort.direction = $event"
                 />
               </th>
+              <th v-if="parcelAccessRightsStatus.loaded">
+                Channeling Access
+              </th>
+              <th>Cooldown</th>
               <th style="min-width: 100px;">
                 Aaltar last used
                 <SortToggle
@@ -121,6 +121,18 @@
                   {{ landDetails[row.id]?.equippedInstallations }}
                 -->
               </td>
+              <td>
+                <template v-if="landDetails[row.id]">
+                  <template v-if="landDetails[row.id].cooldownTimestamp < tickerTimestamp">
+                    Now
+                  </template>
+                  <DateFriendly
+                    v-else-if="landDetails[row.id].cooldownDate"
+                    :date="landDetails[row.id].cooldownDate"
+                    enableToggle
+                  />
+                </template>
+              </td>
               <td v-if="parcelAccessRightsStatus.loaded">
                 <template v-if="parcelAccessRightsStatus.loaded">
                   <template v-if="parcelAccessRights[0][row.id] === 0">
@@ -134,18 +146,6 @@
               <td>
                 <template v-if="landDetails[row.id]?.aaltar">
                   {{ landDetails[row.id].aaltar.cooldownHours }}h
-                </template>
-              </td>
-              <td>
-                <template v-if="landDetails[row.id]">
-                  <template v-if="landDetails[row.id].cooldownTimestamp < tickerTimestamp">
-                    Now
-                  </template>
-                  <DateFriendly
-                    v-else-if="landDetails[row.id].cooldownDate"
-                    :date="landDetails[row.id].cooldownDate"
-                    enableToggle
-                  />
                 </template>
               </td>
               <td>
