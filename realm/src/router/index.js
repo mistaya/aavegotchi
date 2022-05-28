@@ -294,10 +294,7 @@ router.onError(error => {
     )
   ) {
     console.log('Detected webpack lazy-load failure')
-    // enable this later
-    if (Date.now() < 0) {
-      pageLazyLoadError.value = true
-    }
+    pageLazyLoadError.value = true
   }
 })
 
