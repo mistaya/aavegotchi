@@ -51,6 +51,31 @@ const initContract = function () {
       ],
       stateMutability: 'view',
       type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256[]',
+          name: '_parcelIds',
+          type: 'uint256[]'
+        },
+        {
+          internalType: 'uint256[]',
+          name: '_actionRights',
+          type: 'uint256[]'
+        }
+      ],
+      name: 'getParcelsAccessRights',
+      outputs:
+      [
+        {
+          internalType: 'uint256[]',
+          name: 'output_',
+          type: 'uint256[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
     }
   ]
   contract = new ethers.Contract(
@@ -82,6 +107,23 @@ const realm = {
       },
       error => { throw error }
     )
+  },
+  getParcelsAccessRights: async function (parcelIds, actionIds) {
+    if (!contract) {
+      initContract()
+    }
+    const promises = []
+    for (const actionId of actionIds) {
+      const actionIdsForParcels = parcelIds.map(id => actionId)
+      const promise = contract.getParcelsAccessRights(parcelIds, actionIdsForParcels)
+      promises.push(promise)
+    }
+    return Promise.all(promises).then(results => {
+      for (let i = 0; i < results.length; i++) {
+        results[i] = results[i].map(num => num - 0) // convert from BigNumber to a normal number
+      }
+      return results
+    })
   }
 }
 

@@ -20,128 +20,150 @@
       >
         No lands found.
       </div>
-      <SiteTable
-        v-else
-        v-model:page="tablePaging.page"
-        v-model:pageSize="tablePaging.pageSize"
-        itemsLabel="lands"
-        :numResults="numFilteredLands"
-        :scrollingBreakpoint="800"
-      >
-        <template #headers>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>
-              District
-              <SortToggle
-                defaultDirection="asc"
-                :sort="tableSort.column === 'district' ? tableSort.direction : null"
-                @update:sort="tableSort.column = $event ? 'district' : null; tableSort.direction = $event"
-              />
-            </th>
-            <th>
-              Size
-              <SortToggle
-                defaultDirection="asc"
-                :sort="tableSort.column === 'size' ? tableSort.direction : null"
-                @update:sort="tableSort.column = $event ? 'size' : null; tableSort.direction = $event"
-              />
-            </th>
-            <th>
-              Aaltar
-              <SortToggle
-                defaultDirection="asc"
-                :sort="tableSort.column === 'aaltar level' ? tableSort.direction : null"
-                @update:sort="tableSort.column = $event ? 'aaltar level' : null; tableSort.direction = $event"
-              />
-            </th>
-            <th>Cooldown</th>
-            <th style="min-width: 100px;">
-              Aaltar ready
-              <SortToggle
-                defaultDirection="asc"
-                :sort="tableSort.column === 'details cooldownTimestamp' ? tableSort.direction : null"
-                @update:sort="tableSort.column = $event ? 'details cooldownTimestamp' : null; tableSort.direction = $event"
-              />
-            </th>
-            <th style="min-width: 100px;">
-              Aaltar last used
-              <SortToggle
-                defaultDirection="asc"
-                :sort="tableSort.column === 'details lastChanneledTimestamp' ? tableSort.direction : null"
-                @update:sort="tableSort.column = $event ? 'details lastChanneledTimestamp' : null; tableSort.direction = $event"
-              />
-            </th>
-          </tr>
-        </template>
-        <template #rows>
-          <tr
-            v-for="row in rowsToDisplay"
-            :key="row.id"
-          >
-            <td>
-              <a
-                :href="`https://gotchiverse.io/auction?tokenId=${row.id}`"
-                rel="noopener"
-                target="_blank"
-              >
-                #{{ row.id }}
-              </a>
-            </td>
-            <td>
-              {{ row.parcelHash }}
-              <CopyToClipboard
-                :text="row.parcelHash"
-                label="copy name"
-              />
-            </td>
-            <td>
-              {{ row.district }}
-            </td>
-            <td>
-              {{ row.sizeLabel }}
-            </td>
-            <td>
-              <template v-if="landDetails[row.id]?.aaltar">
-                {{ landDetails[row.id].aaltar.label }}
-              </template>
-              <!--
-                {{ landDetails[row.id]?.equippedInstallations }}
-              -->
-            </td>
-            <td>
-              <template v-if="landDetails[row.id]?.aaltar">
-                {{ landDetails[row.id].aaltar.cooldownHours }}h
-              </template>
-            </td>
-            <td>
-              <template v-if="landDetails[row.id]">
-                <template v-if="landDetails[row.id].cooldownTimestamp < tickerTimestamp">
-                  Now
-                </template>
-                <DateFriendly
-                  v-else-if="landDetails[row.id].cooldownDate"
-                  :date="landDetails[row.id].cooldownDate"
-                  enableToggle
+      <template v-else>
+        <div
+          v-if="parcelAccessRightsStatus.error"
+          style="margin-top: 20px;"
+        >
+          <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
+            There was an error fetching parcel access rights.
+          </div>
+        </div>
+        <SiteTable
+          v-model:page="tablePaging.page"
+          v-model:pageSize="tablePaging.pageSize"
+          itemsLabel="lands"
+          :numResults="numFilteredLands"
+          :scrollingBreakpoint="900"
+        >
+          <template #headers>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>
+                District
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="tableSort.column === 'district' ? tableSort.direction : null"
+                  @update:sort="tableSort.column = $event ? 'district' : null; tableSort.direction = $event"
                 />
-              </template>
-            </td>
-            <td>
-              <template v-if="landDetails[row.id]">
-                <DateFriendly
-                  v-if="landDetails[row.id].lastChanneledDate"
-                  :date="landDetails[row.id].lastChanneledDate"
-                  enableToggle
+              </th>
+              <th>
+                Size
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="tableSort.column === 'size' ? tableSort.direction : null"
+                  @update:sort="tableSort.column = $event ? 'size' : null; tableSort.direction = $event"
                 />
-                <template v-else-if="landDetails[row.id].lastChanneledTimestamp === 0">
-                  Never used
+              </th>
+              <th>
+                Aaltar
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="tableSort.column === 'aaltar level' ? tableSort.direction : null"
+                  @update:sort="tableSort.column = $event ? 'aaltar level' : null; tableSort.direction = $event"
+                />
+              </th>
+              <th v-if="parcelAccessRightsStatus.loaded">
+                Channeling Access
+              </th>
+              <th>Cooldown</th>
+              <th style="min-width: 100px;">
+                Aaltar ready
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="tableSort.column === 'details cooldownTimestamp' ? tableSort.direction : null"
+                  @update:sort="tableSort.column = $event ? 'details cooldownTimestamp' : null; tableSort.direction = $event"
+                />
+              </th>
+              <th style="min-width: 100px;">
+                Aaltar last used
+                <SortToggle
+                  defaultDirection="asc"
+                  :sort="tableSort.column === 'details lastChanneledTimestamp' ? tableSort.direction : null"
+                  @update:sort="tableSort.column = $event ? 'details lastChanneledTimestamp' : null; tableSort.direction = $event"
+                />
+              </th>
+            </tr>
+          </template>
+          <template #rows>
+            <tr
+              v-for="row in rowsToDisplay"
+              :key="row.id"
+            >
+              <td>
+                <a
+                  :href="`https://gotchiverse.io/auction?tokenId=${row.id}`"
+                  rel="noopener"
+                  target="_blank"
+                >
+                  #{{ row.id }}
+                </a>
+              </td>
+              <td>
+                {{ row.parcelHash }}
+                <CopyToClipboard
+                  :text="row.parcelHash"
+                  label="copy name"
+                />
+              </td>
+              <td>
+                {{ row.district }}
+              </td>
+              <td>
+                {{ row.sizeLabel }}
+              </td>
+              <td>
+                <template v-if="landDetails[row.id]?.aaltar">
+                  {{ landDetails[row.id].aaltar.label }}
                 </template>
-              </template>
-            </td>
-          </tr>
-        </template>
-      </SiteTable>
+                <!--
+                  {{ landDetails[row.id]?.equippedInstallations }}
+                -->
+              </td>
+              <td v-if="parcelAccessRightsStatus.loaded">
+                <template v-if="parcelAccessRightsStatus.loaded">
+                  <template v-if="parcelAccessRights[0][row.id] === 0">
+                    Owner
+                  </template>
+                  <template v-else-if="parcelAccessRights[0][row.id] === 1">
+                    Borrower
+                  </template>
+                </template>
+              </td>
+              <td>
+                <template v-if="landDetails[row.id]?.aaltar">
+                  {{ landDetails[row.id].aaltar.cooldownHours }}h
+                </template>
+              </td>
+              <td>
+                <template v-if="landDetails[row.id]">
+                  <template v-if="landDetails[row.id].cooldownTimestamp < tickerTimestamp">
+                    Now
+                  </template>
+                  <DateFriendly
+                    v-else-if="landDetails[row.id].cooldownDate"
+                    :date="landDetails[row.id].cooldownDate"
+                    enableToggle
+                  />
+                </template>
+              </td>
+              <td>
+                <template v-if="landDetails[row.id]">
+                  <DateFriendly
+                    v-if="landDetails[row.id].lastChanneledDate"
+                    :date="landDetails[row.id].lastChanneledDate"
+                    enableToggle
+                  />
+                  <template v-else-if="landDetails[row.id].lastChanneledTimestamp === 0">
+                    Never used
+                  </template>
+                </template>
+              </td>
+            </tr>
+          </template>
+        </SiteTable>
+      </template>
     </div>
   </div>
 </template>
@@ -151,6 +173,7 @@ import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
 import useReactiveDate from '@/data/useReactiveDate'
 import useStatus from '@/data/useStatus'
+import useParcelAccessRights from '@/data/useParcelAccessRights'
 import CopyToClipboard from './CopyToClipboard.vue'
 import DateFriendly from './DateFriendly.vue'
 import SiteTable from './SiteTable.vue'
@@ -206,6 +229,13 @@ export default {
     const ownedLands = ref(null)
     const landDetails = ref({})
 
+    const {
+      fetchParcelAccessRights,
+      fetchStatus: parcelAccessRightsStatus,
+      parcelAccessRights
+    } = useParcelAccessRights()
+
+    // Don't require the parcel access rights to have successfully fetched, as that's more error-prone
     const status = computed(() => ({
       loading: ownedLandsStatus.value.loading || channelingStatus.value.loading,
       error: ownedLandsStatus.value.error || channelingStatus.value.error,
@@ -365,6 +395,7 @@ export default {
         if (loaded) {
           const landIds = ownedLands.value.map(land => land.id)
           fetchLandChannelingStatuses(landIds)
+          fetchParcelAccessRights(landIds)
         }
       }
     )
@@ -419,7 +450,9 @@ export default {
       tablePaging,
       tableSort,
       rowsToDisplay,
-      tickerTimestamp
+      tickerTimestamp,
+      parcelAccessRightsStatus,
+      parcelAccessRights
     }
   }
 }

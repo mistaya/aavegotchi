@@ -10,9 +10,13 @@
     >
       <SiteIcon name="info" />
       <div>
-        Optionally specify another group of parcels.
+        Optionally specify another group of parcels using the filters below.
         <br><br>
         These will always be highlighted on the map, and you can browse them in their own List.
+        <br><br>
+        Or to see status/cooldowns, go to the
+        <router-link :to="{ name: 'lending-lands' }">Land Owner</router-link>
+        page.
       </div>
     </div>
 
