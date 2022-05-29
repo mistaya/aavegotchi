@@ -160,10 +160,25 @@
             </SiteButton>
           </div>
 
+          <div v-if="fetchChannelingStatus.loaded">
+            <label>
+              <input
+                v-model="filters2.onlyChannelable"
+                type="checkbox"
+              />
+              Show only channelable
+            </label>
+            <div style="margin-top: 5px; margin-left: 25px; font-size: 0.9em; color: var(--site-text-color--subtle)">
+              This only filters the {{ results.length }} results we've already fetched. If you want to find more,
+              <template v-if="fetchPageSize < 1000">increase the max results to fetch, or </template>
+              try different filters above.
+            </div>
+          </div>
+
           <SiteTable
             v-model:page="tablePaging.page"
             v-model:pageSize="tablePaging.pageSize"
-            :numResults="results.length"
+            :numResults="results2.length"
             itemsLabel="listings"
             :scrollingBreakpoint="1200"
           >
@@ -385,6 +400,17 @@ export default {
         GHST: false
       }
     })
+    const filters2 = ref({
+      onlyChannelable: false
+    })
+
+    const results2 = computed(() => {
+      if (!status.value.loaded) { return [] }
+      if (fetchChannelingStatus.value.loaded && filters2.value.onlyChannelable) {
+        return results.value.filter(result => gotchiChannelingStatuses.value.canChannel[result.gotchiTokenId])
+      }
+      return results.value
+    })
 
     const tablePaging = ref({
       page: 0,
@@ -522,7 +548,7 @@ export default {
     watch(
       () => ({
         pageSize: tablePaging.value.pageSize,
-        results: results.value
+        results2: results2.value
       }),
       () => { tablePaging.value.page = 0 }
     )
@@ -530,7 +556,7 @@ export default {
     const rowsToDisplay = computed(() => {
       const start = tablePaging.value.page * tablePaging.value.pageSize
       const end = start + tablePaging.value.pageSize
-      return results.value.slice(start, end)
+      return results2.value.slice(start, end)
     })
 
     const friendlyDuration = function (periodString) {
@@ -546,6 +572,7 @@ export default {
     return {
       fetchPageSize,
       filters,
+      filters2,
       TOKEN_ADDRESSES,
       fetchLendings,
       status,
@@ -553,6 +580,7 @@ export default {
       tablePaging,
       tableSort,
       results,
+      results2,
       fetchChannelingStatus,
       lastFetchChannelingStatusDate,
       gotchiChannelingStatuses,
