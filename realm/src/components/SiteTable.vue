@@ -14,7 +14,12 @@
       class="site-table-wrapper visible-scrollbar"
       :class="`site-table-wrapper--breakpoint-${scrollingBreakpoint}`"
     >
-      <table class="site-table">
+      <table
+        class="site-table"
+        :class="{
+          'site-table--bordered': bordered
+        }"
+      >
         <thead>
           <slot name="headers"></slot>
         </thead>
@@ -45,7 +50,9 @@ export default {
     pageSize: { type: Number, default: 10 },
     numResults: { type: Number, required: true },
     itemsLabel: { type: String, default: 'gotchis' },
-    scrollingBreakpoint: { type: Number, default: 1300 }
+    scrollingBreakpoint: { type: Number, default: 1300 },
+    /* for vertical column borders, add 'with-left-border' class on TH and TD */
+    bordered: { type: Boolean, default: false }
   }
 }
 </script>
@@ -281,6 +288,24 @@ export default {
   }
   .site-table :deep(tr:nth-child(even) td) {
     background: var(--site-background-color--alternate);
+  }
+
+  .site-table--bordered {
+    border-collapse: collapse;
+  }
+  .site-table--bordered :deep(th),
+  .site-table--bordered :deep(td) {
+    padding: 6px 8px;
+  }
+  .site-table--bordered thead :deep(tr:not(:last-child) th) {
+    text-align: center;
+  }
+  .site-table--bordered thead :deep(tr:last-child th) {
+    border-bottom: 2px solid var(--site-border-color--transparent);
+  }
+  .site-table--bordered :deep(th.with-left-border),
+  .site-table--bordered :deep(td.with-left-border) {
+    border-left: 1px solid var(--site-border-color--transparent);
   }
 
   .site-table-paging {

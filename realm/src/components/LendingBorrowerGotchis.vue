@@ -210,6 +210,7 @@
         :numResults="numGotchis"
         itemsLabel="borrowings"
         :scrollingBreakpoint="2300"
+        bordered
         class="lending-borrower-table"
       >
         <template #headers>
@@ -1127,23 +1128,6 @@ export default {
 </script>
 
 <style scoped>
-  .lending-borrower-table :deep(table) {
-    border-collapse: collapse;
-  }
-  .lending-borrower-table th,
-  .lending-borrower-table td {
-    padding: 6px 8px;
-  }
-  .lending-borrower-table thead tr:first-child th {
-    text-align: center;
-  }
-  .lending-borrower-table thead tr:nth-child(2) th {
-    border-bottom: 2px solid var(--site-border-color--transparent);
-  }
-  .lending-borrower-table th.with-left-border,
-  .lending-borrower-table td.with-left-border {
-    border-left: 1px solid var(--site-border-color--transparent);
-  }
   .zero-value {
     opacity: 0.5;
   }
