@@ -609,7 +609,7 @@ import { ref, computed, watch } from 'vue'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useAddressBalances from '@/data/useAddressBalances'
-import useTokenPrices from '@/data/useTokenPrices'
+import useTokenPricesAavegotchi from '@/data/useTokenPricesAavegotchi'
 import CryptoIcon from '@/components/CryptoIcon.vue'
 import CryptoIcons from '@/components/CryptoIcons.vue'
 import DateFriendly from '@/components/DateFriendly.vue'
@@ -668,7 +668,7 @@ export default {
     const { status: earningsStatus, setLoading: setEarningsLoading } = useStatus()
     const earnings = ref({})
 
-    const { usdPrices, fetchStatus: pricesStatus, fetchPrices } = useTokenPrices()
+    const { ghstPrices, fetchStatus: pricesStatus, fetchPrices } = useTokenPricesAavegotchi()
 
     const {
       setAddresses: setBalancesAddresses,
@@ -686,19 +686,6 @@ export default {
     }))
 
     fetchPrices()
-
-    const ghstPrices = computed(() => {
-      if (!pricesStatus.value.loaded) { return null }
-      const ghstUsdPrice = usdPrices.value[TOKEN_ADDRESSES.GHST]
-      const ghstPricesMap = {}
-      for (const token of ['FUD', 'FOMO', 'ALPHA', 'KEK']) {
-        const tokenUsdPrice = usdPrices.value[TOKEN_ADDRESSES[token]]
-        if (tokenUsdPrice && ghstUsdPrice) {
-          ghstPricesMap[token] = tokenUsdPrice / ghstUsdPrice
-        }
-      }
-      return ghstPricesMap
-    })
 
     const fetchBorrowedGotchis = function () {
       const [isStale, setLoaded, setError] = setBorrowedGotchisLoading()
