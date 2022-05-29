@@ -142,6 +142,15 @@
             :lastFetchDate="lastFetchChannelingStatusDate"
           />
 
+        <div style="margin-top: 20px;">
+          <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
+            <SiteIcon name="warning-triangle" />
+            <div>
+              Warning: channeling <b>spillover</b> is paused until Monday due to maintenance. See the announcements in Discord for details.
+            </div>
+          </div>
+        </div>
+
           <div style="margin-top: 30px; margin-bottom: 20px;">
             <SiteButton
               type="button"
