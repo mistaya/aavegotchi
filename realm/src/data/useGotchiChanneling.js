@@ -138,6 +138,7 @@ export default function () {
     lastFetchDate,
     gotchiChannelingStatuses,
     utcMidnight,
-    utcMidnightTimestampMs
+    utcMidnightTimestampMs,
+    resetResult
   }
 }

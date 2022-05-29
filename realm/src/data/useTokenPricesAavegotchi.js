@@ -60,7 +60,7 @@ const fetchPrices = function () {
       }
 
       setPrices(usdPricesMap, ghstPricesMap)
-      console.log({ usdPricesMap, ghstPricesMap })
+      // console.log({ usdPricesMap, ghstPricesMap })
       setLoaded()
     }
   ).catch(error => {
