@@ -22,6 +22,18 @@
       </div>
       <template v-else>
         <div
+          style="margin-top: 20px;"
+        >
+          <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
+            <SiteIcon name="warning-triangle" />
+            <div>
+              Warning: there is a known Gotchiverse bug with some lands which have aaltars installed, but they do not appear in the game, so you can't channel with them.
+              <br>The owner can make the aaltar reappear by going into 'Build' mode on the land, but the borrower cannot do this.
+              <br>I can't tell which lands are bugged, so they'll still show in this table as having an aaltar, but you may be able to guess by looking to see when it was last used.
+            </div>
+          </div>
+        </div>
+        <div
           v-if="parcelAccessRightsStatus.error"
           style="margin-top: 20px;"
         >
