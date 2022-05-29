@@ -191,7 +191,8 @@ import DateFriendly from './DateFriendly.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
 const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
+// const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
+const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
 const FETCH_PAGE_SIZE = 1000
 
 const PARCEL_SIZE_LABELS = {
@@ -339,7 +340,9 @@ export default {
             query: `{
               parcels (first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(landIdsToFetch)}}) {
                 id
-                equippedInstallations
+                equippedInstallations {
+                  id
+                }
                 lastChanneledAlchemica
               }
             }`
@@ -354,7 +357,8 @@ export default {
           if (responseJson.data?.parcels) {
             for (const parcel of responseJson.data.parcels) {
               let lastChanneledTimestamp = parcel.lastChanneledAlchemica * 1000
-              const aaltarId = parcel.equippedInstallations?.find(installationId => AALTARS[installationId]) || undefined
+              const equippedInstallationIds = parcel.equippedInstallations?.map(({ id }) => id)
+              const aaltarId = equippedInstallationIds?.find(id => AALTARS[id]) || undefined
               const aaltar = AALTARS[aaltarId] || undefined
               let cooldownTimestamp
               let cooldownDate
@@ -372,7 +376,7 @@ export default {
                 lastChanneledTimestamp = undefined
               }
               newDetails[parcel.id] = {
-                equippedInstallations: parcel.equippedInstallations,
+                equippedInstallations: equippedInstallationIds,
                 aaltar,
                 lastChanneledTimestamp,
                 lastChanneledDate: lastChanneledTimestamp && new Date(lastChanneledTimestamp),
