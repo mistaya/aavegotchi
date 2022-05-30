@@ -28,15 +28,6 @@
             />
             GHST
           </label>
-
-          <label style="margin-left: 20px; white-space: nowrap;">
-            <input
-              :checked="filters.upfrontMax === '0'"
-              type="checkbox"
-              @click="filters.upfrontMax === '0' ? filters.upfrontMax = '' : filters.upfrontMax = '0'"
-            />
-            No upfront cost only
-          </label>
         </div>
         <div>
           <label>
@@ -116,6 +107,29 @@
             </label>
           </template>
         </div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--site-border-color--transparent);" />
+        <div>
+          Fetch
+          <label>
+            <input
+              v-model="fetchPageSize"
+              type="radio"
+              name="fetchPageSize"
+              :value="100"
+            />
+            first 100
+          </label>
+          <label>
+            <input
+              v-model="fetchPageSize"
+              type="radio"
+              name="fetchPageSize"
+              :value="1000"
+            />
+            first 1000
+          </label>
+          results
+        </div>
       </fieldset>
 
       <template v-if="status.loading">
@@ -136,40 +150,24 @@
             <template v-else>
               There are {{ results.length }} matching lending offers.
             </template>
-            <SiteButton
-              v-if="results.length >= 100"
-              type="button"
-              @click="fetchPageSize = fetchPageSize === 100 ? 1000 : 100"
-            >
-              Fetch max
-              {{ fetchPageSize === 100 ? 1000 : 100 }}
-            </SiteButton>
-          </div>
-
-          <div style="margin-top: 20px; margin-bottom: 20px;">
-            <SiteButton
-              type="button"
-              @click="fetchLendings"
-            >
-              Fetch lending offers again
-            </SiteButton>
           </div>
 
           <LendingLastChanneledFetchStatus
             :fetchStatus="fetchChannelingStatus"
             :lastFetchDate="lastFetchChannelingStatusDate"
+            short
           />
 
           <div
             v-if="fetchChannelingStatus.loaded"
             style="margin-top: 30px;"
           >
-            <fieldset
-              class="lending-filters"
+            <details
+              style="max-width: fit-content; border: 2px solid var(--site-border-color--transparent); padding: 10px 15px;"
             >
-              <legend>
-                Extra Channeling Filters
-              </legend>
+              <summary>
+                Advanced Channeling Filters
+              </summary>
               <div style="margin-top: 12px;">
                 <label>
                   <input
@@ -186,7 +184,7 @@
                       true-value="channelingDetails netTotalGhstPerChannel"
                       :false-value="null"
                     />
-                    Sort by GHST value (Net) Per Channel
+                    Sort by GHST Profit Per Channel
                   </label>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.9em; line-height: 1.5;">
@@ -197,15 +195,15 @@
                 </div>
                 <details
                   class="site-card"
-                  style="margin: 15px 0px; padding: 10px; line-height: 1.5;"
+                  style="max-width: 40em; margin: 15px 0px 5px; padding: 10px; line-height: 1.5;"
                 >
                   <summary>
-                    Learn more about the channeling GHST estimate, and what can go wrong!
+                    Learn more about the channeling GHST Profit estimate, and what can go wrong!
                   </summary>
                   <div style="margin-top: 10px">
                     <div>
-                      The GHST value of channeling is an estimate, and it's <b>not guaranteed</b> that you will get it.
-                      <br>It's calculated based on the Gotchi's kinship and channeling opportunities during the lending period. The lending's borrower % and upfront GHST cost are then applied, to get the Net value you would receive as a borrower.
+                      The GHST Profit from channeling is an estimate, and it's <b>not guaranteed</b> that you will get it.
+                      <br>It's calculated based on the Gotchi's kinship and channeling opportunities during the lending period. The lending's borrower % and upfront GHST cost are then applied, to get the profit (net value) you would receive as a borrower, just from channeling.
                     </div>
 
                     <div style="margin-top: 10px">
@@ -214,15 +212,25 @@
                     </div>
 
                     <div style="margin-top: 10px">
+                      Each gotchi can channel once during the 24h UTC day. All gotchis 'reset' at 00:00 UTC: this was <DatePrecise :date="utcMidnight" /> in your timezone.
+                      <br>You also need to find an aaltar on a parcel for the gotchi to channel at. Aaltars have their own cooldowns, which vary with aaltar level. You can't just use any aaltar - you need to own it yourself, or be given permission from the land owner.
+                    </div>
+
+                    <div style="margin-top: 10px">
+                      Some gotchis will have already channeled in the current UTC day, others will be ready to channel now.
+                      <br>Some lending periods might extend into the next UTC day, giving you a later channeling opportunity.
+                    </div>
+
+                    <div style="margin-top: 10px">
                       Possible problems include:
                       <ul style="margin-top: 5px;">
-                        <li>pricing data is wrong or out of date (and changes over time)</li>
+                        <li>alchemica/GHST pricing data is wrong or out of date (and changes over time)</li>
                         <li>subgraph data is out of date, and the gotchi has actually channeled already</li>
                         <li>the gotchi's owner channels it before you borrow</li>
                         <li>you get flagged as a bot and can't play</li>
-                        <li>the Gotchiverse goes down (or there is some bug) and you can't channel (remember this is an alpha release)</li>
+                        <li>the Gotchiverse goes down (or there is some bug) and you can't channel (remember this is an alpha release: stay up-to-date on the Discord)</li>
                         <li>you don't own an available parcel to channel on</li>
-                        <li>your Aaltars haven't cooled down yet</li>
+                        <li>your Aaltar(s) haven't cooled down yet</li>
                         <li>the owner doesn't allow borrowers to channel on their parcels</li>
                         <li>the owner's parcels are bugged and their Aaltars don't appear, so you can't use them</li>
                         <li>you lose the race with other borrowers who are also channeling on the owner's parcels</li>
@@ -248,22 +256,34 @@
                   </div>
                 </details>
               </div>
-            </fieldset>
+            </details>
+          </div>
+
+          <div style="margin-top: 30px; margin-bottom: 20px;">
+            <SiteButton
+              type="button"
+              @click="fetchLendings"
+            >
+              Fetch lending offers again
+            </SiteButton>
           </div>
 
           <div
             v-if="results2.length === 0"
             style="margin-top: 20px"
           >
-            No channelable gotchis found.
+            No channelable gotchis found out of {{ results.length }} listings.
+            <br>Try <template v-if="fetchPageSize < 1000">increasing the maximum number of results to fetch, or </template>
+            changing the earlier Search Filters to fetch more.
           </div>
+
           <SiteTable
             v-else
             v-model:page="tablePaging.page"
             v-model:pageSize="tablePaging.pageSize"
             :numResults="results2.length"
             itemsLabel="listings"
-            :scrollingBreakpoint="1400"
+            :scrollingBreakpoint="1300"
             bordered
           >
             <template #headers>
@@ -275,7 +295,7 @@
                 >
                   Lending Details
                 </th>
-                <th colspan="4" class="with-left-border">Channeling</th>
+                <th colspan="3" class="with-left-border">Channeling</th>
                 <th colspan="4" class="with-left-border">Gotchi</th>
               </tr>
               <tr>
@@ -316,16 +336,13 @@
                   Whitelist
                 </th>
                 <th class="with-left-border">
-                  Possible Times
+                  Number Possible
                 </th>
                 <th>
-                  GHST value (Net)
+                  Total GHST Profit
                 </th>
                 <th>
-                  GHST value (Net) Per Channel
-                </th>
-                <th>
-                  Last Channeled
+                  GHST Profit Per Channel
                 </th>
                 <th class="with-left-border">
                   Gotchi
@@ -402,21 +419,26 @@
                   <div v-if="channelingDetails && channelingDetails[result.id]">
                     <div
                       v-if="channelingDetails[result.id].numChannelings > 0"
-                      style="display: flex;"
+                      style="display: flex; flex-wrap: wrap; column-gap: 5px; row-gap: 5px"
                     >
-                      <SiteIcon
-                        name="channel"
-                        style="flex: none; margin-right: 3px"
-                      />
-                      <div style="flex: none">
-                        {{ channelingDetails[result.id].canChannelNow ? 1 : 0 }}
-                      </div>
-                      <div
+                      <span style="flex: none; display: flex; column-gap: 4px">
+                        <SiteIcon
+                          name="channel"
+                          style="flex: none;"
+                        />
+                        <span style="flex: none">
+                          {{ channelingDetails[result.id].canChannelNow ? 1 : 0 }}
+                          now{{
+                            channelingDetails[result.id].numChannelingsAfterReset > 0 ? ',' : ''
+                          }}
+                        </span>
+                      </span>
+                      <span
                         v-if="channelingDetails[result.id].numChannelingsAfterReset > 0"
-                        style="flex: none; white-space: nowrap;"
+                        style="flex: none;"
                       >
-                        +{{ channelingDetails[result.id].numChannelingsAfterReset }}
-                      </div>
+                        {{ channelingDetails[result.id].numChannelingsAfterReset }} later
+                      </span>
                     </div>
                     <template v-else>
                       None
@@ -432,7 +454,7 @@
                 >
                   <div v-if="channelingDetails && channelingDetails[result.id]">
                     <template v-if="channelingDetails[result.id].numChannelings > 0">
-                      {{ channelingDetails[result.id].netTotalGhst.toFixed(2) }} GHST
+                      {{ channelingDetails[result.id].netTotalGhst.toFixed(2) }}
                     </template>
                     <template v-else>
                       -
@@ -448,19 +470,13 @@
                 >
                   <div v-if="channelingDetails && channelingDetails[result.id]">
                     <template v-if="channelingDetails[result.id].numChannelings > 0">
-                      {{ channelingDetails[result.id].netTotalGhstPerChannel.toFixed(2) }} GHST
+                      {{ channelingDetails[result.id].netTotalGhstPerChannel.toFixed(2) }}
                     </template>
                     <template v-else>
                       -
                     </template>
                   </div>
                 </td>
-                <LendingLastChanneledCell
-                  :gotchiId="result.gotchiTokenId"
-                  :fetchStatus="fetchChannelingStatus"
-                  :gotchiChannelingStatuses="gotchiChannelingStatuses"
-                  enableCellHighlight
-                />
                 <td class="with-left-border">
                   <a
                     :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
@@ -513,13 +529,13 @@ import useTokenPricesAavegotchi from '@/data/useTokenPricesAavegotchi'
 import CryptoIcon from '@/components/CryptoIcon.vue'
 import CryptoIcons from '@/components/CryptoIcons.vue'
 import DateFriendly from '@/components/DateFriendly.vue'
+import DatePrecise from '@/components/DatePrecise.vue'
 import EthAddress from '@/components/EthAddress.vue'
 import SiteButton from '@/components/SiteButton.vue'
 import SiteTable from '@/components/SiteTable.vue'
 import SortToggle from '@/components/SortToggle.vue'
 import LendingLandsIconLink from '@/components/LendingLandsIconLink.vue'
 import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
-import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 import tokens from '@/data/pockets/tokens.json'
 
 const tokensList = Object.values(tokens)
@@ -538,13 +554,13 @@ export default {
     CryptoIcon,
     CryptoIcons,
     DateFriendly,
+    DatePrecise,
     EthAddress,
     SiteButton,
     SiteTable,
     SortToggle,
     LendingLandsIconLink,
-    LendingLastChanneledFetchStatus,
-    LendingLastChanneledCell
+    LendingLastChanneledFetchStatus
   },
   setup () {
     const { ghstPrices, fetchStatus: pricesStatus, fetchPrices } = useTokenPricesAavegotchi()
@@ -563,6 +579,7 @@ export default {
       gotchiChannelingStatuses,
       fetchStatus: fetchChannelingStatus,
       lastFetchDate: lastFetchChannelingStatusDate,
+      utcMidnight,
       utcMidnightTimestampMs
     } = useGotchiChanneling()
 
@@ -823,7 +840,7 @@ export default {
 
     const friendlyGhst = function (upfrontCost) {
       const cost = new BigNumber(upfrontCost).div(10e17)
-      return `${cost.decimalPlaces(4).toString()} GHST`
+      return cost.decimalPlaces(4).toString()
     }
 
     return {
@@ -843,6 +860,7 @@ export default {
       lastFetchChannelingStatusDate,
       gotchiChannelingStatuses,
       channelingDetails,
+      utcMidnight,
       ghstPrices,
       rowsToDisplay,
       friendlyGhst,
@@ -853,6 +871,11 @@ export default {
 </script>
 
 <style scoped>
+  .lending-filters {
+    max-width: fit-content;
+    border-style: solid;
+    border-color: var(--site-border-color--transparent);
+  }
   .lending-filters > div {
     margin-bottom: 10px;
   }

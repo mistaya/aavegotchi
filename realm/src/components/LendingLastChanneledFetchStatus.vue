@@ -28,27 +28,29 @@
       <div>
         Gotchis' last-channelling times were fetched from the subgraph
         <DateFriendly :date="lastFetchDate" />.
-        <br>Last gotchi reset (midnight UTC) was <DatePrecise :date="utcMidnight" /> in your timezone.
-        <div class="channel-legend">
-          <div class="channel-legend-item">
-            <SiteIcon
-              name="channel"
-              class="channel-legend-icon"
-            />
-            <div class="channel-legend-text">
-              Gotchi hasn't channeled yet
+        <template v-if="!short">
+          <br>Last gotchi reset (midnight UTC) was <DatePrecise :date="utcMidnight" /> in your timezone.
+          <div class="channel-legend">
+            <div class="channel-legend-item">
+              <SiteIcon
+                name="channel"
+                class="channel-legend-icon"
+              />
+              <div class="channel-legend-text">
+                Gotchi hasn't channeled yet
+              </div>
+            </div>
+            <div class="channel-legend-item">
+              <SiteIcon
+                name="moon"
+                class="channel-legend-icon"
+              />
+              <div class="channel-legend-text">
+                Gotchi has already channeled
+              </div>
             </div>
           </div>
-          <div class="channel-legend-item">
-            <SiteIcon
-              name="moon"
-              class="channel-legend-icon"
-            />
-            <div class="channel-legend-text">
-              Gotchi has already channeled
-            </div>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
   </div>
@@ -65,7 +67,8 @@ export default {
   },
   props: {
     fetchStatus: { type: Object, default: null },
-    lastFetchDate: { type: Date, default: null }
+    lastFetchDate: { type: Date, default: null },
+    short: { type: Boolean, default: false }
   },
   setup () {
     return {
