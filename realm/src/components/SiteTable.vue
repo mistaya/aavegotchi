@@ -287,7 +287,7 @@ export default {
     padding: 5px;
   }
   .site-table :deep(tr:nth-child(even) td) {
-    background: var(--site-background-color--alternate);
+    background-color: var(--site-background-color--alternate);
   }
 
   .site-table--bordered {

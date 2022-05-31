@@ -3,6 +3,7 @@
     <CryptoIcons />
     <h2>Gotchis Available to Borrow</h2>
     <div>
+      <!--
       <div style="margin-bottom: 20px;">
         <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
           <SiteIcon name="warning-triangle" />
@@ -11,6 +12,7 @@
           </div>
         </div>
       </div>
+      -->
 
       <fieldset
         class="lending-filters"
@@ -822,6 +824,7 @@ export default {
           // splitBorrower,
           // upfrontCost,
           // periodH: periodMs / (1000 * 60 * 60),
+          // kinship,
           // kinshipMultiplier,
           // ghstPerChannel,
           // ghstPerChannelAfterSplit,
@@ -895,6 +898,7 @@ export default {
   .channeling-net,
   .channeling-net > div {
     position: relative;
+    background-clip: padding-box; /* workaround for FF so cell borders display */
   }
   .can-channel::before,
   .channeling-net--profit::before,
