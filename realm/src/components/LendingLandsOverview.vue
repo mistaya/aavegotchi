@@ -34,6 +34,19 @@
           </div>
         </div>
         <div
+          style="margin-top: 20px;"
+        >
+          <div class="site-alertbox site-alertbox--info site-alertbox--compact">
+            <SiteIcon name="info" />
+            <div>
+              If you've borrowed a gotchi and have looked up its owner's address from the main Aavegotchi site, note that this might not be the correct address to use here. For example, if the gotchi came from the Vault, then the main site shows the <i>original</i> owner, but in the Gotchiverse you'll have access to the Vault's lands, not the original owners' lands.
+              <br>To be sure, go to your
+              <router-link :to="{ name: 'lending-borrower' }">Borrower page</router-link>
+              and look for the gotchi's Owner reported there.
+            </div>
+          </div>
+        </div>
+        <div
           v-if="parcelAccessRightsStatus.error"
           style="margin-top: 20px;"
         >
