@@ -728,7 +728,12 @@ export default {
           }
           const responseJson = await response.json()
           if (responseJson.data?.gotchiLendings) {
-            results.value = responseJson.data.gotchiLendings
+            results.value = responseJson.data.gotchiLendings.map((lending, index) => ({
+              ...lending,
+              tokensToShareMap: Object.fromEntries(
+                lending.tokensToShare.map(tokenAddress => [tokenAddress, true])
+              )
+            }))
             // console.log('results', results.value)
             setLoaded()
           } else {
@@ -806,13 +811,16 @@ export default {
         const kinship = result.gotchiKinship
         const splitBorrower = result.splitBorrower
         const upfrontCost = new BigNumber(result.upfrontCost).div(10e17).toNumber()
+        const tokensToShareMap = result.tokensToShareMap
 
         // calculate channeling yield
         const kinshipMultiplier = Math.sqrt(kinship / 50)
         const spilloverMultiplier = 0.5 // assume altar L1
         let ghstPerChannel = 0
         for (const token in BASE_CHANNELING) {
-          ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * spilloverMultiplier * ghstPrices.value[token]
+          if (tokensToShareMap[TOKEN_ADDRESSES[token]]) {
+            ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * spilloverMultiplier * ghstPrices.value[token]
+          }
         }
         const ghstPerChannelAfterSplit = ghstPerChannel * (splitBorrower / 100)
         const netTotalGhst = (numChannelings * ghstPerChannelAfterSplit) - upfrontCost
@@ -821,6 +829,7 @@ export default {
           canChannelNow,
           numChannelings,
           numChannelingsAfterReset,
+          // tokensToShareMap,
           // splitBorrower,
           // upfrontCost,
           // periodH: periodMs / (1000 * 60 * 60),
