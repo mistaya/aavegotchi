@@ -839,7 +839,9 @@ export default {
   .channeling-area {
     pointer-events: none;
     fill: var(--map-channeling--color);
-    opacity: calc(max(1 / max(var(--map-channeling--count) / 7, 5), 0.01));
+    /* split calc into stages to satisfy css minifier */
+    --map-channeling--count-1: calc(max(var(--map-channeling--count) / 7, 5));
+    opacity: calc(max(1 / var(--map-channeling--count-1), 0.01));
   }
   .vortex {
     opacity: 0.8;
