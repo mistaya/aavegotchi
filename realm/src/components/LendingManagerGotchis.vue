@@ -139,6 +139,10 @@
             </th>
             <th>
               Last Channeled
+              <SortToggle
+                :sort="tableSort.column === 'lastChanneled' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'lastChanneled' : null; tableSort.direction = $event"
+              />
             </th>
             <th>Lending Duration</th>
             <th>Upfront GHST</th>
@@ -824,6 +828,11 @@ export default {
       } else if (column.startsWith('gotchi')) {
         const property = column.split(' ')[1]
         return orderBy(tableGotchisFiltered.value, [row => row.gotchi[property]], [direction])
+      } else if (column === 'lastChanneled') {
+        if (!fetchChannelingStatus.value.loaded) {
+          return tableGotchisFiltered.value
+        }
+        return orderBy(tableGotchisFiltered.value, [row => gotchiChannelingStatuses.value.dates[row.gotchi.id]], [direction])
       }
       return orderBy(tableGotchisFiltered.value, [column], [direction])
     })
