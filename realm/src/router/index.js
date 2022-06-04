@@ -34,12 +34,12 @@ const routes = [
     path: '/',
     name: 'home',
     redirect: {
-      name: 'citaadel-index'
+      name: 'citaadel'
     }
   },
   {
     path: '/citaadel',
-    name: 'citaadel-index',
+    name: 'citaadel',
     component: CitaadelPage,
     children: [
       {

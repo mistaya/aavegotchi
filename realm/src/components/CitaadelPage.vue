@@ -20,7 +20,7 @@
 
 <script>
 const ensureSubPage = function (to, next) {
-  if (to.name === 'citaadel-index') {
+  if (to.name === 'citaadel') {
     next({
       name: 'citaadel-main'
     })

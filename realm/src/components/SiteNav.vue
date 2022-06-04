@@ -5,7 +5,7 @@
     />
     <nav>
       <router-link
-        :to="{ name: 'citaadel-index' }"
+        :to="{ name: 'citaadel' }"
         class="site-banner__link"
       >
         The Citaadel
