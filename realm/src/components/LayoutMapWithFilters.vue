@@ -14,30 +14,32 @@
     </div>
     <div class="layout-container__main">
       <div class="view-modes">
-        <SiteButton
-          type="button"
-          class="view-mode"
-          :aria-pressed="`${viewMode === 'map'}`"
-          @click="setViewModeMap"
-        >
-          Map View
-        </SiteButton>
-        <SiteButton
-          type="button"
-          class="view-mode"
-          :aria-pressed="`${viewMode === 'list'}`"
-          @click="setViewModeList"
-        >
-          List View
-        </SiteButton>
-        <SiteButton
-          type="button"
-          class="view-mode"
-          :aria-pressed="`${viewMode === 'both'}`"
-          @click="setViewModeBoth"
-        >
-          Map + List
-        </SiteButton>
+        <template v-if="!withoutViewModes">
+          <SiteButton
+            type="button"
+            class="view-mode"
+            :aria-pressed="`${viewMode === 'map'}`"
+            @click="setViewModeMap"
+          >
+            Map View
+          </SiteButton>
+          <SiteButton
+            type="button"
+            class="view-mode"
+            :aria-pressed="`${viewMode === 'list'}`"
+            @click="setViewModeList"
+          >
+            List View
+          </SiteButton>
+          <SiteButton
+            type="button"
+            class="view-mode"
+            :aria-pressed="`${viewMode === 'both'}`"
+            @click="setViewModeBoth"
+          >
+            Map + List
+          </SiteButton>
+        </template>
         <slot name="top"></slot>
       </div>
       <div
@@ -75,6 +77,9 @@ import { ref, onBeforeUnmount } from 'vue'
 import useAppLayout from '@/useAppLayout'
 
 export default {
+  props: {
+    withoutViewModes: { type: Boolean, default: false }
+  },
   setup (props) {
     const { largeScreenFitHeight } = useAppLayout()
     const originalLargeScreenFitHeight = largeScreenFitHeight.value

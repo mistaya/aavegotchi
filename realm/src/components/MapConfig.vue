@@ -106,6 +106,7 @@ const DEFAULT_COLORS = {
     colorAlchemicaKek: '#F0D9F2',
     colorAlchemica: '#E3E3E3',
     // These colors are set by other UI, but stored here to take advantage of the color scheme management
+    colorChanneling: '#000',
     colorNotInAuction: '#eeeeee',
     colorMyParcels: '#FA34F3'
   },
@@ -120,6 +121,7 @@ const DEFAULT_COLORS = {
     colorAlchemicaAlpha: '#476262',
     colorAlchemicaKek: '#533A55',
     colorAlchemica: '#292929',
+    colorChanneling: '#FFF',
     colorNotInAuction: '#222222',
     colorMyParcels: '#FA34F3'
   }

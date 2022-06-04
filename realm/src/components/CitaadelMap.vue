@@ -422,6 +422,23 @@
             </a>
           </g>
           <g
+            v-if="channelings && channelings.length"
+            :style="{
+              '--map-channeling--color': mapConfig.colorChanneling,
+              '--map-channeling--count': channelings.length
+            }"
+          >
+            <circle
+              v-for="channeling in channelings"
+              :key="channeling.id"
+              class="channeling-area"
+              :cx="channeling.parcel.coordinateX - 0 + channeling.parcel.width / 2"
+              :cy="channeling.parcel.coordinateY - 0 + channeling.parcel.height / 2"
+              :r="channeling.spilloverRadius"
+              stroke="none"
+            />
+          </g>
+          <g
             v-show="mapConfig.showDistricts"
             :style="{
               '--map-district--color': mapConfig.colorDistricts,
@@ -530,6 +547,7 @@ export default {
     parcelColors: { type: Object, default: () => ({}) }, /* parcel Id => color */
     selectedParcel: { type: Object, default: null },
     marker: { type: Object, default: null },
+    channelings: { type: Array, default: () => [] },
     mapConfig: { type: Object, default: getDefaultMapConfigValue() }
   },
   setup (props, { emit }) {
@@ -818,7 +836,11 @@ export default {
     fill: var(--map-district--color);
     opacity: 0.5;
   }
-
+  .channeling-area {
+    pointer-events: none;
+    fill: var(--map-channeling--color);
+    opacity: calc(max(1 / max(var(--map-channeling--count) / 7, 5), 0.01));
+  }
   .vortex {
     opacity: 0.8;
     clip-path: ellipse(20px 14px at 50% 50%);

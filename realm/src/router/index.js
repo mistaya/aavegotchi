@@ -6,6 +6,8 @@ import NotFoundPage from './NotFoundPage.vue'
 const { pageLoading, pageLazyLoadError } = usePageLoading()
 
 const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/components/CitaadelPage.vue')
+const CitaadelMainPage = () => import(/* webpackChunkName: "citaadel-main" */ '@/components/CitaadelMainPage.vue')
+const CitaadelChannelingPage = () => import(/* webpackChunkName: "citaadel-channelings" */ '@/components/CitaadelChannelingPage.vue')
 const LandAuctionsPage = () => import(/* webpackChunkName: "land-auctions" */'@/components/LandAuctionsPage.vue')
 const LandAuctionPage = () => import(/* webpackChunkName: "land-auction" */'@/components/LandAuctionPage.vue')
 const ConfigData = () => import(/* webpackChunkName: "config" */ '@/components/ConfigData.vue')
@@ -32,19 +34,37 @@ const routes = [
     path: '/',
     name: 'home',
     redirect: {
-      name: 'citaadel'
+      name: 'citaadel-index'
     }
   },
   {
     path: '/citaadel',
-    name: 'citaadel',
+    name: 'citaadel-index',
     component: CitaadelPage,
-    meta: {
-      head: {
-        title: 'The Citaadel',
-        description: 'Filter and explore the Citaadel map and Baazaar parcel listings from the Aavegotchi Realm'
+    children: [
+      {
+        path: 'main',
+        name: 'citaadel-main',
+        component: CitaadelMainPage,
+        meta: {
+          head: {
+            title: 'The Citaadel',
+            description: 'Filter and explore the Citaadel map and Baazaar parcel listings from the Aavegotchi Realm'
+          }
+        }
+      },
+      {
+        path: 'channeling',
+        name: 'citaadel-channeling',
+        component: CitaadelChannelingPage,
+        meta: {
+          head: {
+            title: 'Channeling Activity',
+            description: 'See recent channelings in the Citaadel'
+          }
+        }
       }
-    }
+    ]
   },
   {
     path: '/land-auction',
