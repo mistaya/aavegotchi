@@ -183,6 +183,7 @@ const routes = [
         props: route => ({
           address: route.query.address,
           thirdPartyAddress: route.query.thirdPartyAddress,
+          originalOwnerAddress: route.query.originalOwnerAddress,
           vaultOwnerAddress: route.query.vaultOwnerAddress
         }),
         meta: {

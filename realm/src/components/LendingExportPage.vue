@@ -54,6 +54,16 @@
         </div>
         <div>
           <label>
+            "Original Owner" Address
+            <input
+              v-model="filters.originalOwnerAddress"
+              type="text"
+              :disabled="!!filters.vaultOwnerAddress"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
             Vault Depositor Address
             <input
               v-model="filters.vaultOwnerAddress"
@@ -174,6 +184,7 @@ export default {
       lenderAddress: null,
       borrowerAddress: null,
       thirdPartyAddress: null,
+      originalOwnerAddress: null,
       vaultOwnerAddress: null,
       whitelistId: null,
       startDate: null,
@@ -190,11 +201,12 @@ export default {
       let lastIdNum = 0
       let fetchedLendings = []
 
-      const { lenderAddress, borrowerAddress, thirdPartyAddress, vaultOwnerAddress, whitelistId, startDate, endDate } = filters.value
+      const { lenderAddress, borrowerAddress, thirdPartyAddress, originalOwnerAddress, vaultOwnerAddress, whitelistId, startDate, endDate } = filters.value
       const whitelistQuery = whitelistId ? `, whitelistId: "${whitelistId}"` : ''
       const lenderQuery = lenderAddress && !vaultOwnerAddress ? `, lender: "${lenderAddress.toLowerCase()}"` : ''
       const borrowerQuery = borrowerAddress ? `, borrower: "${borrowerAddress.toLowerCase()}"` : ''
       const thirdPartyQuery = thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddress.toLowerCase()}"` : ''
+      const originalOwnerQuery = originalOwnerAddress && !vaultOwnerAddress ? `, originalOwner: "${originalOwnerAddress.toLowerCase()}"` : ''
       const vaultOwnerQuery = vaultOwnerAddress ? `, originalOwner: "${vaultOwnerAddress.toLowerCase()}", lender: "${VAULT_ADDRESS}"` : ''
 
       // Interpret dates in local timezone, and also export them that way.
@@ -222,6 +234,7 @@ export default {
           ${lenderQuery}
           ${borrowerQuery}
           ${thirdPartyQuery}
+          ${originalOwnerQuery}
           ${vaultOwnerQuery}
           ${startDateQuery}
           ${endDateQuery}

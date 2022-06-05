@@ -24,6 +24,13 @@
             icon
           />
         </template>
+        <template v-else-if="originalOwnerAddress">
+          for "Original Owner"
+          <EthAddress
+            :address="originalOwnerAddress"
+            icon
+          />
+        </template>
       </h2>
       <template v-if="address">
         (<a
@@ -32,7 +39,7 @@
           >Use another address</a>)
       </template>
     </div>
-    <template v-if="address || thirdPartyAddress || vaultOwnerAddress">
+    <template v-if="address || thirdPartyAddress || vaultOwnerAddress || originalOwnerAddress">
       <div v-if="!hasValidAddress">
         Invalid address
       </div>
@@ -51,13 +58,13 @@
         </a>
 
         <router-link
-          v-if="address || vaultOwnerAddress"
-          :to="{ name: 'lending-lands', query: { address: address || vaultOwnerAddress } }"
+          v-if="address"
+          :to="{ name: 'lending-lands', query: { address } }"
           style="white-space: nowrap;"
         >
           <SiteIcon name="home" style="margin-right: 2px" />
           View lands belonging to
-          {{ (address || vaultOwnerAddress).substring(0, 5) }}
+          {{ address.substring(0, 5) }}
         </router-link>
       </div>
     </template>
@@ -126,6 +133,29 @@
           Use this address
         </SiteButton>
       </form>
+
+      <div style="margin: 15px 0 15px 40px">
+        -- OR --
+      </div>
+
+      <form
+        style="display: flex; flex-wrap: wrap; column-gap: 10px;"
+        @submit.prevent="enterOriginalOwnerAddress"
+      >
+        <label>
+          "Original Owner" in lending contract:
+          <input
+            v-model="inputOriginalOwnerAddress"
+            type="text"
+          />
+        </label>
+        <SiteButton
+          type="submit"
+          :disabled="!inputOriginalOwnerAddress"
+        >
+          Use this address
+        </SiteButton>
+      </form>
     </template>
     <div
       v-if="hasValidAddress"
@@ -135,6 +165,7 @@
         :key="address"
         :address="address"
         :thirdPartyAddress="thirdPartyAddress"
+        :originalOwnerAddress="originalOwnerAddress"
         :vaultOwnerAddress="vaultOwnerAddress"
       />
     </div>
@@ -155,6 +186,7 @@ export default {
   props: {
     address: { type: String, default: null },
     thirdPartyAddress: { type: String, default: null },
+    originalOwnerAddress: { type: String, default: null },
     vaultOwnerAddress: { type: String, default: null }
   },
   setup (props) {
@@ -163,44 +195,48 @@ export default {
 
     const inputAddress = ref('')
     const inputThirdPartyAddress = ref('')
+    const inputOriginalOwnerAddress = ref('')
     const inputVaultOwnerAddress = ref('')
 
     const validAddress = computed(() => props.address?.length === 42)
     const validThirdPartyAddress = computed(() => props.thirdPartyAddress?.length === 42)
+    const validOriginalOwnerAddress = computed(() => props.originalOwnerAddress?.length === 42)
     const validVaultOwnerAddress = computed(() => props.vaultOwnerAddress?.length === 42)
 
-    const hasValidAddress = computed(() => validAddress.value || validThirdPartyAddress.value || validVaultOwnerAddress.value)
+    const hasValidAddress = computed(() => validAddress.value || validThirdPartyAddress.value || validOriginalOwnerAddress.value || validVaultOwnerAddress.value)
 
-    const clearAddress = () => {
+    const navigate = function (query) {
       router.push({
-        name: 'lending-manager'
+        name: 'lending-manager',
+        query
       })
     }
 
+    const clearAddress = () => {
+      navigate()
+    }
+
     const enterAddress = () => {
-      router.push({
-        name: 'lending-manager',
-        query: {
-          address: inputAddress.value
-        }
+      navigate({
+        address: inputAddress.value
       })
     }
 
     const enterThirdPartyAddress = () => {
-      router.push({
-        name: 'lending-manager',
-        query: {
-          thirdPartyAddress: inputThirdPartyAddress.value
-        }
+      navigate({
+        thirdPartyAddress: inputThirdPartyAddress.value
+      })
+    }
+
+    const enterOriginalOwnerAddress = () => {
+      navigate({
+        originalOwnerAddress: inputOriginalOwnerAddress.value
       })
     }
 
     const enterVaultOwnerAddress = () => {
-      router.push({
-        name: 'lending-manager',
-        query: {
-          vaultOwnerAddress: inputVaultOwnerAddress.value
-        }
+      navigate({
+        vaultOwnerAddress: inputVaultOwnerAddress.value
       })
     }
 
@@ -209,9 +245,11 @@ export default {
       clearAddress,
       inputAddress,
       inputThirdPartyAddress,
+      inputOriginalOwnerAddress,
       inputVaultOwnerAddress,
       enterAddress,
       enterThirdPartyAddress,
+      enterOriginalOwnerAddress,
       enterVaultOwnerAddress,
       hasValidAddress
     }

@@ -170,6 +170,9 @@
                 @update:sort="tableSort.column = $event ? 'listing lender' : null; tableSort.direction = $event"
               />
             </th>
+            <th v-if="!address">
+              Original Owner
+            </th>
             <th>
               Borrower
               <SortToggle
@@ -340,6 +343,15 @@
                 shortest
               />
             </td>
+            <td v-if="!address">
+              <EthAddress
+                v-if="row.listing"
+                :address="row.listing.originalOwner"
+                icon
+                polygonscan="erc20"
+                shortest
+              />
+            </td>
             <td style="white-space: nowrap;">
               <router-link
                 v-if="row.isLended"
@@ -396,12 +408,14 @@ export default {
   props: {
     address: { type: String, default: null },
     thirdPartyAddress: { type: String, default: null },
-    vaultOwnerAddress: { type: String, default: null }
+    vaultOwnerAddress: { type: String, default: null },
+    originalOwnerAddress: { type: String, default: null }
   },
   setup (props) {
     const addressLc = computed(() => props.address?.toLowerCase())
     const thirdPartyAddressLc = computed(() => props.thirdPartyAddress?.toLowerCase())
     const vaultOwnerAddressLc = computed(() => props.vaultOwnerAddress?.toLowerCase())
+    const originalOwnerAddressLc = computed(() => props.originalOwnerAddress?.toLowerCase())
 
     const {
       fetchGotchiChannelingStatuses,
@@ -513,6 +527,7 @@ export default {
 
       const lenderQuery = props.address && !props.vaultOwnerAddress ? `, lender: "${addressLc.value}"` : ''
       const thirdPartyQuery = props.thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddressLc.value}"` : ''
+      const originalOwnerQuery = props.originalOwnerAddress && !props.vaultOwnerAddress ? `, originalOwner: "${originalOwnerAddressLc.value}"` : ''
       const vaultOwnerQuery = props.vaultOwnerAddress ? `, originalOwner: "${vaultOwnerAddressLc.value}", lender: "${VAULT_ADDRESS}"` : ''
 
       const fetchFromSubgraph = function () {
@@ -523,6 +538,7 @@ export default {
             completed: false
             ${lenderQuery}
             ${thirdPartyQuery}
+            ${originalOwnerQuery}
             ${vaultOwnerQuery}
           }) {
             id
