@@ -170,7 +170,7 @@
                 @update:sort="tableSort.column = $event ? 'listing lender' : null; tableSort.direction = $event"
               />
             </th>
-            <th v-if="!address">
+            <th v-if="!originalOwnerAddress">
               Original Owner
             </th>
             <th>
@@ -343,7 +343,7 @@
                 shortest
               />
             </td>
-            <td v-if="!address">
+            <td v-if="!originalOwnerAddress">
               <EthAddress
                 v-if="row.listing"
                 :address="row.listing.originalOwner"
