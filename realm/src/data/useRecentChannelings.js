@@ -70,7 +70,7 @@ export default function (recentMinutes) {
               kek: new BigNumber(event.alchemica[3]).div(10e17).toNumber(),
               spilloverRate: event.spilloverRate,
               spilloverRadius: event.spilloverRadius
-            }))
+            })).sort((a, b) => b.date - a.date)
             setLoaded()
             return
           }
