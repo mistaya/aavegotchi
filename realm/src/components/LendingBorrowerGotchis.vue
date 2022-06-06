@@ -893,12 +893,18 @@ export default {
         const balancesForGotchi = balances.value[item.gotchi.escrow]
         const totalAlchemica = {}
         const totalAlchemicaShare = {}
-        const earnedAlchemica = {}
+        const bigNumZero = new BigNumber(0)
+        const earnedAlchemica = {
+          FUD: bigNumZero,
+          FOMO: bigNumZero,
+          ALPHA: bigNumZero,
+          KEK: bigNumZero
+        }
         const escrowAlchemica = {}
         const borrowerPercentage = item.listing.splitBorrower
         const isBorrowerSharing = borrowerPercentage !== '100'
         for (const token of ['FUD', 'FOMO', 'ALPHA', 'KEK']) {
-          let total = new BigNumber(0)
+          let total = bigNumZero
           if (earningsForListing) {
             const earned = new BigNumber(earningsForListing[`claimed${token}`] || 0).div(10e17)
             earnedAlchemica[token] = earned
@@ -932,7 +938,6 @@ export default {
 
         const actualPeriod = (isComplete && earningsForListing) ? (earningsForListing.actualPeriod - 0) : (Date.now() / 1000) - (item.listing.timeAgreed - 0)
         const actualPeriodIsZero = actualPeriod - 0 === 0
-        const bigNumZero = new BigNumber(0)
         totalAlchemica.SUM_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.SUM.dividedBy(actualPeriod / (60 * 60))
         totalAlchemica.NORMALIZED_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.NORMALIZED.dividedBy(actualPeriod / (60 * 60))
         totalAlchemica.NORMALIZED_GHST_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.NORMALIZED_GHST.dividedBy(actualPeriod / (60 * 60))
