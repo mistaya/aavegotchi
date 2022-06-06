@@ -751,10 +751,16 @@ export default {
         const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
         const balancesForGotchi = balances.value[item.gotchi.escrow]
         const totalAlchemica = {}
-        const earnedAlchemica = {}
+        const bigNumZero = new BigNumber(0)
+        const earnedAlchemica = {
+          FUD: bigNumZero,
+          FOMO: bigNumZero,
+          ALPHA: bigNumZero,
+          KEK: bigNumZero
+        }
         const escrowAlchemica = {}
         for (const token of ['FUD', 'FOMO', 'ALPHA', 'KEK']) {
-          let total = new BigNumber(0)
+          let total = bigNumZero
           if (earningsForListing) {
             const earned = new BigNumber(earningsForListing[`claimed${token}`] || 0).div(10e17)
             earnedAlchemica[token] = earned
