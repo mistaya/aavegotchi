@@ -203,6 +203,8 @@ import CopyToClipboard from './CopyToClipboard.vue'
 import DateFriendly from './DateFriendly.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
+import AALTARS from '@/data/parcels/installations.json'
+
 const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
 // const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
 const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
@@ -213,26 +215,6 @@ const PARCEL_SIZE_LABELS = {
   '1': 'reasonable',
   '2': 'spacious',
   '3': 'spacious'
-}
-const AALTARS = {
-  '1': { level: 1, label: 'LE Golden Aaltar L1', cooldownHours: 24 },
-  '2': { level: 2, label: 'LE Golden Aaltar L2', cooldownHours: 18 },
-  '3': { level: 3, label: 'LE Golden Aaltar L3', cooldownHours: 12 },
-  '4': { level: 4, label: 'LE Golden Aaltar L4', cooldownHours: 8 },
-  '5': { level: 5, label: 'LE Golden Aaltar L5', cooldownHours: 6 },
-  '6': { level: 6, label: 'LE Golden Aaltar L6', cooldownHours: 4 },
-  '7': { level: 7, label: 'LE Golden Aaltar L7', cooldownHours: 3 },
-  '8': { level: 8, label: 'LE Golden Aaltar L8', cooldownHours: 2 },
-  '9': { level: 9, label: 'LE Golden Aaltar L9', cooldownHours: 1 },
-  '10': { level: 1, label: 'Aaltar L1', cooldownHours: 24 },
-  '11': { level: 2, label: 'Aaltar L2', cooldownHours: 18 },
-  '12': { level: 3, label: 'Aaltar L3', cooldownHours: 12 },
-  '13': { level: 4, label: 'Aaltar L4', cooldownHours: 8 },
-  '14': { level: 5, label: 'Aaltar L5', cooldownHours: 6 },
-  '15': { level: 6, label: 'Aaltar L6', cooldownHours: 4 },
-  '16': { level: 7, label: 'Aaltar L7', cooldownHours: 3 },
-  '17': { level: 8, label: 'Aaltar L8', cooldownHours: 2 },
-  '18': { level: 9, label: 'Aaltar L9', cooldownHours: 1 }
 }
 
 export default {

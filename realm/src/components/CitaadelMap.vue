@@ -421,12 +421,23 @@
               />
             </a>
           </g>
+          <defs v-if="channelings && channelings.length">
+            <clipPath id="citaadel-wall-boundary">
+              <rect
+                x="37"
+                y="46"
+                :width="CITAADEL_WIDTH - 37*2"
+                :height="CITAADEL_HEIGHT - 46*2"
+              />
+            </clipPath>
+          </defs>
           <g
             v-if="channelings && channelings.length"
             :style="{
               '--map-channeling--color': mapConfig.colorChanneling,
               '--map-channeling--count': channelings.length
             }"
+            clip-path="url(#citaadel-wall-boundary)"
           >
             <circle
               v-for="channeling in channelings"

@@ -64,11 +64,13 @@ export default function (recentMinutes) {
               gotchiId: event.gotchi.id,
               parcelId: event.parcel.id,
               altar: event.parcel.equippedInstallations?.[0]?.id,
-              fud: new BigNumber(event.alchemica[0]).div(10e17).toNumber(),
-              fomo: new BigNumber(event.alchemica[1]).div(10e17).toNumber(),
-              alpha: new BigNumber(event.alchemica[2]).div(10e17).toNumber(),
-              kek: new BigNumber(event.alchemica[3]).div(10e17).toNumber(),
-              spilloverRate: event.spilloverRate,
+              alchemica: {
+                FUD: new BigNumber(event.alchemica[0]).div(10e17).toNumber(),
+                FOMO: new BigNumber(event.alchemica[1]).div(10e17).toNumber(),
+                ALPHA: new BigNumber(event.alchemica[2]).div(10e17).toNumber(),
+                KEK: new BigNumber(event.alchemica[3]).div(10e17).toNumber()
+              },
+              spilloverRate: event.spilloverRate / 10000,
               spilloverRadius: event.spilloverRadius
             })).sort((a, b) => b.date - a.date)
             setLoaded()
