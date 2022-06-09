@@ -139,20 +139,83 @@
         </div>
       </div>
     </details>
+
+    <hr>
+    <h2>Channeling history</h2>
+
+    <form @submit.prevent="fetchChannelingHistory">
+      <div>
+        Events between:
+        <label>
+          <input
+            v-model="startDate"
+            type="datetime-local"
+          />
+          <span class="sr-only">
+            start date
+          </span>
+        </label>
+        and
+        <label>
+          <input
+            v-model="endDate"
+            type="datetime-local"
+          />
+          <span class="sr-only">
+            end date
+          </span>
+        </label>
+        (local time)
+      </div>
+      <SiteButton type="submit">
+        Fetch channeling events
+      </SiteButton>
+    </form>
+
+    <div style="margin-top: 20px;">
+      <template v-if="eventsStatus.loading">
+        Fetching events...
+      </template>
+      <template v-if="eventsStatus.error">
+        Error fetching events
+      </template>
+      <template v-if="eventsStatus.loaded">
+        Loaded {{ channelingEvents.length }} events
+        <br>
+        <label>
+          <input
+            v-model="showChannelingEventsJson"
+            type="checkbox"
+          />
+          Show JSON
+        </label>
+        <textarea
+          v-if="showChannelingEventsJson"
+          :value="channelingEventsJson"
+        />
+        <br>
+        <label>
+          <input
+            v-model="showChannelingEventsCsv"
+            type="checkbox"
+          />
+          Show CSV
+        </label>
+        <textarea
+          v-if="showChannelingEventsCsv"
+          :value="channelingEventsCsv"
+        />
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
-import BigNumber from 'bignumber.js'
-import { isValid, parseISO, formatISO9075 } from 'date-fns'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import useRealmContract from '@/data/useRealmContract'
 import useStatus from '@/data/useStatus'
 import DatePrecise from './DatePrecise.vue'
 import DateFriendly from './DateFriendly.vue'
-
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
-const FETCH_PAGE_SIZE = 1000
 
 export default {
   components: {
