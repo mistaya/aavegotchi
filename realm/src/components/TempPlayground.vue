@@ -37,107 +37,122 @@
 
     <hr>
 
-    <div style="margin-top: 20px;">
-      <form
-        style="margin-bottom: 10px;"
-        @submit.prevent="submitGotchi"
-      >
-        <label style="font-weight: bold;">
-          Gotchi ID:
-          <input v-model="gotchiId" />
-        </label>
-        <SiteButton
-          type="submit"
-          style="margin-left: 10px;"
+    <details>
+      <summary>Old channeling lookups</summary>
+
+      <div style="margin-top: 10px;">
+        <div class="site-alertbox site-alertbox--warning">
+        I'm about to remove these, so if you need them for some reason that can't be solved by the links above, you can contact me on Discord (eitri).
+        </div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <form
+          style="margin-bottom: 10px;"
+          @submit.prevent="submitGotchi"
         >
-          Find last channeled
-        </SiteButton>
-        <div style="margin-top: 10px">
-          You can find your gotchi ID in its individual URL at
-          <a href="https://app.aavegotchi.com/aavegotchis/">https://app.aavegotchi.com/aavegotchis/</a>.
+          <label style="font-weight: bold;">
+            Gotchi ID:
+            <input v-model="gotchiId" />
+          </label>
+          <SiteButton
+            type="submit"
+            style="margin-left: 10px;"
+          >
+            Find last channeled
+          </SiteButton>
+          <div style="margin-top: 10px">
+            You can find your gotchi ID in its individual URL at
+            <a href="https://app.aavegotchi.com/aavegotchis/">https://app.aavegotchi.com/aavegotchis/</a>.
+          </div>
+          <div>
+            Note: I will be removing this lookup soon, because the main lending pages on this site now support it.
+          </div>
+        </form>
+        <div v-if="gotchiStatus.loading">
+          Loading...
         </div>
-        <div>
-          Note: I will be removing this lookup soon, because the main lending pages on this site now support it.
+        <div v-if="gotchiStatus.error">
+          Error fetching gotchi status
         </div>
-      </form>
-      <div v-if="gotchiStatus.loading">
-        Loading...
-      </div>
-      <div v-if="gotchiStatus.error">
-        Error fetching gotchi status
-      </div>
-      <div
-        v-if="gotchiStatus.loaded"
-        class="site-alertbox site-alertbox--info"
-      >
-        <div v-if="!lastChanneled">
-          Couldn't find a last-channeled date for gotchi {{ gotchiIdFetched }}
-        </div>
-        <div v-else>
-          Gotchi {{ gotchiIdFetched }} last channeled:
-          <DatePrecise :date="lastChanneled" />
-          (approx <DateFriendly :date="lastChanneled" />)
-        </div>
-      </div>
-    </div>
-    <div style="margin-top: 30px;">
-      <form
-        style="margin-bottom: 10px;"
-        @submit.prevent="submitParcel"
-      >
-        <label style="font-weight: bold;">
-          Parcel ID:
-          <input v-model="parcelId" />
-        </label>
-        <SiteButton
-          type="submit"
-          style="margin-left: 10px;"
+        <div
+          v-if="gotchiStatus.loaded"
+          class="site-alertbox site-alertbox--info"
         >
-          Find last channeled
-        </SiteButton>
-        <div style="margin-top: 10px">
-          You can find your parcel IDs at
-          <a href="https://app.aavegotchi.com/my-realm">
-            https://app.aavegotchi.com/my-realm
-          </a>
-        </div>
-        <div>
-          Note: I will be removing this lookup soon, because this information is included on the
-          <router-link :to="{ name: 'lending-lands' }">
-            Lending - Land Owner
-          </router-link>
-          page.
-        </div>
-      </form>
-      <div v-if="parcelStatus.loading">
-        Loading...
-      </div>
-      <div v-if="parcelStatus.error">
-        Error fetching parcel status
-      </div>
-      <div
-        v-if="parcelStatus.loaded"
-        class="site-alertbox site-alertbox--info"
-      >
-        <div v-if="!parcelLastChanneled">
-          Couldn't find a last-channeled date for parcel {{ parcelIdFetched }}
-        </div>
-        <div v-else>
-          Parcel {{ parcelIdFetched }} last channeled:
-          <DatePrecise :date="parcelLastChanneled" />
-          (approx <DateFriendly :date="parcelLastChanneled" />)
+          <div v-if="!lastChanneled">
+            Couldn't find a last-channeled date for gotchi {{ gotchiIdFetched }}
+          </div>
+          <div v-else>
+            Gotchi {{ gotchiIdFetched }} last channeled:
+            <DatePrecise :date="lastChanneled" />
+            (approx <DateFriendly :date="lastChanneled" />)
+          </div>
         </div>
       </div>
-    </div>
+      <div style="margin-top: 30px;">
+        <form
+          style="margin-bottom: 10px;"
+          @submit.prevent="submitParcel"
+        >
+          <label style="font-weight: bold;">
+            Parcel ID:
+            <input v-model="parcelId" />
+          </label>
+          <SiteButton
+            type="submit"
+            style="margin-left: 10px;"
+          >
+            Find last channeled
+          </SiteButton>
+          <div style="margin-top: 10px">
+            You can find your parcel IDs at
+            <a href="https://app.aavegotchi.com/my-realm">
+              https://app.aavegotchi.com/my-realm
+            </a>
+          </div>
+          <div>
+            Note: I will be removing this lookup soon, because this information is included on the
+            <router-link :to="{ name: 'lending-lands' }">
+              Lending - Land Owner
+            </router-link>
+            page.
+          </div>
+        </form>
+        <div v-if="parcelStatus.loading">
+          Loading...
+        </div>
+        <div v-if="parcelStatus.error">
+          Error fetching parcel status
+        </div>
+        <div
+          v-if="parcelStatus.loaded"
+          class="site-alertbox site-alertbox--info"
+        >
+          <div v-if="!parcelLastChanneled">
+            Couldn't find a last-channeled date for parcel {{ parcelIdFetched }}
+          </div>
+          <div v-else>
+            Parcel {{ parcelIdFetched }} last channeled:
+            <DatePrecise :date="parcelLastChanneled" />
+            (approx <DateFriendly :date="parcelLastChanneled" />)
+          </div>
+        </div>
+      </div>
+    </details>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import BigNumber from 'bignumber.js'
+import { isValid, parseISO, formatISO9075 } from 'date-fns'
+import { ref, computed } from 'vue'
 import useRealmContract from '@/data/useRealmContract'
 import useStatus from '@/data/useStatus'
 import DatePrecise from './DatePrecise.vue'
 import DateFriendly from './DateFriendly.vue'
+
+const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
+const FETCH_PAGE_SIZE = 1000
 
 export default {
   components: {
