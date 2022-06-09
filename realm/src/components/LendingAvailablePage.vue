@@ -189,6 +189,22 @@
                     Sort by GHST Profit Per Channel
                   </label>
                 </div>
+                <div style="margin-top: 10px">
+                  <label>
+                    Calculate assuming Aaltar:
+                    <select
+                      v-model="channelingSettings.aaltarLevel"
+                    >
+                      <option
+                        v-for="level in ['1', '2', '3', '4', '5', '6', '7', '8', '9']"
+                        :key="level"
+                        :value="level"
+                      >
+                        Level {{ level }}
+                      </option>
+                    </select>
+                  </label>
+                </div>
                 <div style="margin-top: 15px; font-size: 0.9em; line-height: 1.5;">
                   These only filter/sort the {{ results.length }} results we've <i>already fetched</i>.
                   <br>If you want to find more,
@@ -237,6 +253,7 @@
                         <li>the owner's parcels are bugged and their Aaltars don't appear, so you can't use them</li>
                         <li>you lose the race with other borrowers who are also channeling on the owner's parcels</li>
                         <li>you aren't online to channel at all the right times (especially if the lending finishes soon after the reset time)</li>
+                        <li>the Aaltar you use is lower level than what you've calculated profits using</li>
                         <li>there is a bug with the calculations on this page (please tell me if you notice any errors!)</li>
                         <li><i>(something else unexpected...)</i></li>
                       </ul>
@@ -245,7 +262,10 @@
                     <div>
                       Calculations use these assumptions:
                       <ul style="margin-top: 5px;">
-                        <li>Channeling on a Level 1 Aaltar with 50% spillover</li>
+                        <li>
+                          Channeling on a Level {{ channelingSettings.aaltarLevel }} Aaltar with
+                          {{ 50 - ((channelingSettings.aaltarLevel - 1) * 5) }}% spillover
+                        </li>
                         <li>
                           Alchemica prices:
                           1 FUD = {{ ghstPrices.FUD.toFixed(4) }} GHST;
@@ -789,6 +809,10 @@ export default {
       return secondarySortedResults.value.slice(start, end)
     })
 
+    const channelingSettings = ref({
+      aaltarLevel: '1'
+    })
+
     const channelingDetails = computed(() => {
       if (!fetchChannelingStatus.value.loaded || !pricesStatus.value.loaded) { return null }
       const channelingByLending = {}
@@ -815,11 +839,11 @@ export default {
 
         // calculate channeling yield
         const kinshipMultiplier = Math.sqrt(kinship / 50)
-        const spilloverMultiplier = 0.5 // assume altar L1
+        const spilloverMultiplier = (50 - ((channelingSettings.value.aaltarLevel - 1) * 5)) / 100
         let ghstPerChannel = 0
         for (const token in BASE_CHANNELING) {
           if (tokensToShareMap[TOKEN_ADDRESSES[token]]) {
-            ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * spilloverMultiplier * ghstPrices.value[token]
+            ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * (1 - spilloverMultiplier) * ghstPrices.value[token]
           }
         }
         const ghstPerChannelAfterSplit = ghstPerChannel * (splitBorrower / 100)
@@ -868,6 +892,7 @@ export default {
       tableSort2,
       results,
       results2,
+      channelingSettings,
       fetchChannelingStatus,
       lastFetchChannelingStatusDate,
       gotchiChannelingStatuses,
