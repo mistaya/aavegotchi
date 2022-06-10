@@ -165,10 +165,23 @@
             style="margin-top: 30px;"
           >
             <details
-              style="max-width: fit-content; border: 2px solid var(--site-border-color--transparent); padding: 10px 15px;"
+              class="advanced-filters"
+              :open="filters2.isOpen"
+              @toggle="filters2.isOpen = !!($event.target && $event.target.open)"
             >
               <summary>
-                Advanced Channeling Filters
+                Advanced Channeling Filters &nbsp;
+                <div
+                  v-if="!filters2.isOpen"
+                  style="margin-top: 10px;"
+                >
+                  <SiteButton
+                    type="button"
+                    @click.stop="filters2.isOpen = true"
+                  >
+                    Show filters
+                  </SiteButton>
+                </div>
               </summary>
               <div style="margin-top: 12px;">
                 <label>
@@ -284,9 +297,10 @@
           <div style="margin-top: 30px; margin-bottom: 20px;">
             <SiteButton
               type="button"
+              style="margin-left: 10px; padding: 10px 15px; font-size: 1.15em;"
               @click="fetchLendings"
             >
-              Fetch lending offers again
+              Refresh results!
             </SiteButton>
           </div>
 
@@ -628,6 +642,7 @@ export default {
       }
     })
     const filters2 = ref({
+      isOpen: false,
       onlyChannelable: false
     })
 
@@ -921,6 +936,23 @@ export default {
   }
   .shared-token-icon {
     opacity: 0.6;
+  }
+
+  .advanced-filters {
+    max-width: fit-content;
+    position: relative;
+    border: 2px solid var(--site-border-color--transparent);
+    padding: 10px 15px;
+  }
+  .advanced-filters > summary {
+    max-width: max-content;
+
+    position: relative;
+    top: -20px;
+    left: -5px;
+    margin-bottom: -15px;
+
+    background-color: var(--site-background-color);
   }
 
   .cannot-channel {

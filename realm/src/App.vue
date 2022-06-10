@@ -208,6 +208,14 @@ export default {
     accent-color: var(--site-form-accent-color);
   }
 
+  details > summary {
+    cursor: pointer;
+  }
+
+  fieldset {
+    margin: 0;
+  }
+
   .sr-only {
     position: absolute;
     width: 1px;
