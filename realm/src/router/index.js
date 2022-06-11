@@ -300,6 +300,13 @@ router.beforeResolve((to, from, next) => {
   next()
 })
 
+// Analytics
+router.afterEach((to, from) => {
+  if (window.umami) {
+    window.umami.trackView(to.path)
+  }
+})
+
 // Production website can produce routing errors when new versions are deployed
 // but a user already has an old page open.
 // When they attempt to navigate, the lazy load will fail because

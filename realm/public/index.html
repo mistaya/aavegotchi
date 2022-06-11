@@ -19,7 +19,14 @@
     <meta name="msapplication-TileColor" content="#9f00a7">
     <meta name="theme-color" content="#ffffff">
     <script src="https://guitar-growing.aadventure.io/script.js" data-site="OXAUGCQN" defer></script>
-    <script async defer data-website-id="9fbe07b7-107b-4a28-a8f7-75f04a03aa82" data-domains="www.aadventure.io" src="https://u.aadventure.io/umami.js"></script>
+    <script>
+      const onUmamiLoaded = function () {
+        if (window.umami) {
+          umami.trackView(document.location.pathname);
+        }
+      }
+    </script>
+    <script async defer data-website-id="9fbe07b7-107b-4a28-a8f7-75f04a03aa82" data-domains="www.aadventure.io" data-auto-track="false" src="https://u.aadventure.io/umami.js" onload="onUmamiLoaded"></script>
   </head>
   <body>
     <noscript>
