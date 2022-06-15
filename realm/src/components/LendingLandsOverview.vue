@@ -6,7 +6,36 @@
     <template v-if="status.error">
       Error fetching data
     </template>
+
     <div v-if="status.loaded">
+
+      <fieldset
+        class="table-filters"
+        style="margin-bottom: 30px;"
+      >
+        <legend>
+          Filters
+        </legend>
+        <div style="margin-bottom: 7px;">
+          <label>
+            <input
+              v-model="tableFilters.onlyCanChannelNow"
+              type="checkbox"
+            />
+            Only Aaltars that can channel now
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              v-model="tableFilters.onlyChannelingAccessBorrower"
+              type="checkbox"
+            />
+            Only Channeling Access: Borrower
+          </label>
+        </div>
+      </fieldset>
+
       <SiteButton
         type="button"
         @click="fetchOwnedLands"
@@ -72,7 +101,7 @@
               <th>
                 Aaltar
                 <SortToggle
-                  defaultDirection="asc"
+                  defaultDirection="desc"
                   :sort="tableSort.column === 'aaltar level' ? tableSort.direction : null"
                   @update:sort="tableSort.column = $event ? 'aaltar level' : null; tableSort.direction = $event"
                 />
@@ -399,6 +428,11 @@ export default {
       }
     )
 
+    const tableFilters = ref({
+      onlyCanChannelNow: false,
+      onlyChannelingAccessBorrower: false
+    })
+
     const tableSort = ref({
       column: 'details cooldownTimestamp',
       direction: 'asc'
@@ -409,19 +443,42 @@ export default {
       pageSize: 25
     })
 
-    const numFilteredLands = computed(() => ownedLands.value?.length)
+    const tableLandsFiltered = computed(() => {
+      const onlyCanChannelNow = tableFilters.value.onlyCanChannelNow
+      const onlyChannelingAccessBorrower = tableFilters.value.onlyChannelingAccessBorrower
+      if (!onlyCanChannelNow && !onlyChannelingAccessBorrower) {
+        return ownedLands.value
+      }
+      return ownedLands.value.filter(land => {
+        const details = landDetails.value[land.id]
+        if (onlyCanChannelNow &&
+          !(
+            details?.aaltar &&
+            details.cooldownTimestamp < tickerTimestamp.value
+          )
+        ) {
+          return false
+        }
+        if (onlyChannelingAccessBorrower && parcelAccessRights.value[0][land.id] !== 1) {
+          return false
+        }
+        return true
+      })
+    })
+
+    const numFilteredLands = computed(() => tableLandsFiltered.value?.length)
 
     const tableLandsSorted = computed(() => {
       const { column, direction } = tableSort.value
-      if (!column) { return ownedLands.value }
+      if (!column) { return tableLandsFiltered.value }
       if (column.startsWith('details')) {
         const field = column.split(' ')[1]
-        return orderBy(ownedLands.value, [row => landDetails.value[row.id]?.[field]], [direction])
+        return orderBy(tableLandsFiltered.value, [row => landDetails.value[row.id]?.[field]], [direction])
       } else if (column.startsWith('aaltar')) {
         const field = column.split(' ')[1]
-        return orderBy(ownedLands.value, [row => landDetails.value[row.id]?.aaltar?.[field]], [direction])
+        return orderBy(tableLandsFiltered.value, [row => landDetails.value[row.id]?.aaltar?.[field]], [direction])
       }
-      return orderBy(ownedLands.value, [column], [direction])
+      return orderBy(tableLandsFiltered.value, [column], [direction])
     })
 
     watch(
@@ -430,6 +487,7 @@ export default {
         sortDirection: tableSort.value.direction,
         pageSize: tablePaging.value.pageSize,
         ownedLands: ownedLands.value,
+        numFilteredLands: numFilteredLands.value, // tableLandsFiltered changes with timestamp, so don't trigger on it directly
         landDetails: landDetails.value
       }),
       () => { tablePaging.value.page = 0 }
@@ -446,6 +504,7 @@ export default {
       status,
       landDetails,
       numFilteredLands,
+      tableFilters,
       tablePaging,
       tableSort,
       rowsToDisplay,
@@ -458,4 +517,9 @@ export default {
 </script>
 
 <style scoped>
+  .table-filters {
+    max-width: fit-content;
+    border-style: solid;
+    border-color: var(--site-border-color--transparent);
+  }
 </style>
