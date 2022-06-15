@@ -264,7 +264,7 @@ import SiteTable from '@/components/SiteTable.vue'
 import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 
 export default {
   components: {

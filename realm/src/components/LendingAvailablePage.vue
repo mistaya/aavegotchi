@@ -583,7 +583,7 @@ const TOKEN_ADDRESSES = {
   GHST: tokensList.find(({ label }) => label === 'GHST').id
 }
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 
 export default {
   components: {

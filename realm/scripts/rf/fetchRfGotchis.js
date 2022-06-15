@@ -279,7 +279,7 @@ const fetchGotchiOwners = async function () {
 }
 
 const fetchGotchiLendings = async function (gotchiIds) {
-  const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-lending'
+  const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
   return new Promise((resolve, reject) => {
     let results = []
     let nextIndex = 0
