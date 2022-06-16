@@ -3,16 +3,14 @@
     <CryptoIcons />
     <h2>Gotchis Available to Borrow</h2>
     <div>
-      <!--
       <div style="margin-bottom: 20px;">
         <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
           <SiteIcon name="warning-triangle" />
           <div>
-            Warning: channeling <b>spillover</b> is paused until Monday due to maintenance. See the announcements in Discord for details.
+            Warning: channeling <b>spillover</b> will stop at 2pm UTC on June 17th. After this, spillover will only occur during the Saturday hangouts (2pm - 4pm UTC). See the announcements in Discord for details.
           </div>
         </div>
       </div>
-      -->
 
       <fieldset
         class="lending-filters"
