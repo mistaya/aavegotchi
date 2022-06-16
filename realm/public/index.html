@@ -19,17 +19,17 @@
     <meta name="msapplication-TileColor" content="#9f00a7">
     <meta name="theme-color" content="#ffffff">
     <script>
-      const trackView = function (url, referrer, websiteId) {
+      function trackView (url, referrer, websiteId) {
         if (window.umami) {
           window.umami.trackView(url, referrer, websiteId)
         }
       }
-      const trackEvent = function (eventValue, eventType, url, websiteId) {
+      function trackEvent (eventValue, eventType, url, websiteId) {
         if (window.umami) {
           window.umami.trackEvent(eventValue, eventType, url, websiteId)
         }
       }
-      const onUmamiLoaded = function () {
+      function onUmamiLoaded () {
         trackView(document.location.pathname);
       }
     </script>
