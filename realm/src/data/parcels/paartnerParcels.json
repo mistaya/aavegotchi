@@ -14,42 +14,49 @@
     {
         "id": "p3",
         "paartner": "metaguild",
+        "parcelId": "25029",
         "x": 7300,
         "y": 1616
     } ,
     {
         "id": "p4",
         "paartner": "cgu",
+        "parcelId": "13592",
         "x": 3376,
         "y": 1744
     },
     {
         "id": "p5",
         "paartner": "flamingo",
+        "parcelId": "5079",
         "x": 5208,
         "y": 2128
     },
     {
         "id": "p6",
         "paartner": "neon",
+        "parcelId": "3609",
         "x": 3512,
         "y": 2660
     },
     {
         "id": "p7",
         "paartner": "blackpool",
+        "parcelId": "1235",
         "x": 3920,
         "y": 3400
     },
     {
         "id": "p8",
         "paartner": "ordengg",
+        "parcelId": "3682",
         "x": 6000,
         "y": 3536
     },
     {
         "id": "p9",
         "paartner": "ygg",
+        "parcelId": "487",
         "x": 4848,
         "y": 3600
     },
@@ -62,6 +69,7 @@
     {
         "id": "p11",
         "paartner": "yggsea",
+        "parcelId": "40689",
         "x": 464,
         "y": 4272
     },
@@ -74,6 +82,7 @@
     {
         "id": "p13",
         "paartner": "readyplayerdao",
+        "parcelId": "23881",
         "x": 6720,
         "y": 4920
     },

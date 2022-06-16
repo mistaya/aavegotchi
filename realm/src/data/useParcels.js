@@ -3,9 +3,9 @@ import useStatus from '@/data/useStatus'
 import { WALLS } from './walls'
 import parcelsUrl from './parcels/assetParcels.json'
 
-const SIZE_LABELS_BY_ID = ['humble', 'reasonable', 'spacious', 'spacious']
-const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64]
-const SIZE_HEIGHTS_BY_ID = [8, 16, 64, 32]
+const SIZE_LABELS_BY_ID = ['humble', 'reasonable', 'spacious', 'spacious', 'partner']
+const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64, 64]
+const SIZE_HEIGHTS_BY_ID = [8, 16, 64, 32, 64]
 
 const { status: fetchStatus, setLoading } = useStatus()
 

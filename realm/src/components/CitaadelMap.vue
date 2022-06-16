@@ -388,6 +388,7 @@
             v-for="parcel in parcels"
             :key="parcel.id"
             xlink:href="#"
+            :class="`parcel-link parcel-link--${parcel.sizeLabel}`"
             @mousedown="onMouseDownParcel"
             @click.prevent="onClickParcel($event, parcel)"
           >
@@ -857,6 +858,10 @@ export default {
   .vortex {
     opacity: 0.8;
     clip-path: ellipse(20px 14px at 50% 50%);
+  }
+
+  .parcel-link--partner {
+    display: none;
   }
 
   .parcel {
