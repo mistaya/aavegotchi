@@ -302,9 +302,7 @@ router.beforeResolve((to, from, next) => {
 
 // Analytics
 router.afterEach((to, from) => {
-  if (window.umami) {
-    window.umami.trackView(to.path)
-  }
+  window.trackView(to.path)
 })
 
 // Production website can produce routing errors when new versions are deployed

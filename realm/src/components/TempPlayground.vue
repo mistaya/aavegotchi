@@ -180,6 +180,7 @@ export default {
           setError(error.message)
         }
       )
+      window.trackEvent('lookup-gotchi-last-channeled', 'playground')
     }
 
     const { status: parcelStatus, setLoading: setParcelLoading, reset: resetParcel } = useStatus()
@@ -206,6 +207,7 @@ export default {
           setError(error.message)
         }
       )
+      window.trackEvent('lookup-parcel-last-channeled', 'playground')
     }
 
     return {
