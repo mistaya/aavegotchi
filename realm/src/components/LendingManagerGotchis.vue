@@ -212,18 +212,38 @@
             </th>
             <th class="col-about--listed col-about--lended">
               Lending Duration
+              <SortToggle
+                :sort="tableSort.column === 'listing period' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing period' : null; tableSort.direction = $event"
+              />
             </th>
             <th class="col-about--listed col-about--lended">
               Upfront GHST
+              <SortToggle
+                :sort="tableSort.column === 'listing upfrontCostSortable' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing upfrontCostSortable' : null; tableSort.direction = $event"
+              />
             </th>
             <th class="col-about--listed col-about--lended">
               Owner %
+              <SortToggle
+                :sort="tableSort.column === 'listing splitOwner' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing splitOwner' : null; tableSort.direction = $event"
+              />
             </th>
             <th class="col-about--listed col-about--lended">
               Borrower %
+              <SortToggle
+                :sort="tableSort.column === 'listing splitBorrower' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing splitBorrower' : null; tableSort.direction = $event"
+              />
             </th>
             <th class="col-about--listed col-about--lended">
               Third-Party %
+              <SortToggle
+                :sort="tableSort.column === 'listing splitOther' ? tableSort.direction : null"
+                @update:sort="tableSort.column = $event ? 'listing splitOther' : null; tableSort.direction = $event"
+              />
             </th>
             <th class="col-about--listed col-about--lended">
               Whitelist ID
@@ -672,7 +692,15 @@ export default {
                       ...gotchi,
                       kinship: gotchi.kinship - 0 // make kinship a number so we can sort it
                     },
-                    listing
+                    listing: {
+                      ...listing,
+                      // make sortable
+                      upfrontCostSortable: listing.upfrontCost - 0, // leave the original as a string for precision
+                      period: listing.period - 0,
+                      splitOwner: listing.splitOwner - 0,
+                      splitBorrower: listing.splitBorrower - 0,
+                      splitOther: listing.splitOther - 0
+                    }
                   }
                 })
                 // console.log('listedGotchis', listedGotchis.value)
@@ -996,8 +1024,8 @@ export default {
       return tableGotchisSorted.value.slice(start, end)
     })
 
-    const friendlyDuration = function (periodString) {
-      const hours = (periodString - 0) / (60 * 60)
+    const friendlyDuration = function (period) {
+      const hours = (period - 0) / (60 * 60)
       return `${hours} hr${hours !== 1 ? 's' : ''}`
     }
 
