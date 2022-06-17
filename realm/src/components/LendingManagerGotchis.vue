@@ -7,27 +7,79 @@
       Error fetching data
     </template>
     <template v-if="status.loaded">
-      <div
-        v-if="whitelistIds && whitelistIds.length > 1"
-        style="margin-top: 30px;"
+      <fieldset
+        class="table-filters"
+        style="margin-bottom: 30px;"
       >
-        <label>
-          Filter by whitelist:
-          <select v-model="tableFilters.whitelistId">
-            <option value=""></option>
-            <option
-              v-for="id in whitelistIds"
-              :key="id"
-              :value="id"
-            >
-              {{ id }}
-            </option>
-            <option value="public">
-              public
-            </option>
-          </select>
-        </label>
-      </div>
+        <legend>
+          Filters
+        </legend>
+        <div>
+          Lending:
+          <label>
+            <input
+              v-model="tableFilters.isListed"
+              type="checkbox"
+            />
+            Listed
+          </label>
+          <label style="margin-left: 7px;">
+            <input
+              v-model="tableFilters.isLended"
+              type="checkbox"
+            />
+            Lended
+          </label>
+          <label style="margin-left: 7px;">
+            <input
+              v-model="tableFilters.notListedOrLended"
+              type="checkbox"
+            />
+            Taking a break
+          </label>
+        </div>
+        <div
+          v-if="whitelistIds && whitelistIds.length"
+          style="margin-top: 15px;"
+        >
+          <label>
+            Lending whitelist:
+            <select v-model="tableFilters.whitelistId">
+              <option value=""></option>
+              <option
+                v-for="id in whitelistIds"
+                :key="id"
+                :value="id"
+              >
+                {{ id }}
+              </option>
+              <option value="public">
+                public
+              </option>
+            </select>
+          </label>
+        </div>
+        <div
+          v-if="fetchChannelingStatus.loaded"
+          style="margin-top: 15px;"
+        >
+          Channeling:
+          <label>
+            <input
+              v-model="tableFilters.canChannel"
+              type="checkbox"
+            />
+            Can channel now
+          </label>
+          <label style="margin-left: 7px;">
+            <input
+              v-model="tableFilters.alreadyChanneled"
+              type="checkbox"
+            />
+            Already channeled
+          </label>
+        </div>
+      </fieldset>
 
       <div
         v-if="numFilteredGotchis > 0"
@@ -40,7 +92,7 @@
           <SiteIcon name="warning-triangle" />
           There was an error fetching pocket balances.
         </div>
-        <details>
+        <details style="max-width: max-content;">
           <summary>
             About this data
           </summary>
@@ -82,23 +134,30 @@
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
         :scrollingBreakpoint="2000"
+        :class="{
+          'table-includes-listed': tableFilters.isListed,
+          'table-includes-lended': tableFilters.isLended
+        }"
       >
         <template #headers>
           <tr>
             <th>Gotchi</th>
-            <th>Listed?</th>
-            <th>Lended?</th>
-            <th>Listing ID</th>
-            <th>Listing Posted</th>
-            <th>Lending Started</th>
-            <th style="min-width: 120px">
+            <th class="col-about--listed">Listed?</th>
+            <th class="col-about--lended">Lended?</th>
+            <th class="col-about--listed col-about--lended">Listing ID</th>
+            <th class="col-about--listed col-about--lended">Listing Posted</th>
+            <th class="col-about--lended">Lending Started</th>
+            <th
+              class="col-about--lended"
+              style="min-width: 120px"
+            >
               Lending Expires
               <SortToggle
                 :sort="tableSort.column === 'finishTimestamp' ? tableSort.direction : null"
                 @update:sort="tableSort.column = $event ? 'finishTimestamp' : null; tableSort.direction = $event"
               />
             </th>
-            <th>
+            <th class="col-about--lended">
               Last Claimed
               <SortToggle
                 :sort="tableSort.column === 'lastClaimedTimestamp' ? tableSort.direction : null"
@@ -108,6 +167,7 @@
             <th
               v-for="type in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
               :key="type"
+              class="col-about--lended"
             >
               {{ type }}
               <SortToggle
@@ -115,14 +175,20 @@
                 @update:sort="tableSort.column = $event ? `totalAlchemica ${type}` : null; tableSort.direction = $event"
               />
             </th>
-            <th title="Calculated by rarity (not market price): 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD">
+            <th
+              title="Calculated by rarity (not market price): 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD"
+              class="col-about--lended"
+            >
               'Total' (FUD-equiv)
               <SortToggle
                 :sort="tableSort.column === 'totalAlchemica NORMALIZED' ? tableSort.direction : null"
                 @update:sort="tableSort.column = $event ? 'totalAlchemica NORMALIZED' : null; tableSort.direction = $event"
               />
             </th>
-            <th style="min-width: 90px;">
+            <th
+              class="col-about--lended"
+              style="min-width: 90px;"
+            >
               FUD-equiv Per Hour
               <SortToggle
                 :sort="tableSort.column === 'totalAlchemica NORMALIZED_PER_HOUR' ? tableSort.direction : null"
@@ -144,19 +210,29 @@
                 @update:sort="tableSort.column = $event ? 'lastChanneled' : null; tableSort.direction = $event"
               />
             </th>
-            <th>Lending Duration</th>
-            <th>Upfront GHST</th>
-            <th>Owner %</th>
-            <th>Borrower %</th>
-            <th>Third-Party %</th>
-            <th>
+            <th class="col-about--listed col-about--lended">
+              Lending Duration
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Upfront GHST
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Owner %
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Borrower %
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Third-Party %
+            </th>
+            <th class="col-about--listed col-about--lended">
               Whitelist ID
               <SortToggle
                 :sort="tableSort.column === 'listing whitelistId' ? tableSort.direction : null"
                 @update:sort="tableSort.column = $event ? 'listing whitelistId' : null; tableSort.direction = $event"
               />
             </th>
-            <th>
+            <th class="col-about--listed col-about--lended">
               Third-Party Address
               <SortToggle
                 :sort="tableSort.column === 'listing thirdPartyAddress' ? tableSort.direction : null"
@@ -173,7 +249,7 @@
             <th v-if="!originalOwnerAddress">
               Original Owner
             </th>
-            <th>
+            <th class="col-about--lended">
               Borrower
               <SortToggle
                 :sort="tableSort.column === 'listing borrower' ? tableSort.direction : null"
@@ -197,17 +273,17 @@
                 #{{ row.gotchi.id }}
               </a>
             </td>
-            <td>
+            <td class="col-about--listed">
               <template v-if="row.isListed">
                 Yes
               </template>
             </td>
-            <td>
+            <td class="col-about--lended">
               <template v-if="row.isLended">
                 Yes
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <a
                 v-if="row.listing"
                 :href="`https://app.aavegotchi.com/lending/${row.listing.id}`"
@@ -217,26 +293,26 @@
                 {{ row.listing.id }}
               </a>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <DateFriendly
                 v-if="row.createdDate"
                 :date="row.createdDate"
               />
             </td>
-            <td>
+            <td class="col-about--lended">
               <DateFriendly
                 v-if="row.agreedDate"
                 :date="row.agreedDate"
               />
             </td>
-            <td>
+            <td class="col-about--lended">
               <DateFriendly
                 v-if="row.finishDate"
                 :date="row.finishDate"
                 enableToggle
               />
             </td>
-            <td>
+            <td class="col-about--lended">
               <DateFriendly
                 v-if="row.lastClaimedDate"
                 :date="row.lastClaimedDate"
@@ -245,6 +321,7 @@
             <td
               v-for="type in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
               :key="type"
+              class="col-about--lended"
             >
               <template v-if="row.isLended && row.totalAlchemica">
                 <div
@@ -257,7 +334,7 @@
                 </div>
               </template>
             </td>
-            <td>
+            <td class="col-about--lended">
               <template v-if="row.isLended && row.totalAlchemica">
                 <div
                   :class="{
@@ -268,7 +345,7 @@
                 </div>
               </template>
             </td>
-            <td>
+            <td class="col-about--lended">
               <template v-if="row.isLended && row.totalAlchemica">
                 <div
                   :class="{
@@ -295,37 +372,37 @@
               :gotchiChannelingStatuses="gotchiChannelingStatuses"
               enableCellHighlight
             />
-            <td>
+            <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
                 {{ friendlyDuration(row.listing.period) }}
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
                 {{ friendlyGhst(row.listing.upfrontCost) }}
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
                 {{ row.listing.splitOwner }}
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
                 {{ row.listing.splitBorrower }}
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
                 {{ row.listing.splitOther }}
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
                 {{ row.listing.whitelistId }}
               </template>
             </td>
-            <td>
+            <td class="col-about--listed col-about--lended">
               <EthAddress
                 v-if="row.listing && row.listing.thirdPartyAddress !== '0x0000000000000000000000000000000000000000'"
                 :address="row.listing.thirdPartyAddress"
@@ -352,7 +429,10 @@
                 shortest
               />
             </td>
-            <td style="white-space: nowrap;">
+            <td
+              class="col-about--lended"
+              style="white-space: nowrap;"
+            >
               <router-link
                 v-if="row.isLended"
                 :to="{ name: 'lending-borrower', query: { address: row.listing.borrower } }"
@@ -800,7 +880,12 @@ export default {
     })
 
     const tableFilters = ref({
-      whitelistId: ''
+      whitelistId: '',
+      isListed: true,
+      isLended: true,
+      notListedOrLended: true,
+      canChannel: true,
+      alreadyChanneled: true
     })
 
     const whitelistIds = computed(() => {
@@ -825,13 +910,49 @@ export default {
 
     const tableGotchisFiltered = computed(() => {
       let result = tableGotchis.value
-      if (tableFilters.value.whitelistId) {
-        const whitelistId = tableFilters.value.whitelistId
-        if (tableFilters.value.whitelistId === 'public') {
+      const {
+        whitelistId,
+        isListed,
+        isLended,
+        notListedOrLended: isAtHome,
+        canChannel,
+        alreadyChanneled
+      } = tableFilters.value
+
+      if (whitelistId) {
+        if (whitelistId === 'public') {
           result = result.filter(row => row.listing && !row.listing.whitelistId)
         } else {
           result = result.filter(row => row.listing && row.listing.whitelistId === whitelistId)
         }
+      }
+      if (!isListed || !isLended || !isAtHome) {
+        result = result.filter(row => {
+          if (!isListed && row.isListed) {
+            return false
+          }
+          if (!isLended && row.isLended) {
+            return false
+          }
+          if (!isAtHome) {
+            if (!row.isListed && !row.isLended) {
+              return false
+            }
+          }
+          return true
+        })
+      }
+      if (fetchChannelingStatus.value.loaded && (!canChannel || !alreadyChanneled)) {
+        const gotchiCanChannel = gotchiChannelingStatuses.value.canChannel
+        result = result.filter(row => {
+          if (!canChannel && gotchiCanChannel[row.gotchi.id]) {
+            return false
+          }
+          if (!alreadyChanneled && !gotchiCanChannel[row.gotchi.id]) {
+            return false
+          }
+          return true
+        })
       }
       return result
     })
@@ -907,6 +1028,21 @@ export default {
 </script>
 
 <style scoped>
+  .table-filters {
+    max-width: fit-content;
+    border-style: solid;
+    border-color: var(--site-border-color--transparent);
+  }
+
+  .col-about--listed,
+  .col-about--lended {
+    display: none;
+  }
+  .table-includes-listed .col-about--listed,
+  .table-includes-lended .col-about--lended {
+    display: revert;
+  }
+
   .zero-value {
     opacity: 0.5;
   }

@@ -208,6 +208,10 @@ export default {
     accent-color: var(--site-form-accent-color);
   }
 
+  label {
+    cursor: pointer;
+  }
+
   details > summary {
     cursor: pointer;
   }
