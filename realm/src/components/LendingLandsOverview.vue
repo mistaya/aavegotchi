@@ -443,13 +443,43 @@ export default {
       pageSize: 25
     })
 
-    const tableLandsFiltered = computed(() => {
-      const onlyCanChannelNow = tableFilters.value.onlyCanChannelNow
+    // This filters the retrieved data normally
+    const tableLandsFilteredStable = computed(() => {
       const onlyChannelingAccessBorrower = tableFilters.value.onlyChannelingAccessBorrower
-      if (!onlyCanChannelNow && !onlyChannelingAccessBorrower) {
+      if (!onlyChannelingAccessBorrower) {
         return ownedLands.value
       }
       return ownedLands.value.filter(land => {
+        if (onlyChannelingAccessBorrower && parcelAccessRights.value[0][land.id] !== 1) {
+          return false
+        }
+        return true
+      })
+    })
+
+    // We sort the stable filtered data
+    const tableLandsSortedStable = computed(() => {
+      const { column, direction } = tableSort.value
+      if (!column) { return tableLandsFilteredStable.value }
+      if (column.startsWith('details')) {
+        const field = column.split(' ')[1]
+        return orderBy(tableLandsFilteredStable.value, [row => landDetails.value[row.id]?.[field]], [direction])
+      } else if (column.startsWith('aaltar')) {
+        const field = column.split(' ')[1]
+        return orderBy(tableLandsFilteredStable.value, [row => landDetails.value[row.id]?.aaltar?.[field]], [direction])
+      }
+      return orderBy(tableLandsFilteredStable.value, [column], [direction])
+    })
+
+    // This filters the data further, but the filtered results
+    // can continue to change over time (with tickerTimestamp)
+    // We filter the already-sorted stable data.
+    const tableLandsFilteredUnstable = computed(() => {
+      const onlyCanChannelNow = tableFilters.value.onlyCanChannelNow
+      if (!onlyCanChannelNow) {
+        return tableLandsSortedStable.value
+      }
+      return tableLandsSortedStable.value.filter(land => {
         const details = landDetails.value[land.id]
         if (onlyCanChannelNow &&
           !(
@@ -459,35 +489,24 @@ export default {
         ) {
           return false
         }
-        if (onlyChannelingAccessBorrower && parcelAccessRights.value[0][land.id] !== 1) {
-          return false
-        }
         return true
       })
     })
 
-    const numFilteredLands = computed(() => tableLandsFiltered.value?.length)
-
-    const tableLandsSorted = computed(() => {
-      const { column, direction } = tableSort.value
-      if (!column) { return tableLandsFiltered.value }
-      if (column.startsWith('details')) {
-        const field = column.split(' ')[1]
-        return orderBy(tableLandsFiltered.value, [row => landDetails.value[row.id]?.[field]], [direction])
-      } else if (column.startsWith('aaltar')) {
-        const field = column.split(' ')[1]
-        return orderBy(tableLandsFiltered.value, [row => landDetails.value[row.id]?.aaltar?.[field]], [direction])
-      }
-      return orderBy(tableLandsFiltered.value, [column], [direction])
-    })
+    const numFilteredLands = computed(() => tableLandsFilteredUnstable.value?.length)
 
     watch(
       () => ({
         sortColumn: tableSort.value.column,
         sortDirection: tableSort.value.direction,
         pageSize: tablePaging.value.pageSize,
+        // We don't want to reset the page when Unstable filter results change,
+        // because that can happen very frequently over time.
+        // Assume that the Unstable filtered lands will only increase in number,
+        // so we don't need to worry about the page becoming invalid.
+        // Watch for changes in the filters instead of the results.
+        tableFilters: { ...tableFilters.value },
         ownedLands: ownedLands.value,
-        numFilteredLands: numFilteredLands.value, // tableLandsFiltered changes with timestamp, so don't trigger on it directly
         landDetails: landDetails.value
       }),
       () => { tablePaging.value.page = 0 }
@@ -496,7 +515,7 @@ export default {
     const rowsToDisplay = computed(() => {
       const start = tablePaging.value.page * tablePaging.value.pageSize
       const end = start + tablePaging.value.pageSize
-      return tableLandsSorted.value.slice(start, end)
+      return tableLandsFilteredUnstable.value.slice(start, end)
     })
 
     return {
