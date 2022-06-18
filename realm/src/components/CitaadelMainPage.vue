@@ -258,7 +258,7 @@
           </summary>
 
           <div style="margin-bottom: 10px; margin-left: 10px;">
-            If you're lost in the Gotchiverse, while you're in the game press F3 to see debug info.
+            If you're lost in the Gotchiverse, while you're in the game press F3 (or Fn-F3) to see debug info.
 
             <div style="margin-top: 10px;">
               <label>
