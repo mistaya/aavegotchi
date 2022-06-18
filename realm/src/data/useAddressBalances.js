@@ -5,6 +5,7 @@ import useStatus from '@/data/useStatus'
 import useERC20Contract from '@/data/useERC20Contract'
 import tokens from './pockets/tokens.json'
 
+// Not currently in use - this queries the token contracts, but subgraph is now available for alchemica.
 // Fetch requested token balances for addresses.
 
 const multicallProvider = useMulticallProvider()

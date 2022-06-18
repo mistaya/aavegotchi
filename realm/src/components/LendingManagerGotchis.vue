@@ -482,7 +482,7 @@ import { ref, computed, watch } from 'vue'
 
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
-import useAddressBalances from '@/data/useAddressBalances'
+import useAddressBalances from '@/data/useAddressAlchemicaBalances'
 import DateFriendly from '@/components/DateFriendly.vue'
 import EthAddress from './EthAddress.vue'
 import SiteTable from './SiteTable.vue'

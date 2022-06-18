@@ -609,7 +609,7 @@ import { ref, computed, watch } from 'vue'
 
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
-import useAddressBalances from '@/data/useAddressBalances'
+import useAddressBalances from '@/data/useAddressAlchemicaBalances'
 import useTokenPricesAavegotchi from '@/data/useTokenPricesAavegotchi'
 import CryptoIcon from '@/components/CryptoIcon.vue'
 import CryptoIcons from '@/components/CryptoIcons.vue'
