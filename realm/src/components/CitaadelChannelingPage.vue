@@ -8,6 +8,15 @@
       <template #sidebar>
         <h1>Channelings (last {{ RECENT_MINUTES }} minutes)</h1>
 
+        <div style="margin-bottom: 20px; margin-right: 20px;">
+          <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
+            <SiteIcon name="warning-triangle" />
+            <div>
+              Warning: channeling spillover will only occur during the Saturday hangouts (2pm - 4pm UTC). See the announcements in Discord for details.
+            </div>
+          </div>
+        </div>
+
         <div>
           <template v-if="!annotatedChannelings.length">
             No channelings found.
