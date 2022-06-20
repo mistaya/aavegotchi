@@ -220,7 +220,7 @@ import CopyToClipboard from './CopyToClipboard.vue'
 import DateFriendly from './DateFriendly.vue'
 import SiteTable from './SiteTable.vue'
 import SortToggle from './SortToggle.vue'
-import AALTARS from '@/data/parcels/installations.json'
+import INSTALLATIONS from '@/data/parcels/installations.json'
 
 const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
 // const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
@@ -369,9 +369,8 @@ export default {
           if (responseJson.data?.parcels) {
             for (const parcel of responseJson.data.parcels) {
               let lastChanneledTimestamp = parcel.lastChanneledAlchemica * 1000
-              const equippedInstallationIds = parcel.equippedInstallations?.map(({ id }) => id)
-              const aaltarId = equippedInstallationIds?.find(id => AALTARS[id]) || undefined
-              const aaltar = AALTARS[aaltarId] || undefined
+              const equippedInstallations = parcel.equippedInstallations?.map(({ id }) => INSTALLATIONS[id])
+              const aaltar = equippedInstallations.find(installation => installation?.installationType === 'aaltar')
               let cooldownTimestamp
               let cooldownDate
               if (aaltar) {
@@ -388,7 +387,7 @@ export default {
                 lastChanneledTimestamp = undefined
               }
               newDetails[parcel.id] = {
-                equippedInstallations: equippedInstallationIds,
+                equippedInstallations,
                 aaltar,
                 lastChanneledTimestamp,
                 lastChanneledDate: lastChanneledTimestamp && new Date(lastChanneledTimestamp),

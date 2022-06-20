@@ -1,9 +1,21 @@
 import { ref } from 'vue'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
+import INSTALLATIONS from './parcels/installations.json'
 
 const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
 const FETCH_PAGE_SIZE = 1000
+
+const findAaltar = function (equippedInstallations) {
+  if (!equippedInstallations) { return null }
+  for (const equippedInstallation of equippedInstallations) {
+    const installationDetails = INSTALLATIONS[equippedInstallation.id]
+    if (installationDetails && installationDetails.installationType === 'aaltar') {
+      return installationDetails
+    }
+  }
+  return null
+}
 
 export default function (recentMinutes) {
   const channelings = ref([])
@@ -63,7 +75,7 @@ export default function (recentMinutes) {
               date: new Date(event.timestamp * 1000),
               gotchiId: event.gotchi.id,
               parcelId: event.parcel.id,
-              altar: event.parcel.equippedInstallations?.[0]?.id,
+              aaltar: findAaltar(event.parcel.equippedInstallations),
               alchemica: {
                 FUD: new BigNumber(event.alchemica[0]).div(10e17).toNumber(),
                 FOMO: new BigNumber(event.alchemica[1]).div(10e17).toNumber(),

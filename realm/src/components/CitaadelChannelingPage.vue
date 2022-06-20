@@ -41,7 +41,7 @@
                   <DateFriendly
                     :date="channeling.date"
                   />:
-                  D{{ channeling.parcel.district }}, {{ channeling.altar.label }},
+                  D{{ channeling.parcel.district }}, {{ channeling.aaltar.label }},
                   <span class="parcel-name">{{ channeling.parcel.parcelHash }}</span>,
                   spillover:
                   <br>
@@ -104,7 +104,6 @@ import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import PrereqParcels from './PrereqParcels.vue'
 
-import AALTARS from '@/data/parcels/installations.json'
 import tokens from '@/data/pockets/tokens.json'
 
 const tokensList = Object.values(tokens)
@@ -139,7 +138,7 @@ export default {
       return channelings.value.map(channeling => ({
         ...channeling,
         parcel: parcelsById.value[channeling.parcelId],
-        altar: AALTARS[channeling.altar]
+        aaltar: channeling.aaltar
       }))
     })
     const channelingsToDisplay = computed(() => {
