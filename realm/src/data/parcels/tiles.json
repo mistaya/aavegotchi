@@ -1,0 +1,32 @@
+{
+  "1": {
+    "id": "1",
+    "label": "LE Golden Tile - Gotchiverse",
+    "width": 8,
+    "height": 8
+  },
+  "2": {
+    "id": "2",
+    "label": "LE Golden Tile - Portal",
+    "width": 8,
+    "height": 8
+  },
+  "3": {
+    "id": "3",
+    "label": "LE Golden Tile - Gotchi",
+    "width": 8,
+    "height": 8
+  },
+  "4": {
+    "id": "4",
+    "label": "LE Purple Grass",
+    "width": 4,
+    "height": 4
+  },
+  "5": {
+    "id": "5",
+    "label": "LE Mythical Rofl Rug",
+    "width": 16,
+    "height": 8
+  }
+}

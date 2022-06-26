@@ -150,6 +150,12 @@
       </template>
     </div>
 
+    <ParcelDetailsInstallations
+      :key="`installations_${parcel.id}`"
+      :id="parcel.id"
+      :sizeNum="parcel.size"
+    />
+
     <div class="parcel-coords">
       Coordinates:
       ({{ parcel.coordinateX }},
@@ -168,6 +174,7 @@ import EthAddress from './EthAddress.vue'
 import NumberDisplay from './NumberDisplay.vue'
 import FlagSelectedIcon from './FlagSelectedIcon.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
+import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
 
 export default {
   components: {
@@ -175,7 +182,8 @@ export default {
     EthAddress,
     NumberDisplay,
     FlagSelectedIcon,
-    ParcelBoosts
+    ParcelBoosts,
+    ParcelDetailsInstallations
   },
   props: {
     parcel: { type: Object, required: true },

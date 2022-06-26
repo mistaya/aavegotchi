@@ -5,8 +5,17 @@
         <h1>The Citaadel</h1>
 
         <div style="margin-bottom: 20px; margin-right: 10px;">
-          <DataFetcherBaazaarListings />
-          <DataFetcherParcelOwners />
+          <details
+            open
+            class="filter-container"
+          >
+            <summary>
+              <h3>Data</h3>
+            </summary>
+
+            <DataFetcherBaazaarListings />
+            <DataFetcherParcelOwners />
+          </details>
         </div>
 
         <MapConfig

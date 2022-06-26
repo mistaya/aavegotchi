@@ -10,7 +10,9 @@
     "imagemin2": "imagemin src/assets/paartnerLogos --out-dir=public/paartners"
   },
   "dependencies": {
+    "a11y-dialog": "^7.5.0",
     "bignumber.js": "^9.0.1",
+    "body-scroll-lock": "^4.0.0-beta.0",
     "core-js": "^3.6.5",
     "d3-scale": "^4.0.2",
     "d3-scale-chromatic": "^3.0.0",
@@ -24,6 +26,7 @@
     "lodash.groupby": "^4.6.0",
     "lodash.isequal": "^4.5.0",
     "lodash.orderby": "^4.6.0",
+    "lodash.throttle": "^4.1.1",
     "svg-pan-zoom": "^3.6.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.12"

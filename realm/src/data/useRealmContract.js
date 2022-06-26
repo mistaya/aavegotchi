@@ -76,6 +76,137 @@ const initContract = function () {
       ],
       stateMutability: 'view',
       type: 'function'
+    },
+    // Grid getters
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_parcelId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_gridType',
+          type: 'uint256'
+        }
+      ],
+      name: 'getHumbleGrid',
+      outputs:
+      [
+        {
+          internalType: 'uint256[8][8]',
+          name: 'output_',
+          type: 'uint256[8][8]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_parcelId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_gridType',
+          type: 'uint256'
+        }
+      ],
+      name: 'getReasonableGrid',
+      outputs:
+      [
+        {
+          internalType: 'uint256[16][16]',
+          name: 'output_',
+          type: 'uint256[16][16]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_parcelId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_gridType',
+          type: 'uint256'
+        }
+      ],
+      name: 'getSpaciousHorizontalGrid',
+      outputs:
+      [
+        {
+          internalType: 'uint256[64][32]',
+          name: 'output_',
+          type: 'uint256[64][32]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_parcelId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_gridType',
+          type: 'uint256'
+        }
+      ],
+      name: 'getSpaciousVerticalGrid',
+      outputs:
+      [
+        {
+          internalType: 'uint256[32][64]',
+          name: 'output_',
+          type: 'uint256[32][64]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_parcelId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_gridType',
+          type: 'uint256'
+        }
+      ],
+      name: 'getPaartnerGrid',
+      outputs:
+      [
+        {
+          internalType: 'uint256[64][64]',
+          name: 'output_',
+          type: 'uint256[64][64]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
     }
   ]
   contract = new ethers.Contract(
@@ -124,6 +255,37 @@ const realm = {
       }
       return results
     })
+  },
+  getParcelGrid: async function (id, sizeNumber) {
+    if (!contract) {
+      initContract()
+    }
+    const FUNCTION_NAMES = [
+      'getHumbleGrid', 'getReasonableGrid', 'getSpaciousVerticalGrid', 'getSpaciousHorizontalGrid', 'getPaartnerGrid'
+    ]
+    const functionName = FUNCTION_NAMES[sizeNumber]
+    if (!functionName) {
+      console.error('Unknown size', sizeNumber)
+      return Promise.reject(new Error('Unknown parcel size'))
+    }
+    const fetchingInstallations = contract[functionName](id, 0).then(
+      result => {
+        return result
+      },
+      error => { throw error }
+    )
+    const fetchingTiles = contract[functionName](id, 1).then(
+      result => {
+        return result
+      },
+      error => { throw error }
+    )
+    return Promise.all([fetchingInstallations, fetchingTiles]).then(
+      ([installationsGrid, tilesGrid]) => {
+        // console.log('Fetched parcel grid', { installationsGrid, tilesGrid })
+        return { installationsGrid, tilesGrid }
+      }
+    )
   }
 }
 
