@@ -18,8 +18,8 @@
 
 <script>
 import useGotchiAaveRewards from '@/data/useGotchiAaveRewards'
-import DateFriendly from './DateFriendly'
-import NumberDisplay from './NumberDisplay'
+import DateFriendly from '@/common/DateFriendly.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 import DataFetcher from './DataFetcher.vue'
 
 export default {

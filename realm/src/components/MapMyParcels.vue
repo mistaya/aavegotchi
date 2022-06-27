@@ -72,7 +72,7 @@ import FilterOwners from './FilterOwners.vue'
 import FilterBidders from './FilterBidders.vue'
 import FilterParcelIds from './FilterParcelIds.vue'
 import FilterParcelNames from './FilterParcelNames.vue'
-import InputColor from './InputColor.vue'
+import InputColor from '@/common/InputColor.vue'
 
 export default {
   components: {

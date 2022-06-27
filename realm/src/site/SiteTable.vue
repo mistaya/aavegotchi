@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import PagingControls from './PagingControls.vue'
+import PagingControls from '@/common/PagingControls.vue'
 
 export default {
   components: {

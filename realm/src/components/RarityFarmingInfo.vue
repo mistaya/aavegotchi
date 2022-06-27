@@ -20,8 +20,8 @@
 
 <script>
 import useRarityFarming from '@/data/useRarityFarming'
-import DatePrecise from './DatePrecise.vue'
-import NumberDisplay from './NumberDisplay.vue'
+import DatePrecise from '@/common/DatePrecise.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 
 export default {
   components: {

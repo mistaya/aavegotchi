@@ -38,8 +38,8 @@
 <script>
 import useTokenPrices from '@/data/useTokenPrices'
 import DataFetcher from './DataFetcher.vue'
-import DateFriendly from './DateFriendly.vue'
-import NumberDisplay from './NumberDisplay.vue'
+import DateFriendly from '@/common/DateFriendly.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 
 export default {
   components: {

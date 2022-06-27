@@ -169,9 +169,9 @@
 </template>
 
 <script>
-import DateFriendly from './DateFriendly.vue'
-import EthAddress from './EthAddress.vue'
-import NumberDisplay from './NumberDisplay.vue'
+import DateFriendly from '@/common/DateFriendly.vue'
+import EthAddress from '@/common/EthAddress.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 import FlagSelectedIcon from './FlagSelectedIcon.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'

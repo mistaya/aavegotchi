@@ -43,8 +43,8 @@
 </template>
 
 <script>
-import SiteButton from './SiteButton.vue'
-import SiteIcon from './SiteIcon.vue'
+import SiteButton from '@/site/SiteButton.vue'
+import SiteIcon from '@/site/SiteIcon.vue'
 
 const OPTIONS = [
   { id: 'all', label: 'All parcels' },

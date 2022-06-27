@@ -2,8 +2,8 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 
-import SiteIcon from './components/SiteIcon.vue'
-import SiteButton from './components/SiteButton.vue'
+import SiteIcon from '@/site/SiteIcon.vue'
+import SiteButton from '@/site/SiteButton.vue'
 
 const app = createApp(App)
 app.use(router)

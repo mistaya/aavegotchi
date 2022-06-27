@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import CopyToClipboard from './CopyToClipboard.vue'
-import EthIcon from './EthIcon.vue'
+import CopyToClipboard from '@/common/CopyToClipboard.vue'
+import EthIcon from '@/common/EthIcon.vue'
 
 export default {
   components: {

@@ -414,7 +414,7 @@ import useParcelOwners from '@/data/useParcelOwners'
 import useAuctions from '@/data/useAuctions'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
-import NumberDisplay from './NumberDisplay.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import DataFetcherAuctions from './DataFetcherAuctions.vue'
@@ -435,7 +435,7 @@ import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterPa
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterBidders, { getFilter as getBiddersFilter } from './FilterBidders.vue'
 import FilterAuctionPrice, { getDefaultValue as getDefaultAuctionPriceValue, getFilter as getAuctionPriceFilter } from './FilterAuctionPrice.vue'
-import InputColor from './InputColor.vue'
+import InputColor from '@/common/InputColor.vue'
 import { getFilter as getOwnersFilter } from './FilterOwners.vue'
 
 // TODO for next land auction:

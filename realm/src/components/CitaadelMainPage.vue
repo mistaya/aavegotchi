@@ -446,7 +446,7 @@ import useParcelPrices from '@/data/useParcelPrices'
 import useParcelOwners from '@/data/useParcelOwners'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
-import NumberDisplay from './NumberDisplay.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
 import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
@@ -469,7 +469,7 @@ import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcel
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterOwners, { getFilter as getOwnersFilter } from './FilterOwners.vue'
-import InputColor from './InputColor.vue'
+import InputColor from '@/common/InputColor.vue'
 
 export default {
   components: {

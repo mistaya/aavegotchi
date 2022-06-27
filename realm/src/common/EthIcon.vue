@@ -13,8 +13,8 @@
 
 <script>
 import blockies from 'ethereum-blockies'
-import ethBridgeUrl from './icons/eth.svg'
-import gotchiVaultUrl from './icons/gotchivault.svg'
+import ethBridgeUrl from '@/assets/icons/eth.svg'
+import gotchiVaultUrl from '@/assets/icons/gotchivault.svg'
 
 const ADDRESS_ETH_BRIDGE = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const ADDRESS_GOTCHI_VAULT = '0xDd564df884Fd4e217c9ee6F65B4BA6e5641eAC63'.toLowerCase()

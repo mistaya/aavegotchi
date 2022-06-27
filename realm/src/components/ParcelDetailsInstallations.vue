@@ -106,7 +106,7 @@
 <script>
 import { ref, computed } from 'vue'
 import useParcelContentsSingleFromContract from '@/data/useParcelContentsSingleFromContract'
-import SiteDialog from './SiteDialog.vue'
+import SiteDialog from '@/site/SiteDialog.vue'
 import ParcelGridSvg from './ParcelGridSvg.vue'
 
 const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64, 64]

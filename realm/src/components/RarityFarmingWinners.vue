@@ -319,10 +319,10 @@
 <script>
 import { ref, computed, watch, nextTick } from 'vue'
 import useRarityFarming from '@/data/useRarityFarming'
-import EthAddress from './EthAddress.vue'
-import NumberDisplay from './NumberDisplay.vue'
-import SiteButton from './SiteButton.vue'
-import SiteTable from './SiteTable.vue'
+import EthAddress from '@/common/EthAddress.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
+import SiteButton from '@/site/SiteButton.vue'
+import SiteTable from '@/site/SiteTable.vue'
 
 const TRAITS = ['NRG', 'AGG', 'SPK', 'BRN', 'EYS', 'EYC']
 

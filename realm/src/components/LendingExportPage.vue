@@ -155,7 +155,7 @@ import isValid from 'date-fns/isValid'
 import parseISO from 'date-fns/parseISO'
 import useStatus from '@/data/useStatus'
 import LendingsExport from './LendingsExport.vue'
-import SiteIcon from './SiteIcon.vue'
+import SiteIcon from '@/site/SiteIcon.vue'
 
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'

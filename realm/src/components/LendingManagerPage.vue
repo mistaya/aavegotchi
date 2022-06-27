@@ -175,7 +175,7 @@
 <script>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import EthAddress from './EthAddress.vue'
+import EthAddress from '@/common/EthAddress.vue'
 import LendingManagerGotchis from './LendingManagerGotchis.vue'
 
 export default {

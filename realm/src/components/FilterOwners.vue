@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import TextareaList from './TextareaList.vue'
+import TextareaList from '@/common/TextareaList.vue'
 
 const getFilter = function (ownersByParcelId, idsArray, requireMatch) {
   if (idsArray?.length) {

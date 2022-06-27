@@ -56,7 +56,7 @@
 
 <script>
 import { ref } from 'vue'
-import DateFriendly from './DateFriendly'
+import DateFriendly from '@/common/DateFriendly.vue'
 
 export default {
   components: {

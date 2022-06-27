@@ -27,8 +27,8 @@
 
 <script>
 import useAuctions from '@/data/useAuctions'
-import DateFriendly from './DateFriendly'
-import DatePrecise from './DatePrecise'
+import DateFriendly from '@/common/DateFriendly.vue'
+import DatePrecise from '@/common/DatePrecise.vue'
 import DataFetcher from './DataFetcher.vue'
 
 export default {

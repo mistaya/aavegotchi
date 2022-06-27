@@ -57,8 +57,8 @@
 </template>
 <script>
 import { utcMidnight } from '@/data/useGotchiChanneling'
-import DateFriendly from '@/components/DateFriendly.vue'
-import DatePrecise from '@/components/DatePrecise.vue'
+import DateFriendly from '@/common/DateFriendly.vue'
+import DatePrecise from '@/common/DatePrecise.vue'
 
 export default {
   components: {

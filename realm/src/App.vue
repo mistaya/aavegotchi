@@ -40,10 +40,10 @@
 import { ref } from 'vue'
 import useAppLayout from './useAppLayout'
 import usePageLoading from '@/router/usePageLoading'
-import SiteHead from '@/components/SiteHead.vue'
-import SiteIcons from '@/components/SiteIcons.vue'
-import SiteNav from '@/components/SiteNav.vue'
-import SiteFooter from '@/components/SiteFooter.vue'
+import SiteHead from '@/site/SiteHead.vue'
+import SiteIcons from '@/site/SiteIcons.vue'
+import SiteNav from '@/site/SiteNav.vue'
+import SiteFooter from '@/site/SiteFooter.vue'
 
 export default {
   name: 'App',

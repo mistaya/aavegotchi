@@ -91,7 +91,7 @@
 <script>
 import { watch } from 'vue'
 import useColorScheme from '@/environment/useColorScheme'
-import InputColor from './InputColor.vue'
+import InputColor from '@/common/InputColor.vue'
 
 const DEFAULT_COLORS = {
   light: {

@@ -168,10 +168,10 @@
 <script>
 import { ref, computed, watch } from 'vue'
 import { sort } from 'fast-sort'
-import DateFriendly from './DateFriendly.vue'
-import EthIcon from './EthIcon.vue'
-import NumberDisplay from './NumberDisplay.vue'
-import PagingControls from './PagingControls.vue'
+import DateFriendly from '@/common/DateFriendly.vue'
+import EthIcon from '@/common/EthIcon.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
+import PagingControls from '@/common/PagingControls.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 
 export default {

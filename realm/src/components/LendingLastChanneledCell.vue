@@ -35,7 +35,7 @@
   </td>
 </template>
 <script>
-import DatePrecise from '@/components/DatePrecise.vue'
+import DatePrecise from '@/common/DatePrecise.vue'
 
 export default {
   components: { DatePrecise },
