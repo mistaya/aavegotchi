@@ -1,7 +1,7 @@
 import format from 'date-fns/format'
 import { ref, computed, watch } from 'vue'
 import useStatus from '@/data/useStatus'
-import useReactiveDate from '@/data/useReactiveDate'
+import useReactiveDate from '@/environment/useReactiveDate'
 
 const { tickerDate } = useReactiveDate()
 

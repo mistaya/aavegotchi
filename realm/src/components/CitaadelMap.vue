@@ -545,7 +545,7 @@ import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
 import DISTRICTS from '@/data/parcels/districts.json'
 import VORTEXES from '@/data/parcels/vortexes.json'
-import useColorScheme from '@/data/useColorScheme'
+import useColorScheme from '@/environment/useColorScheme'
 const CITAADEL_WIDTH = 9504
 const CITAADEL_HEIGHT = 6336
 const CITAADEL_ASPECT_RATIO = CITAADEL_WIDTH / CITAADEL_HEIGHT

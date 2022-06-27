@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import useColorScheme from '@/data/useColorScheme'
+import useColorScheme from '@/environment/useColorScheme'
 
 export default {
   setup () {

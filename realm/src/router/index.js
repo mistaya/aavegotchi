@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import useSiteHead from '@/data/useSiteHead'
+import useSiteHead from '@/site/useSiteHead'
 import usePageLoading from './usePageLoading'
 import NotFoundPage from './NotFoundPage.vue'
 

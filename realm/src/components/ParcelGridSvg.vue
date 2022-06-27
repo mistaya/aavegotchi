@@ -48,7 +48,7 @@
 </template>
 <script>
 import { computed } from 'vue'
-import useWindowSize from '@/data/useWindowSize'
+import useWindowSize from '@/environment/useWindowSize'
 
 const MAX_PIXELS_PER_GOTCHI_UNIT = 24
 

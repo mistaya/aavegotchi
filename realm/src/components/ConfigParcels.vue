@@ -129,7 +129,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useColorScheme from '@/data/useColorScheme'
+import useColorScheme from '@/environment/useColorScheme'
 import useParcels from '@/data/useParcels'
 import useParcelLists from '@/data/useParcelLists'
 import PrereqParcels from './PrereqParcels.vue'

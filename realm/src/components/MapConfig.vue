@@ -90,7 +90,7 @@
 
 <script>
 import { watch } from 'vue'
-import useColorScheme from '@/data/useColorScheme'
+import useColorScheme from '@/environment/useColorScheme'
 import InputColor from './InputColor.vue'
 
 const DEFAULT_COLORS = {

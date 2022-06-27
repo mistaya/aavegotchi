@@ -18,7 +18,7 @@
 <script>
 import { ref, computed } from 'vue'
 import { formatDistanceStrict, max, format } from 'date-fns'
-import useReactiveDate from '@/data/useReactiveDate'
+import useReactiveDate from '@/environment/useReactiveDate'
 
 export default {
   props: {

@@ -213,7 +213,7 @@
 <script>
 import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
-import useReactiveDate from '@/data/useReactiveDate'
+import useReactiveDate from '@/environment/useReactiveDate'
 import useStatus from '@/data/useStatus'
 import useParcelAccessRights from '@/data/useParcelAccessRights'
 import CopyToClipboard from './CopyToClipboard.vue'

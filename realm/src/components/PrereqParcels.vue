@@ -30,7 +30,7 @@
   </div>
 </template>
 <script>
-import useCapabilities from '@/data/useCapabilities'
+import useCapabilities from '@/environment/useCapabilities'
 import useParcels from '@/data/useParcels'
 import DataFetcher from './DataFetcher.vue'
 

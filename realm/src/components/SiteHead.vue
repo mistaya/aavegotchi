@@ -29,7 +29,7 @@
 <script>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import useSiteHead from '@/data/useSiteHead'
+import useSiteHead from '@/site/useSiteHead'
 
 export default {
   setup () {
