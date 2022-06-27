@@ -132,11 +132,11 @@ import { ref, computed } from 'vue'
 import useColorScheme from '@/environment/useColorScheme'
 import useParcels from '@/data/useParcels'
 import useParcelLists from '@/data/useParcelLists'
-import PrereqParcels from './PrereqParcels.vue'
 import LoadingSpinner from '@/common/LoadingSpinner.vue'
+import TextareaList from '@/common/TextareaList.vue'
+import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import CitaadelMap from './CitaadelMap.vue'
-import TextareaList from '@/common/TextareaList.vue'
 
 export default {
   components: {

@@ -97,12 +97,13 @@ import useRecentChannelings from '@/data/useRecentChannelings'
 
 import CryptoIcon from '@/common/CryptoIcon.vue'
 import CryptoIcons from '@/common/CryptoIcons.vue'
-import CitaadelMap from './CitaadelMap.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
-import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
-import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
+
 import PrereqParcels from './PrereqParcels.vue'
+import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
+import CitaadelMap from './CitaadelMap.vue'
+import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 
 import tokens from '@/data/pockets/tokens.json'
 
