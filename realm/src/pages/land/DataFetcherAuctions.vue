@@ -29,7 +29,7 @@
 import useAuctions from '@/data/useAuctions'
 import DateFriendly from '@/common/DateFriendly.vue'
 import DatePrecise from '@/common/DatePrecise.vue'
-import DataFetcher from './DataFetcher.vue'
+import DataFetcher from '@/common/DataFetcher.vue'
 
 export default {
   components: {

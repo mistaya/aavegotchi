@@ -618,9 +618,9 @@ import EthAddress from '@/common/EthAddress.vue'
 import SiteIcon from '@/site/SiteIcon.vue'
 import SiteTable from '@/site/SiteTable.vue'
 import SortToggle from '@/common/SortToggle.vue'
-import LendingLandsIconLink from '@/components/LendingLandsIconLink.vue'
-import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
-import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
+import LendingLandsIconLink from './LendingLandsIconLink.vue'
+import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
+import LendingLastChanneledCell from './LendingLastChanneledCell.vue'
 
 import tokens from '@/data/pockets/tokens.json'
 

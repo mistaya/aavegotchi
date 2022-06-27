@@ -17,7 +17,7 @@
 import useVaultOwners from '@/data/useVaultOwners'
 import DateFriendly from '@/common/DateFriendly.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
-import DataFetcher from './DataFetcher.vue'
+import DataFetcher from '@/common/DataFetcher.vue'
 
 export default {
   components: {

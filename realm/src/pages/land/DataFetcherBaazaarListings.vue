@@ -8,7 +8,7 @@
 
 <script>
 import useBaazaarListings from '@/data/useBaazaarListings'
-import DataFetcher from './DataFetcher'
+import DataFetcher from '@/common/DataFetcher.vue'
 
 export default {
   components: {

@@ -146,8 +146,8 @@
 import { ref } from 'vue'
 import useRealmContract from '@/data/useRealmContract'
 import useStatus from '@/data/useStatus'
-import DatePrecise from './DatePrecise.vue'
-import DateFriendly from './DateFriendly.vue'
+import DatePrecise from '@/common/DatePrecise.vue'
+import DateFriendly from '@/common/DateFriendly.vue'
 
 export default {
   components: {

@@ -37,7 +37,7 @@
 
 <script>
 import useTokenPrices from '@/data/useTokenPrices'
-import DataFetcher from './DataFetcher.vue'
+import DataFetcher from '@/common/DataFetcher.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 

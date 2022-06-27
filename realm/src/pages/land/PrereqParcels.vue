@@ -32,7 +32,7 @@
 <script>
 import useCapabilities from '@/environment/useCapabilities'
 import useParcels from '@/data/useParcels'
-import DataFetcher from './DataFetcher.vue'
+import DataFetcher from '@/common/DataFetcher.vue'
 
 export default {
   components: {

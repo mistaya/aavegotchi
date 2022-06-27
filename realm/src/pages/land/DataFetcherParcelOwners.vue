@@ -8,7 +8,7 @@
 
 <script>
 import useParcelOwners from '@/data/useParcelOwners'
-import DataFetcher from './DataFetcher.vue'
+import DataFetcher from '@/common/DataFetcher.vue'
 
 export default {
   components: {

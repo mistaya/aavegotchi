@@ -261,8 +261,8 @@ import useGotchiChanneling from '@/data/useGotchiChanneling'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
 import SiteTable from '@/site/SiteTable.vue'
-import LendingLastChanneledFetchStatus from '@/components/LendingLastChanneledFetchStatus.vue'
-import LendingLastChanneledCell from '@/components/LendingLastChanneledCell.vue'
+import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
+import LendingLastChanneledCell from './LendingLastChanneledCell.vue'
 
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 

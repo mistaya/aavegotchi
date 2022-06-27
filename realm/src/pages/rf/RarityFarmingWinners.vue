@@ -466,7 +466,21 @@ export default {
       for (const board of seasonInfo.leaderboards) {
         mapByLeaderboard[board.id].sort((a, b) => a.ranking - b.ranking)
       }
-      // TODO Debug/Sanity check: check that rarity farming leaderboard is ordered by withSetsRarityScore
+      // TODO Debug/Sanity check: check that rarity farming leaderboard is ordered by withSetsRarityScore (not checking tiebreaker)
+      /*
+      let lastScore = 100000
+      let countWrongOrder = 0
+      for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
+        if (gotchi.withSetsRarityScoreRF > lastScore) {
+          console.error(`Gotchi ${gotchi.name} at rank ${ranking} out of order (${gotchi.withSetsRarityScoreRF} is more than ${lastScore}). ${gotchi.equippedSetNameRF}`, gotchi)
+          countWrongOrder++
+        }
+        // log the score used by ranking as the 'last score'
+        lastScore = gotchi.withSetsRarityScoreRF
+      }
+      console.log(`${countWrongOrder} gotchis out of order`)
+      */
+
       /*
       let lastScore = 100000
       for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
