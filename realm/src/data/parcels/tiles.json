@@ -28,5 +28,17 @@
     "label": "LE Mythical Rofl Rug",
     "width": 16,
     "height": 8
+  },
+  "6": {
+    "id": "6",
+    "label": "LE Cyan Grass",
+    "width": 4,
+    "height": 4
+  },
+  "7": {
+    "id": "7",
+    "label": "LE Godlike Rofl Rug",
+    "width": 16,
+    "height": 8
   }
 }
