@@ -15,6 +15,7 @@
 
             <DataFetcherBaazaarListings />
             <DataFetcherParcelOwners />
+            <DataFetcherParcelContents />
           </details>
         </div>
 
@@ -247,6 +248,7 @@
             <FilterParcelNames v-model="filters.parcelNames" />
             <FilterBoosts v-model="filters.boosts" />
             <FilterOwners v-model="filters.owners" />
+            <FilterContentsAaltar v-model="filters.contentsAaltar" />
           </div>
         </details>
 
@@ -442,12 +444,14 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import useParcels from '@/data/useParcels'
 import useBaazaarListings from '@/data/useBaazaarListings'
+import useParcelContents from '@/data/useParcelContents'
 import useParcelPrices from '@/data/useParcelPrices'
 import useParcelOwners from '@/data/useParcelOwners'
 import { WALLS } from '@/data/walls'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
+import DataFetcherParcelContents from './DataFetcherParcelContents.vue'
 import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
@@ -469,6 +473,7 @@ import FilterParcelIds, { getFilter as getParcelIdsFilter } from './FilterParcel
 import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterParcelNames.vue'
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterOwners, { getFilter as getOwnersFilter } from './FilterOwners.vue'
+import FilterContentsAaltar, { getDefaultValue as getDefaultContentsAaltarValue, getFilter as getContentsAaltarFilter } from './FilterContentsAaltar.vue'
 import InputColor from '@/common/InputColor.vue'
 
 export default {
@@ -476,6 +481,7 @@ export default {
     PrereqParcels,
     LayoutMapWithFilters,
     DataFetcherBaazaarListings,
+    DataFetcherParcelContents,
     DataFetcherParcelOwners,
     NumberDisplay,
     PaartnerParcelDetails,
@@ -496,6 +502,7 @@ export default {
     FilterParcelNames,
     FilterBoosts,
     FilterOwners,
+    FilterContentsAaltar,
     InputColor
   },
   setup () {
@@ -512,6 +519,11 @@ export default {
       fetchStatus: ownersFetchStatus,
       fetchOwners
     } = useParcelOwners()
+    const {
+      installationsByParcelId,
+      fetchStatus: contentsFetchStatus,
+      fetchContents
+    } = useParcelContents()
 
     const mapConfig = ref(getDefaultMapConfigValue())
 
@@ -525,7 +537,8 @@ export default {
       parcelIds: [],
       parcelNames: [],
       boosts: getDefaultBoostsValue(),
-      owners: []
+      owners: [],
+      contentsAaltar: getDefaultContentsAaltarValue()
     })
     const myFilters = ref({
       parcelIds: [],
@@ -602,6 +615,11 @@ export default {
         fetchOwners()
       }
     }
+    const prereqContents = function () {
+      if (!contentsFetchStatus.value.loaded && !contentsFetchStatus.value.loading) {
+        fetchContents()
+      }
+    }
     watch(
       () => colorScheme.value.colorBy,
       colorBy => {
@@ -629,6 +647,14 @@ export default {
       ([ownersFilter, ownersMyFilter]) => {
         if (ownersFilter?.length || ownersMyFilter?.length) {
           prereqOwners()
+        }
+      }
+    )
+    watch(
+      () => [filters.value.contentsAaltar],
+      contentsAaltarFilter => {
+        if (contentsAaltarFilter?.length) {
+          prereqContents()
         }
       }
     )
@@ -804,8 +830,9 @@ export default {
       const roadsFilter = getRoadsFilter(filters.value.roads)
       const boostsFilter = getBoostsFilter(filters.value.boosts)
       const ownersFilter = getOwnersFilter(ownersByParcelId.value, filters.value.owners)
+      const contentsAaltarFilter = getContentsAaltarFilter(installationsByParcelId.value, filters.value.contentsAaltar)
 
-      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter]
+      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, contentsAaltarFilter]
 
       let numMatches = 0
       const result = Object.fromEntries(
