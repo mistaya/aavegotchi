@@ -1,12 +1,15 @@
 import { ethers } from 'ethers'
 import { Provider } from 'ethers-multicall'
 
+const RPC_URL = 'https://rpc.ankr.com/polygon'
+// const RPC_URL = 'https://polygon-rpc.comn'
+
 let provider = null
 let multicallProvider = null
 
 const useProvider = function () {
   if (!provider) {
-    provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
+    provider = new ethers.providers.JsonRpcProvider(RPC_URL)
   }
   return provider
 }
