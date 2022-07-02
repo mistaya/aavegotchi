@@ -442,11 +442,20 @@
           >
             <circle
               v-for="channeling in channelings"
-              :key="channeling.id"
+              :key="`circle_${channeling.id}`"
               class="channeling-area"
               :cx="channeling.parcel.coordinateX - 0 + channeling.parcel.width / 2"
               :cy="channeling.parcel.coordinateY - 0 + channeling.parcel.height / 2"
               :r="channeling.spilloverRadius"
+              stroke="none"
+            />
+            <circle
+              v-for="channeling in channelings"
+              :key="`hotzone_${channeling.id}`"
+              class="channeling-area channeling-area--hotzone"
+              :cx="channeling.parcel.coordinateX - 0 + channeling.parcel.width / 2"
+              :cy="channeling.parcel.coordinateY - 0 + channeling.parcel.height / 2"
+              :r="60"
               stroke="none"
             />
           </g>
@@ -854,6 +863,9 @@ export default {
     /* split calc into stages to satisfy css minifier */
     --map-channeling--count-1: calc(max(var(--map-channeling--count) / 7, 5));
     opacity: calc(max(1 / var(--map-channeling--count-1), 0.01));
+  }
+  .channeling-area--hotzone {
+    opacity: calc(max(1 / var(--map-channeling--count-1), 0.5));
   }
   .vortex {
     opacity: 0.8;
