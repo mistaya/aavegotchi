@@ -861,7 +861,7 @@ export default {
     pointer-events: none;
     fill: var(--map-channeling--color);
     /* split calc into stages to satisfy css minifier */
-    --map-channeling--count-1: calc(max(var(--map-channeling--count) / 7, 5));
+    --map-channeling--count-1: calc(max(var(--map-channeling--count) / 15, 5));
     opacity: calc(max(1 / var(--map-channeling--count-1), 0.01));
   }
   .channeling-area--hotzone {
