@@ -249,6 +249,7 @@
             <FilterBoosts v-model="filters.boosts" />
             <FilterOwners v-model="filters.owners" />
             <FilterContentsAaltar v-model="filters.contentsAaltar" />
+            <FilterContentsInstallations v-model="filters.contentsInstallations" />
           </div>
         </details>
 
@@ -474,6 +475,7 @@ import FilterParcelNames, { getFilter as getParcelNamesFilter } from './FilterPa
 import FilterBoosts, { getDefaultValue as getDefaultBoostsValue, getFilter as getBoostsFilter } from './FilterBoosts.vue'
 import FilterOwners, { getFilter as getOwnersFilter } from './FilterOwners.vue'
 import FilterContentsAaltar, { getDefaultValue as getDefaultContentsAaltarValue, getFilter as getContentsAaltarFilter } from './FilterContentsAaltar.vue'
+import FilterContentsInstallations, { getDefaultValue as getDefaultContentsInstallationsValue, getFilter as getContentsInstallationsFilter } from './FilterContentsInstallations.vue'
 import InputColor from '@/common/InputColor.vue'
 
 export default {
@@ -503,6 +505,7 @@ export default {
     FilterBoosts,
     FilterOwners,
     FilterContentsAaltar,
+    FilterContentsInstallations,
     InputColor
   },
   setup () {
@@ -538,7 +541,8 @@ export default {
       parcelNames: [],
       boosts: getDefaultBoostsValue(),
       owners: [],
-      contentsAaltar: getDefaultContentsAaltarValue()
+      contentsAaltar: getDefaultContentsAaltarValue(),
+      contentsInstallations: getDefaultContentsInstallationsValue()
     })
     const myFilters = ref({
       parcelIds: [],
@@ -651,9 +655,9 @@ export default {
       }
     )
     watch(
-      () => [filters.value.contentsAaltar],
-      contentsAaltarFilter => {
-        if (contentsAaltarFilter?.length) {
+      () => [filters.value.contentsAaltar, { ...filters.value.contentsInstallations }],
+      ([contentsAaltarFilter, contentsInstallationsFilter]) => {
+        if (contentsAaltarFilter?.length || contentsInstallationsFilter.ids?.length) {
           prereqContents()
         }
       }
@@ -831,8 +835,9 @@ export default {
       const boostsFilter = getBoostsFilter(filters.value.boosts)
       const ownersFilter = getOwnersFilter(ownersByParcelId.value, filters.value.owners)
       const contentsAaltarFilter = getContentsAaltarFilter(installationsByParcelId.value, filters.value.contentsAaltar)
+      const contentsInstallationsFilter = getContentsInstallationsFilter(installationsByParcelId.value, filters.value.contentsInstallations)
 
-      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, contentsAaltarFilter]
+      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, contentsAaltarFilter, contentsInstallationsFilter]
 
       let numMatches = 0
       const result = Object.fromEntries(

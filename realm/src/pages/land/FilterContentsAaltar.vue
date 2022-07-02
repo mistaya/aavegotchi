@@ -8,9 +8,12 @@
 
     <div
       v-if="fetchStatus.loading"
-      style="margin-top: 10px; margin-bottom: 10px; font-size: 0.9em; font-style: italic; font-weight: bold;"
+      class="site-alertbox site-alertbox--warning site-alertbox--compact"
+      style="margin: 10px 10px 10px 0;"
     >
-      Parcel contents loading, please wait...
+      <div>
+        Fetching parcel contents, please wait...
+      </div>
     </div>
 
     <div style="margin-left: 15px">
@@ -25,17 +28,18 @@
         </label>
       </div>
 
-      <CheckboxGroup style="margin-bottom: 5px;"
+      <CheckboxGroup
         :modelValue="modelValue"
         :children="LE_AALTARS_OPTIONS"
-        parentLabel="LE Golden Aaltars:"
+        parentLabel="LE Golden Aaltar"
+        style="margin-bottom: 5px;"
         @update:modelValue="$emit('update:modelValue', $event)"
       />
 
       <CheckboxGroup
         :modelValue="modelValue"
         :children="NORMAL_AALTARS_OPTIONS"
-        parentLabel="Aaltars:"
+        parentLabel="Aaltar"
         @update:modelValue="$emit('update:modelValue', $event)"
       />
     </div>
@@ -51,9 +55,9 @@ import INSTALLATIONS from '@/data/parcels/installations.json'
 
 const AALTARS = Object.values(INSTALLATIONS).filter(item => item.installationType === 'aaltar')
 const AALTARS_IDS = AALTARS.map(item => item.id)
-const LE_AALTARS = AALTARS.filter(item => item.label.startsWith('LE'))
+const LE_AALTARS = AALTARS.filter(item => item.installationGroup === 'LE Golden Aaltar')
 const LE_AALTARS_OPTIONS = LE_AALTARS.map(item => ({ id: item.id, label: `Level ${item.level}` }))
-const NORMAL_AALTARS = AALTARS.filter(item => item.label.startsWith('Aaltar'))
+const NORMAL_AALTARS = AALTARS.filter(item => item.installationGroup === 'Aaltar')
 const NORMAL_AALTARS_OPTIONS = NORMAL_AALTARS.map(item => ({ id: item.id, label: `Level ${item.level}` }))
 
 const NO_AALTARS_ID = 'NONE'
