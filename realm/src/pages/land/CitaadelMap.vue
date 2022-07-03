@@ -153,6 +153,24 @@
         }"
       >
         <g>
+          <template v-if="mapConfig.showBackgroundImage">
+            <image
+              v-if="isColorSchemeLight"
+              x="14"
+              y="-13.5"
+              :width="CITAADEL_WIDTH * 1.003"
+              :height="CITAADEL_HEIGHT * 1.003"
+              href="/map/citaadel_bg_light.png"
+            />
+            <image
+              v-else
+              x="-18"
+              y="-16"
+              :width="CITAADEL_WIDTH * 1.003"
+              :height="CITAADEL_HEIGHT * 1.003"
+              href="/map/citaadel_bg_dark.png"
+            />
+          </template>
           <filter
             v-for="type in ['Fud', 'Fomo', 'Alpha', 'Kek']"
             :key="type"
@@ -578,7 +596,8 @@ export default {
     const svgRef = ref(null)
     const zoomCircleRef = ref(null)
 
-    const parcelFallbackFill = computed(() => colorScheme.value === 'light' ? '#eee' : '#222')
+    const isColorSchemeLight = computed(() => colorScheme.value === 'light')
+    const parcelFallbackFill = computed(() => isColorSchemeLight.value ? '#eee' : '#222')
 
     const paartnerParcels = computed(() => {
       return PAARTNER_PARCELS.map(parcel => {
@@ -767,6 +786,7 @@ export default {
     // console.timeEnd('setup CitaadelMap')
     // console.time('mount CitaadelMap')
     return {
+      isColorSchemeLight,
       CITAADEL_WIDTH,
       CITAADEL_HEIGHT,
       DISTRICTS,

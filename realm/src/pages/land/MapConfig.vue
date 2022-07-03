@@ -144,7 +144,8 @@ const getDefaultValue = function () {
     showAlchemicaKek: true,
     ...colors,
     useOneAlchemicaColor: false,
-    flagSelected: false
+    flagSelected: false,
+    showBackgroundImage: false // lighter alternative to showing individual SVG parcels and alchemica
   }
 }
 export { getDefaultValue }

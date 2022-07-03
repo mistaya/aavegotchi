@@ -42,7 +42,9 @@
                     :date="channeling.date"
                   />:
                   D{{ channeling.parcel.district }}, {{ channeling.aaltar.label }},
-                  <span class="parcel-name">{{ channeling.parcel.parcelHash }}</span>,
+                  <span class="parcel-name">{{ channeling.parcel.parcelHash }}</span>
+                  <span class="parcel-coords"> ({{ channeling.parcel.coordinateX * 64 }},
+                  {{ channeling.parcel.coordinateY * 64 }})</span>,
                   spillover:
                   <br>
                   <div
@@ -173,7 +175,8 @@ export default {
       showAlchemicaFud: false,
       showAlchemicaFomo: false,
       showAlchemicaAlpha: false,
-      showAlchemicaKek: false
+      showAlchemicaKek: false,
+      showBackgroundImage: true
     })
 
     return {
