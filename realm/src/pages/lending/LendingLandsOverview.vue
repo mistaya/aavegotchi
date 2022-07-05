@@ -25,13 +25,30 @@
             Only Aaltars that can channel now
           </label>
         </div>
-        <div>
+        <div class="filter-channeling-access">
+          Channeling access:
           <label>
             <input
-              v-model="tableFilters.onlyChannelingAccessBorrower"
+              v-model="tableFilters.channelingAccess[0]"
               type="checkbox"
             />
-            Only Channeling Access: Borrower
+            Owner
+          </label>
+          &#8203;
+          <label>
+            <input
+              v-model="tableFilters.channelingAccess[1]"
+              type="checkbox"
+            />
+            Borrower
+          </label>
+          &#8203;
+          <label>
+            <input
+              v-model="tableFilters.channelingAccess[2]"
+              type="checkbox"
+            />
+            Anyone
           </label>
         </div>
       </fieldset>
@@ -182,6 +199,9 @@
                   </template>
                   <template v-else-if="parcelAccessRights[0][row.id] === 1">
                     Borrower
+                  </template>
+                  <template v-else-if="parcelAccessRights[0][row.id] === 2">
+                    Anyone
                   </template>
                 </template>
               </td>
@@ -429,7 +449,7 @@ export default {
 
     const tableFilters = ref({
       onlyCanChannelNow: false,
-      onlyChannelingAccessBorrower: false
+      channelingAccess: [true, true, true]
     })
 
     const tableSort = ref({
@@ -444,15 +464,13 @@ export default {
 
     // This filters the retrieved data normally
     const tableLandsFilteredStable = computed(() => {
-      const onlyChannelingAccessBorrower = tableFilters.value.onlyChannelingAccessBorrower
-      if (!onlyChannelingAccessBorrower) {
+      const hasChannelingAccessFilter = tableFilters.value.channelingAccess.some(enabled => !enabled)
+      if (!hasChannelingAccessFilter) {
         return ownedLands.value
       }
       return ownedLands.value.filter(land => {
-        if (onlyChannelingAccessBorrower && parcelAccessRights.value[0][land.id] !== 1) {
-          return false
-        }
-        return true
+        const parcelAccessRight = parcelAccessRights.value[0][land.id]
+        return tableFilters.value.channelingAccess[parcelAccessRight]
       })
     })
 
@@ -539,5 +557,10 @@ export default {
     max-width: fit-content;
     border-style: solid;
     border-color: var(--site-border-color--transparent);
+  }
+
+  .filter-channeling-access label {
+    margin-right: 5px;
+    white-space: nowrap;
   }
 </style>
