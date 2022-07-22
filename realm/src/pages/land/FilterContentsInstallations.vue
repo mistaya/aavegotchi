@@ -61,6 +61,15 @@
         class="filter-installation-group"
         @update:modelValue="$emit('update:modelValue', { ids: $event, mode: modelValue.mode })"
       />
+
+      <CheckboxGroup
+        key="UNGROUPED_INSTALLATIONS"
+        :modelValue="modelValue.ids"
+        :children="UNGROUPED_INSTALLATIONS"
+        parentLabel="Misc"
+        class="filter-installation-group"
+        @update:modelValue="$emit('update:modelValue', { ids: $event, mode: modelValue.mode })"
+      />
     </div>
   </details>
 </template>
@@ -87,7 +96,7 @@ for (const item of INSTALLATIONS) {
     }
     INSTALLATION_GROUPS_BY_ID[item.installationGroup].children.push({
       id: item.id,
-      label: item.rarity // TODO later can have installation levels instead (harvesters)
+      label: item.rarity || `Level ${item.level}` // currently, decorations have 'rarity' and installations have 'level'
     })
   } else {
     UNGROUPED_INSTALLATIONS.push({
@@ -194,7 +203,7 @@ export default {
     return {
       fetchStatus,
       INSTALLATION_GROUPS,
-      UNGROUPED_INSTALLATIONS, // TODO display any installations that aren't in groups
+      UNGROUPED_INSTALLATIONS,
       NO_INSTALLATIONS_ID,
       noInstallationIsSelected,
       onNoInstallationChange,

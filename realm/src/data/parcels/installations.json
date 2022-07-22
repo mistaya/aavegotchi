@@ -1060,5 +1060,1544 @@
             "baseOffsetTop": 59,
             "baseOffsetLeft": 65
         }
+    },
+    "56":
+    {
+        "id": "56",
+        "level": 1,
+        "label": "FUD Harvester L1",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "57":
+    {
+        "id": "57",
+        "level": 2,
+        "label": "FUD Harvester L2",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "58":
+    {
+        "id": "58",
+        "level": 3,
+        "label": "FUD Harvester L3",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "59":
+    {
+        "id": "59",
+        "level": 4,
+        "label": "FUD Harvester L4",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "60":
+    {
+        "id": "60",
+        "level": 5,
+        "label": "FUD Harvester L5",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "61":
+    {
+        "id": "61",
+        "level": 6,
+        "label": "FUD Harvester L6",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "62":
+    {
+        "id": "62",
+        "level": 7,
+        "label": "FUD Harvester L7",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "63":
+    {
+        "id": "63",
+        "level": 8,
+        "label": "FUD Harvester L8",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "64":
+    {
+        "id": "64",
+        "level": 9,
+        "label": "FUD Harvester L9",
+        "installationType": "harvester",
+        "installationGroup": "FUD Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "65":
+    {
+        "id": "65",
+        "level": 1,
+        "label": "FOMO Harvester L1",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "66":
+    {
+        "id": "66",
+        "level": 2,
+        "label": "FOMO Harvester L2",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "67":
+    {
+        "id": "67",
+        "level": 3,
+        "label": "FOMO Harvester L3",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "68":
+    {
+        "id": "68",
+        "level": 4,
+        "label": "FOMO Harvester L4",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "69":
+    {
+        "id": "69",
+        "level": 5,
+        "label": "FOMO Harvester L5",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "70":
+    {
+        "id": "70",
+        "level": 6,
+        "label": "FOMO Harvester L6",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "71":
+    {
+        "id": "71",
+        "level": 7,
+        "label": "FOMO Harvester L7",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "72":
+    {
+        "id": "72",
+        "level": 8,
+        "label": "FOMO Harvester L8",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "73":
+    {
+        "id": "73",
+        "level": 9,
+        "label": "FOMO Harvester L9",
+        "installationType": "harvester",
+        "installationGroup": "FOMO Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "74":
+    {
+        "id": "74",
+        "level": 1,
+        "label": "ALPHA Harvester L1",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "75":
+    {
+        "id": "75",
+        "level": 2,
+        "label": "ALPHA Harvester L2",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "76":
+    {
+        "id": "76",
+        "level": 3,
+        "label": "ALPHA Harvester L3",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "77":
+    {
+        "id": "77",
+        "level": 4,
+        "label": "ALPHA Harvester L4",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "78":
+    {
+        "id": "78",
+        "level": 5,
+        "label": "ALPHA Harvester L5",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "79":
+    {
+        "id": "79",
+        "level": 6,
+        "label": "ALPHA Harvester L6",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "80":
+    {
+        "id": "80",
+        "level": 7,
+        "label": "ALPHA Harvester L7",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "81":
+    {
+        "id": "81",
+        "level": 8,
+        "label": "ALPHA Harvester L8",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "82":
+    {
+        "id": "82",
+        "level": 9,
+        "label": "ALPHA Harvester L9",
+        "installationType": "harvester",
+        "installationGroup": "ALPHA Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "83":
+    {
+        "id": "83",
+        "level": 1,
+        "label": "KEK Harvester L1",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "84":
+    {
+        "id": "84",
+        "level": 2,
+        "label": "KEK Harvester L2",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "85":
+    {
+        "id": "85",
+        "level": 3,
+        "label": "KEK Harvester L3",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "86":
+    {
+        "id": "86",
+        "level": 4,
+        "label": "KEK Harvester L4",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "87":
+    {
+        "id": "87",
+        "level": 5,
+        "label": "KEK Harvester L5",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "88":
+    {
+        "id": "88",
+        "level": 6,
+        "label": "KEK Harvester L6",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "89":
+    {
+        "id": "89",
+        "level": 7,
+        "label": "KEK Harvester L7",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "90":
+    {
+        "id": "90",
+        "level": 8,
+        "label": "KEK Harvester L8",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "91":
+    {
+        "id": "91",
+        "level": 9,
+        "label": "KEK Harvester L9",
+        "installationType": "harvester",
+        "installationGroup": "KEK Harvester",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "92":
+    {
+        "id": "92",
+        "level": 1,
+        "label": "FUD Reservoir L1",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "93":
+    {
+        "id": "93",
+        "level": 2,
+        "label": "FUD Reservoir L2",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "94":
+    {
+        "id": "94",
+        "level": 3,
+        "label": "FUD Reservoir L3",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "95":
+    {
+        "id": "95",
+        "level": 4,
+        "label": "FUD Reservoir L4",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "96":
+    {
+        "id": "96",
+        "level": 5,
+        "label": "FUD Reservoir L5",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "97":
+    {
+        "id": "97",
+        "level": 6,
+        "label": "FUD Reservoir L6",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "98":
+    {
+        "id": "98",
+        "level": 7,
+        "label": "FUD Reservoir L7",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "99":
+    {
+        "id": "99",
+        "level": 8,
+        "label": "FUD Reservoir L8",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "100":
+    {
+        "id": "100",
+        "level": 9,
+        "label": "FUD Reservoir L9",
+        "installationType": "reservoir",
+        "installationGroup": "FUD Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "101":
+    {
+        "id": "101",
+        "level": 1,
+        "label": "FOMO Reservoir L1",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "102":
+    {
+        "id": "102",
+        "level": 2,
+        "label": "FOMO Reservoir L2",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "103":
+    {
+        "id": "103",
+        "level": 3,
+        "label": "FOMO Reservoir L3",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "104":
+    {
+        "id": "104",
+        "level": 4,
+        "label": "FOMO Reservoir L4",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "105":
+    {
+        "id": "105",
+        "level": 5,
+        "label": "FOMO Reservoir L5",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "106":
+    {
+        "id": "106",
+        "level": 6,
+        "label": "FOMO Reservoir L6",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "107":
+    {
+        "id": "107",
+        "level": 7,
+        "label": "FOMO Reservoir L7",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "108":
+    {
+        "id": "108",
+        "level": 8,
+        "label": "FOMO Reservoir L8",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "109":
+    {
+        "id": "109",
+        "level": 9,
+        "label": "FOMO Reservoir L9",
+        "installationType": "reservoir",
+        "installationGroup": "FOMO Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "110":
+    {
+        "id": "110",
+        "level": 1,
+        "label": "ALPHA Reservoir L1",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "111":
+    {
+        "id": "111",
+        "level": 2,
+        "label": "ALPHA Reservoir L2",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "112":
+    {
+        "id": "112",
+        "level": 3,
+        "label": "ALPHA Reservoir L3",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "113":
+    {
+        "id": "113",
+        "level": 4,
+        "label": "ALPHA Reservoir L4",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "114":
+    {
+        "id": "114",
+        "level": 5,
+        "label": "ALPHA Reservoir L5",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "115":
+    {
+        "id": "115",
+        "level": 6,
+        "label": "ALPHA Reservoir L6",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "116":
+    {
+        "id": "116",
+        "level": 7,
+        "label": "ALPHA Reservoir L7",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "117":
+    {
+        "id": "117",
+        "level": 8,
+        "label": "ALPHA Reservoir L8",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "118":
+    {
+        "id": "118",
+        "level": 9,
+        "label": "ALPHA Reservoir L9",
+        "installationType": "reservoir",
+        "installationGroup": "ALPHA Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "119":
+    {
+        "id": "119",
+        "level": 1,
+        "label": "KEK Reservoir L1",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "120":
+    {
+        "id": "120",
+        "level": 2,
+        "label": "KEK Reservoir L2",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "121":
+    {
+        "id": "121",
+        "level": 3,
+        "label": "KEK Reservoir L3",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "122":
+    {
+        "id": "122",
+        "level": 4,
+        "label": "KEK Reservoir L4",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "123":
+    {
+        "id": "123",
+        "level": 5,
+        "label": "KEK Reservoir L5",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "124":
+    {
+        "id": "124",
+        "level": 6,
+        "label": "KEK Reservoir L6",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "125":
+    {
+        "id": "125",
+        "level": 7,
+        "label": "KEK Reservoir L7",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "126":
+    {
+        "id": "126",
+        "level": 8,
+        "label": "KEK Reservoir L8",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "127":
+    {
+        "id": "127",
+        "level": 9,
+        "label": "KEK Reservoir L9",
+        "installationType": "reservoir",
+        "installationGroup": "KEK Reservoir",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "128":
+    {
+        "id": "128",
+        "level": 1,
+        "label": "Maaker L1",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "129":
+    {
+        "id": "129",
+        "level": 2,
+        "label": "Maaker L2",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "130":
+    {
+        "id": "130",
+        "level": 3,
+        "label": "Maaker L3",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "131":
+    {
+        "id": "131",
+        "level": 4,
+        "label": "Maaker L4",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "132":
+    {
+        "id": "132",
+        "level": 5,
+        "label": "Maaker L5",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "133":
+    {
+        "id": "133",
+        "level": 6,
+        "label": "Maaker L6",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "134":
+    {
+        "id": "134",
+        "level": 7,
+        "label": "Maaker L7",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "135":
+    {
+        "id": "135",
+        "level": 8,
+        "label": "Maaker L8",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "136":
+    {
+        "id": "136",
+        "level": 9,
+        "label": "Maaker L9",
+        "installationType": "maker",
+        "installationGroup": "Maaker",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
     }
 }
