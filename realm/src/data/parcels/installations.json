@@ -1042,5 +1042,23 @@
             "baseOffsetTop": 30,
             "baseOffsetLeft": 33
         }
+    },
+    "55":
+    {
+        "id": "55",
+        "label": "Graand Fountain",
+        "installationType": "decoration",
+        "installationGroup": null,
+        "width": 4,
+        "height": 4,
+        "image":
+        {
+            "baseWidth": 255,
+            "baseHeight": 262,
+            "width": 384,
+            "height": 320,
+            "baseOffsetTop": 59,
+            "baseOffsetLeft": 65
+        }
     }
 }
