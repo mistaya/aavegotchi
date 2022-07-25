@@ -4,9 +4,9 @@
         <span class="parcel-details__label">
           Contents:
         </span>
-        <div v-if="fetchStatus.loading">
+        <span v-if="fetchStatus.loading">
           loading...
-        </div>
+        </span>
         <div v-if="fetchStatus.error">
           Error fetching parcel contents.
         </div>

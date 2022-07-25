@@ -156,6 +156,11 @@
       :sizeNum="parcel.size"
     />
 
+    <ParcelDetailsAlchemica
+      :key="`alchemica_${parcel.id}`"
+      :id="parcel.id"
+    />
+
     <div class="parcel-coords">
       Coordinates:
       ({{ parcel.coordinateX }},
@@ -175,6 +180,7 @@ import NumberDisplay from '@/common/NumberDisplay.vue'
 import FlagSelectedIcon from './FlagSelectedIcon.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
+import ParcelDetailsAlchemica from './ParcelDetailsAlchemica.vue'
 
 export default {
   components: {
@@ -183,7 +189,8 @@ export default {
     NumberDisplay,
     FlagSelectedIcon,
     ParcelBoosts,
-    ParcelDetailsInstallations
+    ParcelDetailsInstallations,
+    ParcelDetailsAlchemica
   },
   props: {
     parcel: { type: Object, required: true },

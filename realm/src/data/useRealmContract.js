@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { useProvider } from './useProvider'
+import BigNumber from 'bignumber.js'
 
 let provider = null
 const contractAddress = '0x1D0360BaC7299C86Ec8E99d0c1C9A95FEfaF2a11'
@@ -207,6 +208,33 @@ const initContract = function () {
       ],
       stateMutability: 'view',
       type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_realmId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_roundId',
+          type: 'uint256'
+        }
+      ],
+      // This is the rolled amount, that DOES NOT include boosts
+      name: 'getRoundBaseAlchemica',
+      outputs:
+      [
+        {
+          internalType: 'uint256[]',
+          name: '',
+          type: 'uint256[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
     }
   ]
   contract = new ethers.Contract(
@@ -286,6 +314,47 @@ const realm = {
         return { installationsGrid, tilesGrid }
       }
     )
+  },
+  getParcelAlchemica: async function (parcelId) {
+    if (!contract) {
+      initContract()
+    }
+    const promises = []
+    const nRounds = 1
+    for (let roundId = 0; roundId < nRounds; roundId++) {
+      const promise = contract.getRoundBaseAlchemica(parcelId, roundId)
+      promises.push(promise)
+    }
+    return Promise.all(promises).then(results => {
+      let resultIndex = 0
+      const rounds = []
+      for (let roundId = 0; roundId < nRounds; roundId++) {
+        // if parcel is unsurveyed, the result will be an empty array.
+        // if surveyed, it's an array of four values (each alchemica)
+        const isSurveyed = results[resultIndex].length === 4
+        // for each round, store an object containing alchemica { FUD, FOMO, ALPHA, KEK }
+        // convert from ethers BigNumber to BigNumber with correct decimal places
+        const [FUD, FOMO, ALPHA, KEK] = results[resultIndex].map(num => new BigNumber(num.toString()).div(10e17))
+        const NORMALIZED = !isSurveyed ? new BigNumber(0) : FUD
+          .plus(FOMO.times(2))
+          .plus(ALPHA.times(4))
+          .plus(KEK.times(10))
+        rounds[roundId] = {
+          id: roundId,
+          isSurveyed,
+          base: {
+            FUD,
+            FOMO,
+            ALPHA,
+            KEK,
+            NORMALIZED
+          }
+        }
+        // TODO also fetch base+boost numbers, and alchemica remaining
+        resultIndex++
+      }
+      return { rounds }
+    })
   }
 }
 
