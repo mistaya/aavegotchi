@@ -16,19 +16,22 @@
           v-if="aaltar || tiles.length || installations.length"
           style="margin-top: 8px"
         >
-          <a
-            href="#"
-            @click.prevent="parcelGridPopupIsOpen = true"
-          >
-            <ParcelGridSvg
-              :parcelWidth="parcelWidth"
-              :parcelHeight="parcelHeight"
-              :tiles="tiles"
-              :aaltar="aaltar"
-              :installations="installations"
-              style="max-height: 250px;"
-            />
-          </a>
+          <ParcelGridSvg
+            :parcelWidth="parcelWidth"
+            :parcelHeight="parcelHeight"
+            :tiles="tiles"
+            :aaltar="aaltar"
+            :installations="installations"
+            style="max-height: 250px;"
+          />
+          <div style="margin-bottom: 15px;">
+            <a
+              href="#"
+              @click.prevent="parcelGridPopupIsOpen = true"
+            >
+              View in popup
+            </a>
+          </div>
 
           <SiteDialog
             v-model:isOpen="parcelGridPopupIsOpen"

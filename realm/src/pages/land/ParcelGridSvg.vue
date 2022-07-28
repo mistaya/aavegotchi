@@ -18,6 +18,7 @@
         :height="type.height"
         :href="`/map/tile_${type.id}.png`"
       />
+      <!-- tiles -->
       <image
         v-for="{ type, grid } in tiles"
         :key="`tile__${type.id}`"
@@ -27,6 +28,7 @@
         :height="type.height"
         :href="`/map/tile_${type.id}.png`"
       />
+      <!-- installations -->
       <image
         v-for="{ type, grid } in installations"
         :key="`installation${type.id}`"
@@ -36,6 +38,7 @@
         :height="type.image ? type.height * (type.image.height / type.image.baseHeight) : type.height"
         :href="`/map/installation_${type.id}.png`"
       />
+      <!-- aaltar -->
       <image
         v-if="aaltar"
         :x="aaltar.type.image && aaltar.type.image.baseOffsetLeft ? aaltar.grid.x - (aaltar.type.width * (aaltar.type.image.baseOffsetLeft / aaltar.type.image.baseWidth)) : aaltar.grid.x"
@@ -100,6 +103,7 @@ export default {
 <style scoped>
   .parcel-grid {
     overflow: visible;
+    pointer-events: none; /* avoid overflowing images blocking other parts of the UI */
     /* use border in preference to outline, because outline renders on top of overflowing image content */
     border: 1px solid var(--site-border-color--transparent);
     background-color: var(--site-background-color);
