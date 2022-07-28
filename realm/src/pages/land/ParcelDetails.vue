@@ -27,7 +27,18 @@
 
     <div>
       <span class="parcel-details__label">ID:</span>
-      {{ parcel.id }}
+      <router-link
+        :to="{ name: 'parcel', params: { parcelId: parcel.id } }"
+        target="_blank"
+        style="margin-left: 5px;"
+        title="show parcel details in new tab"
+      >
+        {{ parcel.id }}
+        <SiteIcon name="open-window" :size="13" />
+        <span class="sr-only">
+          Open details in new tab
+        </span>
+      </router-link>
     </div>
 
     <div style="display: flex;">

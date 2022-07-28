@@ -58,7 +58,19 @@
       <template v-if="parcel.fullParcel">
         <div>
           <span class="parcel-details__label">ID:</span>
-          {{ parcel.fullParcel.id }}
+
+          <router-link
+            :to="{ name: 'parcel', params: { parcelId: parcel.fullParcel.id } }"
+            target="_blank"
+            style="margin-left: 5px;"
+            title="show parcel details in new tab"
+          >
+            {{ parcel.fullParcel.id }}
+            <SiteIcon name="open-window" :size="13" />
+            <span class="sr-only">
+              Open details in new tab
+            </span>
+          </router-link>
         </div>
 
         <div>
@@ -86,6 +98,18 @@
         </div>
       </template>
 
+      <ParcelDetailsInstallations
+        :key="`installations_${parcel.fullParcel.id}`"
+        :id="parcel.fullParcel.id"
+        :sizeNum="parcel.fullParcel.size"
+      />
+
+      <ParcelDetailsAlchemica
+        :key="`alchemica_${parcel.fullParcel.id}`"
+        :id="parcel.fullParcel.id"
+        :sizeNum="parcel.fullParcel.size"
+      />
+
       <div
         class="parcel-coords"
       >
@@ -107,10 +131,14 @@ import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
 import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 import useParcels from '@/data/useParcels'
 import ParcelBoosts from './ParcelBoosts.vue'
+import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
+import ParcelDetailsAlchemica from './ParcelDetailsAlchemica.vue'
 
 export default {
   components: {
-    ParcelBoosts
+    ParcelBoosts,
+    ParcelDetailsInstallations,
+    ParcelDetailsAlchemica
   },
   props: {
     paartner: { type: String, required: true }

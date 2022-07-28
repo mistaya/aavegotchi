@@ -151,13 +151,17 @@
               :key="row.id"
             >
               <td>
-                <a
-                  :href="`https://gotchiverse.io/auction?tokenId=${row.id}`"
-                  rel="noopener"
+                <router-link
+                  :to="{ name: 'parcel', params: { parcelId: row.id } }"
                   target="_blank"
+                  title="show parcel details in new tab"
                 >
                   #{{ row.id }}
-                </a>
+                  <SiteIcon name="open-window" :size="13" />
+                  <span class="sr-only">
+                    Open details in new tab
+                  </span>
+                </router-link>
               </td>
               <td>
                 {{ row.parcelHash }}
