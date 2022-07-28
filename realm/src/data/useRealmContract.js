@@ -216,6 +216,55 @@ const initContract = function () {
           internalType: 'uint256',
           name: '_realmId',
           type: 'uint256'
+        }
+      ],
+      // Remaining alchemica in parcel
+      name: 'getRealmAlchemica',
+      outputs:
+      [
+        {
+          internalType: 'uint256[4]',
+          name: '',
+          type: 'uint256[4]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_realmId',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_roundId',
+          type: 'uint256'
+        }
+      ],
+      // Rolled + boosts
+      name: 'getRoundAlchemica',
+      outputs:
+      [
+        {
+          internalType: 'uint256[]',
+          name: '',
+          type: 'uint256[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function'
+    },
+    {
+      inputs:
+      [
+        {
+          internalType: 'uint256',
+          name: '_realmId',
+          type: 'uint256'
         },
         {
           internalType: 'uint256',
@@ -320,40 +369,51 @@ const realm = {
       initContract()
     }
     const promises = []
+    promises.push(contract.getRealmAlchemica(parcelId))
     const nRounds = 1
     for (let roundId = 0; roundId < nRounds; roundId++) {
-      const promise = contract.getRoundBaseAlchemica(parcelId, roundId)
-      promises.push(promise)
+      promises.push(contract.getRoundBaseAlchemica(parcelId, roundId))
+      promises.push(contract.getRoundAlchemica(parcelId, roundId))
     }
     return Promise.all(promises).then(results => {
+      const processResult = result => {
+        const hasAlchemica = result.length === 4
+        // convert from ethers BigNumber to BigNumber with correct decimal places
+        const [FUD, FOMO, ALPHA, KEK] = result.map(num => new BigNumber(num.toString()).div(10e17))
+        const NORMALIZED = !hasAlchemica ? new BigNumber(0) : FUD
+          .plus(FOMO.times(2))
+          .plus(ALPHA.times(4))
+          .plus(KEK.times(10))
+        return { FUD, FOMO, ALPHA, KEK, NORMALIZED }
+      }
+
+      // First result is the alchemica currently present/available in the parcel
       let resultIndex = 0
+      const current = processResult(results[resultIndex])
+      resultIndex++
+
       const rounds = []
       for (let roundId = 0; roundId < nRounds; roundId++) {
         // if parcel is unsurveyed, the result will be an empty array.
         // if surveyed, it's an array of four values (each alchemica)
         const isSurveyed = results[resultIndex].length === 4
-        // for each round, store an object containing alchemica { FUD, FOMO, ALPHA, KEK }
-        // convert from ethers BigNumber to BigNumber with correct decimal places
-        const [FUD, FOMO, ALPHA, KEK] = results[resultIndex].map(num => new BigNumber(num.toString()).div(10e17))
-        const NORMALIZED = !isSurveyed ? new BigNumber(0) : FUD
-          .plus(FOMO.times(2))
-          .plus(ALPHA.times(4))
-          .plus(KEK.times(10))
+
+        // 1) base alchemica
+        const base = processResult(results[resultIndex])
+        resultIndex++
+
+        // 2) base + boost alchemica
+        const withBoost = processResult(results[resultIndex])
+        resultIndex++
+
         rounds[roundId] = {
           id: roundId,
           isSurveyed,
-          base: {
-            FUD,
-            FOMO,
-            ALPHA,
-            KEK,
-            NORMALIZED
-          }
+          base,
+          withBoost
         }
-        // TODO also fetch base+boost numbers, and alchemica remaining
-        resultIndex++
       }
-      return { rounds }
+      return { current, rounds }
     })
   }
 }

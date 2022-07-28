@@ -5,6 +5,7 @@ import useRealmContract from '@/data/useRealmContract'
 const realm = useRealmContract()
 
 export default function () {
+  const current = ref(null)
   const rounds = ref([])
 
   const { status: fetchStatus, setLoading } = useStatus()
@@ -13,6 +14,7 @@ export default function () {
   const lastFetchDate = ref(null)
 
   const resetAlchemica = function () {
+    current.value = null
     rounds.value = []
     lastFetchDate.value = null
   }
@@ -22,7 +24,8 @@ export default function () {
     const [isStale, setLoaded, setError] = setLoading()
     realm.getParcelAlchemica(parcelId).then(async result => {
       if (isStale()) { console.log('Stale request, ignoring'); return }
-      if (result && result.rounds) {
+      if (result && result.current && result.rounds) {
+        current.value = result.current
         rounds.value = result.rounds
         lastFetchDate.value = new Date()
         setLoaded()
@@ -36,6 +39,7 @@ export default function () {
   }
 
   return {
+    current,
     rounds,
     canSubmitFetch,
     fetchStatus,
