@@ -74,7 +74,8 @@ const routes = [
           head: {
             title: 'Parcel Details',
             description: 'View details about a parcel'
-          }
+          },
+          analyticsUrl: '/citaadel/parcel/ID'
         }
       }
     ]
@@ -315,7 +316,11 @@ router.beforeResolve((to, from, next) => {
 
 // Analytics
 router.afterEach((to, from) => {
-  window.trackView(to.path)
+  if (to.meta.analyticsUrl) {
+    window.trackView(to.meta.analyticsUrl)
+  } else {
+    window.trackView(to.path)
+  }
 })
 
 // Production website can produce routing errors when new versions are deployed
