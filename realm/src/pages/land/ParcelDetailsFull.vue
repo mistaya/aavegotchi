@@ -23,6 +23,33 @@
     </template>
     <template v-else-if="fetchStatus.loaded">
 
+      <template v-if="listingFetchStatus.error">
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            Error fetching parcel baazaar listing
+          </div>
+        </div>
+      </template>
+      <div
+        v-else-if="listingFetchStatus.loaded && parcelListing"
+        style="margin-bottom: 10px;"
+      >
+        <span>Listed on Baazaar:</span>
+        <a
+          :href="`https://app.aavegotchi.com/baazaar/erc721/${parcelListing.id}`"
+          target="_blank"
+          style="margin-left: 5px;"
+        >
+          <NumberDisplay :number="parcelListing.priceInGhst" />
+          GHST
+          <SiteIcon name="open-window" :size="13" />
+        </a>
+        <span style="margin-left: 5px">
+          (<DateFriendly :date="parcelListing.dateCreated" />)
+        </span>
+      </div>
+
       <div style="margin-bottom: 10px;">
         <span style="margin-right: 10px;">Owner:</span>
         <EthAddress
@@ -91,14 +118,19 @@
 
 <script>
 import useParcelDetailsSingle from '@/data/useParcelDetailsSingle'
+import useParcelBaazaarListingSingle from '@/data/useParcelBaazaarListingSingle'
+import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
 import ParcelDetailsAlchemica from './ParcelDetailsAlchemica.vue'
 
 export default {
   components: {
+    DateFriendly,
     EthAddress,
+    NumberDisplay,
     ParcelBoosts,
     ParcelDetailsInstallations,
     ParcelDetailsAlchemica
@@ -119,9 +151,18 @@ export default {
 
     fetchDetails(props.parcelId)
 
+    const {
+      parcelListing,
+      fetchStatus: listingFetchStatus,
+      fetchListing
+    } = useParcelBaazaarListingSingle(props.parcelId)
+    fetchListing(props.parcelId)
+
     return {
       fetchStatus,
-      parcelDetails
+      parcelDetails,
+      listingFetchStatus,
+      parcelListing
     }
   }
 }
