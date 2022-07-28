@@ -1,6 +1,5 @@
 <template>
   <PrereqParcels>
-    <CryptoIcons />
     <LayoutMapWithFilters
       class="citaadel-page"
       withoutViewModes
@@ -98,7 +97,6 @@ import useParcels from '@/data/useParcels'
 import useRecentChannelings from '@/data/useRecentChannelings'
 
 import CryptoIcon from '@/common/CryptoIcon.vue'
-import CryptoIcons from '@/common/CryptoIcons.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 
@@ -123,7 +121,6 @@ const N_CHANNELINGS = 20
 
 export default {
   components: {
-    CryptoIcons,
     CryptoIcon,
     CitaadelMap,
     DateFriendly,

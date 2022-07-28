@@ -1,6 +1,5 @@
 <template>
   <PrereqParcels>
-    <CryptoIcons />
     <LayoutMapWithFilters class="citaadel-page">
       <template #sidebar="{ viewMode, setViewModeBoth }">
         <h1>The Citaadel</h1>
@@ -478,12 +477,10 @@ import FilterOwners, { getFilter as getOwnersFilter } from './FilterOwners.vue'
 import FilterContentsAaltar, { getDefaultValue as getDefaultContentsAaltarValue, getFilter as getContentsAaltarFilter } from './FilterContentsAaltar.vue'
 import FilterContentsInstallations, { getDefaultValue as getDefaultContentsInstallationsValue, getFilter as getContentsInstallationsFilter } from './FilterContentsInstallations.vue'
 import InputColor from '@/common/InputColor.vue'
-import CryptoIcons from '@/common/CryptoIcons.vue'
 
 export default {
   components: {
     PrereqParcels,
-    CryptoIcons,
     LayoutMapWithFilters,
     DataFetcherBaazaarListings,
     DataFetcherParcelContents,

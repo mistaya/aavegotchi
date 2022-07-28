@@ -1,5 +1,6 @@
 <template>
   <div class="citaadel-layout">
+    <CryptoIcons />
     <div class="citaadel-nav site-banner site-banner--secondary">
       <router-link
         :to="{ name: 'citaadel-main' }"
@@ -13,12 +14,20 @@
       >
         Channeling Activity
       </router-link>
+      <router-link
+        :to="{ name: 'parcel' }"
+        class="site-banner__link"
+      >
+        Parcel
+      </router-link>
     </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import CryptoIcons from '@/common/CryptoIcons.vue'
+
 const ensureSubPage = function (to, next) {
   if (to.name === 'citaadel') {
     next({
@@ -29,6 +38,9 @@ const ensureSubPage = function (to, next) {
   }
 }
 export default {
+  components: {
+    CryptoIcons
+  },
   beforeRouteEnter (to, from, next) {
     ensureSubPage(to, next)
   },

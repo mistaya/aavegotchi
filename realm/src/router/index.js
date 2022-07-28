@@ -10,6 +10,7 @@ const CitaadelMainPage = () => import(/* webpackChunkName: "citaadel-main" */ '@
 const CitaadelChannelingPage = () => import(/* webpackChunkName: "citaadel-channelings" */ '@/pages/land/CitaadelChannelingPage.vue')
 const LandAuctionsPage = () => import(/* webpackChunkName: "land-auctions" */'@/pages/land/LandAuctionsPage.vue')
 const LandAuctionPage = () => import(/* webpackChunkName: "land-auction" */'@/pages/land/LandAuctionPage.vue')
+const ParcelPage = () => import(/* webpackChunkName: "parcel" */ '@/pages/land/ParcelPage.vue')
 const ConfigData = () => import(/* webpackChunkName: "config" */ '@/pages/land/ConfigData.vue')
 const ConfigParcels = () => import(/* webpackChunkName: "config" */ '@/pages/land/ConfigParcels.vue')
 const ConfigDataPocket = () => import(/* webpackChunkName: "config-pocket" */ '@/pages/pockets/ConfigDataPocket.vue')
@@ -61,6 +62,18 @@ const routes = [
           head: {
             title: 'Channeling Activity',
             description: 'See recent channelings in the Citaadel'
+          }
+        }
+      },
+      {
+        path: 'parcel/:parcelId?',
+        name: 'parcel',
+        component: ParcelPage,
+        props: true,
+        meta: {
+          head: {
+            title: 'Parcel Details',
+            description: 'View details about a parcel'
           }
         }
       }
