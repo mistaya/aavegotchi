@@ -159,6 +159,7 @@
     <ParcelDetailsAlchemica
       :key="`alchemica_${parcel.id}`"
       :id="parcel.id"
+      :sizeNum="parcel.size"
     />
 
     <div class="parcel-coords">

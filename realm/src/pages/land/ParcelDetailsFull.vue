@@ -69,6 +69,7 @@
         </summary>
         <ParcelDetailsAlchemica
           :id="parcelId"
+          :sizeNum="parcelDetails.size"
         />
       </details>
 
