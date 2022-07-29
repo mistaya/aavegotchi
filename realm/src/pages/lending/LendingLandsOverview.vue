@@ -247,8 +247,7 @@ import SortToggle from '@/common/SortToggle.vue'
 import INSTALLATIONS from '@/data/parcels/installations.json'
 
 const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-// const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
+const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
 const FETCH_PAGE_SIZE = 1000
 
 const PARCEL_SIZE_LABELS = {

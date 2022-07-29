@@ -25,8 +25,7 @@ const utcMidnight = computed(() => {
 
 const utcMidnightTimestampMs = computed(() => utcMidnight.value - 0)
 
-// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
+const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
 const FETCH_PAGE_SIZE = 1000
 
 export {

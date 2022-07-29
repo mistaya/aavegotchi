@@ -2,9 +2,6 @@ import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import initialOwnersUrl from './pockets/assetVaultOwners.json'
 
-// v1: bug with vault owners after lending
-// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
-// v2: fixed lending bug
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchi-vault'
 const FETCH_PAGE_SIZE = 1000
 

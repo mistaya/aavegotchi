@@ -3,7 +3,7 @@ import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
 import INSTALLATIONS from './parcels/installations.json'
 
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
+const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
 const FETCH_PAGE_SIZE = 1000
 
 const findAaltar = function (equippedInstallations) {
