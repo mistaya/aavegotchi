@@ -246,7 +246,7 @@ import SiteTable from '@/site/SiteTable.vue'
 import SortToggle from '@/common/SortToggle.vue'
 import INSTALLATIONS from '@/data/parcels/installations.json'
 
-const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
+const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 // const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
 const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-gotchiverse'
 const FETCH_PAGE_SIZE = 1000
