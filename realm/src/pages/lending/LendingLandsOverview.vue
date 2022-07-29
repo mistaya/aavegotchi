@@ -254,7 +254,8 @@ const PARCEL_SIZE_LABELS = {
   '0': 'humble',
   '1': 'reasonable',
   '2': 'spacious',
-  '3': 'spacious'
+  '3': 'spacious',
+  '4': 'partner'
 }
 
 export default {
