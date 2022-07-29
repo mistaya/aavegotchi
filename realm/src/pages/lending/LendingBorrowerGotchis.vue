@@ -45,7 +45,7 @@
               <div>
                 Profit:
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES.GHST"
+                  label="GHST"
                   style="margin: 0 5px 0 0"
                 />
                 <span style="font-size: 1.3em">
@@ -75,7 +75,7 @@
                 style="display: flex; align-items: center; margin: 5px 10px 5px 5px;"
               >
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES[token]"
+                  :label="token"
                   style="margin-right: 5px"
                 />
                 {{ stats.totalAlchemica[token] }}
@@ -89,7 +89,7 @@
                   =
                 </span>
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES.GHST"
+                  label="GHST"
                   style="margin-right: 5px; align-self: flex-start;"
                 />
                 {{ stats.totalNormalizedAlchemicaGhst.decimalPlaces(2) }}
@@ -106,7 +106,7 @@
                 style="display: flex; align-items: center; margin: 5px 10px 5px 5px;"
               >
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES[token]"
+                  :label="token"
                   style="margin-right: 5px"
                 />
                 {{ stats.totalAlchemicaEarned[token] }}
@@ -120,7 +120,7 @@
                   =
                 </span>
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES.GHST"
+                  label="GHST"
                   style="margin-right: 5px; align-self: flex-start;"
                 />
                 {{ stats.totalNormalizedAlchemicaEarnedGhst.decimalPlaces(2) }}
@@ -135,7 +135,7 @@
             {{ stats.numLendings === 1 ? 'gotchi' : 'gotchis' }}
             for {{ friendlyDuration(stats.totalSeconds) }},
             fees <CryptoIcon
-              :address="TOKEN_ADDRESSES.GHST"
+              label="GHST"
               style="position: relative; top: 2px"
             />
             {{ stats.totalUpfrontGhst.decimalPlaces(2) }}
@@ -622,17 +622,6 @@ import LendingLandsIconLink from './LendingLandsIconLink.vue'
 import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from './LendingLastChanneledCell.vue'
 
-import tokens from '@/data/pockets/tokens.json'
-
-const tokensList = Object.values(tokens)
-const TOKEN_ADDRESSES = {
-  FUD: tokensList.find(({ label }) => label === 'FUD').id,
-  FOMO: tokensList.find(({ label }) => label === 'FOMO').id,
-  ALPHA: tokensList.find(({ label }) => label === 'ALPHA').id,
-  KEK: tokensList.find(({ label }) => label === 'KEK').id,
-  GHST: tokensList.find(({ label }) => label === 'GHST').id
-}
-
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
 const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
 const FETCH_PAGE_SIZE = 1000
@@ -1115,7 +1104,6 @@ export default {
       pricesStatus,
       ghstPrices,
       stats,
-      TOKEN_ADDRESSES,
       borrowedGotchis,
       numGotchis,
       showCollected,

@@ -51,7 +51,7 @@
                     :key="token"
                     class="alchemica-amount"
                   >
-                    <CryptoIcon :address="TOKEN_ADDRESSES[token]" />
+                    <CryptoIcon :label="token" />
                     <NumberDisplay
                       :number="channeling.spillover[token]"
                     />
@@ -104,16 +104,6 @@ import PrereqParcels from './PrereqParcels.vue'
 import LayoutMapWithFilters from './LayoutMapWithFilters.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
-
-import tokens from '@/data/pockets/tokens.json'
-
-const tokensList = Object.values(tokens)
-const TOKEN_ADDRESSES = {
-  FUD: tokensList.find(({ label }) => label === 'FUD').id,
-  FOMO: tokensList.find(({ label }) => label === 'FOMO').id,
-  ALPHA: tokensList.find(({ label }) => label === 'ALPHA').id,
-  KEK: tokensList.find(({ label }) => label === 'KEK').id
-}
 
 const POLL_SECONDS = 5
 const RECENT_MINUTES = 3
@@ -182,8 +172,7 @@ export default {
       annotatedChannelings,
       N_CHANNELINGS,
       channelingsToDisplay,
-      mapConfig,
-      TOKEN_ADDRESSES
+      mapConfig
     }
   }
 }

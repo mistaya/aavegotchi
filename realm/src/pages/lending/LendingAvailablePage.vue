@@ -100,7 +100,7 @@
                   {{ token }}
                 </span>
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES[token]"
+                  :label="token"
                   class="shared-token-icon"
                 />
               </div>

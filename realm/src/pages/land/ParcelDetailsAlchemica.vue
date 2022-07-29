@@ -30,7 +30,7 @@
             >
               <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
                 <CryptoIcon
-                  :address="TOKEN_ADDRESSES[token]"
+                  :label="token"
                   style="margin-right: 5px"
                 />
                 <NumberDisplay
@@ -149,7 +149,7 @@
                 >
                   <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
                     <CryptoIcon
-                      :address="TOKEN_ADDRESSES[token]"
+                      :label="token"
                       style="margin-right: 5px"
                     />
                     <NumberDisplay
@@ -183,16 +183,6 @@ import useParcelAlchemicaSingleFromContract from '@/data/useParcelAlchemicaSingl
 import CryptoIcon from '@/common/CryptoIcon.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 import SiteDialog from '@/site/SiteDialog.vue'
-import tokens from '@/data/pockets/tokens.json'
-
-const tokensList = Object.values(tokens)
-const TOKEN_ADDRESSES = {
-  FUD: tokensList.find(({ label }) => label === 'FUD').id,
-  FOMO: tokensList.find(({ label }) => label === 'FOMO').id,
-  ALPHA: tokensList.find(({ label }) => label === 'ALPHA').id,
-  KEK: tokensList.find(({ label }) => label === 'KEK').id,
-  GHST: tokensList.find(({ label }) => label === 'GHST').id
-}
 
 export default {
   components: {
@@ -238,7 +228,6 @@ export default {
       fetchStatus,
       current,
       rounds,
-      TOKEN_ADDRESSES,
       hasBoosts,
       includeBoosts,
       surveyPopupIsOpen
