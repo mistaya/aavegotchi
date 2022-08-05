@@ -9,10 +9,10 @@
         Main Map
       </router-link>
       <router-link
-        :to="{ name: 'citaadel-channeling' }"
+        :to="{ name: 'citaadel-spillover' }"
         class="site-banner__link"
       >
-        Channeling Activity
+        Spillover Activity
       </router-link>
       <router-link
         :to="{ name: 'parcel' }"

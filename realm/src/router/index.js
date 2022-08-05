@@ -7,7 +7,7 @@ const { pageLoading, pageLazyLoadError } = usePageLoading()
 
 const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/pages/land/CitaadelPage.vue')
 const CitaadelMainPage = () => import(/* webpackChunkName: "citaadel-main" */ '@/pages/land/CitaadelMainPage.vue')
-const CitaadelChannelingPage = () => import(/* webpackChunkName: "citaadel-channelings" */ '@/pages/land/CitaadelChannelingPage.vue')
+const CitaadelSpilloverPage = () => import(/* webpackChunkName: "citaadel-spillover" */ '@/pages/land/CitaadelSpilloverPage.vue')
 const LandAuctionsPage = () => import(/* webpackChunkName: "land-auctions" */'@/pages/land/LandAuctionsPage.vue')
 const LandAuctionPage = () => import(/* webpackChunkName: "land-auction" */'@/pages/land/LandAuctionPage.vue')
 const ParcelPage = () => import(/* webpackChunkName: "parcel" */ '@/pages/land/ParcelPage.vue')
@@ -54,14 +54,21 @@ const routes = [
           }
         }
       },
+      // redirect from old channeling page to spillover
       {
         path: 'channeling',
-        name: 'citaadel-channeling',
-        component: CitaadelChannelingPage,
+        redirect: {
+          name: 'citaadel-spillover'
+        }
+      },
+      {
+        path: 'spillover',
+        name: 'citaadel-spillover',
+        component: CitaadelSpilloverPage,
         meta: {
           head: {
-            title: 'Channeling Activity',
-            description: 'See recent channelings in the Citaadel'
+            title: 'Spillover Activity',
+            description: 'See recent channelings/harvestings in the Citaadel'
           }
         }
       },
