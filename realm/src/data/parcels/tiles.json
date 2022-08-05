@@ -2,42 +2,49 @@
   "1": {
     "id": "1",
     "label": "LE Golden Tile - Gotchiverse",
+    "tileGroup": "LE Golden Tile",
     "width": 8,
     "height": 8
   },
   "2": {
     "id": "2",
     "label": "LE Golden Tile - Portal",
+    "tileGroup": "LE Golden Tile",
     "width": 8,
     "height": 8
   },
   "3": {
     "id": "3",
     "label": "LE Golden Tile - Gotchi",
+    "tileGroup": "LE Golden Tile",
     "width": 8,
     "height": 8
   },
   "4": {
     "id": "4",
     "label": "LE Purple Grass",
+    "tileGroup": "LE Grass",
     "width": 4,
     "height": 4
   },
   "5": {
     "id": "5",
     "label": "LE Mythical Rofl Rug",
+    "tileGroup": "LE Rug",
     "width": 16,
     "height": 8
   },
   "6": {
     "id": "6",
     "label": "LE Cyan Grass",
+    "tileGroup": "LE Grass",
     "width": 4,
     "height": 4
   },
   "7": {
     "id": "7",
     "label": "LE Godlike Rofl Rug",
+    "tileGroup": "LE Rug",
     "width": 16,
     "height": 8
   }
