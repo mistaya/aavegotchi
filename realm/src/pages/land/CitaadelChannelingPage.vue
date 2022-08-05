@@ -5,61 +5,70 @@
       withoutViewModes
     >
       <template #sidebar>
-        <h1>Channelings (last {{ RECENT_MINUTES }} minutes)</h1>
+        <h1>Spillover events (last {{ RECENT_MINUTES }} minutes)</h1>
 
         <div style="margin-bottom: 20px; margin-right: 20px;">
           <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
             <SiteIcon name="warning-triangle" />
             <div>
-              Warning: channeling spillover will only occur during the Saturday hangouts (2pm - 4pm UTC). See the announcements in Discord for details.
+              Warning: channeling/harvesting spillover will only occur during the Saturday hangouts (2pm - 4pm UTC). See the announcements in Discord for details.
             </div>
           </div>
         </div>
 
         <div>
-          <template v-if="!annotatedChannelings.length">
-            No channelings found.
+          <template v-if="!recentEventsAnnotated.length">
+            No events found.
           </template>
           <template v-else>
-            {{ annotatedChannelings.length }}
-            {{ annotatedChannelings.length === 1 ? 'channeling' : 'channelings' }}
+            {{ recentEventsAnnotated.length }}
+            {{ recentEventsAnnotated.length === 1 ? 'event' : 'events' }}
 
             <div
               style="margin-top: 20px;"
-              class="channelings-tg-container"
+              class="spillovers-tg-container"
             >
               <TransitionGroup
-                name="channelings-tg"
+                name="spillovers-tg"
                 tag="ul"
-                class="channelings-list"
+                class="spillovers-list"
               >
                 <li
-                  v-for="channeling in channelingsToDisplay"
-                  :key="channeling.id"
+                  v-for="event in eventsToDisplay"
+                  :key="event.id"
                 >
                   <DateFriendly
-                    :date="channeling.date"
+                    :date="event.date"
                   />:
-                  D{{ channeling.parcel.district }}, {{ channeling.aaltar.label }},
-                  <span class="parcel-name">{{ channeling.parcel.parcelHash }}</span>
-                  <span class="parcel-coords"> ({{ channeling.parcel.coordinateX * 64 }},
-                  {{ channeling.parcel.coordinateY * 64 }})</span>,
+                  D{{ event.parcel.district }},
+                  <template v-if="event.aaltar">
+                    Channelled {{ event.aaltar.label }},
+                  </template>
+                  <template v-else>
+                    Harvested
+                  </template>
+                  <span class="parcel-name">{{ event.parcel.parcelHash }}</span>
+                  <span class="parcel-coords"> ({{ event.parcel.coordinateX * 64 }},
+                  {{ event.parcel.coordinateY * 64 }})</span>,
                   spillover:
                   <br>
                   <div
                     v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
                     :key="token"
                     class="alchemica-amount"
+                    :style="{
+                      display: event.spillover[token] ? undefined : 'none'
+                    }"
                   >
                     <CryptoIcon :label="token" />
                     <NumberDisplay
-                      :number="channeling.spillover[token]"
+                      :number="event.spillover[token]"
                     />
                   </div>
                 </li>
               </TransitionGroup>
-              <i v-if="annotatedChannelings.length > N_CHANNELINGS">
-                + {{ annotatedChannelings.length - N_CHANNELINGS }} more channeling(s)
+              <i v-if="recentEventsAnnotated.length > N_EVENTS">
+                + {{ recentEventsAnnotated.length - N_EVENTS }} more event(s)
               </i>
             </div>
           </template>
@@ -72,10 +81,10 @@
         />
       </template>
       <template #top>
-        <template v-if="channelingsFetchStatus.error">
+        <template v-if="spilloverFetchStatus.error">
           Error fetching data
         </template>
-        <template v-if="channelingsFetchStatus.loading">
+        <template v-if="spilloverFetchStatus.loading">
           Loading...
         </template>
         &nbsp;
@@ -83,7 +92,7 @@
       <template #main>
         <CitaadelMap
           :mapConfig="mapConfig"
-          :channelings="annotatedChannelings"
+          :channelings="recentEventsAnnotated"
         />
       </template>
     </LayoutMapWithFilters>
@@ -94,7 +103,7 @@
 import { ref, computed, onUnmounted } from 'vue'
 import BigNumber from 'bignumber.js'
 import useParcels from '@/data/useParcels'
-import useRecentChannelings from '@/data/useRecentChannelings'
+import useRecentSpillover from '@/data/useRecentSpillover'
 
 import CryptoIcon from '@/common/CryptoIcon.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
@@ -107,7 +116,7 @@ import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapCon
 
 const POLL_SECONDS = 5
 const RECENT_MINUTES = 3
-const N_CHANNELINGS = 20
+const N_EVENTS = 20
 
 export default {
   components: {
@@ -121,38 +130,38 @@ export default {
   },
   setup () {
     const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
-    const { fetchStatus: channelingsFetchStatus, channelings, fetchChannelings } = useRecentChannelings(RECENT_MINUTES)
+    const { fetchStatus: spilloverFetchStatus, channelings, claimed, fetchSpillover } = useRecentSpillover(RECENT_MINUTES)
 
-    const annotatedChannelings = computed(() => {
-      if (!channelings.value || !parcelsFetchStatus.value.loaded) { return [] }
-      return channelings.value.map(channeling => ({
-        ...channeling,
-        parcel: parcelsById.value[channeling.parcelId],
-        aaltar: channeling.aaltar
+    const recentEventsAnnotated = computed(() => {
+      if (!channelings.value || !claimed.value || !parcelsFetchStatus.value.loaded) { return [] }
+      const events = [...channelings.value, ...claimed.value]
+      events.sort((a, b) => b.date - a.date)
+      return events.map(event => ({
+        ...event,
+        parcel: parcelsById.value[event.parcelId]
       }))
     })
-    const channelingsToDisplay = computed(() => {
-      // console.log({ annotatedChannelings })
-      return annotatedChannelings.value.slice(0, N_CHANNELINGS).map(channeling => {
-        const spilloverMultiplier = channeling.spilloverRate
+    const eventsToDisplay = computed(() => {
+      return recentEventsAnnotated.value.slice(0, N_EVENTS).map(event => {
+        const spilloverRates = event.spilloverRate
         const spillover = {
-          FUD: new BigNumber(channeling.alchemica.FUD).times(spilloverMultiplier).decimalPlaces(1).toNumber(),
-          FOMO: new BigNumber(channeling.alchemica.FOMO).times(spilloverMultiplier).decimalPlaces(1).toNumber(),
-          ALPHA: new BigNumber(channeling.alchemica.ALPHA).times(spilloverMultiplier).decimalPlaces(1).toNumber(),
-          KEK: new BigNumber(channeling.alchemica.KEK).times(spilloverMultiplier).decimalPlaces(1).toNumber()
+          FUD: new BigNumber(event.alchemica.FUD).times(spilloverRates.FUD).decimalPlaces(1).toNumber(),
+          FOMO: new BigNumber(event.alchemica.FOMO).times(spilloverRates.FOMO).decimalPlaces(1).toNumber(),
+          ALPHA: new BigNumber(event.alchemica.ALPHA).times(spilloverRates.ALPHA).decimalPlaces(1).toNumber(),
+          KEK: new BigNumber(event.alchemica.KEK).times(spilloverRates.KEK).decimalPlaces(1).toNumber()
         }
         return {
-          ...channeling,
+          ...event,
           spillover
         }
       })
     })
 
-    const fetchingInterval = setInterval(fetchChannelings, POLL_SECONDS * 1000)
+    const fetchingInterval = setInterval(fetchSpillover, POLL_SECONDS * 1000)
     onUnmounted(() => {
       clearInterval(fetchingInterval)
     })
-    fetchChannelings()
+    fetchSpillover()
 
     const mapConfig = ref({
       ...getDefaultMapConfigValue(),
@@ -168,10 +177,10 @@ export default {
 
     return {
       RECENT_MINUTES,
-      channelingsFetchStatus,
-      annotatedChannelings,
-      N_CHANNELINGS,
-      channelingsToDisplay,
+      spilloverFetchStatus,
+      recentEventsAnnotated,
+      N_EVENTS,
+      eventsToDisplay,
       mapConfig
     }
   }
@@ -196,33 +205,33 @@ export default {
     margin-right: 3px;
     opacity: 0.6;
   }
-  .channelings-list {
+  .spillovers-list {
     margin: 0;
     padding: 10px;
     list-style-type: none;
   }
-  .channelings-list > li {
+  .spillovers-list > li {
     margin-bottom: 15px;
   }
 
   /* TransitionGroup */
-  .channelings-tg-move,
-  .channelings-tg-enter-active,
-  .channelings-tg-leave-active {
+  .spillovers-tg-move,
+  .spillovers-tg-enter-active,
+  .spillovers-tg-leave-active {
     transition: all 0.5s ease;
   }
-  .channelings-tg-enter-from,
-  .channelings-tg-leave-to {
+  .spillovers-tg-enter-from,
+  .spillovers-tg-leave-to {
     opacity: 0;
     transform: translateY(-30px);
   }
   /* ensure leaving items are taken out of layout flow so that moving
      animations can be calculated correctly. */
-  .channelings-tg-leave-active {
+  .spillovers-tg-leave-active {
     position: absolute;
   }
 
-  .channelings-tg-container {
+  .spillovers-tg-container {
     position: relative; /* avoid whole-page scrollbar when list item leaves */
   }
 </style>

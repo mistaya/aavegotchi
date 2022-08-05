@@ -464,7 +464,7 @@
               class="channeling-area"
               :cx="channeling.parcel.coordinateX - 0 + channeling.parcel.width / 2"
               :cy="channeling.parcel.coordinateY - 0 + channeling.parcel.height / 2"
-              :r="channeling.spilloverRadius"
+              :r="Math.min(...Object.values(channeling.spilloverRadius))"
               stroke="none"
             />
             <circle
