@@ -116,7 +116,7 @@ import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapCon
 
 const POLL_SECONDS = 5
 const RECENT_MINUTES = 3
-const N_EVENTS = 20
+const N_EVENTS = 30
 
 export default {
   components: {
