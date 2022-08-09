@@ -30,7 +30,7 @@ const fetchGotchis = function () {
       method: 'POST',
       body: JSON.stringify({
         query: `{
-          gotchiLendings(first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(lendingIds)}, timeAgreed_not: "0", cancelled: false }) {
+          gotchiLendings(first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(lendingIds)}, timeAgreed_gt: 0, cancelled: false }) {
             id
             lender
             originalOwner
