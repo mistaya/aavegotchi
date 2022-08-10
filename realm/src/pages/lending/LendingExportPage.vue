@@ -229,7 +229,7 @@ export default {
         {gotchiLendings(first: ${FETCH_PAGE_SIZE}, orderBy: id, where: {
           id_gt: ${lastIdNum},
           cancelled: false,
-          timeAgreed_gt: 0
+          timeAgreed_not: "0"
           ${whitelistQuery}
           ${lenderQuery}
           ${borrowerQuery}

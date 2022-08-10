@@ -715,7 +715,7 @@ export default {
 
       const query = `
       {gotchiLendings(first: ${fetchPageSize.value} ${orderQuery}, where: {
-        timeAgreed: null,
+        timeAgreed: "0",
         cancelled: false,
         ${upfrontQuery}
         ${borrowerSplitQuery}
