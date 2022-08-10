@@ -47,5 +47,33 @@
     "tileGroup": "LE Rug",
     "width": 16,
     "height": 8
+  },
+  "8": {
+    "id": "8",
+    "label": "Blue Ghost",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "9": {
+    "id": "9",
+    "label": "Blue Diamond",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "10": {
+    "id": "10",
+    "label": "Blue Star",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "11": {
+    "id": "11",
+    "label": "Blue Heart",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
   }
 }
