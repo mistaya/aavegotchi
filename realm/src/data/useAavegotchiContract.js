@@ -64,6 +64,7 @@ const aavegotchi = {
           // Wearable sets don't have ids, so generate them
           id: index + 1,
           name: item.name,
+          allowedCollaterals: item.allowedCollaterals,
           wearableIds: item.wearableIds,
           traitsBonuses: item.traitsBonuses
         }))

@@ -12,7 +12,7 @@ const wearableSets = ref(initialWearableSets)
 const { status: fetchStatus, setLoading } = useStatus()
 
 const canSubmitFetch = computed(() => !fetchStatus.value.loading)
-const lastFetchDate = ref(new Date(1641853552901))
+const lastFetchDate = ref(new Date(1660228532931))
 
 const setWearableSets = function (wearableSetsArray, fetchDate = null) {
   wearableSets.value = wearableSetsArray.map(w => ({

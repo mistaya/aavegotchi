@@ -2,6 +2,7 @@
     {
         "id": 1,
         "name": "Infantry",
+        "allowedCollaterals": [],
         "wearableIds": [
             1,
             2,
@@ -18,6 +19,7 @@
     {
         "id": 2,
         "name": "Trooper",
+        "allowedCollaterals": [],
         "wearableIds": [
             4,
             5,
@@ -34,6 +36,7 @@
     {
         "id": 3,
         "name": "Sergeant",
+        "allowedCollaterals": [],
         "wearableIds": [
             7,
             8,
@@ -50,6 +53,7 @@
     {
         "id": 4,
         "name": "Link Marine",
+        "allowedCollaterals": [],
         "wearableIds": [
             10,
             11,
@@ -66,6 +70,7 @@
     {
         "id": 5,
         "name": "Mythical Sergey",
+        "allowedCollaterals": [],
         "wearableIds": [
             13,
             14,
@@ -82,6 +87,7 @@
     {
         "id": 6,
         "name": "Godlike Sergey",
+        "allowedCollaterals": [],
         "wearableIds": [
             13,
             14,
@@ -98,6 +104,9 @@
     {
         "id": 7,
         "name": "Apex Sergey",
+        "allowedCollaterals": [
+            3
+        ],
         "wearableIds": [
             13,
             14,
@@ -115,6 +124,7 @@
     {
         "id": 8,
         "name": "Aave Hero",
+        "allowedCollaterals": [],
         "wearableIds": [
             18,
             19,
@@ -131,6 +141,7 @@
     {
         "id": 9,
         "name": "Captain Aave",
+        "allowedCollaterals": [],
         "wearableIds": [
             21,
             22,
@@ -147,6 +158,7 @@
     {
         "id": 10,
         "name": "Thaave",
+        "allowedCollaterals": [],
         "wearableIds": [
             24,
             25,
@@ -163,6 +175,7 @@
     {
         "id": 11,
         "name": "Marc",
+        "allowedCollaterals": [],
         "wearableIds": [
             27,
             28,
@@ -179,6 +192,7 @@
     {
         "id": 12,
         "name": "Jordan",
+        "allowedCollaterals": [],
         "wearableIds": [
             30,
             31,
@@ -195,6 +209,7 @@
     {
         "id": 13,
         "name": "Godlike Stani",
+        "allowedCollaterals": [],
         "wearableIds": [
             33,
             34,
@@ -211,6 +226,9 @@
     {
         "id": 14,
         "name": "Apex Stani",
+        "allowedCollaterals": [
+            2
+        ],
         "wearableIds": [
             32,
             33,
@@ -228,6 +246,7 @@
     {
         "id": 15,
         "name": "ETH Maxi",
+        "allowedCollaterals": [],
         "wearableIds": [
             36,
             37,
@@ -244,6 +263,7 @@
     {
         "id": 16,
         "name": "Foxy Meta",
+        "allowedCollaterals": [],
         "wearableIds": [
             39,
             40,
@@ -260,6 +280,7 @@
     {
         "id": 17,
         "name": "Nogara the Eagle",
+        "allowedCollaterals": [],
         "wearableIds": [
             42,
             43,
@@ -276,6 +297,7 @@
     {
         "id": 18,
         "name": "DeFi Degen",
+        "allowedCollaterals": [],
         "wearableIds": [
             45,
             46,
@@ -292,6 +314,7 @@
     {
         "id": 19,
         "name": "DAO Summoner",
+        "allowedCollaterals": [],
         "wearableIds": [
             48,
             49,
@@ -309,6 +332,7 @@
     {
         "id": 20,
         "name": "Vitalik Visionary",
+        "allowedCollaterals": [],
         "wearableIds": [
             52,
             53,
@@ -325,6 +349,9 @@
     {
         "id": 21,
         "name": "Apex Vitalik Visionary",
+        "allowedCollaterals": [
+            1
+        ],
         "wearableIds": [
             51,
             52,
@@ -342,6 +369,7 @@
     {
         "id": 22,
         "name": "Super Aagent",
+        "allowedCollaterals": [],
         "wearableIds": [
             55,
             56,
@@ -360,6 +388,7 @@
     {
         "id": 23,
         "name": "Aagent",
+        "allowedCollaterals": [],
         "wearableIds": [
             55,
             56,
@@ -376,6 +405,7 @@
     {
         "id": 24,
         "name": "Aagent",
+        "allowedCollaterals": [],
         "wearableIds": [
             55,
             56,
@@ -393,6 +423,7 @@
     {
         "id": 25,
         "name": "Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             60,
             64,
@@ -409,6 +440,7 @@
     {
         "id": 26,
         "name": "Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             61,
             64,
@@ -425,6 +457,7 @@
     {
         "id": 27,
         "name": "Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             62,
             64,
@@ -441,6 +474,7 @@
     {
         "id": 28,
         "name": "Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             63,
             64,
@@ -457,6 +491,7 @@
     {
         "id": 29,
         "name": "Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             60,
             65,
@@ -473,6 +508,7 @@
     {
         "id": 30,
         "name": "Legendary Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             61,
             65,
@@ -489,6 +525,7 @@
     {
         "id": 31,
         "name": "Mythical Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             62,
             65,
@@ -505,6 +542,7 @@
     {
         "id": 32,
         "name": "Godlike Wizard",
+        "allowedCollaterals": [],
         "wearableIds": [
             63,
             65,
@@ -521,6 +559,7 @@
     {
         "id": 33,
         "name": "Farmer",
+        "allowedCollaterals": [],
         "wearableIds": [
             67,
             68,
@@ -537,6 +576,7 @@
     {
         "id": 34,
         "name": "Mythical Farmer",
+        "allowedCollaterals": [],
         "wearableIds": [
             67,
             68,
@@ -553,6 +593,7 @@
     {
         "id": 35,
         "name": "OKex Jaay",
+        "allowedCollaterals": [],
         "wearableIds": [
             72,
             73,
@@ -569,6 +610,7 @@
     {
         "id": 36,
         "name": "OKex Jaay Hao",
+        "allowedCollaterals": [],
         "wearableIds": [
             72,
             73,
@@ -586,6 +628,7 @@
     {
         "id": 37,
         "name": "Skater",
+        "allowedCollaterals": [],
         "wearableIds": [
             77,
             78,
@@ -602,6 +645,7 @@
     {
         "id": 38,
         "name": "Sushi Chef",
+        "allowedCollaterals": [],
         "wearableIds": [
             80,
             81,
@@ -618,6 +662,7 @@
     {
         "id": 39,
         "name": "Sushi Chef",
+        "allowedCollaterals": [],
         "wearableIds": [
             80,
             81,
@@ -634,6 +679,7 @@
     {
         "id": 40,
         "name": "Master Sushi Chef",
+        "allowedCollaterals": [],
         "wearableIds": [
             80,
             81,
@@ -651,6 +697,7 @@
     {
         "id": 41,
         "name": "Gentleman",
+        "allowedCollaterals": [],
         "wearableIds": [
             84,
             85,
@@ -667,6 +714,7 @@
     {
         "id": 42,
         "name": "Miner",
+        "allowedCollaterals": [],
         "wearableIds": [
             87,
             88,
@@ -683,6 +731,7 @@
     {
         "id": 43,
         "name": "Pajamas",
+        "allowedCollaterals": [],
         "wearableIds": [
             90,
             91,
@@ -699,6 +748,7 @@
     {
         "id": 44,
         "name": "Pajamas",
+        "allowedCollaterals": [],
         "wearableIds": [
             90,
             91,
@@ -715,6 +765,7 @@
     {
         "id": 45,
         "name": "Full Pajamas",
+        "allowedCollaterals": [],
         "wearableIds": [
             90,
             91,
@@ -732,6 +783,7 @@
     {
         "id": 46,
         "name": "Runner",
+        "allowedCollaterals": [],
         "wearableIds": [
             94,
             95,
@@ -748,6 +800,7 @@
     {
         "id": 47,
         "name": "Runner",
+        "allowedCollaterals": [],
         "wearableIds": [
             94,
             95,
@@ -764,6 +817,7 @@
     {
         "id": 48,
         "name": "Runner",
+        "allowedCollaterals": [],
         "wearableIds": [
             94,
             125,
@@ -780,6 +834,7 @@
     {
         "id": 49,
         "name": "Long Distance Runner",
+        "allowedCollaterals": [],
         "wearableIds": [
             94,
             125,
@@ -796,6 +851,7 @@
     {
         "id": 50,
         "name": "Lady",
+        "allowedCollaterals": [],
         "wearableIds": [
             97,
             98,
@@ -812,6 +868,7 @@
     {
         "id": 51,
         "name": "Lady",
+        "allowedCollaterals": [],
         "wearableIds": [
             97,
             98,
@@ -828,6 +885,7 @@
     {
         "id": 52,
         "name": "Socialite",
+        "allowedCollaterals": [],
         "wearableIds": [
             97,
             98,
@@ -845,6 +903,7 @@
     {
         "id": 53,
         "name": "Witchy",
+        "allowedCollaterals": [],
         "wearableIds": [
             101,
             102,
@@ -861,6 +920,7 @@
     {
         "id": 54,
         "name": "Portal Mage",
+        "allowedCollaterals": [],
         "wearableIds": [
             104,
             105,
@@ -877,6 +937,7 @@
     {
         "id": 55,
         "name": "Supreme Portal Mage",
+        "allowedCollaterals": [],
         "wearableIds": [
             104,
             105,
@@ -893,6 +954,7 @@
     {
         "id": 56,
         "name": "Rastafarian",
+        "allowedCollaterals": [],
         "wearableIds": [
             108,
             109,
@@ -909,6 +971,7 @@
     {
         "id": 57,
         "name": "Off Duty Hazmat",
+        "allowedCollaterals": [],
         "wearableIds": [
             111,
             112,
@@ -925,6 +988,7 @@
     {
         "id": 58,
         "name": "On Duty Hazmat",
+        "allowedCollaterals": [],
         "wearableIds": [
             111,
             112,
@@ -941,6 +1005,7 @@
     {
         "id": 59,
         "name": "Blue Vacationer",
+        "allowedCollaterals": [],
         "wearableIds": [
             115,
             116,
@@ -957,6 +1022,7 @@
     {
         "id": 60,
         "name": "Red Vacationer",
+        "allowedCollaterals": [],
         "wearableIds": [
             114,
             116,
@@ -973,6 +1039,7 @@
     {
         "id": 61,
         "name": "Crypto OG",
+        "allowedCollaterals": [],
         "wearableIds": [
             12,
             19,
@@ -991,6 +1058,7 @@
     {
         "id": 62,
         "name": "Rektboi",
+        "allowedCollaterals": [],
         "wearableIds": [
             29,
             45,
@@ -1007,6 +1075,7 @@
     {
         "id": 63,
         "name": "Man of Culture",
+        "allowedCollaterals": [],
         "wearableIds": [
             47,
             59,
@@ -1023,6 +1092,7 @@
     {
         "id": 64,
         "name": "Curve Surfer",
+        "allowedCollaterals": [],
         "wearableIds": [
             66,
             76,
@@ -1039,6 +1109,7 @@
     {
         "id": 65,
         "name": "PoW Miner",
+        "allowedCollaterals": [],
         "wearableIds": [
             25,
             77,
@@ -1055,6 +1126,7 @@
     {
         "id": 66,
         "name": "Toddler",
+        "allowedCollaterals": [],
         "wearableIds": [
             90,
             91,
@@ -1071,6 +1143,7 @@
     {
         "id": 67,
         "name": "FU Money",
+        "allowedCollaterals": [],
         "wearableIds": [
             35,
             114,
@@ -1088,6 +1161,7 @@
     {
         "id": 68,
         "name": "Farmer Alf",
+        "allowedCollaterals": [],
         "wearableIds": [
             13,
             67,
@@ -1105,6 +1179,7 @@
     {
         "id": 69,
         "name": "Battle Santa",
+        "allowedCollaterals": [],
         "wearableIds": [
             5,
             13,
@@ -1122,6 +1197,7 @@
     {
         "id": 70,
         "name": "Party Animal",
+        "allowedCollaterals": [],
         "wearableIds": [
             109,
             40,
@@ -1138,6 +1214,7 @@
     {
         "id": 71,
         "name": "Snapshot Voter",
+        "allowedCollaterals": [],
         "wearableIds": [
             137,
             138,
@@ -1154,6 +1231,7 @@
     {
         "id": 72,
         "name": "Polygonist",
+        "allowedCollaterals": [],
         "wearableIds": [
             134,
             135,
@@ -1170,6 +1248,7 @@
     {
         "id": 73,
         "name": "Quickswap Dragon",
+        "allowedCollaterals": [],
         "wearableIds": [
             130,
             131,
@@ -1186,6 +1265,7 @@
     {
         "id": 74,
         "name": "Swappy the Dragon",
+        "allowedCollaterals": [],
         "wearableIds": [
             130,
             132,
@@ -1202,6 +1282,7 @@
     {
         "id": 75,
         "name": "Gotchi Elf",
+        "allowedCollaterals": [],
         "wearableIds": [
             140,
             141,
@@ -1218,6 +1299,7 @@
     {
         "id": 76,
         "name": "Gotchi Princess",
+        "allowedCollaterals": [],
         "wearableIds": [
             140,
             141,
@@ -1235,6 +1317,7 @@
     {
         "id": 77,
         "name": "Gotchi Queen",
+        "allowedCollaterals": [],
         "wearableIds": [
             140,
             141,
@@ -1252,6 +1335,7 @@
     {
         "id": 78,
         "name": "Godli Locks",
+        "allowedCollaterals": [],
         "wearableIds": [
             140,
             141,
@@ -1269,6 +1353,7 @@
     {
         "id": 79,
         "name": "Gotchi Baron",
+        "allowedCollaterals": [],
         "wearableIds": [
             146,
             147,
@@ -1285,6 +1370,7 @@
     {
         "id": 80,
         "name": "Gotchi Lord",
+        "allowedCollaterals": [],
         "wearableIds": [
             146,
             147,
@@ -1302,6 +1388,7 @@
     {
         "id": 81,
         "name": "Gotchi King",
+        "allowedCollaterals": [],
         "wearableIds": [
             146,
             149,
@@ -1319,6 +1406,7 @@
     {
         "id": 82,
         "name": "Gotchi Emperor",
+        "allowedCollaterals": [],
         "wearableIds": [
             146,
             149,
@@ -1337,6 +1425,7 @@
     {
         "id": 83,
         "name": "Lil Pumpagotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             157,
             158,
@@ -1355,6 +1444,7 @@
     {
         "id": 84,
         "name": "Soundcloud Rapper",
+        "allowedCollaterals": [],
         "wearableIds": [
             108,
             157,
@@ -1373,6 +1463,7 @@
     {
         "id": 85,
         "name": "REALM Tycoon",
+        "allowedCollaterals": [],
         "wearableIds": [
             84,
             85,
@@ -1390,6 +1481,7 @@
     {
         "id": 86,
         "name": "Yegres the Dragon",
+        "allowedCollaterals": [],
         "wearableIds": [
             14,
             131,
@@ -1407,6 +1499,7 @@
     {
         "id": 87,
         "name": "Vacation Santa",
+        "allowedCollaterals": [],
         "wearableIds": [
             71,
             114,
@@ -1424,6 +1517,7 @@
     {
         "id": 88,
         "name": "VR Gamer",
+        "allowedCollaterals": [],
         "wearableIds": [
             202,
             203,
@@ -1440,6 +1534,7 @@
     {
         "id": 89,
         "name": "Steampunk",
+        "allowedCollaterals": [],
         "wearableIds": [
             199,
             200,
@@ -1456,6 +1551,7 @@
     {
         "id": 90,
         "name": "Casual Gamer",
+        "allowedCollaterals": [],
         "wearableIds": [
             117,
             203,
@@ -1472,6 +1568,7 @@
     {
         "id": 91,
         "name": "Gentleman Farmer",
+        "allowedCollaterals": [],
         "wearableIds": [
             69,
             146,
@@ -1488,6 +1585,7 @@
     {
         "id": 92,
         "name": "Cyberpunk",
+        "allowedCollaterals": [],
         "wearableIds": [
             43,
             48,
@@ -1504,6 +1602,7 @@
     {
         "id": 93,
         "name": "Steampunk Grenadier",
+        "allowedCollaterals": [],
         "wearableIds": [
             1,
             2,
@@ -1521,6 +1620,7 @@
     {
         "id": 94,
         "name": "Venly Biker",
+        "allowedCollaterals": [],
         "wearableIds": [
             206,
             207,
@@ -1538,6 +1638,7 @@
     {
         "id": 95,
         "name": "Hacker Aanon",
+        "allowedCollaterals": [],
         "wearableIds": [
             211,
             212,
@@ -1554,6 +1655,7 @@
     {
         "id": 96,
         "name": "Shadowy Supercoder",
+        "allowedCollaterals": [],
         "wearableIds": [
             212,
             213,
@@ -1570,6 +1672,7 @@
     {
         "id": 97,
         "name": "Cyborg",
+        "allowedCollaterals": [],
         "wearableIds": [
             215,
             216,
@@ -1586,6 +1689,7 @@
     {
         "id": 98,
         "name": "Punk Rocker",
+        "allowedCollaterals": [],
         "wearableIds": [
             218,
             219,
@@ -1602,6 +1706,7 @@
     {
         "id": 99,
         "name": "Piraate",
+        "allowedCollaterals": [],
         "wearableIds": [
             221,
             222,
@@ -1619,6 +1724,7 @@
     {
         "id": 100,
         "name": "Aair Gotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             225,
             226,
@@ -1635,6 +1741,7 @@
     {
         "id": 101,
         "name": "Wraangler",
+        "allowedCollaterals": [],
         "wearableIds": [
             228,
             229,
@@ -1651,6 +1758,7 @@
     {
         "id": 102,
         "name": "Ranchero",
+        "allowedCollaterals": [],
         "wearableIds": [
             231,
             232,
@@ -1667,6 +1775,7 @@
     {
         "id": 103,
         "name": "Ranchero",
+        "allowedCollaterals": [],
         "wearableIds": [
             231,
             232,
@@ -1683,6 +1792,7 @@
     {
         "id": 104,
         "name": "Ranchero",
+        "allowedCollaterals": [],
         "wearableIds": [
             231,
             232,
@@ -1699,6 +1809,7 @@
     {
         "id": 105,
         "name": "Ranchero",
+        "allowedCollaterals": [],
         "wearableIds": [
             231,
             232,
@@ -1715,6 +1826,7 @@
     {
         "id": 106,
         "name": "Novice Shaaman",
+        "allowedCollaterals": [],
         "wearableIds": [
             233,
             234,
@@ -1731,6 +1843,7 @@
     {
         "id": 107,
         "name": "Shaaman Priest",
+        "allowedCollaterals": [],
         "wearableIds": [
             234,
             235,
@@ -1747,6 +1860,7 @@
     {
         "id": 108,
         "name": "Shaaman Mystic",
+        "allowedCollaterals": [],
         "wearableIds": [
             234,
             235,
@@ -1763,6 +1877,7 @@
     {
         "id": 109,
         "name": "Master Shaaman",
+        "allowedCollaterals": [],
         "wearableIds": [
             234,
             235,
@@ -1779,6 +1894,7 @@
     {
         "id": 110,
         "name": "WGMI Wagie",
+        "allowedCollaterals": [],
         "wearableIds": [
             239,
             240,
@@ -1795,6 +1911,7 @@
     {
         "id": 111,
         "name": "YOLO Guy",
+        "allowedCollaterals": [],
         "wearableIds": [
             242,
             243,
@@ -1811,6 +1928,7 @@
     {
         "id": 112,
         "name": "Psychonaut",
+        "allowedCollaterals": [],
         "wearableIds": [
             234,
             235,
@@ -1828,6 +1946,7 @@
     {
         "id": 113,
         "name": "Tech Bro",
+        "allowedCollaterals": [],
         "wearableIds": [
             242,
             243,
@@ -1845,6 +1964,7 @@
     {
         "id": 114,
         "name": "Gunslinger",
+        "allowedCollaterals": [],
         "wearableIds": [
             231,
             228,
@@ -1862,6 +1982,7 @@
     {
         "id": 115,
         "name": "We Are Legion",
+        "allowedCollaterals": [],
         "wearableIds": [
             85,
             211,
@@ -1878,6 +1999,7 @@
     {
         "id": 116,
         "name": "Aastronaut",
+        "allowedCollaterals": [],
         "wearableIds": [
             252,
             253,
@@ -1894,6 +2016,7 @@
     {
         "id": 117,
         "name": "Geckogotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             249,
             250,
@@ -1910,6 +2033,7 @@
     {
         "id": 118,
         "name": "Super Geckogotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             245,
             249,
@@ -1927,6 +2051,7 @@
     {
         "id": 119,
         "name": "Lil Bubble",
+        "allowedCollaterals": [],
         "wearableIds": [
             255,
             256,
@@ -1943,6 +2068,7 @@
     {
         "id": 120,
         "name": "Radar",
+        "allowedCollaterals": [],
         "wearableIds": [
             261,
             262,
@@ -1959,6 +2085,7 @@
     {
         "id": 121,
         "name": "Laozigotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             258,
             259,
@@ -1975,6 +2102,7 @@
     {
         "id": 122,
         "name": "Wandering Sage",
+        "allowedCollaterals": [],
         "wearableIds": [
             65,
             258,
@@ -1992,6 +2120,7 @@
     {
         "id": 123,
         "name": "APY Visionary",
+        "allowedCollaterals": [],
         "wearableIds": [
             246,
             247,
@@ -2008,6 +2137,7 @@
     {
         "id": 124,
         "name": "Aarcher",
+        "allowedCollaterals": [],
         "wearableIds": [
             292,
             293,
@@ -2024,6 +2154,7 @@
     {
         "id": 125,
         "name": "Baarbarian",
+        "allowedCollaterals": [],
         "wearableIds": [
             295,
             296,
@@ -2041,6 +2172,7 @@
     {
         "id": 126,
         "name": "Raanger",
+        "allowedCollaterals": [],
         "wearableIds": [
             293,
             299,
@@ -2057,6 +2189,7 @@
     {
         "id": 127,
         "name": "Geisha",
+        "allowedCollaterals": [],
         "wearableIds": [
             301,
             302,
@@ -2074,6 +2207,7 @@
     {
         "id": 128,
         "name": "Fairy",
+        "allowedCollaterals": [],
         "wearableIds": [
             306,
             307,
@@ -2090,6 +2224,7 @@
     {
         "id": 129,
         "name": "Sus Fairy",
+        "allowedCollaterals": [],
         "wearableIds": [
             305,
             306,
@@ -2107,6 +2242,7 @@
     {
         "id": 130,
         "name": "Knight",
+        "allowedCollaterals": [],
         "wearableIds": [
             309,
             310,
@@ -2123,6 +2259,7 @@
     {
         "id": 131,
         "name": "Citaadel Knight",
+        "allowedCollaterals": [],
         "wearableIds": [
             309,
             310,
@@ -2140,6 +2277,7 @@
     {
         "id": 132,
         "name": "Bushidogotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             313,
             314,
@@ -2156,6 +2294,7 @@
     {
         "id": 133,
         "name": "Robin Hood",
+        "allowedCollaterals": [],
         "wearableIds": [
             18,
             293,
@@ -2173,6 +2312,7 @@
     {
         "id": 134,
         "name": "Nure-onna",
+        "allowedCollaterals": [],
         "wearableIds": [
             249,
             302,
@@ -2190,6 +2330,7 @@
     {
         "id": 135,
         "name": "Tinkerbell",
+        "allowedCollaterals": [],
         "wearableIds": [
             148,
             306,
@@ -2207,6 +2348,7 @@
     {
         "id": 136,
         "name": "Rave Gurl",
+        "allowedCollaterals": [],
         "wearableIds": [
             216,
             120,
@@ -2225,6 +2367,7 @@
     {
         "id": 137,
         "name": "Off Duty Knight",
+        "allowedCollaterals": [],
         "wearableIds": [
             99,
             122,
@@ -2242,6 +2385,7 @@
     {
         "id": 138,
         "name": "Daimyogotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             155,
             313,
@@ -2259,6 +2403,7 @@
     {
         "id": 139,
         "name": "Shogungotchi",
+        "allowedCollaterals": [],
         "wearableIds": [
             156,
             313,
@@ -2276,6 +2421,7 @@
     {
         "id": 140,
         "name": "Noble Savage",
+        "allowedCollaterals": [],
         "wearableIds": [
             146,
             296,
@@ -2293,6 +2439,7 @@
     {
         "id": 141,
         "name": "Elven Aarcher",
+        "allowedCollaterals": [],
         "wearableIds": [
             140,
             292,
@@ -2310,6 +2457,7 @@
     {
         "id": 142,
         "name": "Elven Raanger",
+        "allowedCollaterals": [],
         "wearableIds": [
             140,
             141,
@@ -2328,6 +2476,7 @@
     {
         "id": 143,
         "name": "Woodland Critter",
+        "allowedCollaterals": [],
         "wearableIds": [
             293,
             300,
@@ -2345,6 +2494,7 @@
     {
         "id": 144,
         "name": "Vacation Geisha",
+        "allowedCollaterals": [],
         "wearableIds": [
             115,
             304,
@@ -2362,6 +2512,7 @@
     {
         "id": 145,
         "name": "Tooth Fairy",
+        "allowedCollaterals": [],
         "wearableIds": [
             306,
             307,
