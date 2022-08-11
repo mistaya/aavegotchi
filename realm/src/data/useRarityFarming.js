@@ -4,7 +4,6 @@ import useStatus from '@/data/useStatus'
 
 const BASE_DATA_URL = '/data/rf'
 const SEASONS = {
-  /*
   '1': {
     id: '1',
     aboutUrl: 'https://aavegotchi.medium.com/aavegotchi-rarity-farming-season-1-rewards-finalized-2db81e9f66e8',
@@ -64,7 +63,6 @@ const SEASONS = {
       }
     }
   },
-  */
   '2': {
     id: '2',
     aboutUrl: 'https://aavegotchi.medium.com/rarity-farming-season-2-is-coming-dates-announced-7047896eb3ab',
