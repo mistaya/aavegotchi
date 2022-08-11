@@ -1,115 +1,193 @@
 const axios = require('axios')
-const { writeJsonFile, readJsonFile, writeTextFile } = require('../fileUtils.js')
+const { writeJsonFile, readJsonFile } = require('../fileUtils.js')
 const BigNumber = require('bignumber.js')
 const setHelpers = require('./sets/setHelpers.js')
-const diamond = require('./diamond/diamond.js')
-// const vaultContract = require('./vault/vaultContract.js')
+
+const fetchGotchiLendings = require('./lendings/fetchGotchiLendings.js')
+const fetchEthGotchiOwners = require('./eth/fetchEthGotchiOwners.js')
+const fetchVaultGotchiOwners = require('./vault/fetchVaultGotchiOwners.js')
+// eslint-disable-next-line no-unused-vars
+const fetchGotchiImages = require('./images/fetchGotchiImages.js')
 
 // Snapshot blocks
 const SEASONS = {
-  // TODO none of the S1 leaderboards match up properly, even XP and kinship!
+  // None of the S1 leaderboards match up properly, even XP and kinship!
   // What's wrong:
   //     the RF algorithm used?
-  //         'subgraph' is perfectly in order (for BRS, though NOT correct for kinship tiebreaker)
-  //         'js1' results in ~530 gotchis out of order
+  //         - this is different in different rounds.
   //     the subgraph data? Could the kinship values in the subgraph NOW be different to THEN?
   //     the block numbers? seems right, R1 matches on main site
   //     the rankings? seems right: R1 Winklevoss and God of Earth total rewards match blockchain GHST
   // - God of Earth is ranked as if it has kinship 51, but the data says 30
   // - lots have a rank-kinship mismatch, e.g. around 50 kinship
+  // TODO call contract to find the kinship values at those blocks and compare to subgraph
   // The S1 rewards data is the per-round amount, does not need to be divided by 4
   szn1: {
-    rfCalc: 'subgraph',
-    // rfCalc: 'js1',
-    // rfCalc: 'best',
     // Round 1: rfCalc = 'subgraph'
+    // - this relied on the subgraph, which was a perfect match (in order) when originally fetched in Apr 2022
+    //   However since then, the subgraph has changed and it no longer matches.
+    //   So rerunning this fetch won't give good results.
     rnd1: {
-      polygon: 14082019,
-      eth: 0
+      rfCalc: 'subgraph',
+      wearableSets: '2021-01-03', // These sets seem incomplete for this time point e.g. Gotchi King is missing
+      blocks: {
+        polygon: 14082019, // May-04-2021
+        eth: 0
+      }
     },
     // Round 2: rfCalc = 'subgraph'
+    // - this relied on the subgraph, which was a perfect match (in order) when originally fetched in Apr 2022
+    //   However since then, the subgraph has changed and it no longer matches.
+    //   So rerunning this fetch won't give good results.
     rnd2: {
-      polygon: 14645055,
-      eth: 0
+      rfCalc: 'subgraph',
+      wearableSets: '2021-01-03',
+      blocks: {
+        polygon: 14645055, // May-18-2021
+        eth: 0
+      }
     },
-    // TODO is this block correct?
-    //    when fetching gotchi details, couldn't find gotchis 3019 and 3023 in round 3
-    //    There are also a lot of gotchis out of order, and Felon is only 561 Rarity (expected ~800-900)
-    //    15231396 is Jun 2 6:41 AM UTC
-    //    https://discord.com/channels/732491344970383370/784303575593517087/849219624889483265
-    //      "RARITY FARMING ROUND 3 SNAPSHOT HAS BEEN MOVED TO  JUNE 2 AT 2PM UTC!"
+    // Round 3:
+    // * block published in discord is 15231396. BUT this is wrong:
+    //    - it's Jun 2 6:41 AM UTC
+    //    - when fetching gotchi details, couldn't find gotchis 3019 and 3023 in round 3
+    //    - many gotchis are out of order, notably Felon is only 561 Rarity (expected ~800-900)
+    // * according to https://discord.com/channels/732491344970383370/784303575593517087/849219624889483265
+    //    "RARITY FARMING ROUND 3 SNAPSHOT HAS BEEN MOVED TO  JUNE 2 AT 2PM UTC!"
+    //    - This is block 15244025
+    //
     // Round 3 rfCalc:
-    //    'subgraph' gives ~582 out of order
-    //    'js1' gives ~141 out of order
-    //    'best' gives ~106 out of order
+    //  - starting here, it looks like wearable sets were probably calculated with JS, not the subgraph.
+    //    'best' gives ~6 out of order (all due to Runners with water lower than they should be, and Runners with wine higher)
+    //      - after modifying the runner sets to look for Wine, 0 are out of order
+    // Kinship:
+    //    #7677 Randy rank 4962 has 12 Kinship between 52s
+    //    #7701 Obi-Wan Kenobi rank 4970, and #7698 Bodhi rank 4972, have 0 kinship (and XP) between 52s
+    //    #7076 KINGS OF LEON rank 4946 has 42 kinship between 53s
+    //    #8737 Gamestonk rank 4919 has 0 kinship between 54s
     rnd3: {
-      polygon: 15231396,
-      eth: 0
+      rfCalc: 'best',
+      wearableSets: '2021-01-03', // with Wine bug
+      blocks: {
+        polygon: 15244025, // Jun-02-2021
+        eth: 0
+      }
     },
     // Round 4:
-    //    'subgraph' gives ~500 out of order
-    //    'js1' gives ~38 out of order
-    //    'best' gives only 1 out of order: QUEEN #752 who is 523 between 573's.
+    //    'best' (using corrected Runner sets) gives only 1 out of order: QUEEN #752 who is 523 between 573's, no wearables.
+    // Kinship: still buggy.
+    //    #7701 Obi-Wan Kenobi rank 4987 and #7698 Bodhi rank 4983 still has 0 kinship (and XP) between 52s
     rnd4: {
-      polygon: 15748551,
-      eth: 0
+      rfCalc: 'best',
+      wearableSets: '2021-05-15', // without Wine bug
+      blocks: {
+        polygon: 15748551, // Jun-15-2021
+        eth: 0
+      }
     }
   },
   // Ethereum bridge opened 4 Oct 2021
   // S2 leaderboard calcs used raritySortHelpers js in the github
   szn2: {
-    rfCalc: 'js1',
     rnd1: {
-      polygon: 20633778,
-      eth: 13493410
+      rfCalc: 'js1',
+      wearableSets: '2021-11-06',
+      blocks: {
+        polygon: 20633778, // Oct-26-2021
+        eth: 13493410
+      }
     },
     rnd2: {
-      polygon: 21170980,
-      eth: 13582557
+      rfCalc: 'js1',
+      wearableSets: '2021-11-06',
+      blocks: {
+        polygon: 21170980, // Nov-09-2021
+        eth: 13582557
+      }
     },
     rnd3: {
-      polygon: 21708942,
-      eth: 13671252
+      rfCalc: 'js1',
+      wearableSets: '2021-11-06',
+      blocks: {
+        polygon: 21708942, // Nov-23-2021
+        eth: 13671252
+      }
     },
     rnd4: {
-      polygon: 22242200,
-      eth: 13758913
+      rfCalc: 'js1',
+      wearableSets: '2021-11-06',
+      blocks: {
+        polygon: 22242200, // Dec-07-2021
+        eth: 13758913
+      }
     }
   },
   // Gotchi Vault started Jan 2022
+  // Gotchi Lendings started Mar 28 2022
   // S3 leaderboard calcs used raritySortHelpers js in the github
   szn3: {
-    rfCalc: 'js1',
     checkVault: true,
+    checkLendings: true,
     rnd1: {
-      polygon: 25806267,
-      eth: 14359489
+      rfCalc: 'js1',
+      wearableSets: '2022-03-11',
+      blocks: {
+        polygon: 25806267, // Mar-10-2022
+        eth: 14359489
+      }
     },
     rnd2: {
-      polygon: 26308346,
-      eth: 14449396
+      rfCalc: 'js1',
+      wearableSets: '2022-03-11',
+      blocks: {
+        polygon: 26308346, // Mar-24-2022
+        eth: 14449396
+      }
     },
     rnd3: {
-      polygon: 26854118,
-      eth: 14539158
+      rfCalc: 'js1',
+      wearableSets: '2022-03-11',
+      blocks: {
+        polygon: 26854118, // Apr-07-2022
+        eth: 14539158
+      }
     },
     rnd4: {
-      polygon: 27404025,
-      eth: 14635098
+      rfCalc: 'js1',
+      wearableSets: '2022-03-11',
+      blocks: {
+        polygon: 27404025, // Apr-21-2022
+        eth: 14635098
+      }
+    }
+  },
+  // S4: wearable sets changed
+  // New wearable sets JS algorithm is in the works: ready for round 1 or not?
+  szn4: {
+    checkVault: true,
+    checkLendings: true,
+    rnd1: {
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 31770753, // Aug-11-2022
+        eth: 15321119
+      }
     }
   }
 }
 
 // Params for this run
-// - round
-const BLOCKS = SEASONS.szn3.rnd4
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn3/rnd4.json'
-const GOTCHIS_FILENAME = 'rnd4Gotchis'
-const GOTCHI_IMAGES_FOLDER = './r4'
 // - season
-const SEASON = SEASONS.szn3
-const SEASON_REWARDS_FILE = '../../public/data/rf/szn3/rewards.json'
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2 and 3
+const SEASON = SEASONS.szn1
+const SEASON_REWARDS_FILE = '../../public/data/rf/szn1/rewards.json'
+const NUM_ROUNDS_REWARDS = 1 // change this to 1 for Season 1, 4 for Seasons 2 and 3
+// - round
+const ROUND = SEASON.rnd2
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn1/rnd2.json'
+const GOTCHIS_FILENAME = 'rnd2Gotchis'
+// eslint-disable-next-line no-unused-vars
+const GOTCHI_IMAGES_FOLDER = './r2'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -123,10 +201,10 @@ const fetchGotchis = function (gotchiIds) {
     let nextIndex = 0
     const fetchFromSubgraph = function () {
       const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
-      console.log(`Fetching batch of ${idsToFetch.length} gotchis... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${BLOCKS.polygon}`)
+      console.log(`Fetching batch of ${idsToFetch.length} gotchis... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${ROUND.blocks.polygon}`)
       axios.post(SUBGRAPH_URL, {
         query: `{
-          aavegotchis(block: { number: ${BLOCKS.polygon} }, first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
+          aavegotchis(block: { number: ${ROUND.blocks.polygon} }, first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
             id
             owner {
               id
@@ -235,16 +313,21 @@ const fetchGotchiOwners = async function () {
   const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
   // First look up lent-out gotchis
   const gotchiIds = gotchis.map(gotchi => gotchi.id)
-  const gotchiIdToLending = await fetchGotchiLendings(gotchiIds)
-  console.log(`Found ${Object.keys(gotchiIdToLending).length} lent-out gotchis`)
+  let gotchiIdToLending = {}
+  if (SEASON.checkLendings) {
+    gotchiIdToLending = await fetchGotchiLendings(gotchiIds, ROUND.blocks.polygon)
+    console.log(`Found ${Object.keys(gotchiIdToLending).length} lent-out gotchis`)
 
-  // If the gotchi has an active lending, those details contain the borrower/lender/originalOwner (handles Vault)
-  for (const gotchi of gotchis) {
-    const lending = gotchiIdToLending[gotchi.id]
-    if (!lending) { continue }
-    gotchi.borrower = lending.borrower
-    gotchi.owner = lending.lender
-    gotchi.realOwner = lending.originalOwner
+    // If the gotchi has an active lending, those details contain the borrower/lender/originalOwner (handles Vault)
+    for (const gotchi of gotchis) {
+      const lending = gotchiIdToLending[gotchi.id]
+      if (!lending) { continue }
+      gotchi.borrower = lending.borrower
+      gotchi.owner = lending.lender
+      gotchi.realOwner = lending.originalOwner
+    }
+  } else {
+    console.log('Not fetching gotchi lendings')
   }
 
   // For non-lent-out gotchis:
@@ -262,229 +345,47 @@ const fetchGotchiOwners = async function () {
       vaultGotchis.push(gotchi)
     }
   }
-  console.log(`Find ${ethGotchis.length} Eth gotchi owners`)
-  const gotchiIdToEthOwner = await fetchEthGotchiOwners(ethGotchis.map(g => g.id))
-  for (const gotchi of ethGotchis) {
-    gotchi.realOwner = gotchiIdToEthOwner[gotchi.id] || ''
+
+  if (ROUND.blocks.eth) {
+    console.log(`Find ${ethGotchis.length} Eth gotchi owners`)
+    const gotchiIdToEthOwner = await fetchEthGotchiOwners(ethGotchis.map(g => g.id), ROUND.blocks.eth)
+    for (const gotchi of ethGotchis) {
+      gotchi.realOwner = gotchiIdToEthOwner[gotchi.id] || ''
+    }
+  } else {
+    console.log('Not fetching ETH gotchi owners!')
   }
 
-  console.log(`Find ${vaultGotchis.length} Vault gotchi owners`)
-  const gotchiIdToVaultOwner = await fetchVaultGotchiOwners(vaultGotchis.map(g => g.id))
-  for (const gotchi of vaultGotchis) {
-    gotchi.realOwner = gotchiIdToVaultOwner[gotchi.id] || ''
+  if (SEASON.checkVault) {
+    console.log(`Find ${vaultGotchis.length} Vault gotchi owners`)
+    const gotchiIdToVaultOwner = await fetchVaultGotchiOwners(vaultGotchis.map(g => g.id), ROUND.blocks.polygon)
+    for (const gotchi of vaultGotchis) {
+      gotchi.realOwner = gotchiIdToVaultOwner[gotchi.id] || ''
+    }
+  } else {
+    console.log('Not fetching Vault gotchi owners!')
   }
 
   await writeJsonFile(`${GOTCHIS_FILENAME}.json`, gotchis)
   console.log(`Written result to ${GOTCHIS_FILENAME}.json`)
 }
 
-const fetchGotchiLendings = async function (gotchiIds) {
-  const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-  return new Promise((resolve, reject) => {
-    let results = []
-    let nextIndex = 0
-    const fetchFromSubgraph = function () {
-      const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
-      console.log(`Fetching batch of ${idsToFetch.length} potential gotchi lendings... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${BLOCKS.polygon}`)
-      axios.post(LENDING_SUBGRAPH_URL, {
-        query: `{
-          gotchiLendings(
-            block: { number: ${BLOCKS.polygon} },
-            first: ${FETCH_PAGE_SIZE},
-            where: {
-              cancelled: false,
-              completed: false,
-              timeAgreed_gt: 0,
-              gotchiTokenId_in: ${JSON.stringify(idsToFetch)}
-            }
-          ) {
-            id
-            gotchiTokenId,
-            borrower
-            lender
-            originalOwner
-          }
-        }`
-      }).then(async response => {
-        if (response.data.data?.gotchiLendings) {
-          results = results.concat(response.data.data.gotchiLendings)
-          console.log(`Received ${response.data.data.gotchiLendings.length} lendings; total ${results.length}`)
-          if (nextIndex + FETCH_PAGE_SIZE >= gotchiIds.length) {
-            // finished fetching all pages
-            console.log(`Fetched all ${results.length} gotchi lendings in ${gotchiIds.length} potential gotchis`)
-            const gotchiIdToLending = Object.fromEntries(
-              results.map(r => [r.gotchiTokenId, r])
-            )
-            resolve(gotchiIdToLending)
-            return
-          }
-          // fetch the next page of results
-          nextIndex += FETCH_PAGE_SIZE
-          fetchFromSubgraph()
-        } else {
-          console.error('Unexpected response', response.data?.errors)
-          reject(new Error('Unexpected response from graph'))
-        }
-      }).catch(error => {
-        console.error(error)
-        reject(new Error('Error fetching from graph'))
-      })
-    }
-
-    fetchFromSubgraph()
-  })
-}
-
-const fetchEthGotchiOwners = function (gotchiIds) {
-  const ETH_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-ethereum'
-  return new Promise((resolve, reject) => {
-    if (!BLOCKS.eth) {
-      console.log('Not fetching ETH gotchi owners!')
-      resolve({})
-      return
-    }
-    let results = []
-    let nextIndex = 0
-    const fetchFromSubgraph = function () {
-      const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
-      console.log(`Fetching batch of ${idsToFetch.length} eth gotchi owners... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${BLOCKS.eth}`)
-      axios.post(ETH_SUBGRAPH_URL, {
-        query: `{
-          aavegotchis(block: { number: ${BLOCKS.eth} }, first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
-            id
-            owner {
-              id
-            }
-          }
-        }`
-      }).then(async response => {
-        if (response.data.data?.aavegotchis) {
-          results = results.concat(
-            response.data.data.aavegotchis.map(gotchi => ({
-              ...gotchi,
-              owner: gotchi.owner.id
-            }))
-          )
-          console.log(`Received ${response.data.data.aavegotchis.length}; total ${results.length}`)
-          if (nextIndex + FETCH_PAGE_SIZE >= gotchiIds.length) {
-            // finished fetching all pages
-            console.log(`Fetched all ${results.length} eth gotchi owners`)
-            const gotchiIdToOwner = Object.fromEntries(
-              results.map(r => [r.id, r.owner])
-            )
-            resolve(gotchiIdToOwner)
-            return
-          }
-          // fetch the next page of results
-          nextIndex += FETCH_PAGE_SIZE
-          fetchFromSubgraph()
-        } else {
-          console.error('Unexpected response', response.data?.errors)
-          reject(new Error('Unexpected response from graph'))
-        }
-      }).catch(error => {
-        console.error(error)
-        reject(new Error('Error fetching from graph'))
-      })
-    }
-
-    fetchFromSubgraph()
-  })
-}
-
-const fetchVaultGotchiOwners = async function (gotchiIds) {
-  if (!SEASON.checkVault) {
-    console.log('Not fetching Vault gotchi owners!')
-    return {}
-  }
-  // TEMP WORKAROUND ONLY: Fetching directly from the contract with multicall uses the latest block.
-  // To specify a custom block, need to use a fork https://github.com/joshstevens19/ethereum-multicall/issues/2
-  /*
-  const result = {}
-  const BATCH_SIZE = 500
-  for (let i = 0; i < gotchiIds.length; i += BATCH_SIZE) {
-    const batchGotchis = gotchiIds.slice(i, i + BATCH_SIZE)
-    console.log(`Fetching vault owners of gotchis #${i} to ${i + BATCH_SIZE - 1}`)
-    const ownersByGotchiId = await vaultContract.getGotchiOwners(batchGotchis)
-    Object.assign(result, ownersByGotchiId)
-  }
-  console.log(`Found vault owners for ${Object.keys(result).length} gotchis`)
-  return result
-  */
-
-  // Alternate approach using subgraph.
-  // V1 subgraph is no longer accurate since lendings started:
-  // const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/froid1911/aavegotchi-vault'
-  // V2 subgraph:
-  const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchi-vault'
-
-  return new Promise((resolve, reject) => {
-    let results = []
-    let nextIndex = 0
-    const fetchFromSubgraph = function () {
-      const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
-      console.log(`Fetching batch of ${idsToFetch.length} vault gotchi owners... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${BLOCKS.polygon}`)
-      axios.post(VAULT_SUBGRAPH_URL, {
-        query: `{
-          aavegotchis(block: { number: ${BLOCKS.polygon} }, first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
-            id
-            owner {
-              id
-            }
-          }
-        }`
-      }).then(async response => {
-        if (response.data.data?.aavegotchis) {
-          results = results.concat(
-            response.data.data.aavegotchis.map(gotchi => ({
-              ...gotchi,
-              owner: gotchi.owner.id
-            }))
-          )
-          console.log(`Received ${response.data.data.aavegotchis.length}; total ${results.length}`)
-          if (nextIndex + FETCH_PAGE_SIZE >= gotchiIds.length) {
-            // finished fetching all pages
-            console.log(`Fetched all ${results.length} vault gotchi owners`)
-            const gotchiIdToOwner = Object.fromEntries(
-              results.map(r => [r.id, r.owner])
-            )
-            resolve(gotchiIdToOwner)
-            return
-          }
-          // fetch the next page of results
-          nextIndex += FETCH_PAGE_SIZE
-          fetchFromSubgraph()
-        } else {
-          console.error('Unexpected response', response.data?.errors)
-          reject(new Error('Unexpected response from graph'))
-        }
-      }).catch(error => {
-        console.error(error)
-        reject(new Error('Error fetching from graph'))
-      })
-    }
-
-    fetchFromSubgraph()
-  })
-}
-
 const manuallyCalculateBRS = async function () {
   const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
-  await setHelpers.init()
   // The withSetsRarityScore from the graph seems to be buggy
   // Manually recalculate this: this introduces risk of getting a different result from the official one.
   // Different rarity farming seasons used different approaches for calculating rarity.
-  const useJs1 = SEASON.rfCalc === 'js1'
-  const useSubgraph = SEASON.rfCalc === 'subgraph'
-  const useBest = SEASON.rfCalc === 'best'
-  console.log('Using RF calculation approach', SEASON.rfCalc)
+  const useJs1 = ROUND.rfCalc === 'js1'
+  const useSubgraph = ROUND.rfCalc === 'subgraph'
+  const useBest = ROUND.rfCalc === 'best'
+  console.log('Using RF calculation approach', ROUND.rfCalc)
   if (!useJs1 && !useSubgraph && !useBest) {
-    console.error('Invalid RF calculation specified', SEASON.rfCalc)
+    console.error('Invalid RF calculation specified', ROUND.rfCalc)
   }
   for (const gotchi of gotchis) {
     // The subgraph's sets are unreliable (withSetsNumericTraits, withSetsRarityScore, equippedSetID, equippedSetName)
     // Calculate sets and BRS manually
-    const resultBest = setHelpers.calculateBest(gotchi)
+    const resultBest = await setHelpers.calculateBest(ROUND.wearableSets, gotchi)
     gotchi.withSetsNumericTraitsBest = resultBest.numericTraits
     gotchi.withSetsRarityScoreBest = resultBest.rarityScore
     gotchi.equippedSetNameBest = resultBest.wearableSetName
@@ -494,11 +395,11 @@ const manuallyCalculateBRS = async function () {
       gotchi.withSetsRarityScoreRF = gotchi.withSetsRarityScore
       gotchi.equippedSetNameRF = gotchi.equippedSetName
     } else if (useJs1) {
-      // reproduce the RF JS calculation
-      const resultRF = setHelpers.calculateRF(gotchi)
-      gotchi.withSetsNumericTraitsRF = resultRF.numericTraits
-      gotchi.withSetsRarityScoreRF = resultRF.rarityScore
-      gotchi.equippedSetNameRF = resultRF.wearableSetName
+      // reproduce the RF JS1 calculation
+      const resultJS1 = await setHelpers.calculateJS1(ROUND.wearableSets, gotchi)
+      gotchi.withSetsNumericTraitsRF = resultJS1.numericTraits
+      gotchi.withSetsRarityScoreRF = resultJS1.rarityScore
+      gotchi.equippedSetNameRF = resultJS1.wearableSetName
     } else if (useBest) {
       // use the best calc
       gotchi.withSetsNumericTraitsRF = gotchi.withSetsNumericTraitsBest
@@ -508,48 +409,6 @@ const manuallyCalculateBRS = async function () {
   }
   await writeJsonFile(`${GOTCHIS_FILENAME}_fixed.json`, gotchis)
   console.log(`Written result to ${GOTCHIS_FILENAME}_fixed.json`)
-}
-
-const gotchiHideDefaultBgSvg = `
-    <style>
-        .gotchi-bg { display: none }
-    </style>
-`
-const hideDefaultBg = function (svgText) {
-  // simple hack, assumes there is a <g class="gotchi-eyeColor" in the SVG
-  // This might break in future
-  const insertionPoint = '<g class="gotchi-eyeColor'
-  return svgText.replace(insertionPoint, `${gotchiHideDefaultBgSvg}${insertionPoint}`)
-}
-const tweakSvg = function (svgText) {
-  return hideDefaultBg(svgText)
-}
-
-const fetchGotchiImages = async function () {
-  const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
-  const writingFiles = []
-  const BATCH_SIZE = 10
-  for (let i = 0; i < gotchis.length; i += BATCH_SIZE) {
-    const batchGotchis = gotchis.slice(i, i + BATCH_SIZE)
-    console.log(`Fetching images for gotchis #${i} to ${i + BATCH_SIZE - 1}`)
-    const batchGotchiParams = batchGotchis.map(gotchi => [
-      gotchi.id,
-      gotchi.hauntId,
-      gotchi.collateral,
-      gotchi.numericTraits,
-      gotchi.equippedWearables
-    ])
-    const svgsByGotchiId = await diamond.getPreviewAavegotchisSideSvgs(batchGotchiParams)
-    for (const gotchiId in svgsByGotchiId) {
-      const svgs = svgsByGotchiId[gotchiId]
-      const svgText = tweakSvg(svgs[0])
-      const svgFilename = `${GOTCHI_IMAGES_FOLDER}/${gotchiId}.svg`
-      // console.log(`Writing svg to ${svgFilename}`)
-      writingFiles.push(writeTextFile(svgFilename, svgText))
-    }
-  }
-  await Promise.all(writingFiles)
-  console.log(`Written svgs to ${GOTCHI_IMAGES_FOLDER}`)
 }
 
 const runAll = async function () {
@@ -566,6 +425,6 @@ const runAll = async function () {
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-fetchGotchiImages()
+fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
 
 // ----------------------------------------------------

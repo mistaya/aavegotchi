@@ -1,43 +1,5 @@
-const { readJsonFile } = require('../../fileUtils.js')
-const wearableSetsRf = require('./wearableSetsRf.js')
-
-let wearables = null
-let wearableSets = null
-let ANNOTATED_WEARABLE_SETS = null
-let wearablesById = null
-
-const initData = async function () {
-  wearables = await readJsonFile('../../src/data/wearables/wearables.json')
-  wearableSets = await readJsonFile('../../src/data/wearables/wearableSets.json')
-  ANNOTATED_WEARABLE_SETS = wearableSets.map(item => {
-    const rarityScoreModifier = item.traitsBonuses[0] - 0
-    const traitModifiers = item.traitsBonuses.slice(1).map(value => value - 0)
-    let totalSetBonus = rarityScoreModifier
-    for (const modifier of traitModifiers) {
-      totalSetBonus += Math.abs(modifier)
-    }
-    return {
-      id: item.id,
-      name: item.name,
-      wearableIds: item.wearableIds,
-      rarityScoreModifier,
-      traitModifiers,
-      totalSetBonus
-    }
-  })
-
-  wearablesById = Object.fromEntries(wearables.map(w => [w.id, { ...w, wearableSets: [] }]))
-
-  for (let i = 0; i < ANNOTATED_WEARABLE_SETS.length; i++) {
-    const wearableSet = ANNOTATED_WEARABLE_SETS[i]
-    for (const wearableId of wearableSet.wearableIds) {
-      const wearable = wearablesById[wearableId]
-      if (wearable) {
-        wearable.wearableSets.push(i)
-      }
-    }
-  }
-}
+const getWearableSets = require('./getWearableSets.js')
+const findBestWearableSet = require('./findBestWearableSet.js')
 
 const calculateBaseRarityScore = function (traits) {
   let rarityScore = 0
@@ -52,10 +14,10 @@ const calculateBaseRarityScore = function (traits) {
   return rarityScore
 }
 
-const calculateTraitsWithWearables = function (originalTraits, wearables) {
+const calculateTraitsWithWearables = function (originalTraits, equippedWearables, wearablesById) {
   const newTraits = [...originalTraits].map(value => value - 0)
   let additionalBrs = 0
-  for (const wearableId of wearables) {
+  for (const wearableId of equippedWearables) {
     const wearable = wearablesById[wearableId]
     if (wearable && wearableId !== '0') {
       additionalBrs += wearable.rarityScoreModifier - 0
@@ -70,76 +32,8 @@ const calculateTraitsWithWearables = function (originalTraits, wearables) {
   }
 }
 
-const chooseBestWearableSet = function (wearableSetIndices) {
-  if (!wearableSetIndices?.length) { return null }
-  const sortedSetIndices = [].concat(wearableSetIndices).sort((a, b) => {
-    const setA = ANNOTATED_WEARABLE_SETS[a]
-    const setB = ANNOTATED_WEARABLE_SETS[b]
-    if (setA.totalSetBonus === setB.totalSetBonus) {
-      if (setA.name === setB.name) {
-        return 0
-      }
-      // same total set bonus, different name.
-      // pick the one with more wearables (Archer vs Elven Archer)
-      if (setA.wearableIds.length === setB.wearableIds.length) {
-        // same number of wearables: fall back to alphabetical name
-        return setA.name < setB.name ? -1 : 1
-      }
-      return setA.wearableIds.length > setB.wearableIds.length ? -1 : 1
-    }
-    return setA.totalSetBonus > setB.totalSetBonus ? -1 : 1
-  })
-  return ANNOTATED_WEARABLE_SETS[sortedSetIndices[0]]
-}
-
-const findWearableSetUsingBestApproach = function (wearables) {
-  let possibleWearableSets = []
-  for (const wearableId of wearables) {
-    const wearable = wearablesById[wearableId]
-    if (wearable && wearableId !== '0') {
-      possibleWearableSets.push(...wearable.wearableSets)
-    }
-  }
-  // reduce to unique set indexes
-  possibleWearableSets = [...new Set(possibleWearableSets)]
-
-  let bestWearableSet = null
-
-  // check each set to see if it's satisfied
-  const previewHasWearable = id => wearables.includes(id)
-  const matchingWearableSets = possibleWearableSets.filter(
-    setIndex => {
-      const wearableIds = ANNOTATED_WEARABLE_SETS[setIndex].wearableIds
-      const hasAllWearables = wearableIds.every(previewHasWearable)
-      if (!hasAllWearables) {
-        return false
-      }
-      // edge case: wearable set might require two of the same hand wearable (Gunslinger)
-      /* // For now, ignore this edge case because none of the official code checks for it
-      if (wearableIds.length > (new Set(wearableIds)).size) {
-        const seenWearable = {}
-        for (var wearableId of wearableIds) {
-          if (seenWearable[wearableId]) {
-            // check we have two of this wearable equipped
-            const firstMatch = wearables.indexOf(wearableId) // we know there is at least one
-            const secondMatch = wearables.slice(firstMatch + 1).indexOf(wearableId)
-            if (secondMatch === -1) { return false }
-          }
-          seenWearable[wearableId] = true
-        }
-      }
-      */
-      return true
-    }
-  )
-  // only one set can be applied
-  bestWearableSet = chooseBestWearableSet(matchingWearableSets)
-  return bestWearableSet
-}
-
 // Code from https://github.com/aavegotchi/aavegotchi-contracts/blob/master/scripts/raritySortHelpers.ts
-const getRFWearableSets = function (equipped) {
-  const setData = wearableSetsRf
+const getRFWearableSets = function (originalWearableSets, equippedWearables) {
   const foundSets = []
 
   const getEquipmentIds = (acc, value) => {
@@ -149,9 +43,9 @@ const getRFWearableSets = function (equipped) {
     return acc
   }
 
-  const equippedIds = equipped?.reduce(getEquipmentIds, [])
+  const equippedIds = equippedWearables?.reduce(getEquipmentIds, [])
 
-  for (const wearableSet of setData) {
+  for (const wearableSet of originalWearableSets) {
     const setWearableIds = wearableSet.wearableIds.reduce(getEquipmentIds, [])
     if (
       setWearableIds.every((wearableId) =>
@@ -178,9 +72,11 @@ const getRFWearableSets = function (equipped) {
   return foundSets
 }
 
-const findWearableSetUsingRFApproach = function (wearables) {
+const findWearableSetUsingRFApproach = async function (wearableSetsDate, equippedWearables) {
+  const { wearableSets } = await getWearableSets(wearableSetsDate)
+  const originalWearableSets = wearableSets.map(set => set.original)
   let bestWearableSet = null
-  const rfSetsSorted = getRFWearableSets(wearables)
+  const rfSetsSorted = getRFWearableSets(originalWearableSets, equippedWearables)
   if (rfSetsSorted.length) {
     const bestOfficialSet = rfSetsSorted[0]
     bestWearableSet = {
@@ -196,18 +92,19 @@ const findWearableSetUsingRFApproach = function (wearables) {
   return bestWearableSet
 }
 
-const calculateBestTraitsWithSet = function (originalTraits, wearables, approach) {
+const calculateBestTraitsWithSet = async function (wearableSetsDate, originalTraits, equippedWearables, approach) {
   let bestWearableSet = null
   if (approach === 'best') {
-    bestWearableSet = findWearableSetUsingBestApproach(wearables)
-  } else if (approach === 'rf') {
-    bestWearableSet = findWearableSetUsingRFApproach(wearables)
+    bestWearableSet = await findBestWearableSet(wearableSetsDate, equippedWearables)
+  } else if (approach === 'js1') {
+    bestWearableSet = await findWearableSetUsingRFApproach(wearableSetsDate, equippedWearables)
   } else {
     console.error('calculateBestTraitsWithSet needs an approach')
     return
   }
 
-  let { newTraits, additionalBrs } = calculateTraitsWithWearables(originalTraits, wearables)
+  const { wearablesById } = await getWearableSets(wearableSetsDate)
+  let { newTraits, additionalBrs } = calculateTraitsWithWearables(originalTraits, equippedWearables, wearablesById)
 
   if (bestWearableSet) {
     additionalBrs += bestWearableSet.rarityScoreModifier
@@ -225,11 +122,10 @@ const calculateBestTraitsWithSet = function (originalTraits, wearables, approach
 }
 
 module.exports = {
-  init: initData,
-  calculateBest: function (gotchi) {
-    return calculateBestTraitsWithSet(gotchi.numericTraits, gotchi.equippedWearables, 'best')
+  calculateBest: async function (wearableSetsDate, gotchi) {
+    return calculateBestTraitsWithSet(wearableSetsDate, gotchi.numericTraits, gotchi.equippedWearables, 'best')
   },
-  calculateRF: function (gotchi) {
-    return calculateBestTraitsWithSet(gotchi.numericTraits, gotchi.equippedWearables, 'rf')
+  calculateJS1: async function (wearableSetsDate, gotchi) {
+    return calculateBestTraitsWithSet(wearableSetsDate, gotchi.numericTraits, gotchi.equippedWearables, 'js1')
   }
 }
