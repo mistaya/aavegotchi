@@ -192,6 +192,68 @@ const SEASONS = {
         tiebreakerTraitIndex: 3
       }
     }
+  },
+  '4': {
+    id: '4',
+    aboutUrl: 'https://blog.aavegotchi.com/aavegotchi-rarity-farming-season-4-is-comng/',
+    startDate: new Date('2022-07-28T14:00Z'),
+    endDate: new Date('2022-04-21T14:00Z'),
+    ghstTotal: 1_500_000,
+    leaderboards: [
+      {
+        id: 'rarity',
+        label: 'Rarity',
+        percent: 70,
+        tiebreaker: 'kinship'
+      },
+      {
+        id: 'kinship',
+        label: 'Kinship',
+        percent: 20,
+        tiebreaker: 'xp'
+      },
+      {
+        id: 'xp',
+        label: 'XP',
+        percent: 10,
+        tiebreaker: 'trait'
+      }
+    ],
+    numRounds: 4,
+    numWinners: 7500,
+    rounds: {
+      '1': {
+        id: '1',
+        jsonUrl: `${BASE_DATA_URL}/szn4/rnd1Gotchis.json`,
+        endDate: new Date('2022-08-11T14:00Z'),
+        blockNumber: 31770753,
+        tiebreakerTraitIndex: 0
+      }
+      /*
+      ,
+      '2': {
+        id: '2',
+        jsonUrl: `${BASE_DATA_URL}/szn4/rnd2Gotchis.json`,
+        endDate: new Date('2022-08-25T14:00Z'),
+        blockNumber: ,
+        tiebreakerTraitIndex: 1
+      },
+      '3': {
+        id: '3',
+        jsonUrl: `${BASE_DATA_URL}/szn4/rnd3Gotchis.json`,
+        endDate: new Date('2022-09-08T14:00Z'),
+        blockNumber: ,
+        tiebreakerTraitIndex: 2
+      },
+      '4': {
+        id: '4',
+        jsonUrl: `${BASE_DATA_URL}/szn4/rnd4Gotchis.json`,
+        endDate: new Date('2022-09-22T14:00Z'),
+        blockNumber: ,
+        tiebreakerTraitIndex: 3
+      }
+      */
+    }
   }
 }
 
