@@ -1063,7 +1063,7 @@ export default {
       let str = formatDuration(
         duration,
         {
-          format: ['days', 'hours', 'minutes']
+          format: ['years', 'months', 'days', 'hours', 'minutes']
         }
       )
       if (!str) {
@@ -1087,6 +1087,12 @@ export default {
       }
       if (str.includes(' day')) {
         str = str.replace(/(\d) days?/, '$1d')
+      }
+      if (str.includes(' month')) {
+        str = str.replace(/(\d) months?/, '$1mo')
+      }
+      if (str.includes(' year')) {
+        str = str.replace(/(\d) years?/, '$1y')
       }
       return str
     }
