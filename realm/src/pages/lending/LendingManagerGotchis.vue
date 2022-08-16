@@ -104,6 +104,36 @@
         </details>
       </div>
 
+      <div style="margin-top: 20px;">
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            <div>
+              <b>Collected Alchemica data is incomplete for lendings from April 2022 onwards.</b>
+            </div>
+            <details style="margin-top: 10px;">
+              <summary>
+                View details
+              </summary>
+              <div style="margin-top: 5px;">
+                There are two situations which we can't see:
+                <ul>
+                  <li>
+                    Borrower does <b>not</b> use the vortex, and receives alchemica at the end of the lending.
+                  </li>
+                  <li>
+                    Borrower uses the vortex, but the withdrawal is delayed for more than 5 minutes. Pixelcraft sends the alchemica directly to the borrower's wallet, not the gotchi pocket. This is particularly likely to happen at the end of a Saturday spillover event, or when polygon gas is high.
+                  </li>
+                </ul>
+              </div>
+              <div>
+                Hopefully there will be a more accurate data source available in future.
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
       <div
         v-if="numFilteredGotchis > 0"
         style="margin-top: 20px"
