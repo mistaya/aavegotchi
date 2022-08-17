@@ -75,5 +75,33 @@
     "tileGroup": "LE Mosaic Tile",
     "width": 2,
     "height": 2
+  },
+  "12": {
+    "id": "12",
+    "label": "Dark Magenta Ghost",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "13": {
+    "id": "13",
+    "label": "Dark Magenta Diamond",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "14": {
+    "id": "14",
+    "label": "Dark Magenta Star",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "15": {
+    "id": "15",
+    "label": "Dark Magenta Heart",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
   }
 }

@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "imagemin": "imagemin src/assets/wearablesets --out-dir=public/wearablesets",
-    "imagemin2": "imagemin src/assets/paartnerLogos --out-dir=public/paartners"
+    "imagemin2": "imagemin src/assets/paartnerLogos --out-dir=public/paartners",
+    "imagemin3": "imagemin public/to_min --out-dir=public/to_min/result"
   },
   "dependencies": {
     "a11y-dialog": "^7.5.0",
