@@ -9,6 +9,7 @@ const ghstPrices = ref({})
 const tokens = Object.values(moreTokens).filter(token => TOKEN_LABELS.includes(token.label))
 const tokenIdsForCoingeckoUrl = tokens.map(c => encodeURIComponent(c.coingeckoId)).join(',')
 const API_URL_COINGECKO = 'https://api.coingecko.com/api/v3/simple/price'
+const CACHE_TIME_SECONDS = 300
 
 const { status: fetchStatus, setLoading } = useStatus()
 
@@ -19,9 +20,49 @@ const setPrices = function (usdPricesMap, ghstPricesMap) {
   usdPrices.value = usdPricesMap
   ghstPrices.value = ghstPricesMap
   lastFetchDate.value = new Date()
+
+  // cache the prices
+  localStorage.setItem('prices-aavegotchi-usd', JSON.stringify(usdPricesMap))
+  localStorage.setItem('prices-aavegotchi-ghst', JSON.stringify(ghstPricesMap))
+  localStorage.setItem('prices-aavegotchi-date', `${lastFetchDate.value - 0}`)
 }
 
 const fetchPrices = function () {
+  // If we already have recent prices, use them
+  if (lastFetchDate.value && (Date.now() - lastFetchDate.value) < (CACHE_TIME_SECONDS * 1000)) {
+    // console.log('Using cached prices', (Date.now() - lastFetchDate.value), (CACHE_TIME_SECONDS * 1000), lastFetchDate.value)
+    return
+  } else {
+    // check localStorage
+    const storedDateString = localStorage.getItem('prices-aavegotchi-date')
+    // console.log('Checking localStorage', storedDateString)
+    if (storedDateString) {
+      const storedDateMs = storedDateString - 0
+      if ((Date.now() - storedDateMs) < (CACHE_TIME_SECONDS * 1000)) {
+        // console.log('Use localStorage prices')
+        try {
+          const storedUsd = JSON.parse(localStorage.getItem('prices-aavegotchi-usd'))
+          const storedGhst = JSON.parse(localStorage.getItem('prices-aavegotchi-ghst'))
+          if (storedUsd && storedGhst) {
+            usdPrices.value = storedUsd
+            ghstPrices.value = storedGhst
+            lastFetchDate.value = new Date(storedDateMs)
+            if (!fetchStatus.loaded) {
+              // eslint-disable-next-line no-unused-vars
+              const [isStale, setLoaded, setError] = setLoading()
+              setLoaded()
+            }
+            // console.log('Using prices', storedUsd, storedGhst, lastFetchDate.value)
+            return
+          }
+        } catch (e) {
+          console.error('Error loading cached prices from localStorage', e)
+        }
+      }
+    }
+  }
+  // console.log('Fetching prices')
+
   const [isStale, setLoaded, setError] = setLoading()
   const coingeckoUrl = `${API_URL_COINGECKO}?ids=${tokenIdsForCoingeckoUrl}&vs_currencies=usd`
 

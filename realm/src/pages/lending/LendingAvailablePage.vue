@@ -132,13 +132,15 @@
         </div>
       </fieldset>
 
-      <template v-if="status.loading">
+      <template v-if="status.loading || pricesStatus.loading">
         Fetching, please wait...
       </template>
-      <template v-if="status.error">
-        Sorry, there was an error fetching data. You can try refreshing the page.
+      <template v-if="status.error || pricesStatus.error">
+        Sorry, there was an error fetching
+        {{ pricesStatus.error ? 'price' : 'lending' }}
+        data. You can try refreshing the page.
       </template>
-      <template v-if="status.loaded">
+      <template v-if="status.loaded && pricesStatus.loaded">
         <template v-if="!results || !results.length">
           No results found.
         </template>
@@ -911,6 +913,7 @@ export default {
       gotchiChannelingStatuses,
       channelingDetails,
       utcMidnight,
+      pricesStatus,
       ghstPrices,
       rowsToDisplay,
       friendlyGhst,
