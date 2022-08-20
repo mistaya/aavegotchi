@@ -408,7 +408,8 @@ export default {
               } else {
                 // Unexpected data: no aaltar, but has a lastChanneledTimestamp.
                 // Clear it, as you can't channel without an aaltar anyway.
-                lastChanneledTimestamp = undefined
+                // lastChanneledTimestamp = undefined // TODO: temporarily remove this as altars are missing
+                lastChanneledTimestamp = lastChanneledTimestamp || undefined
               }
               newDetails[parcel.id] = {
                 equippedInstallations,
