@@ -108,7 +108,7 @@
 </template>
 <script>
 import { ref, computed } from 'vue'
-import useParcelContentsSingle from '@/data/useParcelContentsSingle'
+import useParcelContentsSingle from '@/data/useParcelContentsSingleFromContract'
 import SiteDialog from '@/site/SiteDialog.vue'
 import ParcelGridSvg from './ParcelGridSvg.vue'
 
@@ -133,7 +133,7 @@ export default {
       fetchContents
     } = useParcelContentsSingle()
 
-    fetchContents(props.id)
+    fetchContents(props.id, props.sizeNum)
 
     const groupWithCounts = function (items) {
       const groupedById = {}
