@@ -41,8 +41,8 @@
                     :date="event.date"
                   />:
                   D{{ event.parcel.district }},
-                  <template v-if="event.aaltar">
-                    Channelled {{ event.aaltar.label }},
+                  <template v-if="event.isChanneling">
+                    Channelled {{ event.aaltar?.label }},
                   </template>
                   <template v-else>
                     Harvested
@@ -134,7 +134,10 @@ export default {
 
     const recentEventsAnnotated = computed(() => {
       if (!channelings.value || !claimed.value || !parcelsFetchStatus.value.loaded) { return [] }
-      const events = [...channelings.value, ...claimed.value]
+      const events = [
+        ...channelings.value.map(item => ({ ...item, isChanneling: true })),
+        ...claimed.value
+      ]
       events.sort((a, b) => b.date - a.date)
       return events.map(event => ({
         ...event,
