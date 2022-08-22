@@ -68,9 +68,8 @@
             <div
               v-if="lastActivity && lastActivity.lastChanneledDate"
               class="parcel-details__last-activity"
-            >
-              (<template v-if="aaltarCooldown">
-                Ready
+            >(<template v-if="aaltarCooldown"
+              >Ready
                 <template v-if="aaltarCooldown.isReady">
                   now
                 </template>
