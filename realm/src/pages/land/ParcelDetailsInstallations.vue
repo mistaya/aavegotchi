@@ -65,6 +65,27 @@
           </template>
           <template v-else>
             {{ aaltar.type.label }}
+            <div
+              v-if="lastActivity && lastActivity.lastChanneledDate"
+              class="parcel-details__last-activity"
+            >
+              (<template v-if="aaltarCooldown">
+                Ready
+                <template v-if="aaltarCooldown.isReady">
+                  now
+                </template>
+                <DateFriendly
+                  v-else-if="aaltarCooldown.date"
+                  :date="aaltarCooldown.date"
+                  enableToggle
+                />;
+              </template>
+              Last channeled
+              <DateFriendly
+                :date="lastActivity.lastChanneledDate"
+                enableToggle
+              />)
+            </div>
           </template>
         </div>
         <div style="margin-bottom: 8px;">
@@ -75,6 +96,16 @@
             None
           </template>
           <template v-else>
+            <div
+              v-if="lastActivity && lastActivity.lastClaimedDate"
+              class="parcel-details__last-activity"
+            >
+              (Last emptied reservoir:
+              <DateFriendly
+                :date="lastActivity.lastClaimedDate"
+                enableToggle
+              />)
+            </div>
             <ul class="parcel-details__installations">
               <li
                 v-for="installation in groupedInstallations"
@@ -108,8 +139,10 @@
 </template>
 <script>
 import { ref, computed } from 'vue'
-import useParcelContentsSingle from '@/data/useParcelContentsSingleFromContract'
+import useParcelContentsSingle from '@/data/useParcelContentsSingle'
+import useReactiveDate from '@/environment/useReactiveDate'
 import SiteDialog from '@/site/SiteDialog.vue'
+import DateFriendly from '@/common/DateFriendly.vue'
 import ParcelGridSvg from './ParcelGridSvg.vue'
 
 const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64, 64]
@@ -118,6 +151,7 @@ const SIZE_HEIGHTS_BY_ID = [8, 16, 64, 32, 64]
 export default {
   components: {
     SiteDialog,
+    DateFriendly,
     ParcelGridSvg
   },
   props: {
@@ -130,6 +164,7 @@ export default {
       aaltar,
       installations,
       tiles,
+      lastActivity,
       fetchContents
     } = useParcelContentsSingle()
 
@@ -163,15 +198,42 @@ export default {
 
     const parcelGridPopupIsOpen = ref(false)
 
+    const { tickerDate } = useReactiveDate()
+    const tickerTimestamp = computed(() => tickerDate.value - 0)
+
+    const aaltarCooldown = computed(() => {
+      if (!aaltar.value?.type?.cooldownHours) {
+        return null
+      }
+      const cooldownHours = aaltar.value.type.cooldownHours
+      const lastChanneledTimestamp = lastActivity.value?.lastChanneledTimestamp
+      let cooldownTimestamp = null
+      let cooldownDate = null
+      if (lastChanneledTimestamp) {
+        cooldownTimestamp = lastChanneledTimestamp + (cooldownHours * 60 * 60 * 1000)
+        cooldownDate = new Date(cooldownTimestamp)
+      } else {
+        // there is an altar but it hasn't been channeled yet, so it's available
+        cooldownTimestamp = 0
+      }
+      const isReady = cooldownTimestamp < tickerTimestamp.value
+      return {
+        isReady,
+        date: cooldownDate
+      }
+    })
+
     return {
       fetchStatus,
       aaltar,
+      aaltarCooldown,
       groupedInstallations,
       groupedTiles,
       parcelWidth,
       parcelHeight,
       installations,
       tiles,
+      lastActivity,
       parcelGridPopupIsOpen
     }
   }
@@ -182,6 +244,10 @@ export default {
     margin-right: 5px;
     font-size: 0.9em;
     color: var(--site-text-color--subtle);
+  }
+
+  .parcel-details__last-activity {
+    font-size:  0.9em;
   }
 
   .parcel-details__installations {

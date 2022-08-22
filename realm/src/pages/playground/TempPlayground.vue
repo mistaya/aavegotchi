@@ -28,11 +28,20 @@
         </li>
       </ul>
 
-      And on the
-      <router-link :to="{ name: 'lending-lands' }">
-        Lending - Land Owner
-      </router-link>
-      page, you can see the altar-channeling status for all lands for an address.
+      For lands, use these pages:
+      <ul>
+        <li>
+          <router-link :to="{ name: 'parcel' }">
+            Citaadel - Parcel
+          </router-link>:
+          see the altar-channeling status and last-emptied-reservoirs time for a specific parcel by ID.
+        </li>
+        <li>
+          <router-link :to="{ name: 'lending-lands' }">
+            Lending - Land Owner
+          </router-link>: see altar-channeling status for all lands owned by an address.
+        </li>
+      </ul>
     </div>
 
     <hr>
@@ -112,10 +121,14 @@
           </div>
           <div>
             Note: I will be removing this lookup soon, because this information is included on the
+            <router-link :to="{ name: 'parcel' }">
+              Citaadel - Parcel
+            </router-link>
+            and
             <router-link :to="{ name: 'lending-lands' }">
               Lending - Land Owner
             </router-link>
-            page.
+            pages.
           </div>
         </form>
         <div v-if="parcelStatus.loading">

@@ -10,6 +10,7 @@ export default function () {
   const aaltar = ref(null)
   const installations = ref([])
   const tiles = ref([])
+  const lastActivity = ref(null)
 
   const { status: fetchStatus, setLoading } = useStatus()
 
@@ -20,6 +21,7 @@ export default function () {
     aaltar.value = null
     installations.value = []
     tiles.value = []
+    lastActivity.value = null
     lastFetchDate.value = null
   }
 
@@ -27,10 +29,17 @@ export default function () {
     resetContents()
     const [isStale, setLoaded, setError] = setLoading()
 
+    let parcelQuery = `
+      parcel(id: "${parcelId}") {
+        lastClaimedAlchemica
+        lastChanneledAlchemica
+      }
+    `
     let lastIdTiles = null
     let lastIdInstallations = null
     let fetchedTiles = []
     let fetchedInstallations = []
+    let fetchedActivity = null
 
     const fetchFromSubgraph = function () {
       const idTilesQuery = lastIdTiles ? `, id_gt: "${lastIdTiles}"` : ''
@@ -39,6 +48,7 @@ export default function () {
         method: 'POST',
         body: JSON.stringify({
           query: `{
+            ${parcelQuery}
             tiles(
               first: ${FETCH_PAGE_SIZE},
               orderBy: id,
@@ -83,11 +93,28 @@ export default function () {
         }
         const responseJson = await response.json()
         if (responseJson.data?.tiles && responseJson.data?.installations) {
+          if (responseJson.data.parcel) {
+            const lastChanneledTimestamp = responseJson.data.parcel.lastChanneledAlchemica * 1000
+            const lastChanneledDate = lastChanneledTimestamp && new Date(lastChanneledTimestamp)
+            const lastClaimedTimestamp = responseJson.data.parcel.lastClaimedAlchemica * 1000
+            const lastClaimedDate = lastClaimedTimestamp && new Date(lastClaimedTimestamp)
+            fetchedActivity = {
+              lastChanneledTimestamp,
+              lastChanneledDate,
+              lastClaimedTimestamp,
+              lastClaimedDate
+            }
+            // we only need to fetch the parcel details in the first request
+            parcelQuery = ''
+          }
           const { tiles: responseTiles, installations: responseInstallations } = responseJson.data
           fetchedTiles = fetchedTiles.concat(responseTiles)
           fetchedInstallations = fetchedInstallations.concat(responseInstallations)
           if (responseTiles.length < FETCH_PAGE_SIZE && responseInstallations.length < FETCH_PAGE_SIZE) {
             // finished fetching all pages
+
+            // store parcel activity
+            lastActivity.value = fetchedActivity
 
             const annotateItems = function (items, itemTypes) {
               return items.map(item => {
@@ -145,6 +172,7 @@ export default function () {
     aaltar,
     installations,
     tiles,
+    lastActivity,
     canSubmitFetch,
     fetchStatus,
     fetchContents,
