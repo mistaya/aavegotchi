@@ -24,9 +24,9 @@
           window.umami.trackView(url, referrer, websiteId)
         }
       }
-      function trackEvent (eventValue, eventType, url, websiteId) {
+      function trackEvent (eventValue, eventData, url, websiteId) {
         if (window.umami) {
-          window.umami.trackEvent(eventValue, eventType, url, websiteId)
+          window.umami.trackEvent(eventValue, eventData, url, websiteId)
         }
       }
       function onUmamiLoaded () {
