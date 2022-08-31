@@ -131,5 +131,33 @@
     "tileGroup": "LE Mosaic Tile",
     "width": 2,
     "height": 2
+  },
+  "20": {
+    "id": "20",
+    "label": "Purple Ghost",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "21": {
+    "id": "21",
+    "label": "Purple Diamond",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "22": {
+    "id": "22",
+    "label": "Purple Star",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "23": {
+    "id": "23",
+    "label": "Purple Heart",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
   }
 }
