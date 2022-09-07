@@ -159,5 +159,33 @@
     "tileGroup": "LE Mosaic Tile",
     "width": 2,
     "height": 2
+  },
+  "24": {
+    "id": "24",
+    "label": "Pink Ghost",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "25": {
+    "id": "25",
+    "label": "Pink Diamond",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "26": {
+    "id": "26",
+    "label": "Pink Star",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "27": {
+    "id": "27",
+    "label": "Pink Heart",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
   }
 }
