@@ -187,5 +187,33 @@
     "tileGroup": "LE Mosaic Tile",
     "width": 2,
     "height": 2
+  },
+  "28": {
+    "id": "28",
+    "label": "Green Ghost",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "29": {
+    "id": "29",
+    "label": "Green Diamond",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "30": {
+    "id": "30",
+    "label": "Green Star",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "31": {
+    "id": "31",
+    "label": "Green Heart",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
   }
 }
