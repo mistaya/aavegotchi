@@ -313,7 +313,7 @@ export default {
       const kinshipNum = kinship.value - 0
       const kinshipQuery = !Number.isNaN(kinshipNum) && kinshipNum > 0 ? `, gotchiKinship_gte: "${kinshipNum}"` : ''
       const query = `
-      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_not: "0", cancelled: false, ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery} ${periodQuery} ${kinshipQuery} }) {
+      {gotchiLendings(first: ${fetchPageSize.value}, orderBy: "timeAgreed", orderDirection: "desc", where: { timeAgreed_gt: 0, cancelled: false, ${whitelistQuery} ${upfrontQuery} ${ownerSplitQuery} ${borrowerSplitQuery} ${otherSplitQuery} ${periodQuery} ${kinshipQuery} }) {
         id
         upfrontCost
         period

@@ -828,7 +828,7 @@ export default {
 
     const lendedGotchis = computed(() => {
       if (!listingsStatus.value.loaded) { return null }
-      return listedGotchis.value.filter(item => item.listing.timeAgreed !== '0')
+      return listedGotchis.value.filter(item => item.listing.timeAgreed > 0)
     })
 
     // We only need to fetch pocket balances for lended gotchis
@@ -871,8 +871,8 @@ export default {
       const allGotchis = ownedUnlistedGotchis.concat(listedGotchis.value)
       const fetchTimestampSeconds = fetchTimestamp.value / 1000
       const rows = allGotchis.map(item => {
-        const isListed = item.listing && item.listing.timeAgreed === '0'
-        const isLended = item.listing && item.listing.timeAgreed !== '0'
+        const isListed = item.listing && (item.listing.timeAgreed === '0' || item.listing.timeAgreed === null)
+        const isLended = item.listing && item.listing.timeAgreed > 0
         const createdDate = item.listing ? new Date(item.listing.timeCreated * 1000) : null
         const agreedDate = isLended ? new Date(item.listing.timeAgreed * 1000) : null
         const finishDate = isLended ? new Date(((item.listing.timeAgreed - 0) + (item.listing.period - 0)) * 1000) : null
