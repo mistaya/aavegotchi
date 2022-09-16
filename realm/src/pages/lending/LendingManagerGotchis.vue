@@ -881,7 +881,7 @@ export default {
           // if not lended, make up a 'far future' timestamp to help with sorting listed and unlisted gotchis
           : (isListed ? Number.MAX_SAFE_INTEGER - 1 : Number.MAX_SAFE_INTEGER)
         const actualPeriod = isLended ? fetchTimestampSeconds - (item.listing.timeAgreed - 0) : 0
-        const lastClaimedDate = item.listing && item.listing.lastClaimed !== '0' ? new Date(item.listing.lastClaimed * 1000) : null
+        const lastClaimedDate = item.listing && item.listing.lastClaimed ? new Date(item.listing.lastClaimed * 1000) : null
         const lastClaimedTimestamp = isLended
           ? item.listing.lastClaimed * 1000
           // if not lended, make up a 'far past' timestamp to help with sorting listed and unlisted gotchis

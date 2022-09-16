@@ -907,7 +907,7 @@ export default {
           // for finished listings, use the actual period
           : ((item.listing.timeAgreed - 0) + (earningsForListing.actualPeriod - 0)) * 1000
         const actualFinishDate = new Date(actualFinishTimestamp)
-        const lastClaimedDate = item.listing && item.listing.lastClaimed !== '0' ? new Date(item.listing.lastClaimed * 1000) : null
+        const lastClaimedDate = item.listing && item.listing.lastClaimed ? new Date(item.listing.lastClaimed * 1000) : null
         const lastClaimedTimestamp = item.listing.lastClaimed * 1000
         const balancesForGotchi = balances.value[item.gotchi.escrow]
         const totalAlchemica = {}
