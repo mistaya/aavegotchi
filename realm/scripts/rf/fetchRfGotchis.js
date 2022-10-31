@@ -183,6 +183,22 @@ const SEASONS = {
         polygon: 32308426, // Aug-25-2022
         eth: 15409495
       }
+    },
+    rnd3: {
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 32848474, // Sep-08-2022
+        eth: 15496980
+      }
+    },
+    rnd4: {
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 33427320, // Sep-22-2022
+        eth: 15589336
+      }
     }
   }
 }
@@ -193,11 +209,11 @@ const SEASON = SEASONS.szn4
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn4/rewards.json'
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2 and 3
 // - round
-const ROUND = SEASON.rnd2
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn4/rnd2.json'
-const GOTCHIS_FILENAME = 'rnd2Gotchis'
+const ROUND = SEASON.rnd3
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn4/rnd3.json'
+const GOTCHIS_FILENAME = 'rnd3Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r2'
+const GOTCHI_IMAGES_FOLDER = './r3'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
