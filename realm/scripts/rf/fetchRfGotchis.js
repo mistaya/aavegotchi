@@ -209,11 +209,11 @@ const SEASON = SEASONS.szn4
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn4/rewards.json'
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2 and 3
 // - round
-const ROUND = SEASON.rnd3
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn4/rnd3.json'
-const GOTCHIS_FILENAME = 'rnd3Gotchis'
+const ROUND = SEASON.rnd4
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn4/rnd4.json'
+const GOTCHIS_FILENAME = 'rnd4Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r3'
+const GOTCHI_IMAGES_FOLDER = './r4'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'

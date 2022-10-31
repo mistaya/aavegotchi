@@ -242,8 +242,7 @@ const SEASONS = {
         endDate: new Date('2022-09-08T14:00Z'),
         blockNumber: 32848474,
         tiebreakerTraitIndex: 2
-      }
-      /*,
+      },
       '4': {
         id: '4',
         jsonUrl: `${BASE_DATA_URL}/szn4/rnd4Gotchis.json`,
@@ -251,7 +250,6 @@ const SEASONS = {
         blockNumber: 33427320,
         tiebreakerTraitIndex: 3
       }
-      */
     }
   }
 }
