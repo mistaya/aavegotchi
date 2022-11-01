@@ -96,7 +96,7 @@ for (const item of INSTALLATIONS) {
     }
     INSTALLATION_GROUPS_BY_ID[item.installationGroup].children.push({
       id: item.id,
-      label: item.rarity || `Level ${item.level}` // currently, decorations have 'rarity' and installations have 'level'
+      label: item.labelForFilter || item.rarity || `Level ${item.level}` // currently, decorations have 'rarity' and installations have 'level'
     })
   } else {
     UNGROUPED_INSTALLATIONS.push({

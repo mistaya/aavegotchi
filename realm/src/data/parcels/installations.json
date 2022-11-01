@@ -2599,5 +2599,157 @@
             "baseOffsetTop": 64,
             "baseOffsetLeft": 64
         }
+    },
+    "137":
+    {
+        "id": "137",
+        "label": "NFT Display - 4x4",
+        "labelForFilter": "4x4 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 4,
+        "height": 4,
+        "image":
+        {
+            "baseWidth": 256,
+            "baseHeight": 256,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "138":
+    {
+        "id": "138",
+        "label": "NFT Display - 4x6",
+        "labelForFilter": "4x6 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 4,
+        "height": 6,
+        "image":
+        {
+            "baseWidth": 256,
+            "baseHeight": 384,
+            "width": 256,
+            "height": 384,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "139":
+    {
+        "id": "139",
+        "label": "NFT Display - 6x4",
+        "labelForFilter": "6x4 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 6,
+        "height": 4,
+        "image":
+        {
+            "baseWidth": 384,
+            "baseHeight": 256,
+            "width": 384,
+            "height": 256,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "140":
+    {
+        "id": "140",
+        "label": "NFT Display - 8x8",
+        "labelForFilter": "8x8 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 8,
+        "height": 8,
+        "image":
+        {
+            "baseWidth": 512,
+            "baseHeight": 512,
+            "width": 512,
+            "height": 512,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "141":
+    {
+        "id": "141",
+        "label": "Le Golden NFT Display - 4x4",
+        "labelForFilter": "4x4 Display",
+        "installationType": "decoration",
+        "installationGroup": "Le Golden NFT Display",
+        "width": 4,
+        "height": 4,
+        "image":
+        {
+            "baseWidth": 256,
+            "baseHeight": 256,
+            "width": 256,
+            "height": 320,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 0
+        }
+    },
+    "142":
+    {
+        "id": "142",
+        "label": "Le Golden NFT Display - 4x6",
+        "labelForFilter": "4x6 Display",
+        "installationType": "decoration",
+        "installationGroup": "Le Golden NFT Display",
+        "width": 4,
+        "height": 6,
+        "image":
+        {
+            "baseWidth": 256,
+            "baseHeight": 384,
+            "width": 256,
+            "height": 384,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "143":
+    {
+        "id": "143",
+        "label": "Le Golden NFT Display - 6x4",
+        "labelForFilter": "6x4 Display",
+        "installationType": "decoration",
+        "installationGroup": "Le Golden NFT Display",
+        "width": 6,
+        "height": 4,
+        "image":
+        {
+            "baseWidth": 384,
+            "baseHeight": 256,
+            "width": 384,
+            "height": 320,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 0
+        }
+    },
+    "144":
+    {
+        "id": "144",
+        "label": "Le Golden NFT Display - 8x8",
+        "labelForFilter": "8x8 Display",
+        "installationType": "decoration",
+        "installationGroup": "Le Golden NFT Display",
+        "width": 8,
+        "height": 8,
+        "image":
+        {
+            "baseWidth": 512,
+            "baseHeight": 512,
+            "width": 512,
+            "height": 528,
+            "baseOffsetTop": 16,
+            "baseOffsetLeft": 0
+        }
     }
 }
