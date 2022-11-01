@@ -30,7 +30,7 @@
       />
       <!-- installations -->
       <image
-        v-for="{ type, grid } in installations"
+        v-for="{ type, grid } in installationsSorted"
         :key="`installation${type.id}`"
         :x="type.image && type.image.baseOffsetLeft ? grid.x - (type.width * (type.image.baseOffsetLeft / type.image.baseWidth)) : grid.x"
         :y="type.image && type.image.baseOffsetTop ? grid.y - (type.height * (type.image.baseOffsetTop / type.image.baseHeight)) : grid.y"
@@ -51,6 +51,7 @@
 </template>
 <script>
 import { computed } from 'vue'
+import orderBy from 'lodash.orderby'
 import useWindowSize from '@/environment/useWindowSize'
 
 const MAX_PIXELS_PER_GOTCHI_UNIT = 24
@@ -94,8 +95,12 @@ export default {
       }
     })
 
+    // Sort installations so they render in correct z-index order, with the topmost and leftmost behind the others.
+    const installationsSorted = computed(() => orderBy(props.installations, [item => item.grid.y, item => item.grid.x]))
+
     return {
-      size
+      size,
+      installationsSorted
     }
   }
 }
