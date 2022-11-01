@@ -2751,5 +2751,23 @@
             "baseOffsetTop": 16,
             "baseOffsetLeft": 0
         }
+    },
+    "145":
+    {
+        "id": "145",
+        "label": "Bounce Gate",
+        "installationType": "utility",
+        "installationGroup": null,
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 256,
+            "height": 256,
+            "baseOffsetTop": 96,
+            "baseOffsetLeft": 64
+        }
     }
 }
