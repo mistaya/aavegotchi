@@ -2769,5 +2769,113 @@
             "baseOffsetTop": 96,
             "baseOffsetLeft": 64
         }
+    },
+    "146": {
+        "id": "146",
+        "label": "Paampkin Trio",
+        "labelForFilter": "Paampkin Trio",
+        "installationType": "decoration",
+        "installationGroup": "Halloween 2022",
+        "width": 2,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 64,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "147": {
+        "id": "147",
+        "label": "Roflkin",
+        "labelForFilter": "Roflkin",
+        "installationType": "decoration",
+        "installationGroup": "Halloween 2022",
+        "width": 1,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 64,
+            "baseHeight": 64,
+            "width": 192,
+            "height": 128,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "148": {
+        "id": "148",
+        "label": "Scareye Crow",
+        "labelForFilter": "Scareye Crow",
+        "installationType": "decoration",
+        "installationGroup": "Halloween 2022",
+        "width": 1,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 63,
+            "baseHeight": 63,
+            "width": 192,
+            "height": 128,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 65
+        }
+    },
+    "149": {
+        "id": "149",
+        "label": "Gotchi Caandle",
+        "labelForFilter": "Gotchi Caandle",
+        "installationType": "decoration",
+        "installationGroup": "Halloween 2022",
+        "width": 1,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 64,
+            "baseHeight": 64,
+            "width": 192,
+            "height": 192,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
+    },
+    "150": {
+        "id": "150",
+        "label": "Sus Baatterfly",
+        "labelForFilter": "Sus Baatterfly",
+        "installationType": "decoration",
+        "installationGroup": "Halloween 2022",
+        "width": 1,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 64,
+            "baseHeight": 64,
+            "width": 192,
+            "height": 128,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "151": {
+        "id": "151",
+        "label": "Skeledator",
+        "labelForFilter": "Skeledator",
+        "installationGroup": "Halloween 2022",
+        "installationType": "decoration",
+        "width": 2,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 64,
+            "width": 256,
+            "height": 192,
+            "baseOffsetTop": 128,
+            "baseOffsetLeft": 64
+        }
     }
 }
