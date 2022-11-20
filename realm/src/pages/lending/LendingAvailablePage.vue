@@ -277,7 +277,7 @@
                       <ul style="margin-top: 5px;">
                         <li>
                           Channeling on a Level {{ channelingSettings.aaltarLevel }} Aaltar with
-                          {{ 50 - ((channelingSettings.aaltarLevel - 1) * 5) }}% spillover
+                          {{ 2 * ( 50 - ((channelingSettings.aaltarLevel - 1) * 5) ) }}% spillover
                         </li>
                         <li>
                           Alchemica prices:
@@ -854,7 +854,7 @@ export default {
 
         // calculate channeling yield
         const kinshipMultiplier = Math.sqrt(kinship / 50)
-        const spilloverMultiplier = (50 - ((channelingSettings.value.aaltarLevel - 1) * 5)) / 100
+        const spilloverMultiplier = 2 * (50 - ((channelingSettings.value.aaltarLevel - 1) * 5)) / 100
         let ghstPerChannel = 0
         for (const token in BASE_CHANNELING) {
           if (tokensToShareMap[TOKEN_ADDRESSES[token]]) {
