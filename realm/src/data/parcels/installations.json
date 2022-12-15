@@ -2877,5 +2877,95 @@
             "baseOffsetTop": 128,
             "baseOffsetLeft": 64
         }
+    },
+    "152": {
+        "id": "152",
+        "label": "Feelin' Lit",
+        "labelForFilter": "Feelin' Lit",
+        "installationGroup": "Christmas 2022",
+        "installationType": "decoration",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 128,
+            "height": 128,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "153": {
+        "id": "153",
+        "label": "Bulby",
+        "labelForFilter": "Bulby",
+        "installationGroup": "Christmas 2022",
+        "installationType": "decoration",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 128,
+            "height": 128,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "154": {
+        "id": "154",
+        "label": "Rednosed Rofl",
+        "labelForFilter": "Rednosed Rofl",
+        "installationGroup": "Christmas 2022",
+        "installationType": "decoration",
+        "width": 1,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 64,
+            "baseHeight": 64,
+            "width": 192,
+            "height": 128,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "155": {
+        "id": "155",
+        "label": "Brrrooorrr",
+        "labelForFilter": "Brrrooorrr",
+        "installationGroup": "Christmas 2022",
+        "installationType": "decoration",
+        "width": 1,
+        "height": 1,
+        "image":
+        {
+            "baseWidth": 64,
+            "baseHeight": 64,
+            "width": 192,
+            "height": 128,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 64
+        }
+    },
+    "156": {
+        "id": "156",
+        "label": "Aangel Tree",
+        "labelForFilter": "Aangel Tree",
+        "installationGroup": "Christmas 2022",
+        "installationType": "decoration",
+        "width": 2,
+        "height": 2,
+        "image":
+        {
+            "baseWidth": 128,
+            "baseHeight": 128,
+            "width": 128,
+            "height": 192,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 64
+        }
     }
 }
