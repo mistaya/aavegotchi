@@ -2965,7 +2965,7 @@
             "width": 128,
             "height": 192,
             "baseOffsetTop": 0,
-            "baseOffsetLeft": 64
+            "baseOffsetLeft": 0
         }
     }
 }
