@@ -2967,5 +2967,100 @@
             "baseOffsetTop": 0,
             "baseOffsetLeft": 0
         }
+    },
+    "157":
+    {
+        "id": "157",
+        "label": "NFT Display - 8x12",
+        "labelForFilter": "8x12 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 8,
+        "height": 12,
+        "image":
+        {
+            "baseWidth": 512,
+            "baseHeight": 768,
+            "width": 512,
+            "height": 768,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "158":
+    {
+        "id": "158",
+        "label": "NFT Display - 12x8",
+        "labelForFilter": "12x8 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 12,
+        "height": 8,
+        "image":
+        {
+            "baseWidth": 768,
+            "baseHeight": 512,
+            "width": 768,
+            "height": 512,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "159":
+    {
+        "id": "159",
+        "label": "NFT Display - 12x12",
+        "labelForFilter": "12x12 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 12,
+        "height": 12,
+        "image":
+        {
+            "baseWidth": 768,
+            "baseHeight": 768,
+            "width": 768,
+            "height": 768,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "160":
+    {
+        "id": "160",
+        "label": "NFT Display - 16x16",
+        "labelForFilter": "16x16 Display",
+        "installationType": "decoration",
+        "installationGroup": "NFT Display",
+        "width": 16,
+        "height": 16,
+        "image":
+        {
+            "baseWidth": 1024,
+            "baseHeight": 1024,
+            "width": 1024,
+            "height": 1024,
+            "baseOffsetTop": 0,
+            "baseOffsetLeft": 0
+        }
+    },
+    "161":
+    {
+        "id": "161",
+        "label": "Le Golden NFT Display - 16x16",
+        "labelForFilter": "16x16 Display",
+        "installationType": "decoration",
+        "installationGroup": "Le Golden NFT Display",
+        "width": 16,
+        "height": 16,
+        "image":
+        {
+            "baseWidth": 1024,
+            "baseHeight": 1024,
+            "width": 1024,
+            "height": 1024,
+            "baseOffsetTop": 64,
+            "baseOffsetLeft": 0
+        }
     }
 }
