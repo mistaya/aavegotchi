@@ -3058,8 +3058,8 @@
             "baseWidth": 1024,
             "baseHeight": 1024,
             "width": 1024,
-            "height": 1024,
-            "baseOffsetTop": 64,
+            "height": 1040,
+            "baseOffsetTop": 0,
             "baseOffsetLeft": 0
         }
     }
