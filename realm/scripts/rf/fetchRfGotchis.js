@@ -162,7 +162,7 @@ const SEASONS = {
     }
   },
   // S4: wearable sets changed
-  // New wearable sets JS algorithm is in the works: ready for round 1 or not?
+  // New wearable sets JS algorithm is in the works: not deployed during this season
   szn4: {
     checkVault: true,
     checkLendings: true,
@@ -200,20 +200,60 @@ const SEASONS = {
         eth: 15589336
       }
     }
+  },
+  // S5: new wearable sets from Forge to be introduced later in the season?
+  // New wearable sets JS algorithm is in the works: will it be used?
+  szn5: {
+    checkVault: true,
+    checkLendings: true,
+    rnd1: {
+      // Old wearable sets JS algorithm is in use
+      // (Still assigning "Sushi Chef" not "Master Sushi Chef"?)
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 39284410, // Feb-14-2023
+        eth: 16627442
+      }
+    },
+    rnd2: {
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 0, // Feb-28-2023
+        eth: 0
+      }
+    },
+    rnd3: {
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 0, // Mar-14-2023
+        eth: 0
+      }
+    },
+    rnd4: {
+      rfCalc: 'js1',
+      wearableSets: '2022-08-03',
+      blocks: {
+        polygon: 0, // Mar-28-2023
+        eth: 0
+      }
+    }
   }
 }
 
 // Params for this run
 // - season
-const SEASON = SEASONS.szn4
-const SEASON_REWARDS_FILE = '../../public/data/rf/szn4/rewards.json'
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2 and 3
+const SEASON = SEASONS.szn5
+const SEASON_REWARDS_FILE = '../../public/data/rf/szn5/rewards.json'
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5
 // - round
-const ROUND = SEASON.rnd4
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn4/rnd4.json'
-const GOTCHIS_FILENAME = 'rnd4Gotchis'
+const ROUND = SEASON.rnd1
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn5/rnd1.json'
+const GOTCHIS_FILENAME = 'rnd1Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r4'
+const GOTCHI_IMAGES_FOLDER = './r1'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'

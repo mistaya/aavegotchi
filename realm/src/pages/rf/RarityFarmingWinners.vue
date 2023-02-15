@@ -468,6 +468,7 @@ export default {
       }
       // TODO Debug/Sanity check: check that rarity farming leaderboard is ordered by withSetsRarityScore (not checking tiebreaker)
       /*
+      // Check that the calculated-for-rarity-farming rarity score matches the final order
       let lastScore = 100000
       let countWrongOrder = 0
       for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
@@ -482,6 +483,7 @@ export default {
       */
 
       /*
+      // Check to see if the best-possible-rarity-score matches the final order
       let lastScore = 100000
       for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
         if (gotchi.withSetsRarityScoreBest > lastScore) {
