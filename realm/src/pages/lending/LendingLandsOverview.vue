@@ -237,6 +237,7 @@
 <script>
 import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
+import apis from '@/data/apis'
 import useReactiveDate from '@/environment/useReactiveDate'
 import useStatus from '@/data/useStatus'
 import useParcelAccessRights from '@/data/useParcelAccessRights'
@@ -246,9 +247,7 @@ import SiteTable from '@/site/SiteTable.vue'
 import SortToggle from '@/common/SortToggle.vue'
 import INSTALLATIONS from '@/data/parcels/installations.json'
 
-// const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-const LANDS_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
+const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 const PARCEL_SIZE_LABELS = {
@@ -297,7 +296,7 @@ export default {
       let lastIdNum = 0
       let parcels = []
       const fetchLandsFromSubgraph = function () {
-        fetch(LANDS_SUBGRAPH_URL, {
+        fetch(GOTCHIVERSE_SUBGRAPH_URL, {
           method: 'POST',
           body: JSON.stringify({
             query: `{

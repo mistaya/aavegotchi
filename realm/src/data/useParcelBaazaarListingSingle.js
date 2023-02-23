@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 
 export default function useParcelBaazaarListingSingle (id) {
   const parcelListing = ref(null)

@@ -1,10 +1,11 @@
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 
 const installationsByParcelId = ref({})
 const tilesByParcelId = ref({})
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
+const SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 const resetContents = function () {

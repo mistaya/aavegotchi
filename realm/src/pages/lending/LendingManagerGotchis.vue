@@ -510,6 +510,7 @@ import BigNumber from 'bignumber.js'
 import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
 
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useAddressBalances from '@/data/useAddressAlchemicaBalances'
@@ -520,9 +521,9 @@ import SortToggle from '@/common/SortToggle.vue'
 import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from './LendingLastChanneledCell.vue'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-const OWNER_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/sudeepb02/gotchi-lending'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
+const OWNER_SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
+const LENDING_SUBGRAPH_URL = apis.LENDING_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
 

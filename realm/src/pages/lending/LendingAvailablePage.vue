@@ -559,6 +559,8 @@
 import BigNumber from 'bignumber.js'
 import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
+
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useTokenPricesAavegotchi from '@/data/useTokenPricesAavegotchi'
@@ -583,7 +585,7 @@ const TOKEN_ADDRESSES = {
   GHST: tokensList.find(({ label }) => label === 'GHST').id
 }
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 
 export default {
   components: {

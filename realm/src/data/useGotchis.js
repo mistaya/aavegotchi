@@ -1,11 +1,12 @@
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import initialGotchisUrl from './pockets/assetGotchis.json'
 
 // Fetch all gotchis to find their escrow addresses
 const gotchis = ref([])
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 const { status: fetchStatus, setLoading } = useStatus()

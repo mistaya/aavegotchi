@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
+import apis from '@/data/apis'
 
 // We need to fetch all listings in full to get accurate info.
 // Use cached results just for development
@@ -20,7 +21,7 @@ import BigNumber from 'bignumber.js'
 const listingsByParcelId = ref({})
 const salesByParcelId = ref({})
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 const resetListings = function () {

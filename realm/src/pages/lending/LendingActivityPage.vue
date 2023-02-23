@@ -256,6 +256,7 @@
 <script>
 import BigNumber from 'bignumber.js'
 import { ref, computed, watch } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import DateFriendly from '@/common/DateFriendly.vue'
@@ -264,7 +265,7 @@ import SiteTable from '@/site/SiteTable.vue'
 import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from './LendingLastChanneledCell.vue'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 
 export default {
   components: {

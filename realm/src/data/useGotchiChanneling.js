@@ -1,5 +1,6 @@
 import format from 'date-fns/format'
 import { ref, computed, watch } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useReactiveDate from '@/environment/useReactiveDate'
 
@@ -25,7 +26,7 @@ const utcMidnight = computed(() => {
 
 const utcMidnightTimestampMs = computed(() => utcMidnight.value - 0)
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
+const SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 export {

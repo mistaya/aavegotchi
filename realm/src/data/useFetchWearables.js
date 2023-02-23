@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import initialWearables from './wearables/wearables.json'
 
@@ -8,7 +9,7 @@ import initialWearables from './wearables/wearables.json'
 // Use cached results
 const wearables = ref(initialWearables)
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 
 const { status: fetchStatus, setLoading } = useStatus()
 

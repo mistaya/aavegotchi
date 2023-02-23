@@ -72,11 +72,12 @@
 
 <script>
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useParcels from '@/data/useParcels'
 import groupBy from 'lodash.groupby'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 export default {

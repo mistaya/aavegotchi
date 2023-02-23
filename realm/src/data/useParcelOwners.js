@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 
 // We need to fetch all parcels in full to get accurate info.
@@ -8,8 +9,7 @@ import useStatus from '@/data/useStatus'
 
 const ownersByParcelId = ref({})
 
-// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
+const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 const resetOwners = function () {
@@ -19,8 +19,7 @@ const resetOwners = function () {
 
 const setOwners = function (parcels) {
   for (const parcel of parcels) {
-    // ownersByParcelId.value[parcel.tokenId] = parcel.owner?.id // core-matic subgraph
-    ownersByParcelId.value[parcel.tokenId] = parcel.owner // gotchiverse subgraph
+    ownersByParcelId.value[parcel.tokenId] = parcel.owner
   }
 }
 
@@ -34,18 +33,6 @@ const fetchOwners = function () {
   let lastIdNum = 0
   let parcels = []
   const fetchOwnersFromSubgraph = function () {
-    // fetch(SUBGRAPH_URL, {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     query: `{
-    //       parcels(first: ${FETCH_PAGE_SIZE}, orderBy: tokenId, where: { tokenId_gt: ${lastIdNum} }) {
-    //         tokenId
-    //         owner {
-    //           id
-    //         }
-    //       }
-    //     }`
-    //   })
     fetch(GOTCHIVERSE_SUBGRAPH_URL, {
       method: 'POST',
       body: JSON.stringify({

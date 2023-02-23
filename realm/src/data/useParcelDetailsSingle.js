@@ -1,9 +1,9 @@
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import { annotateParcelDetails } from './parcelUtils'
 
-const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
-// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
 
 export default function useParcelDetails (id) {
   const parcelDetails = ref({})
@@ -44,27 +44,6 @@ export default function useParcelDetails (id) {
           }
         }`
       })
-    // fetch(SUBGRAPH_URL, {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     query: `{
-    //       parcel(id: "${id}") {
-    //         id
-    //         owner {
-    //           id
-    //         }
-    //         coordinateX
-    //         coordinateY
-    //         district
-    //         parcelHash
-    //         fudBoost
-    //         fomoBoost
-    //         alphaBoost
-    //         kekBoost
-    //         size
-    //       }
-    //     }`
-    //   })
     }).then(async response => {
       if (isStale()) { console.log('Stale request, ignoring'); return }
       if (!response.ok) {
@@ -75,8 +54,7 @@ export default function useParcelDetails (id) {
       if (responseJson.data?.parcel) {
         const details = annotateParcelDetails({
           ...responseJson.data.parcel,
-          owner: responseJson.data.parcel.owner || null // gotchiverse subgraph
-          // owner: responseJson.data.parcel.owner?.id || null // core-matic subgraph
+          owner: responseJson.data.parcel.owner || null
         })
         resetDetails()
         setDetails(details)
