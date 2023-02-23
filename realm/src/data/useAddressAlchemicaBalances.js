@@ -1,11 +1,12 @@
 import { ref, computed } from 'vue'
 import BigNumber from 'bignumber.js'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import tokens from './pockets/tokens.json'
 
 // Fetch requested alchemica token balances for addresses.
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-alchemica'
+const SUBGRAPH_URL = apis.ALCHEMICA_BALANCES_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 export default function useAddressBalances ({ addresses }) {

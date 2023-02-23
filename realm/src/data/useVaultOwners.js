@@ -1,8 +1,9 @@
 import { ref, computed } from 'vue'
+import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import initialOwnersUrl from './pockets/assetVaultOwners.json'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchi-vault'
+const SUBGRAPH_URL = apis.VAULT_GOTCHIS_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 const ownersByGotchi = ref({})

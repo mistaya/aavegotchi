@@ -1,10 +1,11 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
+import apis from '@/data/apis'
 import auction1JsonUrl from './auctions/assetAuction1.json'
 import auction2JsonUrl from './auctions/assetAuction2.json'
 
-const REALM_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
+const REALM_SUBGRAPH_URL = apis.REALM_AUCTIONS_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 // startTime and endTime are compatible with JS Date; divide by 1000 before using in graph query
