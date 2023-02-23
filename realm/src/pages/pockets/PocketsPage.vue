@@ -94,13 +94,19 @@
             </div>
             <div class="dashboard-text dashboard-text--secondary">
               of different collaterals
-              in <NumberDisplay :number="grandTotals.numGotchis" /> gotchis
+              in <NumberDisplay :number="grandTotals.numGotchisWithPrice" /> gotchis
               <br>
               (average
                 <NumberDisplay
                   :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
                   usd
                 />)
+            </div>
+            <div
+              v-if="grandTotals.numGotchisWithoutPrice > 0"
+              class="dashboard-text dashboard-text--secondary"
+            >
+              Plus {{ grandTotals.numGotchisWithoutPrice }} gotchis with unknown $ prices (see below).
             </div>
           </div>
         </div>
@@ -149,14 +155,21 @@
               v-if="hasPrices"
               class="dashboard-number dashboard-number--secondary"
             >
+              <div
+                v-if="!item.hasPrice"
+                class="dashboard-number-error"
+              >
+                Error fetching {{ item.collateral.label }} price :(
+              </div>
               <NumberDisplay
+                v-else
                 :number="dashboardDisplayMode == 'all' ? item.usdTotal : item.usdTotalLocked"
                 usd
               />
             </div>
             <div class="dashboard-text dashboard-text--secondary">
               in <NumberDisplay :number="item.numGotchis" /> gotchis
-              <template v-if="hasPrices">
+              <template v-if="hasPrices && item.hasPrice">
                 <br>
                 (average
                   <NumberDisplay
@@ -638,10 +651,14 @@ export default {
     const collateralTotalsWithPrice = computed(() => {
       if (!hasPrices.value) { return collateralTotals.value }
       return collateralTotals.value.map(obj => {
-        const usdTotal = obj.total.times(usdPrices.value[obj.collateral.id])
-        const usdTotalLocked = obj.totalLocked.times(usdPrices.value[obj.collateral.id])
+        const price = usdPrices.value[obj.collateral.id]
+        const hasPrice = typeof price !== 'undefined'
+        const usdTotal = obj.total.times(price)
+        const usdTotalLocked = obj.totalLocked.times(price)
+
         return {
           ...obj,
+          hasPrice,
           usdTotal,
           meanUsd: usdTotal.dividedBy(obj.numGotchis),
           usdTotalLocked,
@@ -660,17 +677,23 @@ export default {
 
     const grandTotals = computed(() => {
       const numGotchis = gotchis.value.length
+      const numGotchisWithPrice = hasPrices.value
+        ? collateralTotalsWithPrice.value.reduce((total, item) => total + (item.hasPrice ? item.numGotchis : 0), 0)
+        : 0
+
       const usdTotal = hasPrices.value
-        ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.usdTotal), new BigNumber(0))
+        ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.hasPrice ? item.usdTotal : 0), new BigNumber(0))
         : 0
-      const meanUsd = hasPrices.value ? usdTotal.dividedBy(numGotchis) : 0
+      const meanUsd = hasPrices.value ? usdTotal.dividedBy(numGotchisWithPrice) : 0
       const usdTotalLocked = hasPrices.value
-        ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.usdTotalLocked), new BigNumber(0))
+        ? collateralTotalsWithPrice.value.reduce((total, item) => total.plus(item.hasPrice ? item.usdTotalLocked : 0), new BigNumber(0))
         : 0
-      const meanUsdLocked = hasPrices.value ? usdTotalLocked.dividedBy(numGotchis) : 0
+      const meanUsdLocked = hasPrices.value ? usdTotalLocked.dividedBy(numGotchisWithPrice) : 0
 
       return {
         numGotchis,
+        numGotchisWithPrice,
+        numGotchisWithoutPrice: numGotchis - numGotchisWithPrice,
         usdTotal,
         meanUsd,
         usdTotalLocked,
@@ -789,6 +812,10 @@ export default {
     margin: 10px 15px;
     padding: 15px 25px;
     text-align: center;
+  }
+  .dashboard-number-error {
+    font-size: 0.8em;
+    font-style: italic;
   }
   .dashboard-number--primary {
     font-size: 1.5em;
