@@ -8,7 +8,8 @@ import useStatus from '@/data/useStatus'
 
 const ownersByParcelId = ref({})
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+// const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const GOTCHIVERSE_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchiverse-matic'
 const FETCH_PAGE_SIZE = 1000
 
 const resetOwners = function () {
@@ -18,7 +19,8 @@ const resetOwners = function () {
 
 const setOwners = function (parcels) {
   for (const parcel of parcels) {
-    ownersByParcelId.value[parcel.tokenId] = parcel.owner?.id
+    // ownersByParcelId.value[parcel.tokenId] = parcel.owner?.id // core-matic subgraph
+    ownersByParcelId.value[parcel.tokenId] = parcel.owner // gotchiverse subgraph
   }
 }
 
@@ -32,15 +34,25 @@ const fetchOwners = function () {
   let lastIdNum = 0
   let parcels = []
   const fetchOwnersFromSubgraph = function () {
-    fetch(SUBGRAPH_URL, {
+    // fetch(SUBGRAPH_URL, {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     query: `{
+    //       parcels(first: ${FETCH_PAGE_SIZE}, orderBy: tokenId, where: { tokenId_gt: ${lastIdNum} }) {
+    //         tokenId
+    //         owner {
+    //           id
+    //         }
+    //       }
+    //     }`
+    //   })
+    fetch(GOTCHIVERSE_SUBGRAPH_URL, {
       method: 'POST',
       body: JSON.stringify({
         query: `{
           parcels(first: ${FETCH_PAGE_SIZE}, orderBy: tokenId, where: { tokenId_gt: ${lastIdNum} }) {
             tokenId
-            owner {
-              id
-            }
+            owner
           }
         }`
       })
