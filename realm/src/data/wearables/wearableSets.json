@@ -2526,5 +2526,214 @@
             -2,
             0
         ]
+    },
+    {
+        "id": 146,
+        "name": "Master Creatooor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            369,
+            367,
+            368,
+            366
+        ],
+        "traitsBonuses": [
+            8,
+            1,
+            0,
+            -2,
+            -2
+        ]
+    },
+    {
+        "id": 147,
+        "name": "Master Creator",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            367,
+            368,
+            369
+        ],
+        "traitsBonuses": [
+            6,
+            0,
+            0,
+            -2,
+            -1
+        ]
+    },
+    {
+        "id": 148,
+        "name": "Master Creator",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            366,
+            367,
+            369
+        ],
+        "traitsBonuses": [
+            6,
+            0,
+            0,
+            -2,
+            -1
+        ]
+    },
+    {
+        "id": 149,
+        "name": "FAKE Artist",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            365,
+            364,
+            363,
+            362
+        ],
+        "traitsBonuses": [
+            5,
+            -1,
+            0,
+            -1,
+            -1
+        ]
+    },
+    {
+        "id": 150,
+        "name": "FAKE Artist",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            365,
+            363,
+            362
+        ],
+        "traitsBonuses": [
+            5,
+            -1,
+            0,
+            -1,
+            -1
+        ]
+    },
+    {
+        "id": 151,
+        "name": "FAKE Artist",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            364,
+            363,
+            362
+        ],
+        "traitsBonuses": [
+            5,
+            -1,
+            0,
+            -1,
+            -1
+        ]
+    },
+    {
+        "id": 152,
+        "name": "Smithooor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            358,
+            359,
+            360,
+            361
+        ],
+        "traitsBonuses": [
+            4,
+            -1,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 153,
+        "name": "Smithor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            358,
+            359,
+            360
+        ],
+        "traitsBonuses": [
+            4,
+            -1,
+            -1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 154,
+        "name": "Carpentooor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            354,
+            355,
+            356,
+            357
+        ],
+        "traitsBonuses": [
+            3,
+            1,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 155,
+        "name": "Carpentor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            354,
+            355,
+            357
+        ],
+        "traitsBonuses": [
+            3,
+            1,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 156,
+        "name": "Pixelcraftooor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            350,
+            351,
+            352,
+            353
+        ],
+        "traitsBonuses": [
+            1,
+            0,
+            0,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 157,
+        "name": "Pixelcraftor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            350,
+            352,
+            353
+        ],
+        "traitsBonuses": [
+            1,
+            0,
+            0,
+            -1,
+            0
+        ]
     }
 ]
