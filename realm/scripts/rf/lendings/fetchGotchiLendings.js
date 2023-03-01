@@ -2,7 +2,7 @@ const axios = require('axios')
 const FETCH_PAGE_SIZE = 1000
 
 const fetchGotchiLendings = async function (gotchiIds, polygonBlock) {
-  const LENDING_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+  const LENDING_SUBGRAPH_URL = 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api'
   return new Promise((resolve, reject) => {
     let results = []
     let nextIndex = 0

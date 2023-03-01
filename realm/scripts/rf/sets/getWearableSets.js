@@ -10,13 +10,16 @@ const wearableSets2021_11_06 = require('./wearableSets2021-11-06.js')
 const wearableSets2022_03_11 = require('./wearableSets2022-03-11.js')
 // eslint-disable-next-line camelcase
 const wearableSets2022_08_03 = require('./wearableSets2022-08-03.js')
+// eslint-disable-next-line camelcase
+const wearableSets2023_03_01 = require('./wearableSets2023-03-01.js')
 
 const wearableSetsByDate = {
   '2021-01-03': wearableSets2021_01_03,
   '2021-05-15': wearableSets2021_05_15,
   '2021-11-06': wearableSets2021_11_06,
   '2022-03-11': wearableSets2022_03_11,
-  '2022-08-03': wearableSets2022_08_03
+  '2022-08-03': wearableSets2022_08_03,
+  '2023-03-01': wearableSets2023_03_01
 }
 
 module.exports = async function (wearableSetsDate) {

@@ -201,14 +201,14 @@ const SEASONS = {
       }
     }
   },
-  // S5: new wearable sets from Forge to be introduced later in the season?
+  // S5: new wearable sets from DAO to be introduced later in the season?
   // New wearable sets JS algorithm is in the works: will it be used?
   szn5: {
     checkVault: true,
     checkLendings: true,
     rnd1: {
       // Old wearable sets JS algorithm is in use
-      // (Still assigning "Sushi Chef" not "Master Sushi Chef"?)
+      // (Still assigning "Sushi Chef" not "Master Sushi Chef")
       rfCalc: 'js1',
       wearableSets: '2022-08-03',
       blocks: {
@@ -217,11 +217,13 @@ const SEASONS = {
       }
     },
     rnd2: {
+      // Old wearable sets JS algorithm is in use
+      // (Still assigning "Sushi Chef" not "Master Sushi Chef")
       rfCalc: 'js1',
-      wearableSets: '2022-08-03',
+      wearableSets: '2023-03-01', // Forge wearable sets added
       blocks: {
-        polygon: 0, // Feb-28-2023
-        eth: 0
+        polygon: 39807200, // Feb-28-2023
+        eth: 16727111
       }
     },
     rnd3: {
@@ -249,16 +251,16 @@ const SEASON = SEASONS.szn5
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn5/rewards.json'
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5
 // - round
-const ROUND = SEASON.rnd1
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn5/rnd1.json'
-const GOTCHIS_FILENAME = 'rnd1Gotchis'
+const ROUND = SEASON.rnd2
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn5/rnd2.json'
+const GOTCHIS_FILENAME = 'rnd2Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r1'
+const GOTCHI_IMAGES_FOLDER = './r2'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
 
-const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-core-matic'
+const SUBGRAPH_URL = 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api'
 const FETCH_PAGE_SIZE = 1000
 
 const fetchGotchis = function (gotchiIds) {

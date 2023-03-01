@@ -287,15 +287,15 @@ const SEASONS = {
         endDate: new Date('2023-02-14T14:00Z'),
         blockNumber: 39284410,
         tiebreakerTraitIndex: 0
-      }
-      /*
+      },
       '2': {
         id: '2',
         jsonUrl: `${BASE_DATA_URL}/szn5/rnd2Gotchis.json`,
         endDate: new Date('2023-02-28T14:00Z'),
-        blockNumber: 32308426, // TODO
+        blockNumber: 39807200,
         tiebreakerTraitIndex: 1
-      },
+      }
+      /*
       '3': {
         id: '3',
         jsonUrl: `${BASE_DATA_URL}/szn5/rnd3Gotchis.json`,
