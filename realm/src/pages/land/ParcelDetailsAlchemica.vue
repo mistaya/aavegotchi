@@ -173,6 +173,49 @@
               </div>
             </div>
           </div>
+
+          <div style="margin-left: 10px;">
+            <div
+              v-if="totals.numRoundsSurveyed > 1"
+              style="margin-top: 10px"
+            >
+              <div>
+                <span class="parcel-details__label">
+                  Combined total for {{ totals.numRoundsSurveyed }} surveyed rounds:
+                </span>
+                <span
+                  class="survey-score"
+                >
+                  ({{ totals.combinedMeanX.times(100).integerValue() }}% average)
+                </span>
+              </div>
+              <div
+                style="margin-left: 8px;"
+              >
+                <div
+                  v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+                  :key="token"
+                >
+                  <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
+                    <CryptoIcon
+                      :label="token"
+                      style="margin-right: 5px"
+                    />
+                    <NumberDisplay
+                      :number="totals[includeBoosts ? 'withBoost' : 'base'][token]"
+                    />
+
+                    <span
+                      style="margin-left: 10px;"
+                      class="survey-score"
+                    >
+                      ({{ totals.baseMeanX[token].times(100).integerValue() }}%)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -199,6 +242,7 @@ export default {
       fetchStatus,
       current,
       rounds,
+      totals,
       fetchAlchemica
     } = useParcelAlchemicaSingleFromContract()
 
@@ -228,6 +272,7 @@ export default {
       fetchStatus,
       current,
       rounds,
+      totals,
       hasBoosts,
       includeBoosts,
       surveyPopupIsOpen

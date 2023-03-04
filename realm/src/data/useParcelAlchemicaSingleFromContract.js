@@ -58,6 +58,7 @@ const meanAlchemicaForRound = function (roundNum, sizeNum) {
 export default function () {
   const current = ref(null)
   const rounds = ref([])
+  const totals = ref(null)
 
   const { status: fetchStatus, setLoading } = useStatus()
 
@@ -67,6 +68,7 @@ export default function () {
   const resetAlchemica = function () {
     current.value = null
     rounds.value = []
+    totals.value = null
     lastFetchDate.value = null
   }
 
@@ -95,6 +97,63 @@ export default function () {
             combinedMeanX
           }
         })
+
+        // Calculate totals across surveyed rounds
+        const surveyedRounds = rounds.value.filter(round => round.isSurveyed)
+        const numRoundsSurveyed = surveyedRounds.length
+        const totalBase = surveyedRounds.reduce((totals, round) => {
+          totals.FUD = totals.FUD.plus(round.base.FUD)
+          totals.FOMO = totals.FOMO.plus(round.base.FOMO)
+          totals.ALPHA = totals.ALPHA.plus(round.base.ALPHA)
+          totals.KEK = totals.KEK.plus(round.base.KEK)
+          return totals
+        }, {
+          FUD: new BigNumber(0),
+          FOMO: new BigNumber(0),
+          ALPHA: new BigNumber(0),
+          KEK: new BigNumber(0)
+        })
+        const totalWithBoost = surveyedRounds.reduce((totals, round) => {
+          totals.FUD = totals.FUD.plus(round.withBoost.FUD)
+          totals.FOMO = totals.FOMO.plus(round.withBoost.FOMO)
+          totals.ALPHA = totals.ALPHA.plus(round.withBoost.ALPHA)
+          totals.KEK = totals.KEK.plus(round.withBoost.KEK)
+          return totals
+        }, {
+          FUD: new BigNumber(0),
+          FOMO: new BigNumber(0),
+          ALPHA: new BigNumber(0),
+          KEK: new BigNumber(0)
+        })
+        const totalMeansForSurveyedRounds = surveyedRounds.reduce((totals, round) => {
+          const means = meanAlchemicaForRound(round.id, sizeNum)
+          totals.FUD = totals.FUD.plus(means.FUD)
+          totals.FOMO = totals.FOMO.plus(means.FOMO)
+          totals.ALPHA = totals.ALPHA.plus(means.ALPHA)
+          totals.KEK = totals.KEK.plus(means.KEK)
+          return totals
+        }, {
+          FUD: new BigNumber(0),
+          FOMO: new BigNumber(0),
+          ALPHA: new BigNumber(0),
+          KEK: new BigNumber(0)
+        })
+        const totalBaseMeanX = {
+          FUD: totalBase.FUD.div(totalMeansForSurveyedRounds.FUD),
+          FOMO: totalBase.FOMO.div(totalMeansForSurveyedRounds.FOMO),
+          ALPHA: totalBase.ALPHA.div(totalMeansForSurveyedRounds.ALPHA),
+          KEK: totalBase.KEK.div(totalMeansForSurveyedRounds.KEK)
+        }
+        const totalCombinedMeanX = totalBaseMeanX.FUD.plus(totalBaseMeanX.FOMO).plus(totalBaseMeanX.ALPHA).plus(totalBaseMeanX.KEK).div(4)
+
+        totals.value = {
+          numRoundsSurveyed,
+          base: totalBase,
+          withBoost: totalWithBoost,
+          baseMeanX: totalBaseMeanX,
+          combinedMeanX: totalCombinedMeanX
+        }
+
         lastFetchDate.value = new Date()
         setLoaded()
       } else {
@@ -109,6 +168,7 @@ export default function () {
   return {
     current,
     rounds,
+    totals,
     canSubmitFetch,
     fetchStatus,
     fetchAlchemica,
