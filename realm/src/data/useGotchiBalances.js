@@ -134,7 +134,7 @@ fetch(initialBalancesUrl)
         balances.push(new BigNumber(item))
       }
     }
-    setBalances(initialBalances, new Date(1675441774006))
+    setBalances(initialBalances, new Date(1678831859331))
     setLoaded()
   }).catch(error => {
     console.error(error)
