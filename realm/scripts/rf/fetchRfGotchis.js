@@ -237,11 +237,13 @@ const SEASONS = {
       }
     },
     rnd4: {
+      // Old wearable sets JS algorithm is in use
+      // (Still assigning "Sushi Chef" not "Master Sushi Chef")
       rfCalc: 'js1',
       wearableSets: '2023-03-01',
       blocks: {
-        polygon: 0, // Mar-28-2023
-        eth: 0
+        polygon: 40864665, // Mar-28-2023
+        eth: 16926285
       }
     }
   }
@@ -253,11 +255,11 @@ const SEASON = SEASONS.szn5
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn5/rewards.json'
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5
 // - round
-const ROUND = SEASON.rnd3
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn5/rnd3.json'
-const GOTCHIS_FILENAME = 'rnd3Gotchis'
+const ROUND = SEASON.rnd4
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn5/rnd4.json'
+const GOTCHIS_FILENAME = 'rnd4Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r3'
+const GOTCHI_IMAGES_FOLDER = './r4'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'

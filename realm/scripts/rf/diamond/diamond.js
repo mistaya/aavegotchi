@@ -2,9 +2,12 @@ const { readJsonFile } = require('../../fileUtils.js')
 const { ethers } = require('ethers')
 const { Provider, Contract } = require('ethers-multicall')
 
+// https://chainlist.org/chain/137
 // const provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
-const provider = new ethers.providers.JsonRpcProvider('https://matic-mainnet.chainstacklabs.com')
+// const provider = new ethers.providers.JsonRpcProvider('https://matic-mainnet.chainstacklabs.com')
 // const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/polygon')
+const provider = new ethers.providers.JsonRpcProvider('https://rpc-mainnet.matic.quiknode.pro')
+// const provider = new ethers.providers.JsonRpcProvider('https://polygon.llamarpc.com')
 // provide chainId so we don't need to call init
 const multicallProvider = new Provider(provider, 137)
 
