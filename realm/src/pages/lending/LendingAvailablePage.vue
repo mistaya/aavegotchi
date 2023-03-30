@@ -281,10 +281,11 @@
                         </li>
                         <li>
                           Alchemica prices:
-                          1 FUD = {{ ghstPrices.FUD.toFixed(4) }} GHST;
-                          1 FOMO = {{ ghstPrices.FOMO.toFixed(4) }} GHST;
-                          1 ALPHA = {{ ghstPrices.ALPHA.toFixed(4) }} GHST;
-                          1 KEK = {{ ghstPrices.KEK.toFixed(4) }} GHST
+                          <br>1 FUD = {{ ghstPrices.FUD.toFixed(4) }} GHST;
+                          <br>1 FOMO = {{ ghstPrices.FOMO.toFixed(4) }} GHST;
+                          <br>1 ALPHA = {{ ghstPrices.ALPHA.toFixed(4) }} GHST;
+                          <br>1 KEK = {{ ghstPrices.KEK.toFixed(4) }} GHST
+                          <br>(data from CoinGecko)
                         </li>
                       </ul>
                     </div>

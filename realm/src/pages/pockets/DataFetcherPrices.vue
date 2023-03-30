@@ -1,6 +1,6 @@
 <template>
   <DataFetcher
-    subject="prices from coingecko &amp; quickswap"
+    subject="prices from CoinGecko &amp; quickswap"
     :use="useTokenPrices"
     fetchProperty="fetchPrices"
     resultProperty="usdPrices"
@@ -18,7 +18,7 @@
       </SiteButton>
     </template>
     <template #more="{ result }">
-      from coingecko, quickswap (for maTokens) &amp; the current vGHST token exchange rate
+      from CoinGecko, quickswap (for maTokens) &amp; the current vGHST token exchange rate
       <ul>
         <li
           v-for="[tokenId, usdPrice] in Object.entries(result)"

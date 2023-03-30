@@ -155,6 +155,9 @@
               {{ ghstPrices[token].toFixed(3) }}
               GHST
             </div>
+            <div>
+              (data from CoinGecko)
+            </div>
           </div>
         </div>
 
