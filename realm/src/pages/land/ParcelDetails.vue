@@ -173,15 +173,10 @@
       :sizeNum="parcel.size"
     />
 
-    <div class="parcel-coords">
-      Coordinates:
-      ({{ parcel.coordinateX }},
-      {{ parcel.coordinateY }})
-      <br>Gotchiverse Coords:
-      ({{ parcel.coordinateX * 64 }},
-      {{ parcel.coordinateY * 64 }})
-      <br>Dimensions: {{ parcel.width }} x {{ parcel.height }}
-    </div>
+    <ParcelDetailsLocation
+      class="parcel-coords"
+      :parcel="parcel"
+    />
   </div>
 </template>
 
@@ -193,6 +188,7 @@ import FlagSelectedIcon from './FlagSelectedIcon.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
 import ParcelDetailsAlchemica from './ParcelDetailsAlchemica.vue'
+import ParcelDetailsLocation from './ParcelDetailsLocation.vue'
 
 export default {
   components: {
@@ -202,7 +198,8 @@ export default {
     FlagSelectedIcon,
     ParcelBoosts,
     ParcelDetailsInstallations,
-    ParcelDetailsAlchemica
+    ParcelDetailsAlchemica,
+    ParcelDetailsLocation
   },
   props: {
     parcel: { type: Object, required: true },

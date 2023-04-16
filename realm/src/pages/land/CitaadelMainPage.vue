@@ -271,20 +271,45 @@
           </summary>
 
           <div style="margin-bottom: 10px; margin-left: 10px;">
-            If you're lost in the Gotchiverse, while you're in the game press F3 (or Fn-F3) to see debug info.
+            If you're lost in the Gotchiverse, while you're in the game, copy the text under the minimap:
 
-            <div style="margin-top: 10px;">
+            <div style="margin-top: 15px;">
               <label>
-                Then copy the Map Coordinates here:
+                District:
                 <input
-                  v-model="coordinatesText"
-                  placeholder="(346880, 161984)"
+                  v-model="whereAmI.districtText"
+                  placeholder="1a"
+                  :disabled="!!whereAmI.parcelName"
+                  style="width: 4em"
                 />
               </label>
             </div>
+            <div style="margin-top: 5px;">
+              <label>
+                Coordinates:
+                <input
+                  v-model="whereAmI.coordinatesText"
+                  placeholder="196, 388"
+                  :disabled="!!whereAmI.parcelName"
+                />
+              </label>
+            </div>
+            <div style="margin-top: 10px;">
+              <i>or</i>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>
+                Parcel name:
+                <input
+                  v-model="whereAmI.parcelName"
+                />
+              </label>
+              <br>
+              (takes priority if provided)
+            </div>
 
             <div
-              v-if="coordinatesParsed"
+              v-if="whereAmICoordinates"
               style="margin-top: 10px;"
             >
               <SiteButton
@@ -450,6 +475,7 @@ import useParcelContents from '@/data/useParcelContents'
 import useParcelPrices from '@/data/useParcelPrices'
 import useParcelOwners from '@/data/useParcelOwners'
 import { WALLS } from '@/data/walls'
+import DISTRICTS_FULL from '@/data/parcels/districts.json'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
@@ -970,42 +996,80 @@ export default {
       }
     }
 
-    const coordinatesText = ref('')
-    const coordinatesRegexp = /\((\d+), (\d+)\)/
+    const whereAmI = ref({
+      districtText: '',
+      coordinatesText: '',
+      parcelName: ''
+    })
+
+    const districtRegexp = /D?(\d+[a-f]?)/
+    const districtParsed = computed(() => {
+      if (!whereAmI.value.districtText) { return null }
+      const matches = whereAmI.value.districtText.match(districtRegexp)
+      if (matches?.[1]) {
+        return DISTRICTS_FULL.find(district => district.id === matches[1])
+      }
+      return null
+    })
+    const coordinatesRegexp = /(\d+)\D+(\d+)/
     const coordinatesParsed = computed(() => {
-      if (!coordinatesText.value) { return null }
-      const matches = coordinatesText.value.match(coordinatesRegexp)
+      if (!whereAmI.value.coordinatesText) { return null }
+      const matches = whereAmI.value.coordinatesText.match(coordinatesRegexp)
       if (matches?.[1] && matches[2]) {
         return {
-          x: Math.round(matches[1] / 64),
-          y: Math.round(matches[2] / 64)
+          x: matches[1] - 0,
+          y: matches[2] - 0
+        }
+      }
+      return null
+    })
+    const parcelNameRegexp = /^\w+-\w+-\w+$/
+    const whereAmIParcel = computed(() => {
+      const parcelName = whereAmI.value.parcelName.toLowerCase()
+      if (!parcelName || !parcelName.match(parcelNameRegexp) || !parcelsToDisplay.value) { return null }
+      return parcelsToDisplay.value.find(parcel => parcel.parcelHash === parcelName)
+    })
+
+    const whereAmICoordinates = computed(() => {
+      if (whereAmIParcel.value) {
+        return {
+          x: whereAmIParcel.value.coordinateX,
+          y: whereAmIParcel.value.coordinateY
+        }
+      }
+      if (districtParsed.value && coordinatesParsed.value) {
+        return {
+          x: districtParsed.value.x + coordinatesParsed.value.x,
+          y: districtParsed.value.y + coordinatesParsed.value.y
         }
       }
       return null
     })
     const mapMarker = computed(() => {
-      if (!coordinatesParsed.value) { return null }
+      if (!whereAmICoordinates.value) { return null }
       return {
-        coordinateX: coordinatesParsed.value.x,
-        coordinateY: coordinatesParsed.value.y
+        coordinateX: whereAmICoordinates.value.x,
+        coordinateY: whereAmICoordinates.value.y
       }
     })
     const zoomToCoordinates = function () {
-      const coords = coordinatesParsed.value
+      const coords = whereAmICoordinates.value
       if (coords && mapRef.value?.zoomToPoint) {
         mapRef.value.zoomToPoint(coords)
       }
     }
     const clearCoordinates = function () {
-      coordinatesText.value = ''
+      whereAmI.value.districtText = ''
+      whereAmI.value.coordinatesText = ''
+      whereAmI.value.parcelName = ''
       if (refCoordinates.value?.hasAttribute('open')) {
         refCoordinates.value.removeAttribute('open')
       }
     }
     watch(
-      () => coordinatesParsed.value,
+      () => whereAmICoordinates.value,
       () => {
-        if (coordinatesParsed.value) {
+        if (whereAmICoordinates.value) {
           zoomToCoordinates()
         }
       }
@@ -1048,8 +1112,8 @@ export default {
       salesByParcelId,
       mapRef,
       zoomToParcel,
-      coordinatesText,
-      coordinatesParsed,
+      whereAmI,
+      whereAmICoordinates,
       zoomToCoordinates,
       clearCoordinates,
       mapMarker

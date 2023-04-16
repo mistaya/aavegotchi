@@ -62,15 +62,9 @@
         <span style="text-transform: capitalize;">{{ parcelDetails.sizeLabel }}</span>,
         District
         {{ parcelDetails.district }}
-        <br>
-        Coordinates:
-        ({{ parcelDetails.coordinateX }},
-        {{ parcelDetails.coordinateY }})
-        <br>
-        Gotchiverse Coords:
-        ({{ parcelDetails.coordinateX * 64 }},
-        {{ parcelDetails.coordinateY * 64 }})
-        <br>Dimensions: {{ parcelDetails.width }} x {{ parcelDetails.height }}
+        <ParcelDetailsLocation
+          :parcel="parcelDetails"
+        />
       </div>
 
       <div style="margin-bottom: 20px;">
@@ -125,6 +119,7 @@ import NumberDisplay from '@/common/NumberDisplay.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
 import ParcelDetailsAlchemica from './ParcelDetailsAlchemica.vue'
+import ParcelDetailsLocation from './ParcelDetailsLocation.vue'
 
 export default {
   components: {
@@ -133,7 +128,8 @@ export default {
     NumberDisplay,
     ParcelBoosts,
     ParcelDetailsInstallations,
-    ParcelDetailsAlchemica
+    ParcelDetailsAlchemica,
+    ParcelDetailsLocation
   },
   props: {
     parcelId: { type: String, required: true }

@@ -48,8 +48,8 @@
                     Harvested
                   </template>
                   <span class="parcel-name">{{ event.parcel.parcelHash }}</span>
-                  <span class="parcel-coords"> ({{ event.parcel.coordinateX * 64 }},
-                  {{ event.parcel.coordinateY * 64 }})</span>,
+                  <span class="parcel-coords"> (D{{ event.parcelCoordinates.districtId }}
+                  {{ event.parcelCoordinates.x }}, {{ event.parcelCoordinates.y }})</span>,
                   spillover:
                   <br>
                   <div
@@ -104,6 +104,7 @@ import { ref, computed, onUnmounted } from 'vue'
 import BigNumber from 'bignumber.js'
 import useParcels from '@/data/useParcels'
 import useRecentSpillover from '@/data/useRecentSpillover'
+import { gotchiverseCoordsForParcel } from './gotchiverseCoordinates'
 
 import CryptoIcon from '@/common/CryptoIcon.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
@@ -139,10 +140,14 @@ export default {
         ...claimed.value
       ]
       events.sort((a, b) => b.date - a.date)
-      return events.map(event => ({
-        ...event,
-        parcel: parcelsById.value[event.parcelId]
-      }))
+      return events.map(event => {
+        const parcel = parcelsById.value[event.parcelId]
+        return {
+          ...event,
+          parcel,
+          parcelCoordinates: gotchiverseCoordsForParcel(parcel)
+        }
+      })
     })
     const eventsToDisplay = computed(() => {
       return recentEventsAnnotated.value.slice(0, N_EVENTS).map(event => {
