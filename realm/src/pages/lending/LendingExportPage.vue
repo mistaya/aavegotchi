@@ -323,7 +323,7 @@ export default {
                       periodHours: item.period / (60 * 60),
                       timeAgreed: item.timeAgreed ? new Date(item.timeAgreed * 1000) : null,
                       timeCreated: item.timeCreated ? new Date(item.timeCreated * 1000) : null,
-                      lastClaimed: item.lastClaimed && item.lastClaimed ? new Date(item.lastClaimed * 1000) : null,
+                      lastClaimed: (item.lastClaimed - 0) ? new Date(item.lastClaimed * 1000) : null,
                       upfrontCost: new BigNumber(item.upfrontCost).div(10e17).toString()
                     }
                   }),

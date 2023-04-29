@@ -104,7 +104,7 @@ export default {
           item.whitelistId,
           (item.timeCreated && formatISO9075(item.timeCreated)) || '',
           (item.timeAgreed && formatISO9075(item.timeAgreed)) || '',
-          (item.lastClaimed && formatISO9075(item.lastClaimed)) || '',
+          ((item.lastClaimed - 0) && formatISO9075(item.lastClaimed)) || '',
           item.completed,
           (earnings?.timeEnded && formatISO9075(earnings.timeEnded)) || '',
           earnings?.actualPeriod || '',
