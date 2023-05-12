@@ -215,5 +215,47 @@
     "tileGroup": "LE Mosaic Tile",
     "width": 2,
     "height": 2
+  },
+  "32": {
+    "id": "32",
+    "label": "Black Cacti",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "33": {
+    "id": "33",
+    "label": "Black Rofl",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "34": {
+    "id": "34",
+    "label": "Black Sus",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "35": {
+    "id": "35",
+    "label": "White Cacti",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "36": {
+    "id": "36",
+    "label": "White Rofl",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
+  },
+  "37": {
+    "id": "37",
+    "label": "White Sus",
+    "tileGroup": "LE Mosaic Tile",
+    "width": 2,
+    "height": 2
   }
 }
