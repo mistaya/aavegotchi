@@ -52,7 +52,7 @@ const loadedBalancesDetails = computed(() => {
   }
 })
 
-const requestBalancesForGotchis = async function (gotchis) {
+const requestBalancesForGotchis = async function (gotchis, delayMs) {
   const contractCalls = gotchis.map(gotchi => {
     const calls = []
     for (const contract of balanceContracts) {
@@ -60,6 +60,9 @@ const requestBalancesForGotchis = async function (gotchis) {
     }
     return calls
   }).flat()
+
+  // pause to avoid overloading RPC
+  await new Promise((resolve, reject) => setTimeout(resolve, delayMs))
 
   const results = await multicallProvider.all(contractCalls)
   // ethers returns the result as its own BigNumber - convert it
@@ -91,11 +94,12 @@ const fetchBalances = function () {
     const BATCH_SIZE = Math.floor(800 / balanceTokens.length)
     const requests = []
     console.log(`fetch balances using batch size ${BATCH_SIZE})`)
+    const requestsPerSecond = 5
+    let delayMs = 0
     while (nextGotchiIndex < gotchisWithEscrow.value.length) {
       const gotchis = gotchisWithEscrow.value.slice(nextGotchiIndex, nextGotchiIndex + BATCH_SIZE)
-      console.log('fetch balances for ids', gotchis[0].id, 'to', gotchis[gotchis.length - 1].id)
-
-      const request = requestBalancesForGotchis(gotchis)
+      console.log('fetch balances for ids', gotchis[0].id, 'to', gotchis[gotchis.length - 1].id, 'delay seconds', delayMs / 1000)
+      const request = requestBalancesForGotchis(gotchis, delayMs)
       requests.push(request)
       request.then(
         result => {
@@ -111,6 +115,7 @@ const fetchBalances = function () {
       )
 
       nextGotchiIndex += BATCH_SIZE
+      delayMs += 1000 / requestsPerSecond
     }
 
     Promise.allSettled(requests).then(results => {
@@ -134,7 +139,7 @@ fetch(initialBalancesUrl)
         balances.push(new BigNumber(item))
       }
     }
-    setBalances(initialBalances, new Date(1678831859331))
+    setBalances(initialBalances, new Date(1684323079005))
     setLoaded()
   }).catch(error => {
     console.error(error)
