@@ -13,9 +13,10 @@ const realm = useRealmContract()
 // permissions:
 //   0 Owner only
 //   1 Owner + Borrowed Gotchis
-//   2 Any Gotchi
-// const ACTION_TYPES = [0, 1]
-const ACTION_TYPES = [0]
+//   2 Whitelist
+//   3 Blacklist (not implemented)
+//   4 Any Gotchi
+const ACTION_TYPES = [0, 1]
 
 export default function () {
   const { status: fetchStatus, setLoading, reset } = useStatus()

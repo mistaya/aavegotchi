@@ -25,7 +25,7 @@
             Only Aaltars that can channel now
           </label>
         </div>
-        <div class="filter-channeling-access">
+        <div class="filter-channeling-access" style="margin-bottom: 7px;">
           Channeling access:
           <label>
             <input
@@ -46,6 +46,48 @@
           <label>
             <input
               v-model="tableFilters.channelingAccess[2]"
+              type="checkbox"
+            />
+            Whitelist
+          </label>
+          &#8203;
+          <label>
+            <input
+              v-model="tableFilters.channelingAccess[4]"
+              type="checkbox"
+            />
+            Anyone
+          </label>
+        </div>
+        <div class="filter-reservoir-access">
+          Reservoir access:
+          <label>
+            <input
+              v-model="tableFilters.reservoirAccess[0]"
+              type="checkbox"
+            />
+            Owner
+          </label>
+          &#8203;
+          <label>
+            <input
+              v-model="tableFilters.reservoirAccess[1]"
+              type="checkbox"
+            />
+            Borrower
+          </label>
+          &#8203;
+          <label>
+            <input
+              v-model="tableFilters.reservoirAccess[2]"
+              type="checkbox"
+            />
+            Whitelist
+          </label>
+          &#8203;
+          <label>
+            <input
+              v-model="tableFilters.reservoirAccess[4]"
               type="checkbox"
             />
             Anyone
@@ -93,7 +135,7 @@
           v-model:pageSize="tablePaging.pageSize"
           itemsLabel="lands"
           :numResults="numFilteredLands"
-          :scrollingBreakpoint="900"
+          :scrollingBreakpoint="1000"
         >
           <template #headers>
             <tr>
@@ -142,6 +184,9 @@
                   :sort="tableSort.column === 'details lastChanneledTimestamp' ? tableSort.direction : null"
                   @update:sort="tableSort.column = $event ? 'details lastChanneledTimestamp' : null; tableSort.direction = $event"
                 />
+              </th>
+              <th v-if="parcelAccessRightsStatus.loaded">
+                Reservoir Access
               </th>
             </tr>
           </template>
@@ -205,6 +250,9 @@
                     Borrower
                   </template>
                   <template v-else-if="parcelAccessRights[0][row.id] === 2">
+                    Whitelist
+                  </template>
+                  <template v-else-if="parcelAccessRights[0][row.id] === 4">
                     Anyone
                   </template>
                 </template>
@@ -223,6 +271,22 @@
                   />
                   <template v-else-if="landDetails[row.id].lastChanneledTimestamp === 0">
                     Never used
+                  </template>
+                </template>
+              </td>
+              <td v-if="parcelAccessRightsStatus.loaded">
+                <template v-if="parcelAccessRightsStatus.loaded">
+                  <template v-if="parcelAccessRights[1][row.id] === 0">
+                    Owner
+                  </template>
+                  <template v-else-if="parcelAccessRights[1][row.id] === 1">
+                    Borrower
+                  </template>
+                  <template v-else-if="parcelAccessRights[1][row.id] === 2">
+                    Whitelist
+                  </template>
+                  <template v-else-if="parcelAccessRights[1][row.id] === 4">
+                    Anyone
                   </template>
                 </template>
               </td>
@@ -454,7 +518,8 @@ export default {
 
     const tableFilters = ref({
       onlyCanChannelNow: false,
-      channelingAccess: [true, true, true]
+      channelingAccess: [true, true, true, true, true],
+      reservoirAccess: [true, true, true, true, true]
     })
 
     const tableSort = ref({
@@ -470,13 +535,23 @@ export default {
     // This filters the retrieved data normally
     const tableLandsFilteredStable = computed(() => {
       const hasChannelingAccessFilter = tableFilters.value.channelingAccess.some(enabled => !enabled)
-      if (!hasChannelingAccessFilter) {
-        return ownedLands.value
+      const hasReservoirAccessFilter = tableFilters.value.reservoirAccess.some(enabled => !enabled)
+
+      let matches = ownedLands.value
+      if (hasChannelingAccessFilter) {
+        matches = matches.filter(land => {
+          const parcelAccessRight = parcelAccessRights.value[0][land.id]
+          return tableFilters.value.channelingAccess[parcelAccessRight]
+        })
       }
-      return ownedLands.value.filter(land => {
-        const parcelAccessRight = parcelAccessRights.value[0][land.id]
-        return tableFilters.value.channelingAccess[parcelAccessRight]
-      })
+      if (hasReservoirAccessFilter) {
+        matches = matches.filter(land => {
+          const parcelAccessRight = parcelAccessRights.value[1][land.id]
+          return tableFilters.value.reservoirAccess[parcelAccessRight]
+        })
+      }
+
+      return matches
     })
 
     // We sort the stable filtered data
@@ -564,7 +639,8 @@ export default {
     border-color: var(--site-border-color--transparent);
   }
 
-  .filter-channeling-access label {
+  .filter-channeling-access label,
+  .filter-reservoir-access label {
     margin-right: 5px;
     white-space: nowrap;
   }
