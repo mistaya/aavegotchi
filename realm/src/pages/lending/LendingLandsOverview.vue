@@ -122,14 +122,7 @@
             </div>
           </div>
         </div>
-        <div
-          v-if="parcelAccessRightsStatus.error"
-          style="margin-top: 20px;"
-        >
-          <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
-            There was an error fetching parcel access rights.
-          </div>
-        </div>
+
         <SiteTable
           v-model:page="tablePaging.page"
           v-model:pageSize="tablePaging.pageSize"
@@ -173,7 +166,7 @@
                   @update:sort="tableSort.column = $event ? 'details cooldownTimestamp' : null; tableSort.direction = $event"
                 />
               </th>
-              <th v-if="parcelAccessRightsStatus.loaded">
+              <th>
                 Channeling Access
               </th>
               <th>Cooldown</th>
@@ -185,7 +178,7 @@
                   @update:sort="tableSort.column = $event ? 'details lastChanneledTimestamp' : null; tableSort.direction = $event"
                 />
               </th>
-              <th v-if="parcelAccessRightsStatus.loaded">
+              <th>
                 Reservoir Access
               </th>
             </tr>
@@ -241,20 +234,18 @@
                   />
                 </template>
               </td>
-              <td v-if="parcelAccessRightsStatus.loaded">
-                <template v-if="parcelAccessRightsStatus.loaded">
-                  <template v-if="parcelAccessRights[0][row.id] === 0">
-                    Owner
-                  </template>
-                  <template v-else-if="parcelAccessRights[0][row.id] === 1">
-                    Borrower
-                  </template>
-                  <template v-else-if="parcelAccessRights[0][row.id] === 2">
-                    Whitelist
-                  </template>
-                  <template v-else-if="parcelAccessRights[0][row.id] === 4">
-                    Anyone
-                  </template>
+              <td>
+                <template v-if="row.accessRights.channeling.accessRight === 0">
+                  Owner
+                </template>
+                <template v-else-if="row.accessRights.channeling.accessRight === 1">
+                  Borrower
+                </template>
+                <template v-else-if="row.accessRights.channeling.accessRight === 2">
+                  Whitelist ({{ row.accessRights.reservoir.whitelistId }})
+                </template>
+                <template v-else-if="row.accessRights.channeling.accessRight === 4">
+                  Anyone
                 </template>
               </td>
               <td>
@@ -274,20 +265,18 @@
                   </template>
                 </template>
               </td>
-              <td v-if="parcelAccessRightsStatus.loaded">
-                <template v-if="parcelAccessRightsStatus.loaded">
-                  <template v-if="parcelAccessRights[1][row.id] === 0">
-                    Owner
-                  </template>
-                  <template v-else-if="parcelAccessRights[1][row.id] === 1">
-                    Borrower
-                  </template>
-                  <template v-else-if="parcelAccessRights[1][row.id] === 2">
-                    Whitelist
-                  </template>
-                  <template v-else-if="parcelAccessRights[1][row.id] === 4">
-                    Anyone
-                  </template>
+              <td>
+                <template v-if="row.accessRights.reservoir.accessRight === 0">
+                  Owner
+                </template>
+                <template v-else-if="row.accessRights.reservoir.accessRight === 1">
+                  Borrower
+                </template>
+                <template v-else-if="row.accessRights.reservoir.accessRight === 2">
+                  Whitelist ({{ row.accessRights.reservoir.whitelistId }})
+                </template>
+                <template v-else-if="row.accessRights.reservoir.accessRight === 4">
+                  Anyone
                 </template>
               </td>
             </tr>
@@ -304,7 +293,6 @@ import { ref, computed, watch } from 'vue'
 import apis from '@/data/apis'
 import useReactiveDate from '@/environment/useReactiveDate'
 import useStatus from '@/data/useStatus'
-import useParcelAccessRights from '@/data/useParcelAccessRights'
 import CopyToClipboard from '@/common/CopyToClipboard.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
 import SiteTable from '@/site/SiteTable.vue'
@@ -342,12 +330,6 @@ export default {
     const ownedLands = ref(null)
     const landDetails = ref({})
 
-    const {
-      fetchParcelAccessRights,
-      fetchStatus: parcelAccessRightsStatus,
-      parcelAccessRights
-    } = useParcelAccessRights()
-
     // Don't require the parcel access rights to have successfully fetched, as that's more error-prone
     const status = computed(() => ({
       loading: ownedLandsStatus.value.loading || channelingStatus.value.loading,
@@ -376,6 +358,11 @@ export default {
                 parcelHash
                 district
                 size
+                accessRights {
+                  actionRight
+                  accessRight
+                  whitelistId
+                }
               }
             }`
           })
@@ -391,12 +378,28 @@ export default {
             if (responseJson.data.parcels.length < FETCH_PAGE_SIZE) {
               // finished fetching all pages
               ownedLands.value = parcels.map(p => {
+                // accessRights will only be present if they have been set explicitly at some point
+                // default to 0
+                // actions (actionRight):
+                //   0 Alchemical Channeling
+                //   1 Emptying Reservoirs
+                // permissions (accessRight):
+                //   0 Owner only
+                //   1 Owner + Borrowed Gotchis
+                //   2 Whitelist
+                //   3 Blacklist (not implemented)
+                //   4 Any Gotchi
+                const accessRights = {
+                  channeling: p.accessRights?.find(r => r.actionRight === 0) || { accessRight: 0, whitelistId: null },
+                  reservoir: p.accessRights?.find(r => r.actionRight === 1) || { accessRight: 0, whitelistId: null }
+                }
                 return {
                   ...p,
                   // convert to number for sorting
                   district: p.district - 0,
                   size: p.size - 0,
-                  sizeLabel: PARCEL_SIZE_LABELS[p.size]
+                  sizeLabel: PARCEL_SIZE_LABELS[p.size],
+                  accessRights
                 }
               })
               setLoaded()
@@ -511,7 +514,6 @@ export default {
         if (loaded) {
           const landIds = ownedLands.value.map(land => land.id)
           fetchLandChannelingStatuses(landIds)
-          fetchParcelAccessRights(landIds)
         }
       }
     )
@@ -540,13 +542,13 @@ export default {
       let matches = ownedLands.value
       if (hasChannelingAccessFilter) {
         matches = matches.filter(land => {
-          const parcelAccessRight = parcelAccessRights.value[0][land.id]
+          const parcelAccessRight = land.accessRights.channeling.accessRight
           return tableFilters.value.channelingAccess[parcelAccessRight]
         })
       }
       if (hasReservoirAccessFilter) {
         matches = matches.filter(land => {
-          const parcelAccessRight = parcelAccessRights.value[1][land.id]
+          const parcelAccessRight = land.accessRights.reservoir.accessRight
           return tableFilters.value.reservoirAccess[parcelAccessRight]
         })
       }
@@ -624,9 +626,7 @@ export default {
       tablePaging,
       tableSort,
       rowsToDisplay,
-      tickerTimestamp,
-      parcelAccessRightsStatus,
-      parcelAccessRights
+      tickerTimestamp
     }
   }
 }

@@ -1,3 +1,5 @@
+// No longer in use: the accessRights are available on the Parcel from the gotchiverse subgraph
+
 import { ref } from 'vue'
 import useStatus from '@/data/useStatus'
 import useRealmContract from '@/data/useRealmContract'
