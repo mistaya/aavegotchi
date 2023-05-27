@@ -256,7 +256,7 @@
                   Borrower
                 </template>
                 <template v-else-if="row.accessRights.channeling.accessRight === 2">
-                  Whitelist ({{ row.accessRights.reservoir.whitelistId }})
+                  Whitelist ({{ row.accessRights.channeling.whitelistId }})
                 </template>
                 <template v-else-if="row.accessRights.channeling.accessRight === 4">
                   Anyone

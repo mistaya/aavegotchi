@@ -99,6 +99,18 @@
         class="details-section"
       >
         <summary>
+          <h3>Access Rights</h3>
+        </summary>
+        <ParcelDetailsAccessRights
+          :parcel="parcelDetails"
+        />
+      </details>
+
+      <details
+        open
+        class="details-section"
+      >
+        <summary>
           <h3>Installations and Tiles</h3>
         </summary>
         <ParcelDetailsInstallations
@@ -120,6 +132,7 @@ import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
 import ParcelDetailsAlchemica from './ParcelDetailsAlchemica.vue'
 import ParcelDetailsLocation from './ParcelDetailsLocation.vue'
+import ParcelDetailsAccessRights from './ParcelDetailsAccessRights.vue'
 
 export default {
   components: {
@@ -129,7 +142,8 @@ export default {
     ParcelBoosts,
     ParcelDetailsInstallations,
     ParcelDetailsAlchemica,
-    ParcelDetailsLocation
+    ParcelDetailsLocation,
+    ParcelDetailsAccessRights
   },
   props: {
     parcelId: { type: String, required: true }
