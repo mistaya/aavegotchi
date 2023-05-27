@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div style="margin-bottom: 10px;">
+      <h2 style="display: inline; margin-right: 15px;">
+        Lands open to the public
+      </h2>
+    </div>
+
     <template v-if="status.loading">
       Loading, please wait...
     </template>
@@ -441,8 +447,8 @@ export default {
     })
 
     const tableSort = ref({
-      column: 'cooldownTimestamp',
-      direction: 'asc'
+      column: 'aaltar level',
+      direction: 'desc'
     })
 
     const tablePaging = ref({
