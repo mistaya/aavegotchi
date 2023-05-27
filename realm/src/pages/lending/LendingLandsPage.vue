@@ -40,6 +40,17 @@
           Use this address
         </SiteButton>
       </form>
+
+      <div style="margin: 15px 0 15px 40px">
+        -- OR --
+      </div>
+
+      <router-link
+        :to="{ name: 'lending-lands-public' }"
+        class="site-banner__link"
+      >
+        Lands that allow anyone to channel or empty reservoirs
+      </router-link>
     </template>
     <div
       v-if="hasValidAddress"

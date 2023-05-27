@@ -25,6 +25,7 @@ const LendingActivityPage = () => import(/* webpackChunkName: "lending-activity"
 const LendingBorrowerPage = () => import(/* webpackChunkName: "lending-borrower" */ '@/pages/lending/LendingBorrowerPage.vue')
 const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/pages/lending/LendingManagerPage.vue')
 const LendingLandsPage = () => import(/* webpackChunkName: "lending-lands" */ '@/pages/lending/LendingLandsPage.vue')
+const LendingLandsPublicPage = () => import(/* webpackChunkName: "lending-lands-public" */ '@/pages/lending/LendingLandsPublicPage.vue')
 const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/pages/lending/LendingExportPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/pages/playground/TempPlayground.vue')
 
@@ -225,6 +226,17 @@ const routes = [
           head: {
             title: 'Lands',
             description: 'Overview of your lands with their channeling status'
+          }
+        }
+      },
+      {
+        path: 'lands-public',
+        name: 'lending-lands-public',
+        component: LendingLandsPublicPage,
+        meta: {
+          head: {
+            title: 'Lands open to public',
+            description: 'Overview of lands with public access'
           }
         }
       },

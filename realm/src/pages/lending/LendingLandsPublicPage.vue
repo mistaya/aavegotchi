@@ -25,72 +25,22 @@
             Only Aaltars that can channel now
           </label>
         </div>
-        <div class="filter-channeling-access" style="margin-bottom: 7px;">
-          Channeling access:
+        <div style="margin-bottom: 7px;">
           <label>
             <input
-              v-model="tableFilters.channelingAccess[0]"
+              v-model="tableFilters.onlyPublicChanneling"
               type="checkbox"
             />
-            Owner
-          </label>
-          &#8203;
-          <label>
-            <input
-              v-model="tableFilters.channelingAccess[1]"
-              type="checkbox"
-            />
-            Borrower
-          </label>
-          &#8203;
-          <label>
-            <input
-              v-model="tableFilters.channelingAccess[2]"
-              type="checkbox"
-            />
-            Whitelist
-          </label>
-          &#8203;
-          <label>
-            <input
-              v-model="tableFilters.channelingAccess[4]"
-              type="checkbox"
-            />
-            Anyone
+            Only lands that anyone can channel
           </label>
         </div>
-        <div class="filter-reservoir-access">
-          Reservoir access:
+        <div>
           <label>
             <input
-              v-model="tableFilters.reservoirAccess[0]"
+              v-model="tableFilters.onlyPublicReservoir"
               type="checkbox"
             />
-            Owner
-          </label>
-          &#8203;
-          <label>
-            <input
-              v-model="tableFilters.reservoirAccess[1]"
-              type="checkbox"
-            />
-            Borrower
-          </label>
-          &#8203;
-          <label>
-            <input
-              v-model="tableFilters.reservoirAccess[2]"
-              type="checkbox"
-            />
-            Whitelist
-          </label>
-          &#8203;
-          <label>
-            <input
-              v-model="tableFilters.reservoirAccess[4]"
-              type="checkbox"
-            />
-            Anyone
+            Only lands where anyone can empty reservoirs
           </label>
         </div>
       </fieldset>
@@ -109,20 +59,6 @@
         No lands found.
       </div>
       <template v-else>
-        <div
-          style="margin-top: 20px;"
-        >
-          <div class="site-alertbox site-alertbox--info site-alertbox--compact">
-            <SiteIcon name="info" />
-            <div>
-              If you've borrowed a gotchi and have looked up its owner's address from the main Aavegotchi site, note that this might not be the correct address to use here. For example, if the gotchi came from the Vault, then the main site shows the <i>original</i> owner, but in the Gotchiverse you'll have access to the Vault's lands, not the original owners' lands.
-              <br>To be sure, go to your
-              <router-link :to="{ name: 'lending-borrower' }">Borrower page</router-link>
-              and look for the gotchi's Owner reported there.
-            </div>
-          </div>
-        </div>
-
         <SiteTable
           v-model:page="tablePaging.page"
           v-model:pageSize="tablePaging.pageSize"
@@ -349,15 +285,11 @@ export default {
     SiteTable,
     SortToggle
   },
-  props: {
-    address: { type: String, default: null }
-  },
   setup (props) {
-    const addressLc = computed(() => props.address?.toLowerCase())
     const { tickerDate } = useReactiveDate()
     const tickerTimestamp = computed(() => tickerDate.value - 0)
 
-    const { status: landsStatus, setLoading: setOwnedLandsLoading } = useStatus()
+    const { status: landsStatus, setLoading: setLandsLoading } = useStatus()
     const lands = ref(null)
 
     const status = computed(() => ({
@@ -367,7 +299,7 @@ export default {
     }))
 
     const fetchLands = function () {
-      const [isStale, setLoaded, setError] = setOwnedLandsLoading()
+      const [isStale, setLoaded, setError] = setLandsLoading()
       let lastIdNum = 0
       let parcels = []
       const fetchLandsFromSubgraph = function () {
@@ -380,7 +312,10 @@ export default {
                 orderBy: tokenId,
                 where: {
                   tokenId_gt: ${lastIdNum},
-                  owner: "${addressLc.value}"
+                  accessRights_: {
+                    actionRight_in: [0, 1],
+                    accessRight: 4
+                  },
                 }
               ) {
                 id
@@ -501,8 +436,8 @@ export default {
 
     const tableFilters = ref({
       onlyCanChannelNow: false,
-      channelingAccess: [true, true, true, true, true],
-      reservoirAccess: [true, true, true, true, true]
+      onlyPublicChanneling: false,
+      onlyPublicReservoir: false
     })
 
     const tableSort = ref({
@@ -517,21 +452,16 @@ export default {
 
     // This filters the retrieved data normally
     const tableLandsFilteredStable = computed(() => {
-      const hasChannelingAccessFilter = tableFilters.value.channelingAccess.some(enabled => !enabled)
-      const hasReservoirAccessFilter = tableFilters.value.reservoirAccess.some(enabled => !enabled)
-
       let matches = lands.value
-      if (hasChannelingAccessFilter) {
-        matches = matches.filter(land => {
-          const parcelAccessRight = land.accessRights.channeling.accessRight
-          return tableFilters.value.channelingAccess[parcelAccessRight]
-        })
+
+      // only include lands with an aaltar, as it's required for both channeling and emptying reservoirs
+      matches = lands.value.filter(land => land.aaltar)
+
+      if (tableFilters.value.onlyPublicChanneling) {
+        matches = matches.filter(land => land.accessRights.channeling.accessRight === 4)
       }
-      if (hasReservoirAccessFilter) {
-        matches = matches.filter(land => {
-          const parcelAccessRight = land.accessRights.reservoir.accessRight
-          return tableFilters.value.reservoirAccess[parcelAccessRight]
-        })
+      if (tableFilters.value.onlyPublicReservoir) {
+        matches = matches.filter(land => land.accessRights.reservoir.accessRight === 4)
       }
 
       return matches
@@ -612,11 +542,5 @@ export default {
     max-width: fit-content;
     border-style: solid;
     border-color: var(--site-border-color--transparent);
-  }
-
-  .filter-channeling-access label,
-  .filter-reservoir-access label {
-    margin-right: 5px;
-    white-space: nowrap;
   }
 </style>
