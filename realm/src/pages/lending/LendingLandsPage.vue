@@ -47,7 +47,6 @@
 
       <router-link
         :to="{ name: 'lending-lands-public' }"
-        class="site-banner__link"
       >
         Lands that allow anyone to channel or empty reservoirs
       </router-link>
