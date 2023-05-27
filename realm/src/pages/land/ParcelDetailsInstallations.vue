@@ -70,9 +70,7 @@
               class="parcel-details__last-activity"
             >(<template v-if="aaltarCooldown"
               >Ready
-                <template v-if="aaltarCooldown.isReady">
-                  now
-                </template>
+                <template v-if="aaltarCooldown.isReady">now</template>
                 <DateFriendly
                   v-else-if="aaltarCooldown.date"
                   :date="aaltarCooldown.date"
@@ -99,7 +97,16 @@
               v-if="lastActivity && lastActivity.lastClaimedDate"
               class="parcel-details__last-activity"
             >
-              (Last emptied reservoir:
+              (<template v-if="reservoirCooldown"
+              >Ready
+                <template v-if="reservoirCooldown.isReady">now</template>
+                <DateFriendly
+                  v-else-if="reservoirCooldown.date"
+                  :date="reservoirCooldown.date"
+                  enableToggle
+                />;
+              </template>
+              Last emptied reservoir
               <DateFriendly
                 :date="lastActivity.lastClaimedDate"
                 enableToggle
@@ -200,19 +207,17 @@ export default {
     const { tickerDate } = useReactiveDate()
     const tickerTimestamp = computed(() => tickerDate.value - 0)
 
-    const aaltarCooldown = computed(() => {
-      if (!aaltar.value?.type?.cooldownHours) {
+    const calculateCooldown = function ({ cooldownHours, lastActivityTimestamp }) {
+      if (!aaltar.value) {
         return null
       }
-      const cooldownHours = aaltar.value.type.cooldownHours
-      const lastChanneledTimestamp = lastActivity.value?.lastChanneledTimestamp
       let cooldownTimestamp = null
       let cooldownDate = null
-      if (lastChanneledTimestamp) {
-        cooldownTimestamp = lastChanneledTimestamp + (cooldownHours * 60 * 60 * 1000)
+      if (lastActivityTimestamp) {
+        cooldownTimestamp = lastActivityTimestamp + (cooldownHours * 60 * 60 * 1000)
         cooldownDate = new Date(cooldownTimestamp)
       } else {
-        // there is an altar but it hasn't been channeled yet, so it's available
+        // there is an altar but no activity yet, so it's available
         cooldownTimestamp = 0
       }
       const isReady = cooldownTimestamp < tickerTimestamp.value
@@ -220,12 +225,23 @@ export default {
         isReady,
         date: cooldownDate
       }
-    })
+    }
+
+    const aaltarCooldown = computed(() => calculateCooldown({
+      cooldownHours: aaltar.value?.type?.cooldownHours,
+      lastActivityTimestamp: lastActivity.value?.lastChanneledTimestamp
+    }))
+
+    const reservoirCooldown = computed(() => calculateCooldown({
+      cooldownHours: 8,
+      lastActivityTimestamp: lastActivity.value?.lastClaimedTimestamp
+    }))
 
     return {
       fetchStatus,
       aaltar,
       aaltarCooldown,
+      reservoirCooldown,
       groupedInstallations,
       groupedTiles,
       parcelWidth,
