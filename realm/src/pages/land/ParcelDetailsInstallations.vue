@@ -140,6 +140,71 @@
             </ul>
           </template>
         </div>
+        <div
+          v-if="farmingDetails"
+          style="margin-bottom: 8px;"
+        >
+          <span class="parcel-details__label">
+            Farming:
+          </span>
+          <div>
+            Harvest rate (daily):
+            <div style="display: inline-flex; margin-left: 10px;">
+              <div
+                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+                :key="token"
+                style="flex: none; margin-right: 20px; display: flex; align-items: center"
+              >
+                <CryptoIcon
+                  :label="token"
+                  style="margin-right: 5px"
+                />
+                <NumberDisplay
+                  :number="farmingDetails.totalHarvestRate[token]"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            Reservoir capacity:
+            <div style="display: inline-flex; margin-left: 10px;">
+              <div
+                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+                :key="token"
+                style="flex: none; margin-right: 20px; display: flex; align-items: center"
+              >
+                <CryptoIcon
+                  :label="token"
+                  style="margin-right: 5px"
+                />
+                <NumberDisplay
+                  :number="farmingDetails.totalReservoirCapacity[token]"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            Alchemica to claim:
+            <div style="display: inline-flex; margin-left: 10px;">
+              <div
+                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+                :key="token"
+                style="flex: none; margin-right: 20px; display: flex; align-items: center"
+              >
+                <CryptoIcon
+                  :label="token"
+                  style="margin-right: 5px"
+                />
+                <NumberDisplay
+                  :number="farmingUnclaimedAlchemica[token]"
+                  :style="{
+                    'font-weight': farmingDetails.totalReservoirCapacity[token] > 0 && farmingUnclaimedAlchemica[token] === farmingDetails.totalReservoirCapacity[token] ? 'bold': undefined
+                  }"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 </template>
@@ -150,6 +215,9 @@ import useReactiveDate from '@/environment/useReactiveDate'
 import SiteDialog from '@/site/SiteDialog.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
 import ParcelGridSvg from './ParcelGridSvg.vue'
+import CryptoIcon from '@/common/CryptoIcon.vue'
+import NumberDisplay from '@/common/NumberDisplay.vue'
+import installationsFarming from '@/data/parcels/installationsFarming.json'
 
 const SIZE_WIDTHS_BY_ID = [8, 16, 32, 64, 64]
 const SIZE_HEIGHTS_BY_ID = [8, 16, 64, 32, 64]
@@ -158,7 +226,9 @@ export default {
   components: {
     SiteDialog,
     DateFriendly,
-    ParcelGridSvg
+    ParcelGridSvg,
+    CryptoIcon,
+    NumberDisplay
   },
   props: {
     id: { type: String, required: true },
@@ -237,6 +307,68 @@ export default {
       lastActivityTimestamp: lastActivity.value?.lastClaimedTimestamp
     }))
 
+    const farmingDetails = computed(() => {
+      if (!aaltar) { return null }
+
+      const reservoirs = installations.value.filter(
+        item => item.type.installationType === 'reservoir'
+      ).map(item => installationsFarming.reservoirs[item.type.id])
+
+      const harvesters = installations.value.filter(
+        item => item.type.installationType === 'harvester'
+      ).map(item => installationsFarming.harvesters[item.type.id])
+
+      if (harvesters.length === 0 || reservoirs.length === 0) {
+        return null
+      }
+
+      const totalHarvestRate = {
+        FUD: 0,
+        FOMO: 0,
+        ALPHA: 0,
+        KEK: 0
+      }
+      for (const harvester of harvesters) {
+        totalHarvestRate[harvester.alchemicaType] += harvester.harvestRate
+      }
+
+      const totalReservoirCapacity = {
+        FUD: 0,
+        FOMO: 0,
+        ALPHA: 0,
+        KEK: 0
+      }
+      for (const reservoir of reservoirs) {
+        totalReservoirCapacity[reservoir.alchemicaType] += reservoir.capacity
+      }
+
+      return { totalHarvestRate, totalReservoirCapacity }
+    })
+
+    const farmingUnclaimedAlchemica = computed(() => {
+      if (!farmingDetails.value) { return null }
+      const lastClaimedTimestamp = lastActivity.value?.lastClaimedTimestamp
+      if (!lastClaimedTimestamp) { return null }
+      const nowTimestamp = tickerTimestamp.value
+      const alchemica = {
+        FUD: 0,
+        FOMO: 0,
+        ALPHA: 0,
+        KEK: 0
+      }
+      if (lastClaimedTimestamp >= nowTimestamp) {
+        return alchemica
+      }
+      const fractionOfDay = (nowTimestamp - lastClaimedTimestamp) / (1000 * 60 * 60 * 24)
+      for (const alchemicaType in alchemica) {
+        alchemica[alchemicaType] = Math.min(
+          farmingDetails.value.totalReservoirCapacity[alchemicaType],
+          fractionOfDay * farmingDetails.value.totalHarvestRate[alchemicaType]
+        )
+      }
+      return alchemica
+    })
+
     return {
       fetchStatus,
       aaltar,
@@ -249,6 +381,8 @@ export default {
       installations,
       tiles,
       lastActivity,
+      farmingDetails,
+      farmingUnclaimedAlchemica,
       parcelGridPopupIsOpen
     }
   }

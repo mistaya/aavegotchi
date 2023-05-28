@@ -1,0 +1,620 @@
+{
+    "harvesters":
+    {
+        "56":
+        {
+            "id": "56",
+            "alchemicaType": "FUD",
+            "level": 1,
+            "harvestRate": 4.2,
+            "name": "FUD Harvester Level 1"
+        },
+        "57":
+        {
+            "id": "57",
+            "alchemicaType": "FUD",
+            "level": 2,
+            "harvestRate": 10,
+            "name": "FUD Harvester Level 2"
+        },
+        "58":
+        {
+            "id": "58",
+            "alchemicaType": "FUD",
+            "level": 3,
+            "harvestRate": 18,
+            "name": "FUD Harvester Level 3"
+        },
+        "59":
+        {
+            "id": "59",
+            "alchemicaType": "FUD",
+            "level": 4,
+            "harvestRate": 30,
+            "name": "FUD Harvester Level 4"
+        },
+        "60":
+        {
+            "id": "60",
+            "alchemicaType": "FUD",
+            "level": 5,
+            "harvestRate": 50,
+            "name": "FUD Harvester Level 5"
+        },
+        "61":
+        {
+            "id": "61",
+            "alchemicaType": "FUD",
+            "level": 6,
+            "harvestRate": 85,
+            "name": "FUD Harvester Level 6"
+        },
+        "62":
+        {
+            "id": "62",
+            "alchemicaType": "FUD",
+            "level": 7,
+            "harvestRate": 150,
+            "name": "FUD Harvester Level 7"
+        },
+        "63":
+        {
+            "id": "63",
+            "alchemicaType": "FUD",
+            "level": 8,
+            "harvestRate": 277,
+            "name": "FUD Harvester Level 8"
+        },
+        "64":
+        {
+            "id": "64",
+            "alchemicaType": "FUD",
+            "level": 9,
+            "harvestRate": 527,
+            "name": "FUD Harvester Level 9"
+        },
+        "65":
+        {
+            "id": "65",
+            "alchemicaType": "FOMO",
+            "level": 1,
+            "harvestRate": 2.1,
+            "name": "FOMO Harvester Level 1"
+        },
+        "66":
+        {
+            "id": "66",
+            "alchemicaType": "FOMO",
+            "level": 2,
+            "harvestRate": 4.6,
+            "name": "FOMO Harvester Level 2"
+        },
+        "67":
+        {
+            "id": "67",
+            "alchemicaType": "FOMO",
+            "level": 3,
+            "harvestRate": 8.3,
+            "name": "FOMO Harvester Level 3"
+        },
+        "68":
+        {
+            "id": "68",
+            "alchemicaType": "FOMO",
+            "level": 4,
+            "harvestRate": 14,
+            "name": "FOMO Harvester Level 4"
+        },
+        "69":
+        {
+            "id": "69",
+            "alchemicaType": "FOMO",
+            "level": 5,
+            "harvestRate": 22,
+            "name": "FOMO Harvester Level 5"
+        },
+        "70":
+        {
+            "id": "70",
+            "alchemicaType": "FOMO",
+            "level": 6,
+            "harvestRate": 38,
+            "name": "FOMO Harvester Level 6"
+        },
+        "71":
+        {
+            "id": "71",
+            "alchemicaType": "FOMO",
+            "level": 7,
+            "harvestRate": 68,
+            "name": "FOMO Harvester Level 7"
+        },
+        "72":
+        {
+            "id": "72",
+            "alchemicaType": "FOMO",
+            "level": 8,
+            "harvestRate": 125,
+            "name": "FOMO Harvester Level 8"
+        },
+        "73":
+        {
+            "id": "73",
+            "alchemicaType": "FOMO",
+            "level": 9,
+            "harvestRate": 238,
+            "name": "FOMO Harvester Level 9"
+        },
+        "74":
+        {
+            "id": "74",
+            "alchemicaType": "ALPHA",
+            "level": 1,
+            "harvestRate": 1.5,
+            "name": "ALPHA Harvester Level 1"
+        },
+        "75":
+        {
+            "id": "75",
+            "alchemicaType": "ALPHA",
+            "level": 2,
+            "harvestRate": 2.8,
+            "name": "ALPHA Harvester Level 2"
+        },
+        "76":
+        {
+            "id": "76",
+            "alchemicaType": "ALPHA",
+            "level": 3,
+            "harvestRate": 4.8,
+            "name": "ALPHA Harvester Level 3"
+        },
+        "77":
+        {
+            "id": "77",
+            "alchemicaType": "ALPHA",
+            "level": 4,
+            "harvestRate": 7.8,
+            "name": "ALPHA Harvester Level 4"
+        },
+        "78":
+        {
+            "id": "78",
+            "alchemicaType": "ALPHA",
+            "level": 5,
+            "harvestRate": 13,
+            "name": "ALPHA Harvester Level 5"
+        },
+        "79":
+        {
+            "id": "79",
+            "alchemicaType": "ALPHA",
+            "level": 6,
+            "harvestRate": 22,
+            "name": "ALPHA Harvester Level 6"
+        },
+        "80":
+        {
+            "id": "80",
+            "alchemicaType": "ALPHA",
+            "level": 7,
+            "harvestRate": 39,
+            "name": "ALPHA Harvester Level 7"
+        },
+        "81":
+        {
+            "id": "81",
+            "alchemicaType": "ALPHA",
+            "level": 8,
+            "harvestRate": 73,
+            "name": "ALPHA Harvester Level 8"
+        },
+        "82":
+        {
+            "id": "82",
+            "alchemicaType": "ALPHA",
+            "level": 9,
+            "harvestRate": 138,
+            "name": "ALPHA Harvester Level 9"
+        },
+        "83":
+        {
+            "id": "83",
+            "alchemicaType": "KEK",
+            "level": 1,
+            "harvestRate": 0.3,
+            "name": "KEK Harvester Level 1"
+        },
+        "84":
+        {
+            "id": "84",
+            "alchemicaType": "KEK",
+            "level": 2,
+            "harvestRate": 0.71,
+            "name": "KEK Harvester Level 2"
+        },
+        "85":
+        {
+            "id": "85",
+            "alchemicaType": "KEK",
+            "level": 3,
+            "harvestRate": 1.6,
+            "name": "KEK Harvester Level 3"
+        },
+        "86":
+        {
+            "id": "86",
+            "alchemicaType": "KEK",
+            "level": 4,
+            "harvestRate": 2.7,
+            "name": "KEK Harvester Level 4"
+        },
+        "87":
+        {
+            "id": "87",
+            "alchemicaType": "KEK",
+            "level": 5,
+            "harvestRate": 4.1,
+            "name": "KEK Harvester Level 5"
+        },
+        "88":
+        {
+            "id": "88",
+            "alchemicaType": "KEK",
+            "level": 6,
+            "harvestRate": 7,
+            "name": "KEK Harvester Level 6"
+        },
+        "89":
+        {
+            "id": "89",
+            "alchemicaType": "KEK",
+            "level": 7,
+            "harvestRate": 13,
+            "name": "KEK Harvester Level 7"
+        },
+        "90":
+        {
+            "id": "90",
+            "alchemicaType": "KEK",
+            "level": 8,
+            "harvestRate": 24,
+            "name": "KEK Harvester Level 8"
+        },
+        "91":
+        {
+            "id": "91",
+            "alchemicaType": "KEK",
+            "level": 9,
+            "harvestRate": 45,
+            "name": "KEK Harvester Level 9"
+        }
+    },
+    "reservoirs":
+    {
+        "92":
+        {
+            "id": "92",
+            "alchemicaType": "FUD",
+            "level": 1,
+            "spillRate": 66.5,
+            "capacity": 5,
+            "name": "FUD Reservoir Level 1"
+        },
+        "93":
+        {
+            "id": "93",
+            "alchemicaType": "FUD",
+            "level": 2,
+            "spillRate": 57,
+            "capacity": 10,
+            "name": "FUD Reservoir Level 2"
+        },
+        "94":
+        {
+            "id": "94",
+            "alchemicaType": "FUD",
+            "level": 3,
+            "spillRate": 47.5,
+            "capacity": 20,
+            "name": "FUD Reservoir Level 3"
+        },
+        "95":
+        {
+            "id": "95",
+            "alchemicaType": "FUD",
+            "level": 4,
+            "spillRate": 38,
+            "capacity": 40,
+            "name": "FUD Reservoir Level 4"
+        },
+        "96":
+        {
+            "id": "96",
+            "alchemicaType": "FUD",
+            "level": 5,
+            "spillRate": 28.5,
+            "capacity": 80,
+            "name": "FUD Reservoir Level 5"
+        },
+        "97":
+        {
+            "id": "97",
+            "alchemicaType": "FUD",
+            "level": 6,
+            "spillRate": 23.75,
+            "capacity": 160,
+            "name": "FUD Reservoir Level 6"
+        },
+        "98":
+        {
+            "id": "98",
+            "alchemicaType": "FUD",
+            "level": 7,
+            "spillRate": 19,
+            "capacity": 320,
+            "name": "FUD Reservoir Level 7"
+        },
+        "99":
+        {
+            "id": "99",
+            "alchemicaType": "FUD",
+            "level": 8,
+            "spillRate": 14.25,
+            "capacity": 640,
+            "name": "FUD Reservoir Level 8"
+        },
+        "100":
+        {
+            "id": "100",
+            "alchemicaType": "FUD",
+            "level": 9,
+            "spillRate": 9.5,
+            "capacity": 1280,
+            "name": "FUD Reservoir Level 9"
+        },
+        "101":
+        {
+            "id": "101",
+            "alchemicaType": "FOMO",
+            "level": 1,
+            "spillRate": 73.5,
+            "capacity": 2.5,
+            "name": "FOMO Reservoir Level 1"
+        },
+        "102":
+        {
+            "id": "102",
+            "alchemicaType": "FOMO",
+            "level": 2,
+            "spillRate": 63,
+            "capacity": 5,
+            "name": "FOMO Reservoir Level 2"
+        },
+        "103":
+        {
+            "id": "103",
+            "alchemicaType": "FOMO",
+            "level": 3,
+            "spillRate": 52.5,
+            "capacity": 10,
+            "name": "FOMO Reservoir Level 3"
+        },
+        "104":
+        {
+            "id": "104",
+            "alchemicaType": "FOMO",
+            "level": 4,
+            "spillRate": 42,
+            "capacity": 20,
+            "name": "FOMO Reservoir Level 4"
+        },
+        "105":
+        {
+            "id": "105",
+            "alchemicaType": "FOMO",
+            "level": 5,
+            "spillRate": 31.5,
+            "capacity": 40,
+            "name": "FOMO Reservoir Level 5"
+        },
+        "106":
+        {
+            "id": "106",
+            "alchemicaType": "FOMO",
+            "level": 6,
+            "spillRate": 26.25,
+            "capacity": 80,
+            "name": "FOMO Reservoir Level 6"
+        },
+        "107":
+        {
+            "id": "107",
+            "alchemicaType": "FOMO",
+            "level": 7,
+            "spillRate": 21,
+            "capacity": 160,
+            "name": "FOMO Reservoir Level 7"
+        },
+        "108":
+        {
+            "id": "108",
+            "alchemicaType": "FOMO",
+            "level": 8,
+            "spillRate": 15.75,
+            "capacity": 320,
+            "name": "FOMO Reservoir Level 8"
+        },
+        "109":
+        {
+            "id": "109",
+            "alchemicaType": "FOMO",
+            "level": 9,
+            "spillRate": 10.5,
+            "capacity": 640,
+            "name": "FOMO Reservoir Level 9"
+        },
+        "110":
+        {
+            "id": "110",
+            "alchemicaType": "ALPHA",
+            "level": 1,
+            "spillRate": 77,
+            "capacity": 1.5,
+            "name": "ALPHA Reservoir Level 1"
+        },
+        "111":
+        {
+            "id": "111",
+            "alchemicaType": "ALPHA",
+            "level": 2,
+            "spillRate": 66,
+            "capacity": 3,
+            "name": "ALPHA Reservoir Level 2"
+        },
+        "112":
+        {
+            "id": "112",
+            "alchemicaType": "ALPHA",
+            "level": 3,
+            "spillRate": 55,
+            "capacity": 6,
+            "name": "ALPHA Reservoir Level 3"
+        },
+        "113":
+        {
+            "id": "113",
+            "alchemicaType": "ALPHA",
+            "level": 4,
+            "spillRate": 44,
+            "capacity": 12,
+            "name": "ALPHA Reservoir Level 4"
+        },
+        "114":
+        {
+            "id": "114",
+            "alchemicaType": "ALPHA",
+            "level": 5,
+            "spillRate": 33,
+            "capacity": 24,
+            "name": "ALPHA Reservoir Level 5"
+        },
+        "115":
+        {
+            "id": "115",
+            "alchemicaType": "ALPHA",
+            "level": 6,
+            "spillRate": 27.5,
+            "capacity": 48,
+            "name": "ALPHA Reservoir Level 6"
+        },
+        "116":
+        {
+            "id": "116",
+            "alchemicaType": "ALPHA",
+            "level": 7,
+            "spillRate": 22,
+            "capacity": 96,
+            "name": "ALPHA Reservoir Level 7"
+        },
+        "117":
+        {
+            "id": "117",
+            "alchemicaType": "ALPHA",
+            "level": 8,
+            "spillRate": 16.5,
+            "capacity": 192,
+            "name": "ALPHA Reservoir Level 8"
+        },
+        "118":
+        {
+            "id": "118",
+            "alchemicaType": "ALPHA",
+            "level": 9,
+            "spillRate": 11,
+            "capacity": 384,
+            "name": "ALPHA Reservoir Level 9"
+        },
+        "119":
+        {
+            "id": "119",
+            "alchemicaType": "KEK",
+            "level": 1,
+            "spillRate": 63,
+            "capacity": 0.4,
+            "name": "KEK Reservoir Level 1"
+        },
+        "120":
+        {
+            "id": "120",
+            "alchemicaType": "KEK",
+            "level": 2,
+            "spillRate": 54,
+            "capacity": 0.8,
+            "name": "KEK Reservoir Level 2"
+        },
+        "121":
+        {
+            "id": "121",
+            "alchemicaType": "KEK",
+            "level": 3,
+            "spillRate": 45,
+            "capacity": 1.6,
+            "name": "KEK Reservoir Level 3"
+        },
+        "122":
+        {
+            "id": "122",
+            "alchemicaType": "KEK",
+            "level": 4,
+            "spillRate": 36,
+            "capacity": 3.2,
+            "name": "KEK Reservoir Level 4"
+        },
+        "123":
+        {
+            "id": "123",
+            "alchemicaType": "KEK",
+            "level": 5,
+            "spillRate": 27,
+            "capacity": 6.4,
+            "name": "KEK Reservoir Level 5"
+        },
+        "124":
+        {
+            "id": "124",
+            "alchemicaType": "KEK",
+            "level": 6,
+            "spillRate": 22.5,
+            "capacity": 13,
+            "name": "KEK Reservoir Level 6"
+        },
+        "125":
+        {
+            "id": "125",
+            "alchemicaType": "KEK",
+            "level": 7,
+            "spillRate": 18,
+            "capacity": 26,
+            "name": "KEK Reservoir Level 7"
+        },
+        "126":
+        {
+            "id": "126",
+            "alchemicaType": "KEK",
+            "level": 8,
+            "spillRate": 13.5,
+            "capacity": 51,
+            "name": "KEK Reservoir Level 8"
+        },
+        "127":
+        {
+            "id": "127",
+            "alchemicaType": "KEK",
+            "level": 9,
+            "spillRate": 9,
+            "capacity": 102,
+            "name": "KEK Reservoir Level 9"
+        }
+    }
+}
