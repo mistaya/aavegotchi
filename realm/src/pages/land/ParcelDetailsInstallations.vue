@@ -429,7 +429,7 @@ export default {
     }
   }
   .parcel-details__farming {
-    margin-top: 10px;
+    margin-bottom: 10px;
   }
   .parcel-details__farming > span {
     font-size: 0.85em;

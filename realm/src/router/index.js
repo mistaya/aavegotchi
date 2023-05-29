@@ -24,7 +24,8 @@ const LendingAvailablePage = () => import(/* webpackChunkName: "lending-availabl
 const LendingActivityPage = () => import(/* webpackChunkName: "lending-activity" */ '@/pages/lending/LendingActivityPage.vue')
 const LendingBorrowerPage = () => import(/* webpackChunkName: "lending-borrower" */ '@/pages/lending/LendingBorrowerPage.vue')
 const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/pages/lending/LendingManagerPage.vue')
-const LendingLandsPage = () => import(/* webpackChunkName: "lending-lands" */ '@/pages/lending/LendingLandsPage.vue')
+const LendingLandsIndexPage = () => import(/* webpackChunkName: "lending-lands" */ '@/pages/lending/LendingLandsIndexPage.vue')
+const LendingLandsOwnerPage = () => import(/* webpackChunkName: "lending-lands-owner" */ '@/pages/lending/LendingLandsOwnerPage.vue')
 const LendingLandsPublicPage = () => import(/* webpackChunkName: "lending-lands-public" */ '@/pages/lending/LendingLandsPublicPage.vue')
 const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/pages/lending/LendingExportPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/pages/playground/TempPlayground.vue')
@@ -216,29 +217,47 @@ const routes = [
         }
       },
       {
-        path: 'lands',
-        name: 'lending-lands',
-        component: LendingLandsPage,
-        props: route => ({
-          address: route.query.address
-        }),
-        meta: {
-          head: {
-            title: 'Lands',
-            description: 'Overview of your lands with their channeling status'
-          }
+        path: 'lands-public',
+        redirect: {
+          name: 'lending-lands-public'
         }
       },
       {
-        path: 'lands-public',
-        name: 'lending-lands-public',
-        component: LendingLandsPublicPage,
+        path: 'lands',
+        name: 'lending-lands',
+        component: LendingLandsIndexPage,
         meta: {
           head: {
-            title: 'Lands open to public',
-            description: 'Overview of lands with public access'
+            title: 'Lands',
+            description: 'Overview of lands with their channeling and harvesting status'
           }
-        }
+        },
+        children: [
+          {
+            path: 'owner/:address',
+            name: 'lending-lands-owner',
+            component: LendingLandsOwnerPage,
+            props: true,
+            meta: {
+              head: {
+                title: 'Lands',
+                description: 'Overview of your lands with their channeling and harvesting status'
+              },
+              analyticsUrl: '/lending/lands/owner/ADDRESS'
+            }
+          },
+          {
+            path: 'public',
+            name: 'lending-lands-public',
+            component: LendingLandsPublicPage,
+            meta: {
+              head: {
+                title: 'Lands open to public',
+                description: 'Overview of lands with public access to channeling and harvesting'
+              }
+            }
+          }
+        ]
       },
       {
         path: 'export',
