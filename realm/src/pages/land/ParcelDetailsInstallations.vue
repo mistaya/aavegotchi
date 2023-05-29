@@ -141,19 +141,19 @@
           </template>
         </div>
         <div
-          v-if="farmingDetails"
+          v-if="includeFarming && farmingDetails"
           style="margin-bottom: 8px;"
         >
           <span class="parcel-details__label">
             Farming:
           </span>
-          <div>
-            Harvest rate (daily):
-            <div style="display: inline-flex; margin-left: 10px;">
+          <div class="parcel-details__farming">
+            <span>Harvest rate (daily):</span>
+            <div class="parcel-details__farming-alchemica">
               <div
                 v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
                 :key="token"
-                style="flex: none; margin-right: 20px; display: flex; align-items: center"
+                v-show="farmingDetails.totalHarvestRate[token] > 0"
               >
                 <CryptoIcon
                   :label="token"
@@ -165,13 +165,13 @@
               </div>
             </div>
           </div>
-          <div>
-            Reservoir capacity:
-            <div style="display: inline-flex; margin-left: 10px;">
+          <div class="parcel-details__farming">
+            <span>Reservoir capacity:</span>
+            <div class="parcel-details__farming-alchemica">
               <div
                 v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
                 :key="token"
-                style="flex: none; margin-right: 20px; display: flex; align-items: center"
+                v-show="farmingDetails.totalReservoirCapacity[token] > 0"
               >
                 <CryptoIcon
                   :label="token"
@@ -183,13 +183,16 @@
               </div>
             </div>
           </div>
-          <div>
-            Alchemica to claim:
-            <div style="display: inline-flex; margin-left: 10px;">
+          <div
+            v-if="farmingUnclaimedAlchemica"
+            class="parcel-details__farming"
+          >
+            <span>Alchemica to claim:</span>
+            <div class="parcel-details__farming-alchemica">
               <div
                 v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
                 :key="token"
-                style="flex: none; margin-right: 20px; display: flex; align-items: center"
+                v-show="farmingDetails.totalReservoirCapacity[token] > 0"
               >
                 <CryptoIcon
                   :label="token"
@@ -232,7 +235,8 @@ export default {
   },
   props: {
     id: { type: String, required: true },
-    sizeNum: { type: [String, Number], required: true }
+    sizeNum: { type: [String, Number], required: true },
+    includeFarming: { type: Boolean, default: false }
   },
   setup (props) {
     const {
@@ -423,5 +427,19 @@ export default {
     .parcel-details__grid-modal-grid-container {
       padding: 30px;
     }
+  }
+  .parcel-details__farming {
+    margin-top: 10px;
+  }
+  .parcel-details__farming > span {
+    font-size: 0.85em;
+  }
+  .parcel-details__farming-alchemica {
+    margin: 5px 10px 0px 8px;
+  }
+  .parcel-details__farming-alchemica > div {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
   }
 </style>

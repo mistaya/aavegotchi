@@ -116,6 +116,7 @@
         <ParcelDetailsInstallations
           :id="parcelId"
           :sizeNum="parcelDetails.size"
+          includeFarming
         />
       </details>
     </template>
