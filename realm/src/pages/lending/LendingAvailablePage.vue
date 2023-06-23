@@ -447,73 +447,82 @@
                   {{ result.whitelistId }}
                 </td>
                 <td
-                  class="with-left-border"
-                  :class="{
-                    'can-channel': channelingDetails?.[result.id]?.numChannelings > 0,
-                    'cannot-channel': channelingDetails?.[result.id]?.numChannelings === 0
-                  }"
+                  v-if="!channelingDetails[result.id].channellingAllowed"
+                  class="with-left-border channel-not-allowed"
+                  colspan="3"
                 >
-                  <div v-if="channelingDetails && channelingDetails[result.id]">
-                    <div
-                      v-if="channelingDetails[result.id].numChannelings > 0"
-                      style="display: flex; flex-wrap: wrap; column-gap: 5px; row-gap: 5px"
-                    >
-                      <span style="flex: none; display: flex; column-gap: 4px">
-                        <SiteIcon
-                          name="channel"
-                          style="flex: none;"
-                        />
-                        <span style="flex: none">
-                          {{ channelingDetails[result.id].canChannelNow ? 1 : 0 }}
-                          now{{
-                            channelingDetails[result.id].numChannelingsAfterReset > 0 ? ',' : ''
-                          }}
-                        </span>
-                      </span>
-                      <span
-                        v-if="channelingDetails[result.id].numChannelingsAfterReset > 0"
-                        style="flex: none;"
+                  Not allowed
+                </td>
+                <template v-else>
+                  <td
+                    class="with-left-border"
+                    :class="{
+                      'can-channel': channelingDetails?.[result.id]?.numChannelings > 0,
+                      'cannot-channel': channelingDetails?.[result.id]?.numChannelings === 0
+                    }"
+                  >
+                    <div v-if="channelingDetails && channelingDetails[result.id]">
+                      <div
+                        v-if="channelingDetails[result.id].numChannelings > 0"
+                        style="display: flex; flex-wrap: wrap; column-gap: 5px; row-gap: 5px"
                       >
-                        {{ channelingDetails[result.id].numChannelingsAfterReset }} later
-                      </span>
+                        <span style="flex: none; display: flex; column-gap: 4px">
+                          <SiteIcon
+                            name="channel"
+                            style="flex: none;"
+                          />
+                          <span style="flex: none">
+                            {{ channelingDetails[result.id].canChannelNow ? 1 : 0 }}
+                            now{{
+                              channelingDetails[result.id].numChannelingsAfterReset > 0 ? ',' : ''
+                            }}
+                          </span>
+                        </span>
+                        <span
+                          v-if="channelingDetails[result.id].numChannelingsAfterReset > 0"
+                          style="flex: none;"
+                        >
+                          {{ channelingDetails[result.id].numChannelingsAfterReset }} later
+                        </span>
+                      </div>
+                      <template v-else>
+                        None
+                      </template>
                     </div>
-                    <template v-else>
-                      None
-                    </template>
-                  </div>
-                </td>
-                <td
-                  class="channeling-net"
-                  :class="{
-                    'channeling-net--profit': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst > 0,
-                    'channeling-net--loss': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst <= 0
-                  }"
-                >
-                  <div v-if="channelingDetails && channelingDetails[result.id]">
-                    <template v-if="channelingDetails[result.id].numChannelings > 0">
-                      {{ channelingDetails[result.id].netTotalGhst.toFixed(2) }}
-                    </template>
-                    <template v-else>
-                      -
-                    </template>
-                  </div>
-                </td>
-                <td
-                  class="channeling-net"
-                  :class="{
-                    'channeling-net--profit': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst > 0,
-                    'channeling-net--loss': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst <= 0
-                  }"
-                >
-                  <div v-if="channelingDetails && channelingDetails[result.id]">
-                    <template v-if="channelingDetails[result.id].numChannelings > 0">
-                      {{ channelingDetails[result.id].netTotalGhstPerChannel.toFixed(2) }}
-                    </template>
-                    <template v-else>
-                      -
-                    </template>
-                  </div>
-                </td>
+                  </td>
+                  <td
+                    class="channeling-net"
+                    :class="{
+                      'channeling-net--profit': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst > 0,
+                      'channeling-net--loss': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst <= 0
+                    }"
+                  >
+                    <div v-if="channelingDetails && channelingDetails[result.id]">
+                      <template v-if="channelingDetails[result.id].numChannelings > 0">
+                        {{ channelingDetails[result.id].netTotalGhst.toFixed(2) }}
+                      </template>
+                      <template v-else>
+                        -
+                      </template>
+                    </div>
+                  </td>
+                  <td
+                    class="channeling-net"
+                    :class="{
+                      'channeling-net--profit': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst > 0,
+                      'channeling-net--loss': channelingDetails?.[result.id]?.numChannelings > 0 && channelingDetails[result.id].netTotalGhst <= 0
+                    }"
+                  >
+                    <div v-if="channelingDetails && channelingDetails[result.id]">
+                      <template v-if="channelingDetails[result.id].numChannelings > 0">
+                        {{ channelingDetails[result.id].netTotalGhstPerChannel.toFixed(2) }}
+                      </template>
+                      <template v-else>
+                        -
+                      </template>
+                    </div>
+                  </td>
+                </template>
                 <td class="with-left-border">
                   <a
                     :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
@@ -743,6 +752,7 @@ export default {
         splitBorrower
         gotchiTokenId
         whitelistId
+        channellingAllowed
       }}
       `
       // console.log('New query', query)
@@ -788,7 +798,7 @@ export default {
       () => status.value.loaded,
       loaded => {
         if (loaded) {
-          fetchGotchiChannelingStatuses(results.value.map(result => result.gotchiTokenId))
+          fetchGotchiChannelingStatuses(results.value.filter(result => result.channellingAllowed).map(result => result.gotchiTokenId))
         }
       }
     )
@@ -838,49 +848,58 @@ export default {
       const oneDayMs = 24 * 60 * 60 * 1000
       const nextResetMs = utcMidnightTimestampMs.value + oneDayMs
       for (const result of results.value) {
-        // calculate how many channels are possible in rental period
-        // given reset time and gotchi's current channeling status
-        const canChannelNow = gotchiChannelingStatuses.value.canChannel[result.gotchiTokenId]
-        const periodMs = result.period * 1000
-        const potentialFinishMs = nowMs + periodMs
-        let numChannelingsAfterReset = 0
-        if (potentialFinishMs > nextResetMs) {
-          const afterNextResetMs = potentialFinishMs - nextResetMs
-          numChannelingsAfterReset = Math.ceil(afterNextResetMs / oneDayMs)
-        }
-        const numChannelings = (canChannelNow ? 1 : 0) + numChannelingsAfterReset
-
-        const kinship = result.gotchiKinship
-        const splitBorrower = result.splitBorrower
-        const upfrontCost = new BigNumber(result.upfrontCost).div(10e17).toNumber()
-        const tokensToShareMap = result.tokensToShareMap
-
-        // calculate channeling yield
-        const kinshipMultiplier = Math.sqrt(kinship / 50)
-        const spilloverMultiplier = 2 * (50 - ((channelingSettings.value.aaltarLevel - 1) * 5)) / 100
-        let ghstPerChannel = 0
-        for (const token in BASE_CHANNELING) {
-          if (tokensToShareMap[TOKEN_ADDRESSES[token]]) {
-            ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * (1 - spilloverMultiplier) * ghstPrices.value[token]
+        const channellingAllowed = result.channellingAllowed
+        if (!channellingAllowed) {
+          channelingByLending[result.id] = {
+            channellingAllowed,
+            netTotalGhstPerChannel: Number.MIN_SAFE_INTEGER // for sorting
           }
-        }
-        const ghstPerChannelAfterSplit = ghstPerChannel * (splitBorrower / 100)
-        const netTotalGhst = (numChannelings * ghstPerChannelAfterSplit) - upfrontCost
-        const netTotalGhstPerChannel = numChannelings > 0 ? netTotalGhst / numChannelings : 0
-        channelingByLending[result.id] = {
-          canChannelNow,
-          numChannelings,
-          numChannelingsAfterReset,
-          // tokensToShareMap,
-          // splitBorrower,
-          // upfrontCost,
-          // periodH: periodMs / (1000 * 60 * 60),
-          // kinship,
-          // kinshipMultiplier,
-          // ghstPerChannel,
-          // ghstPerChannelAfterSplit,
-          netTotalGhst,
-          netTotalGhstPerChannel
+        } else {
+          // calculate how many channels are possible in rental period
+          // given reset time and gotchi's current channeling status
+          const canChannelNow = gotchiChannelingStatuses.value.canChannel[result.gotchiTokenId]
+          const periodMs = result.period * 1000
+          const potentialFinishMs = nowMs + periodMs
+          let numChannelingsAfterReset = 0
+          if (potentialFinishMs > nextResetMs) {
+            const afterNextResetMs = potentialFinishMs - nextResetMs
+            numChannelingsAfterReset = Math.ceil(afterNextResetMs / oneDayMs)
+          }
+          const numChannelings = (canChannelNow ? 1 : 0) + numChannelingsAfterReset
+
+          const kinship = result.gotchiKinship
+          const splitBorrower = result.splitBorrower
+          const upfrontCost = new BigNumber(result.upfrontCost).div(10e17).toNumber()
+          const tokensToShareMap = result.tokensToShareMap
+
+          // calculate channeling yield
+          const kinshipMultiplier = Math.sqrt(kinship / 50)
+          const spilloverMultiplier = 2 * (50 - ((channelingSettings.value.aaltarLevel - 1) * 5)) / 100
+          let ghstPerChannel = 0
+          for (const token in BASE_CHANNELING) {
+            if (tokensToShareMap[TOKEN_ADDRESSES[token]]) {
+              ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * (1 - spilloverMultiplier) * ghstPrices.value[token]
+            }
+          }
+          const ghstPerChannelAfterSplit = ghstPerChannel * (splitBorrower / 100)
+          const netTotalGhst = (numChannelings * ghstPerChannelAfterSplit) - upfrontCost
+          const netTotalGhstPerChannel = numChannelings > 0 ? netTotalGhst / numChannelings : 0
+          channelingByLending[result.id] = {
+            channellingAllowed,
+            canChannelNow,
+            numChannelings,
+            numChannelingsAfterReset,
+            // tokensToShareMap,
+            // splitBorrower,
+            // upfrontCost,
+            // periodH: periodMs / (1000 * 60 * 60),
+            // kinship,
+            // kinshipMultiplier,
+            // ghstPerChannel,
+            // ghstPerChannelAfterSplit,
+            netTotalGhst,
+            netTotalGhstPerChannel
+          }
         }
       }
       // console.log({ channelingByLending })
@@ -957,6 +976,13 @@ export default {
     margin-bottom: -15px;
 
     background-color: var(--site-background-color);
+  }
+
+  td.channel-not-allowed {
+    color: var(--site-text-color--subtle);
+    font-size: 0.9em;
+    font-style: italic;
+    text-align: center;
   }
 
   .cannot-channel {
