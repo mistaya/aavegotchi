@@ -184,6 +184,20 @@
                 </div>
               </summary>
               <div style="margin-top: 12px;">
+
+                <div style="margin-bottom: 20px;">
+                  <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
+                    <SiteIcon name="warning-triangle" />
+                    <div>
+                      Warning: sometime soon (June/July 2023?), channeling will start to consume kinship.
+                      <br>Lenders will decide whether to allow borrowers to channel the gotchi when they <i>create</i> the lending.
+                      <br><b>By default, borrowers will not be allowed to channel gotchis.</b>
+                      <br>Be careful with long-duration lendings: once this change goes live, you will NOT be able to channel a gotchi on a pre-existing lending.
+                      <br>So you may not be able to get the total GHST profit calculated below.
+                    </div>
+                  </div>
+                </div>
+
                 <label>
                   <input
                     v-model="filters2.onlyChannelable"
@@ -255,6 +269,7 @@
                     <div style="margin-top: 10px">
                       Possible problems include:
                       <ul style="margin-top: 5px;">
+                        <li>The kinship channeling implementation goes live while you have a borrowed gotchi, and you are no longer allowed to channel, so you can't get the full amount of GHST predicted.</li>
                         <li>alchemica/GHST pricing data is wrong or out of date (and changes over time)</li>
                         <li>subgraph data is out of date, and the gotchi has actually channeled already</li>
                         <li>the gotchi's owner channels it before you borrow</li>
