@@ -26,6 +26,7 @@ const LendingBorrowerPage = () => import(/* webpackChunkName: "lending-borrower"
 const LendingManagerPage = () => import(/* webpackChunkName: "lending-manager" */ '@/pages/lending/LendingManagerPage.vue')
 const LendingLandsIndexPage = () => import(/* webpackChunkName: "lending-lands" */ '@/pages/lending/LendingLandsIndexPage.vue')
 const LendingLandsOwnerPage = () => import(/* webpackChunkName: "lending-lands-owner" */ '@/pages/lending/LendingLandsOwnerPage.vue')
+const LendingLandsWhitelistPage = () => import(/* webpackChunkName: "lending-lands-whitelist" */ '@/pages/lending/LendingLandsWhitelistPage.vue')
 const LendingLandsPublicPage = () => import(/* webpackChunkName: "lending-lands-public" */ '@/pages/lending/LendingLandsPublicPage.vue')
 const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/pages/lending/LendingExportPage.vue')
 const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/pages/playground/TempPlayground.vue')
@@ -254,6 +255,21 @@ const routes = [
               head: {
                 title: 'Lands open to public',
                 description: 'Overview of lands with public access to channeling and harvesting'
+              }
+            }
+          },
+          {
+            path: 'whitelist',
+            name: 'lending-lands-whitelist',
+            component: LendingLandsWhitelistPage,
+            props: route => ({
+              queryWhitelistIds: route.query.whitelistIds,
+              queryAddress: route.query.address
+            }),
+            meta: {
+              head: {
+                title: 'Lands open to whitelist',
+                description: 'Overview of lands with whitelist access to channeling and harvesting'
               }
             }
           }

@@ -15,14 +15,20 @@ const PARCEL_SIZE_LABELS = {
 }
 
 export default function ({ landsQueryWhere }) {
-  const { status, setLoading } = useStatus()
+  const { status, setLoading, reset } = useStatus()
   const lands = ref(null)
+
+  const resetLands = function () {
+    reset()
+    lands.value = null
+  }
 
   const fetchLands = function () {
     const [isStale, setLoaded, setError] = setLoading()
     let lastIdNum = 0
     let parcels = []
     const fetchLandsFromSubgraph = function () {
+      // console.log('fetchLandsFromSubgraph', landsQueryWhere.value)
       fetch(GOTCHIVERSE_SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
@@ -152,6 +158,7 @@ export default function ({ landsQueryWhere }) {
   return {
     fetchLands,
     status,
-    lands
+    lands,
+    resetLands
   }
 }

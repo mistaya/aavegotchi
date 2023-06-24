@@ -34,6 +34,16 @@
       >
         Lands that allow anyone to channel or empty reservoirs
       </router-link>
+
+      <div style="margin: 15px 0 15px 40px">
+        -- OR --
+      </div>
+
+      <router-link
+        :to="{ name: 'lending-lands-whitelist' }"
+      >
+        Lands that allow a whitelist to channel or empty reservoirs
+      </router-link>
     </template>
     <router-view v-else></router-view>
   </div>
