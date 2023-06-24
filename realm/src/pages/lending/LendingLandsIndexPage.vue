@@ -55,7 +55,7 @@ import { useRouter } from 'vue-router'
 
 const redirectOldRoute = function (to, next) {
   // redirect old path /lending/lands?address=OWNER_ADDRESS
-  if (to.query?.address) {
+  if (to.name === 'lending-lands' && to.query?.address) {
     next({
       name: 'lending-lands-owner',
       params: {
