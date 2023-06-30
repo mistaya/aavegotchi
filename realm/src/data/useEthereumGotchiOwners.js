@@ -85,7 +85,7 @@ fetch(initialOwnersUrl)
   .then(response => response.json())
   .then(json => {
     if (isStale()) { return }
-    setOwnersByGotchi(json, new Date(1687362129712))
+    setOwnersByGotchi(json, new Date(1688137627471))
     setLoaded()
   }).catch(error => {
     console.error(error)
