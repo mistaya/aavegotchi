@@ -201,8 +201,7 @@ const SEASONS = {
       }
     }
   },
-  // S5: new wearable sets from DAO to be introduced later in the season?
-  // New wearable sets JS algorithm is in the works: will it be used?
+  // S5
   szn5: {
     checkVault: true,
     checkLendings: true,
@@ -246,20 +245,58 @@ const SEASONS = {
         eth: 16926285
       }
     }
+  },
+  // S6: new wearable sets from DAO/Forge to be introduced later in the season?
+  // New wearable sets JS algorithm is in the works: will it be used?
+  szn6: {
+    checkVault: true,
+    checkLendings: true,
+    rnd1: {
+      rfCalc: 'js1',
+      wearableSets: '2023-03-01',
+      blocks: {
+        polygon: 44479233, // Jun-29-2023
+        eth: 17585412
+      }
+    },
+    rnd2: {
+      rfCalc: 'js1',
+      wearableSets: '2023-03-01',
+      blocks: {
+        polygon: 0, // Jul-13-2023
+        eth: 0
+      }
+    },
+    rnd3: {
+      rfCalc: 'js1',
+      wearableSets: '2023-03-01',
+      blocks: {
+        polygon: 0, // Jul-27-2023
+        eth: 0
+      }
+    },
+    rnd4: {
+      rfCalc: 'js1',
+      wearableSets: '2023-03-01',
+      blocks: {
+        polygon: 0, // Aug-10-2023
+        eth: 0
+      }
+    }
   }
 }
 
 // Params for this run
 // - season
-const SEASON = SEASONS.szn5
-const SEASON_REWARDS_FILE = '../../public/data/rf/szn5/rewards.json'
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5
+const SEASON = SEASONS.szn6
+const SEASON_REWARDS_FILE = '../../public/data/rf/szn6/rewards.json'
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6
 // - round
-const ROUND = SEASON.rnd4
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn5/rnd4.json'
-const GOTCHIS_FILENAME = 'rnd4Gotchis'
+const ROUND = SEASON.rnd1
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn6/rnd1.json'
+const GOTCHIS_FILENAME = 'rnd1Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r4'
+const GOTCHI_IMAGES_FOLDER = './r1'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
