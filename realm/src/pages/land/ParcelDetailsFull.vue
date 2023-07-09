@@ -81,7 +81,7 @@
           <SiteIcon name="open-window" :size="13" />
         </a>
         <span style="margin-left: 5px">
-          (<DateFriendly :date="lastBaazaarSale.datePurchased" />)
+          (<DateFriendly :date="lastBaazaarSale.datePurchased" enableToggle />)
         </span>
       </div>
 
@@ -108,7 +108,7 @@
           <SiteIcon name="open-window" :size="13" />
         </a>
         <span style="margin-left: 5px">
-          (<DateFriendly :date="lastGBMSale.datePurchased" />)
+          (<DateFriendly :date="lastGBMSale.datePurchased" enableToggle />)
         </span>
       </div>
 
