@@ -1,0 +1,90 @@
+import BigNumber from 'bignumber.js'
+import { ref, computed } from 'vue'
+import apis from '@/data/apis'
+import useStatus from '@/data/useStatus'
+
+const SUBGRAPH_URL = apis.GBM_AUCTIONS_SUBGRAPH
+const REALM_CONTRACT_ADDRESS = '0x1D0360BaC7299C86Ec8E99d0c1C9A95FEfaF2a11'
+
+export default function useParcelGBMLastSaleSingle (id) {
+  const parcelLastSale = ref(null)
+
+  const resetLastSale = function () {
+    parcelLastSale.value = null
+    lastFetchDate.value = null
+  }
+
+  const setLastSale = function (listing) {
+    parcelLastSale.value = listing
+  }
+
+  const { status: fetchStatus, setLoading } = useStatus()
+
+  const canSubmitFetch = computed(() => !fetchStatus.value.loading)
+  const lastFetchDate = ref(null)
+
+  const fetchLastSale = function () {
+    const [isStale, setLoaded, setError] = setLoading()
+
+    fetch(SUBGRAPH_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        query: `{
+          auctions(
+            first: 1,
+            orderBy: endsAt,
+            orderDirection: desc,
+            where:{
+              tokenId: "${id}"
+              type: "erc721"
+              contractAddress: "${REALM_CONTRACT_ADDRESS}"
+              endsAt_lt: "${Math.ceil(Date.now() / 1000)}"
+              cancelled: false
+              totalBids_gt: "0"
+            }) {
+            id
+            tokenId
+            highestBid
+            endsAt
+          }
+        }`
+      })
+    }).then(async response => {
+      if (isStale()) { console.log('Stale request, ignoring'); return }
+      if (!response.ok) {
+        setError('There was an error fetching the parcel GBM last sale')
+        return
+      }
+      const responseJson = await response.json()
+      if (responseJson.data?.auctions) {
+        const auction = responseJson.data?.auctions[0]
+        resetLastSale()
+        if (auction) {
+          const priceInGhst = (new BigNumber(auction.highestBid)).dividedBy(10e17)
+          setLastSale({
+            id: auction.id,
+            priceInGhst,
+            priceInGhstJsNum: priceInGhst.toNumber(),
+            datePurchased: new Date(auction.endsAt * 1000),
+            contractAddress: REALM_CONTRACT_ADDRESS
+          })
+        }
+        lastFetchDate.value = new Date()
+        setLoaded()
+      } else {
+        setError('Unexpected response')
+      }
+    }).catch(error => {
+      console.error(error)
+      setError('There was an error fetching the parcel GBM last sale')
+    })
+  }
+
+  return {
+    parcelLastSale,
+    canSubmitFetch,
+    fetchStatus,
+    fetchLastSale,
+    lastFetchDate
+  }
+}

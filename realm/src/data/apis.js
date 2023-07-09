@@ -6,5 +6,6 @@ export default {
   ETHEREUM_GOTCHIS_SUBGRAPH: 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-ethereum',
   VAULT_GOTCHIS_SUBGRAPH: 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchi-vault',
   REALM_AUCTIONS_SUBGRAPH: 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic',
+  GBM_AUCTIONS_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-gbm-baazaar-matic/version/v0.1.2/api',
   ALCHEMICA_BALANCES_SUBGRAPH: 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-alchemica'
 }

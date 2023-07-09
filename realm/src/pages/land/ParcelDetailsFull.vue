@@ -58,6 +58,60 @@
         />
       </div>
 
+      <template v-if="lastBaazaarSaleFetchStatus.error">
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            Error fetching last baazaar sale
+          </div>
+        </div>
+      </template>
+      <div
+        v-else-if="lastBaazaarSaleFetchStatus.loaded && lastBaazaarSale"
+        style="margin-bottom: 10px;"
+      >
+        <span>Last Baazaar Sale:</span>
+        <a
+          :href="`https://app.aavegotchi.com/baazaar/erc721/${lastBaazaarSale.id}`"
+          target="_blank"
+          style="margin-left: 5px;"
+        >
+          <NumberDisplay :number="lastBaazaarSale.priceInGhst" />
+          GHST
+          <SiteIcon name="open-window" :size="13" />
+        </a>
+        <span style="margin-left: 5px">
+          (<DateFriendly :date="lastBaazaarSale.datePurchased" />)
+        </span>
+      </div>
+
+      <template v-if="lastGBMSaleFetchStatus.error">
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            Error fetching last GBM sale
+          </div>
+        </div>
+      </template>
+      <div
+        v-else-if="lastGBMSaleFetchStatus.loaded && lastGBMSale"
+        style="margin-bottom: 10px;"
+      >
+        <span>Last GBM Sale:</span>
+        <a
+          :href="`https://dapp.aavegotchi.com/auction?contract=${lastGBMSale.contractAddress}&id=${lastGBMSale.id}`"
+          target="_blank"
+          style="margin-left: 5px;"
+        >
+          <NumberDisplay :number="lastGBMSale.priceInGhst" />
+          GHST
+          <SiteIcon name="open-window" :size="13" />
+        </a>
+        <span style="margin-left: 5px">
+          (<DateFriendly :date="lastGBMSale.datePurchased" />)
+        </span>
+      </div>
+
       <div style="margin-bottom: 10px;">
         <span style="text-transform: capitalize;">{{ parcelDetails.sizeLabel }}</span>,
         District
@@ -126,6 +180,8 @@
 <script>
 import useParcelDetailsSingle from '@/data/useParcelDetailsSingle'
 import useParcelBaazaarListingSingle from '@/data/useParcelBaazaarListingSingle'
+import useParcelBaazaarLastSaleSingle from '@/data/useParcelBaazaarLastSaleSingle'
+import useParcelGBMLastSaleSingle from '@/data/useParcelGBMLastSaleSingle'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
@@ -169,11 +225,29 @@ export default {
     } = useParcelBaazaarListingSingle(props.parcelId)
     fetchListing(props.parcelId)
 
+    const {
+      parcelLastSale: lastBaazaarSale,
+      fetchStatus: lastBaazaarSaleFetchStatus,
+      fetchLastSale: fetchLastBaazaarSale
+    } = useParcelBaazaarLastSaleSingle(props.parcelId)
+    fetchLastBaazaarSale(props.parcelId)
+
+    const {
+      parcelLastSale: lastGBMSale,
+      fetchStatus: lastGBMSaleFetchStatus,
+      fetchLastSale: fetchLastGBMSale
+    } = useParcelGBMLastSaleSingle(props.parcelId)
+    fetchLastGBMSale(props.parcelId)
+
     return {
       fetchStatus,
       parcelDetails,
       listingFetchStatus,
-      parcelListing
+      parcelListing,
+      lastBaazaarSaleFetchStatus,
+      lastBaazaarSale,
+      lastGBMSaleFetchStatus,
+      lastGBMSale
     }
   }
 }
