@@ -2,9 +2,11 @@ import { computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import useParcels from './useParcels'
 import useBaazaarListings from './useBaazaarListings'
+import useParcelGBMListings from './useParcelGBMListings'
 
 const { parcelsById, fetchStatus: fetchParcelsStatus } = useParcels()
 const { salesByParcelId } = useBaazaarListings()
+const { salesByParcelId: gbmSalesByParcelId } = useParcelGBMListings()
 
 const { status: fetchAuctionPricesStatus, setLoading } = useStatus()
 let auctionPricesById = {} // doesn't need to be reactive
@@ -27,9 +29,21 @@ const pricesByParcelId = computed(() => {
     return prices
   }
   for (const parcelId in parcelsById.value) {
-    const lastPrice = salesByParcelId.value[parcelId]?.priceInGhst.toString() ||
-      auctionPricesById[parcelId] ||
-      null
+    let lastPrice = auctionPricesById[parcelId] || null
+    const lastBaazaarSale = salesByParcelId.value[parcelId]
+    const lastGBMSale = gbmSalesByParcelId.value[parcelId]
+    if (lastBaazaarSale && lastGBMSale) {
+      if (lastBaazaarSale.datePurchased > lastGBMSale.datePurchased) {
+        lastPrice = lastBaazaarSale.priceInGhst.toString()
+      } else {
+        lastPrice = lastGBMSale.highestBidGhst.toString()
+      }
+    } else if (lastBaazaarSale) {
+      lastPrice = lastBaazaarSale.priceInGhst.toString()
+    } else if (lastGBMSale) {
+      lastPrice = lastGBMSale.highestBidGhst.toString()
+    }
+
     prices[parcelId] = {
       lastPrice: lastPrice ? lastPrice - 0 : null,
       auctionPrice: auctionPricesById[parcelId]

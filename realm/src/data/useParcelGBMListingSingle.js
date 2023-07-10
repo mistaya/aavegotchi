@@ -7,15 +7,15 @@ const SUBGRAPH_URL = apis.GBM_AUCTIONS_SUBGRAPH
 const REALM_CONTRACT_ADDRESS = '0x1D0360BaC7299C86Ec8E99d0c1C9A95FEfaF2a11'
 
 export default function useParcelGBMLastSaleSingle (id) {
-  const parcelLastSale = ref(null)
+  const parcelListing = ref(null)
 
   const resetLastSale = function () {
-    parcelLastSale.value = null
+    parcelListing.value = null
     lastFetchDate.value = null
   }
 
   const setLastSale = function (listing) {
-    parcelLastSale.value = listing
+    parcelListing.value = listing
   }
 
   const { status: fetchStatus, setLoading } = useStatus()
@@ -23,7 +23,7 @@ export default function useParcelGBMLastSaleSingle (id) {
   const canSubmitFetch = computed(() => !fetchStatus.value.loading)
   const lastFetchDate = ref(null)
 
-  const fetchLastSale = function () {
+  const fetchListing = function () {
     const [isStale, setLoaded, setError] = setLoading()
 
     fetch(SUBGRAPH_URL, {
@@ -38,21 +38,22 @@ export default function useParcelGBMLastSaleSingle (id) {
               tokenId: "${id}"
               type: "erc721"
               contractAddress: "${REALM_CONTRACT_ADDRESS}"
-              endsAt_lt: "${Math.ceil(Date.now() / 1000)}"
+              endsAt_gt: "${Math.ceil(Date.now() / 1000)}"
               cancelled: false
-              totalBids_gt: "0"
             }) {
             id
             tokenId
             highestBid
+            createdAt
             endsAt
+            lastBidTime
           }
         }`
       })
     }).then(async response => {
       if (isStale()) { console.log('Stale request, ignoring'); return }
       if (!response.ok) {
-        setError('There was an error fetching the parcel GBM last sale')
+        setError('There was an error fetching the parcel GBM active listing')
         return
       }
       const responseJson = await response.json()
@@ -65,7 +66,9 @@ export default function useParcelGBMLastSaleSingle (id) {
             id: auction.id,
             highestBidGhst,
             highestBidGhstJsNum: highestBidGhst.toNumber(),
-            datePurchased: new Date(auction.endsAt * 1000),
+            dateCreated: new Date(auction.createdAt * 1000),
+            dateEnds: new Date(auction.endsAt * 1000),
+            dateLastBid: new Date(auction.lastBidTime * 1000),
             contractAddress: REALM_CONTRACT_ADDRESS
           })
         }
@@ -76,15 +79,15 @@ export default function useParcelGBMLastSaleSingle (id) {
       }
     }).catch(error => {
       console.error(error)
-      setError('There was an error fetching the parcel GBM last sale')
+      setError('There was an error fetching the parcel GBM active listing')
     })
   }
 
   return {
-    parcelLastSale,
+    parcelListing,
     canSubmitFetch,
     fetchStatus,
-    fetchLastSale,
+    fetchListing,
     lastFetchDate
   }
 }

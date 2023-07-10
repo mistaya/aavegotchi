@@ -114,9 +114,9 @@
     </div>
 
     <div v-if="listing">
-      <span class="parcel-details__label">Listed at:</span>
+      <span class="parcel-details__label">Listed (Baazaar) at:</span>
       <a
-        :href="`https://app.aavegotchi.com/baazaar/erc721/${listing.id}`"
+        :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${listing.id}`"
         target="_blank"
       >
         <NumberDisplay :number="listing.priceInGhst" />
@@ -127,10 +127,26 @@
       </span>
     </div>
 
-    <div v-if="lastSale">
-      <span class="parcel-details__label">Last sold:</span>
+    <div v-if="gbmListing">
+      <span class="parcel-details__label">GBM Auction: Last Bid</span>
       <a
-        :href="`https://app.aavegotchi.com/baazaar/erc721/${lastSale.id}`"
+        :href="`https://dapp.aavegotchi.com/auction?contract=${gbmListing.contractAddress}&id=${gbmListing.id}`"
+        target="_blank"
+      >
+        <NumberDisplay :number="gbmListing.highestBidGhst" />
+        GHST
+      </a>
+      <span class="parcel-details__time">
+        <DateFriendly :date="gbmListing.dateLastBid" enableToggle />,
+        (start <DateFriendly :date="gbmListing.dateCreated" />,
+        ends <DateFriendly :date="gbmListing.dateEnds" enableToggle />)
+      </span>
+    </div>
+
+    <div v-if="lastSale">
+      <span class="parcel-details__label">Last sold (Baazaar):</span>
+      <a
+        :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${lastSale.id}`"
         target="_blank"
       >
         <NumberDisplay :number="lastSale.priceInGhst" />
@@ -141,8 +157,22 @@
       </span>
     </div>
 
+    <div v-if="lastGBMSale">
+      <span class="parcel-details__label">Last sold (GBM Auction):</span>
+      <a
+        :href="`https://dapp.aavegotchi.com/auction?contract=${lastGBMSale.contractAddress}&id=${lastGBMSale.id}`"
+        target="_blank"
+      >
+        <NumberDisplay :number="lastGBMSale.highestBidGhst" />
+        GHST
+      </a>
+      <span class="parcel-details__time">
+        (<DateFriendly :date="lastGBMSale.datePurchased" />)
+      </span>
+    </div>
+
     <div v-if="auctionPrice">
-      <span class="parcel-details__label">Auction price:</span>
+      <span class="parcel-details__label">Mint Auction price:</span>
       <NumberDisplay :number="auctionPrice" />
       GHST
     </div>
@@ -206,6 +236,8 @@ export default {
     auction: { type: Object, default: null },
     listing: { type: Object, default: null },
     lastSale: { type: Object, default: null },
+    gbmListing: { type: Object, default: null },
+    lastGBMSale: { type: Object, default: null },
     auctionPrice: { type: String, default: null },
     owner: { type: String, default: null },
     flagSelected: { type: Boolean, default: null }

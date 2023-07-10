@@ -14,6 +14,7 @@
             </summary>
 
             <DataFetcherBaazaarListings />
+            <DataFetcherGBMListings />
             <DataFetcherParcelOwners />
             <DataFetcherParcelContents />
           </details>
@@ -151,6 +152,56 @@
             </div>
           </div>
 
+          <div v-if="colorScheme.colorBy === 'gbmPrice'">
+            <div
+              v-for="size in ['humble', 'reasonable', 'spacious']"
+              :key="size"
+              style="margin-bottom: 20px;"
+            >
+              <h4 style="text-transform: capitalize;">
+                {{ size }}:
+              </h4>
+              <div style="margin-bottom: 10px">
+                <label>
+                  Color Scheme:
+                  <select v-model="colorScheme.gbmPrice[size].scaleName">
+                    <option
+                      v-for="scaleName in SCALE_NAMES"
+                      :key="scaleName"
+                      :value="scaleName"
+                    >
+                      {{ scaleName }}
+                    </option>
+                  </select>
+                </label>
+                <div
+                  class="scale-color-display"
+                  :style="{
+                    'background': SCALE_GRADIENTS[colorScheme.gbmPrice[size].scaleName]
+                  }"
+                />
+              </div>
+              <div>
+                <label>
+                  Min:
+                  <input
+                    v-model="colorScheme.gbmPrice[size].min"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+                <label>
+                  Max:
+                  <input
+                    v-model="colorScheme.gbmPrice[size].max"
+                    type="number"
+                    class="range-input"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div v-if="colorScheme.colorBy === 'owner'">
             <div>
               <label>
@@ -239,8 +290,13 @@
               v-model="filters.baazaar"
               @requestBaazaarColorScheme="colorScheme.colorBy = 'baazaarPrice'"
             />
+            <FilterGBM
+              v-model="filters.gbm"
+              @requestGBMColorScheme="colorScheme.colorBy = 'gbmPrice'"
+            />
             <FilterSize v-model="filters.size" />
             <FilterBaazaarPrice v-model="filters.baazaarPrice" />
+            <FilterAuctionPrice v-model="filters.gbmPrice" showInfo />
             <FilterWalls v-model="filters.walls" />
             <FilterDistricts v-model="filters.districts" />
             <FilterRoads v-model="filters.roads" />
@@ -341,6 +397,8 @@
             :parcel="selectedParcel.parcel"
             :listing="selectedParcel.currentListing"
             :lastSale="selectedParcel.lastSale"
+            :gbmListing="selectedParcel.currentGBMListing"
+            :lastGBMSale="selectedParcel.lastGBMSale"
             :auctionPrice="selectedParcel.auctionPrice"
             :owner="selectedParcel.owner"
             v-model:flagSelected="mapConfig.flagSelected"
@@ -419,6 +477,8 @@
             :ownersByParcelId="ownersByParcelId"
             :listingsByParcelId="listingsByParcelId"
             :salesByParcelId="salesByParcelId"
+            :gbmListingsByParcelId="gbmListingsByParcelId"
+            :gbmSalesByParcelId="gbmSalesByParcelId"
             :selectedParcelId="selectedParcelId"
             :disableSorting="selectedList === 'my'"
             @click:parcel="onClickParcel"
@@ -455,6 +515,8 @@
             :ownersByParcelId="ownersByParcelId"
             :listingsByParcelId="listingsByParcelId"
             :salesByParcelId="salesByParcelId"
+            :gbmListingsByParcelId="gbmListingsByParcelId"
+            :gbmSalesByParcelId="gbmSalesByParcelId"
             :selectedParcelId="selectedParcelId"
             :disableSorting="selectedList === 'my'"
             parcelIcon="zoom-in"
@@ -471,6 +533,7 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import useParcels from '@/data/useParcels'
 import useBaazaarListings from '@/data/useBaazaarListings'
+import useParcelGBMListings from '@/data/useParcelGBMListings'
 import useParcelContents from '@/data/useParcelContents'
 import useParcelPrices from '@/data/useParcelPrices'
 import useParcelOwners from '@/data/useParcelOwners'
@@ -479,6 +542,7 @@ import DISTRICTS_FULL from '@/data/parcels/districts.json'
 import { SCALE_NAMES, SCALE_GRADIENTS, getSequentialScale } from './colorScales'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 import DataFetcherBaazaarListings from './DataFetcherBaazaarListings.vue'
+import DataFetcherGBMListings from './DataFetcherGBMListings.vue'
 import DataFetcherParcelContents from './DataFetcherParcelContents.vue'
 import DataFetcherParcelOwners from './DataFetcherParcelOwners.vue'
 import PrereqParcels from './PrereqParcels.vue'
@@ -491,8 +555,10 @@ import ParcelsExport from './ParcelsExport.vue'
 import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 import MapMyParcels from './MapMyParcels.vue'
-import FilterBaazaar, { getDefaultValue as getDefaultBaazarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
-import FilterBaazaarPrice, { getDefaultValue as getDefaultBaazarPriceValue, getFilter as getBaazaarPriceFilter } from './FilterBaazaarPrice.vue'
+import FilterBaazaar, { getDefaultValue as getDefaultBaazaarValue, getFilter as getBaazaarFilter } from './FilterBaazaar.vue'
+import FilterBaazaarPrice, { getDefaultValue as getDefaultBaazaarPriceValue, getFilter as getBaazaarPriceFilter } from './FilterBaazaarPrice.vue'
+import FilterGBM, { getDefaultValue as getDefaultGBMValue, getFilter as getGBMFilter } from './FilterGBM.vue'
+import FilterAuctionPrice, { getDefaultValue as getDefaultGBMPriceValue, getFilter as getGBMPriceFilter } from './FilterAuctionPrice.vue'
 import FilterSize, { SIZES, getFilter as getSizesFilter } from './FilterSize.vue'
 import FilterWalls, { getFilter as getWallsFilter } from './FilterWalls.vue'
 import FilterDistricts, { DISTRICTS, getDefaultValue as getDefaultDistrictsValue, getFilter as getDistrictsFilter } from './FilterDistricts.vue'
@@ -511,6 +577,7 @@ export default {
     PrereqParcels,
     LayoutMapWithFilters,
     DataFetcherBaazaarListings,
+    DataFetcherGBMListings,
     DataFetcherParcelContents,
     DataFetcherParcelOwners,
     NumberDisplay,
@@ -524,6 +591,8 @@ export default {
     MapMyParcels,
     FilterBaazaar,
     FilterBaazaarPrice,
+    FilterGBM,
+    FilterAuctionPrice,
     FilterSize,
     FilterWalls,
     FilterDistricts,
@@ -544,6 +613,12 @@ export default {
       fetchStatus: baazaarListingsFetchStatus,
       fetchListings: fetchBaazaarListings
     } = useBaazaarListings()
+    const {
+      listingsByParcelId: gbmListingsByParcelId,
+      salesByParcelId: gbmSalesByParcelId,
+      fetchStatus: gbmListingsFetchStatus,
+      fetchListings: fetchGBMListings
+    } = useParcelGBMListings()
 
     const { pricesByParcelId } = useParcelPrices()
     const {
@@ -561,8 +636,10 @@ export default {
     const mapConfig = ref(getDefaultMapConfigValue())
 
     const filters = ref({
-      baazaar: getDefaultBaazarValue(),
-      baazaarPrice: getDefaultBaazarPriceValue(),
+      baazaar: getDefaultBaazaarValue(),
+      baazaarPrice: getDefaultBaazaarPriceValue(),
+      gbm: getDefaultGBMValue(),
+      gbmPrice: getDefaultGBMPriceValue(),
       size: [...SIZES],
       walls: WALLS.map(wall => wall.id),
       districts: getDefaultDistrictsValue([...DISTRICTS]),
@@ -584,6 +661,7 @@ export default {
     const colorSchemeOptions = [
       { id: 'lastPrice', label: 'Last Sold Price (GHST)' },
       { id: 'baazaarPrice', label: 'Baazaar Listing Price (GHST)' },
+      { id: 'gbmPrice', label: 'GBM Auction Listing Price (GHST)' },
       { id: 'owner', label: 'Owner Address' },
       { id: 'whalePx', label: 'Whales (total pixel area)' },
       { id: 'highlight', label: 'Simple highlight' }
@@ -624,6 +702,23 @@ export default {
           scaleName: 'viridis'
         }
       },
+      gbmPrice: {
+        humble: {
+          min: 70,
+          max: 500,
+          scaleName: 'viridis'
+        },
+        reasonable: {
+          min: 170,
+          max: 1000,
+          scaleName: 'viridis'
+        },
+        spacious: {
+          min: 1000,
+          max: 3000,
+          scaleName: 'viridis'
+        }
+      },
       owner: {
         scaleName: 'rainbow',
         min: 0,
@@ -645,6 +740,11 @@ export default {
         fetchBaazaarListings()
       }
     }
+    const prereqGBMListings = function () {
+      if (!gbmListingsFetchStatus.value.loaded && !gbmListingsFetchStatus.value.loading) {
+        fetchGBMListings()
+      }
+    }
     const prereqOwners = function () {
       if (!ownersFetchStatus.value.loaded && !ownersFetchStatus.value.loading) {
         fetchOwners()
@@ -663,6 +763,11 @@ export default {
           // make sure it's fetched at least once
           prereqBaazaarListings()
         }
+        if (['gbmPrice', 'lastPrice'].includes(colorBy)) {
+          // these color schemes require GBM listings
+          // make sure it's fetched at least once
+          prereqGBMListings()
+        }
         if (['owner', 'whalePx'].includes(colorBy)) {
           prereqOwners()
         }
@@ -674,6 +779,14 @@ export default {
       baazaarFilter => {
         if (baazaarFilter !== 'all') {
           prereqBaazaarListings()
+        }
+      }
+    )
+    watch(
+      () => filters.value.gbm,
+      gbmFilter => {
+        if (gbmFilter !== 'all') {
+          prereqGBMListings()
         }
       }
     )
@@ -707,6 +820,16 @@ export default {
     const baazaarPriceScalesBySize = computed(() => {
       const scales = {}
       const configBySize = colorScheme.value.baazaarPrice
+      for (const key in configBySize) {
+        const config = configBySize[key]
+        scales[key] = getSequentialScale(config)
+      }
+      return scales
+    })
+
+    const gbmPriceScalesBySize = computed(() => {
+      const scales = {}
+      const configBySize = colorScheme.value.gbmPrice
       for (const key in configBySize) {
         const config = configBySize[key]
         scales[key] = getSequentialScale(config)
@@ -787,6 +910,16 @@ export default {
           }
           return null
         }
+      } else if (colorBy === 'gbmPrice') {
+        getColor = parcel => {
+          const scale = gbmPriceScalesBySize.value[parcel.sizeLabel]
+          if (!scale) { return null }
+          const currentListing = gbmListingsByParcelId.value[parcel.id]
+          if (currentListing) {
+            return scale(currentListing.highestBidGhst.toNumber())
+          }
+          return null
+        }
       } else if (colorBy === 'owner') {
         const topOwners = sortedWhalePx.value.slice(0, TOP_OWNERS_N).map(item => item[0])
         getColor = parcel => {
@@ -859,6 +992,8 @@ export default {
       const nameFilter = getParcelNamesFilter(filters.value.parcelNames)
       const baazaarFilter = getBaazaarFilter(listingsByParcelId.value, filters.value.baazaar)
       const baazaarPriceFilter = getBaazaarPriceFilter(listingsByParcelId.value, filters.value.baazaarPrice)
+      const gbmFilter = getGBMFilter(gbmListingsByParcelId.value, filters.value.gbm)
+      const gbmPriceFilter = getGBMPriceFilter(gbmListingsByParcelId.value, filters.value.gbmPrice)
       const sizesFilter = getSizesFilter(filters.value.size)
       const wallsFilter = getWallsFilter(filters.value.walls)
       const districtsFilter = getDistrictsFilter(DISTRICTS, filters.value.districts)
@@ -869,7 +1004,7 @@ export default {
       const contentsInstallationsFilter = getContentsInstallationsFilter(installationsByParcelId.value, filters.value.contentsInstallations)
       const contentsTilesFilter = getContentsTilesFilter(tilesByParcelId.value, filters.value.contentsTiles)
 
-      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, contentsAaltarFilter, contentsInstallationsFilter, contentsTilesFilter]
+      const applyFilters = [idFilter, nameFilter, baazaarFilter, baazaarPriceFilter, gbmFilter, gbmPriceFilter, ownersFilter, sizesFilter, wallsFilter, districtsFilter, roadsFilter, boostsFilter, contentsAaltarFilter, contentsInstallationsFilter, contentsTilesFilter]
 
       let numMatches = 0
       const result = Object.fromEntries(
@@ -907,12 +1042,16 @@ export default {
       if (!parcelId) { return null }
       const currentListing = listingsByParcelId.value[parcelId]
       const lastSale = salesByParcelId.value[parcelId]
+      const currentGBMListing = gbmListingsByParcelId.value[parcelId]
+      const lastGBMSale = gbmSalesByParcelId.value[parcelId]
       const auctionPrice = pricesByParcelId.value[parcelId]?.auctionPrice
       const owner = ownersByParcelId.value[parcelId]
       return {
         parcel: parcelsById.value[parcelId],
         currentListing,
         lastSale,
+        currentGBMListing,
+        lastGBMSale,
         auctionPrice,
         owner
       }
@@ -1091,6 +1230,7 @@ export default {
       SCALE_NAMES,
       SCALE_GRADIENTS,
       baazaarListingsFetchStatus,
+      gbmListingsFetchStatus,
       parcelsToDisplay,
       parcelsMatchingFiltersForMap,
       numParcelsToDisplay,
@@ -1110,6 +1250,8 @@ export default {
       ownersByParcelId,
       listingsByParcelId,
       salesByParcelId,
+      gbmListingsByParcelId,
+      gbmSalesByParcelId,
       mapRef,
       zoomToParcel,
       whereAmI,

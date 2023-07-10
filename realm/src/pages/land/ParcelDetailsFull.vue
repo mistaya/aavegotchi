@@ -37,7 +37,7 @@
       >
         <span>Listed on Baazaar:</span>
         <a
-          :href="`https://app.aavegotchi.com/baazaar/erc721/${parcelListing.id}`"
+          :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${parcelListing.id}`"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -47,6 +47,35 @@
         </a>
         <span style="margin-left: 5px">
           (<DateFriendly :date="parcelListing.dateCreated" />)
+        </span>
+      </div>
+
+      <template v-if="gbmListingFetchStatus.error">
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            Error fetching parcel GBM listing
+          </div>
+        </div>
+      </template>
+      <div
+        v-else-if="gbmListingFetchStatus.loaded && parcelGBMListing"
+        style="margin-bottom: 10px;"
+      >
+        <span>GBM Auction:</span>
+        <a
+          :href="`https://dapp.aavegotchi.com/auction?contract=${parcelGBMListing.contractAddress}&id=${parcelGBMListing.id}`"
+          target="_blank"
+          style="margin-left: 5px;"
+        >Last Bid
+          <NumberDisplay :number="parcelGBMListing.highestBidGhst" />
+          GHST
+          <SiteIcon name="open-window" :size="13" />
+        </a>
+        <span style="margin-left: 5px">
+          <DateFriendly :date="parcelGBMListing.dateLastBid" enableToggle />
+          (start <DateFriendly :date="parcelGBMListing.dateCreated" />,
+          ends <DateFriendly :date="parcelGBMListing.dateEnds" enableToggle />)
         </span>
       </div>
 
@@ -72,7 +101,7 @@
       >
         <span>Last Baazaar Sale:</span>
         <a
-          :href="`https://app.aavegotchi.com/baazaar/erc721/${lastBaazaarSale.id}`"
+          :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${lastBaazaarSale.id}`"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -103,7 +132,7 @@
           target="_blank"
           style="margin-left: 5px;"
         >
-          <NumberDisplay :number="lastGBMSale.priceInGhst" />
+          <NumberDisplay :number="lastGBMSale.highestBidGhst" />
           GHST
           <SiteIcon name="open-window" :size="13" />
         </a>
@@ -181,6 +210,7 @@
 import useParcelDetailsSingle from '@/data/useParcelDetailsSingle'
 import useParcelBaazaarListingSingle from '@/data/useParcelBaazaarListingSingle'
 import useParcelBaazaarLastSaleSingle from '@/data/useParcelBaazaarLastSaleSingle'
+import useParcelGBMListingSingle from '@/data/useParcelGBMListingSingle'
 import useParcelGBMLastSaleSingle from '@/data/useParcelGBMLastSaleSingle'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
@@ -233,6 +263,13 @@ export default {
     fetchLastBaazaarSale(props.parcelId)
 
     const {
+      parcelListing: parcelGBMListing,
+      fetchStatus: gbmListingFetchStatus,
+      fetchListing: fetchGBMListing
+    } = useParcelGBMListingSingle(props.parcelId)
+    fetchGBMListing(props.parcelId)
+
+    const {
       parcelLastSale: lastGBMSale,
       fetchStatus: lastGBMSaleFetchStatus,
       fetchLastSale: fetchLastGBMSale
@@ -246,6 +283,8 @@ export default {
       parcelListing,
       lastBaazaarSaleFetchStatus,
       lastBaazaarSale,
+      gbmListingFetchStatus,
+      parcelGBMListing,
       lastGBMSaleFetchStatus,
       lastGBMSale
     }
