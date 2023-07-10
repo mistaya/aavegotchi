@@ -13,6 +13,7 @@
 import { formatISO9075 } from 'date-fns'
 import { ref, onUnmounted } from 'vue'
 import useBaazaarListings from '@/data/useBaazaarListings'
+import useParcelGBMListings from '@/data/useParcelGBMListings'
 import useParcelLists from '@/data/useParcelLists'
 import useParcelPrices from '@/data/useParcelPrices'
 import useParcelOwners from '@/data/useParcelOwners'
@@ -33,6 +34,11 @@ export default {
       salesByParcelId,
       fetchStatus: baazaarListingsFetchStatus
     } = useBaazaarListings()
+    const {
+      listingsByParcelId: gbmListingsByParcelId,
+      salesByParcelId: gbmSalesByParcelId,
+      fetchStatus: gbmListingsFetchStatus
+    } = useParcelGBMListings()
 
     const exportLinkRef = ref(null)
 
@@ -63,7 +69,9 @@ export default {
       'owner',
       'originalAuctionPrice', 'lastPrice',
       'latestBaazaarSaleId', 'latestBaazaarSalePrice', 'latestBaazaarSaleDate',
-      'currentBaazaarListingId', 'currentBaazaarListingPrice', 'currentBaazaarListingDate'
+      'currentBaazaarListingId', 'currentBaazaarListingPrice', 'currentBaazaarListingDate',
+      'latestGBMSaleId', 'latestGBMSalePrice', 'latestGBMSaleDate',
+      'currentGBMListingId', 'currentGBMListingPrice', 'currentGBMListingDate'
     ]
     const getParcelRows = function () {
       const lastPrices = pricesByParcelId.value
@@ -72,6 +80,9 @@ export default {
       const baazaarFetched = baazaarListingsFetchStatus.value.loaded
       const sales = salesByParcelId.value
       const listings = listingsByParcelId.value
+      const gbmFetched = gbmListingsFetchStatus.value.loaded
+      const gbmSales = gbmSalesByParcelId.value
+      const gbmListings = gbmListingsByParcelId.value
       const lists = Object.values(parcelListsById.value)
       const listParcelsMap = {} // { listLabel : { parcelId : boolean }}
       for (const list of lists) {
@@ -100,7 +111,13 @@ export default {
         (baazaarFetched && sales[parcel.id]?.datePurchased && formatISO9075(sales[parcel.id].datePurchased)) || '',
         (baazaarFetched && listings[parcel.id]?.id) || '',
         (baazaarFetched && listings[parcel.id]?.priceInGhst.toString()) || '',
-        (baazaarFetched && listings[parcel.id]?.dateCreated && formatISO9075(listings[parcel.id].dateCreated)) || ''
+        (baazaarFetched && listings[parcel.id]?.dateCreated && formatISO9075(listings[parcel.id].dateCreated)) || '',
+        (gbmFetched && gbmSales[parcel.id]?.id) || '',
+        (gbmFetched && gbmSales[parcel.id]?.highestBidGhst.toString()) || '',
+        (gbmFetched && gbmSales[parcel.id]?.datePurchased && formatISO9075(gbmSales[parcel.id].datePurchased)) || '',
+        (gbmFetched && gbmListings[parcel.id]?.id) || '',
+        (gbmFetched && gbmListings[parcel.id]?.highestBidGhst.toString()) || '',
+        (gbmFetched && gbmListings[parcel.id]?.dateCreated && formatISO9075(gbmListings[parcel.id].dateCreated)) || ''
       ])
     }
 
