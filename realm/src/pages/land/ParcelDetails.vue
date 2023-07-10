@@ -105,10 +105,10 @@
       </div>
     </template>
 
-    <div v-if="owner">
+    <div v-if="owner || gbmListing">
       <span class="parcel-details__label">Owner:</span>
       <EthAddress
-        :address="owner"
+        :address="gbmListing ? gbmListing.seller : owner"
         icon
       />
     </div>

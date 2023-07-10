@@ -82,7 +82,7 @@
       <div style="margin-bottom: 10px;">
         <span style="margin-right: 10px;">Owner:</span>
         <EthAddress
-          :address="parcelDetails.owner"
+          :address="gbmListingFetchStatus.loaded && parcelGBMListing ? parcelGBMListing.seller : parcelDetails.owner"
           icon
         />
       </div>

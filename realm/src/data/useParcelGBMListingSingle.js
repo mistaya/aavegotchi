@@ -43,6 +43,7 @@ export default function useParcelGBMLastSaleSingle (id) {
             }) {
             id
             tokenId
+            seller
             highestBid
             createdAt
             endsAt
@@ -64,6 +65,7 @@ export default function useParcelGBMLastSaleSingle (id) {
           const highestBidGhst = (new BigNumber(auction.highestBid)).dividedBy(10e17)
           setLastSale({
             id: auction.id,
+            seller: auction.seller,
             highestBidGhst,
             highestBidGhstJsNum: highestBidGhst.toNumber(),
             dateCreated: new Date(auction.createdAt * 1000),
