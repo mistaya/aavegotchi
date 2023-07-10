@@ -59,13 +59,13 @@
             </a>
 
             <div
-              v-if="gbmListingsByParcelId?.[parcel.id] || ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id] || auctionsByParcelId?.[parcel.id]"
+              v-if="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id] || auctionsByParcelId?.[parcel.id]"
               class="parcel-owner"
             >
               <EthIcon
-                :address="gbmListingsByParcelId?.[parcel.id]?.seller || ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id]?.seller || auctionsByParcelId?.[parcel.id]?.highestBidder"
+                :address="ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder"
                 style="width: 15px"
-                :title="`Owner: ${gbmListingsByParcelId?.[parcel.id]?.seller || ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id]?.seller || auctionsByParcelId?.[parcel.id]?.highestBidder}`"
+                :title="`Owner: ${ownersByParcelId?.[parcel.id] || listingsByParcelId?.[parcel.id].seller || auctionsByParcelId?.[parcel.id].highestBidder}`"
               />
             </div>
 

@@ -11,7 +11,7 @@
 
 <script>
 import { formatISO9075 } from 'date-fns'
-import { ref, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import useBaazaarListings from '@/data/useBaazaarListings'
 import useParcelGBMListings from '@/data/useParcelGBMListings'
 import useParcelLists from '@/data/useParcelLists'
@@ -26,7 +26,7 @@ export default {
     const { parcelListsById } = useParcelLists()
     const { pricesByParcelId } = useParcelPrices()
     const {
-      ownersByParcelId,
+      ownersByParcelId: blockchainOwnersByParcelId,
       fetchStatus: ownersFetchStatus
     } = useParcelOwners()
     const {
@@ -39,6 +39,18 @@ export default {
       salesByParcelId: gbmSalesByParcelId,
       fetchStatus: gbmListingsFetchStatus
     } = useParcelGBMListings()
+
+    const gbmSellersByParcelId = computed(() => {
+      const sellersByParcelId = {}
+      for (const parcelId in gbmListingsByParcelId.value) {
+        sellersByParcelId[parcelId] = gbmListingsByParcelId.value[parcelId].seller
+      }
+      return sellersByParcelId
+    })
+    const ownersByParcelId = computed(() => ({
+      ...blockchainOwnersByParcelId.value,
+      ...gbmSellersByParcelId.value
+    }))
 
     const exportLinkRef = ref(null)
 

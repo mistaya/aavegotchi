@@ -622,7 +622,7 @@ export default {
 
     const { pricesByParcelId } = useParcelPrices()
     const {
-      ownersByParcelId,
+      ownersByParcelId: blockchainOwnersByParcelId,
       fetchStatus: ownersFetchStatus,
       fetchOwners
     } = useParcelOwners()
@@ -632,6 +632,18 @@ export default {
       fetchStatus: contentsFetchStatus,
       fetchContents
     } = useParcelContents()
+
+    const gbmSellersByParcelId = computed(() => {
+      const sellersByParcelId = {}
+      for (const parcelId in gbmListingsByParcelId.value) {
+        sellersByParcelId[parcelId] = gbmListingsByParcelId.value[parcelId].seller
+      }
+      return sellersByParcelId
+    })
+    const ownersByParcelId = computed(() => ({
+      ...blockchainOwnersByParcelId.value,
+      ...gbmSellersByParcelId.value
+    }))
 
     const mapConfig = ref(getDefaultMapConfigValue())
 
@@ -770,6 +782,7 @@ export default {
         }
         if (['owner', 'whalePx'].includes(colorBy)) {
           prereqOwners()
+          prereqGBMListings()
         }
       },
       { immediate: true }
