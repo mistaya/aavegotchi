@@ -15,9 +15,12 @@
 import blockies from 'ethereum-blockies'
 import ethBridgeUrl from '@/assets/icons/eth.svg'
 import gotchiVaultUrl from '@/assets/icons/gotchivault.svg'
+import gbmUrl from '@/assets/icons/gbm.png'
 
 const ADDRESS_ETH_BRIDGE = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const ADDRESS_GOTCHI_VAULT = '0xDd564df884Fd4e217c9ee6F65B4BA6e5641eAC63'.toLowerCase()
+const ADDRESS_GBM = '0xD5543237C656f25EEA69f1E247b8Fa59ba353306'.toLowerCase()
+
 const SPECIAL_ADDRESSES = {
   [ADDRESS_ETH_BRIDGE]: {
     url: ethBridgeUrl,
@@ -26,6 +29,10 @@ const SPECIAL_ADDRESSES = {
   [ADDRESS_GOTCHI_VAULT]: {
     url: gotchiVaultUrl,
     title: 'Gotchi Vault'
+  },
+  [ADDRESS_GBM]: {
+    url: gbmUrl,
+    title: 'In GBM Auction'
   }
 }
 
