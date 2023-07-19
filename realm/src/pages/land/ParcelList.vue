@@ -112,18 +112,18 @@
 
             <div
               class="parcel-baazaar"
-              v-if="listingsByParcelId?.[parcel.id] || salesByParcelId?.[parcel.id]"
+              v-if="listingsByParcelId?.[parcel.id] || salesByParcelId?.[parcel.id] || gbmListingsByParcelId?.[parcel.id] || gbmSalesByParcelId?.[parcel.id]"
             >
               <div
                 v-if="listingsByParcelId?.[parcel.id]"
                 class="parcel-baazaar-listing parcel-baazaar-listing--current"
               >
                 <a
-                  :href="`https://app.aavegotchi.com/baazaar/erc721/${listingsByParcelId[parcel.id].id}`"
+                  :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${listingsByParcelId[parcel.id].id}`"
                   target="_blank"
                 >
                   <span>
-                    Listed for
+                    Listed in Baazaar at
                     <NumberDisplay :number="listingsByParcelId[parcel.id].priceInGhst" />
                     GHST
                   </span>
@@ -134,15 +134,36 @@
                 </span>
               </div>
               <div
-                v-if="salesByParcelId[parcel.id]"
-                class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
+                v-if="gbmListingsByParcelId?.[parcel.id]"
+                class="parcel-baazaar-listing parcel-baazaar-listing--current"
               >
                 <a
-                  :href="`https://app.aavegotchi.com/baazaar/erc721/${salesByParcelId[parcel.id].id}`"
+                  :href="`https://dapp.aavegotchi.com/auction?contract=${gbmListingsByParcelId[parcel.id].contractAddress}&id=${gbmListingsByParcelId[parcel.id].id}`"
                   target="_blank"
                 >
                   <span>
-                    Last sold for
+                    GBM Last Bid
+                    <NumberDisplay :number="gbmListingsByParcelId[parcel.id].highestBidGhst" />
+                    GHST
+                  </span>
+                  <SiteIcon name="open-window" :size="13" />
+                </a>
+                <span class="parcel-baazaar-listing__time">
+                  <DateFriendly :date="gbmListingsByParcelId[parcel.id].dateLastBid" enableToggle />
+                  (start <DateFriendly :date="gbmListingsByParcelId[parcel.id].dateCreated" />,
+                  ends <DateFriendly :date="gbmListingsByParcelId[parcel.id].dateEnds" enableToggle />)
+                </span>
+              </div>
+              <div
+                v-if="salesByParcelId?.[parcel.id]"
+                class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
+              >
+                <a
+                  :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${salesByParcelId[parcel.id].id}`"
+                  target="_blank"
+                >
+                  <span>
+                    Last sold in Baazaar for
                     <NumberDisplay :number="salesByParcelId[parcel.id].priceInGhst" />
                     GHST
                   </span>
@@ -150,6 +171,25 @@
                 </a>
                 <span class="parcel-baazaar-listing__time">
                   (<DateFriendly :date="salesByParcelId[parcel.id].datePurchased" />)
+                </span>
+              </div>
+              <div
+                v-if="gbmSalesByParcelId?.[parcel.id]"
+                class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
+              >
+                <a
+                  :href="`https://dapp.aavegotchi.com/auction?contract=${gbmSalesByParcelId[parcel.id].contractAddress}&id=${gbmSalesByParcelId[parcel.id].id}`"
+                  target="_blank"
+                >
+                  <span>
+                    Last sold in GBM for
+                    <NumberDisplay :number="gbmSalesByParcelId[parcel.id].highestBidGhst" />
+                    GHST
+                  </span>
+                  <SiteIcon name="open-window" :size="13" />
+                </a>
+                <span class="parcel-baazaar-listing__time">
+                  (<DateFriendly :date="gbmSalesByParcelId[parcel.id].datePurchased" />)
                 </span>
               </div>
             </div>
@@ -187,6 +227,8 @@ export default {
     ownersByParcelId: { type: Object, default: null },
     listingsByParcelId: { type: Object, default: null },
     salesByParcelId: { type: Object, default: null },
+    gbmListingsByParcelId: { type: Object, default: null },
+    gbmSalesByParcelId: { type: Object, default: null },
     auctionsByParcelId: { type: Object, default: null },
     selectedParcelId: { type: String, default: null },
     parcelIcon: { type: String, default: 'info' },
@@ -237,6 +279,40 @@ export default {
           id: 'saleDate',
           label: 'Recent Sales (Baazaar)',
           sort: { desc: p => props.salesByParcelId[p.id]?.datePurchased }
+        })
+      }
+      if (props.gbmListingsByParcelId) {
+        LIST_PARCELS_ORDERS.push({
+          id: 'gbmListingPrice',
+          label: 'Cheapest Listings (GBM)',
+          sort: { asc: p => props.gbmListingsByParcelId[p.id]?.highestBidGhstJsNum }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'gbmListingCreatedDate',
+          label: 'Recently added (GBM)',
+          sort: { desc: p => props.gbmListingsByParcelId[p.id]?.dateCreated }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'gbmListingLastBid',
+          label: 'Recent Bids (GBM)',
+          sort: { desc: p => props.gbmListingsByParcelId[p.id]?.lastBidTime }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'gbmListingEndDate',
+          label: 'Ending Soon (GBM)',
+          sort: { asc: p => props.gbmListingsByParcelId[p.id]?.dateEnds }
+        })
+      }
+      if (props.gbmSalesByParcelId) {
+        LIST_PARCELS_ORDERS.push({
+          id: 'gbmSalePrice',
+          label: 'Cheapest Sales (GBM)',
+          sort: { asc: p => props.gbmSalesByParcelId[p.id]?.highestBidGhstJsNum }
+        })
+        LIST_PARCELS_ORDERS.push({
+          id: 'gbmSaleDate',
+          label: 'Recent Sales (GBM)',
+          sort: { desc: p => props.gbmSalesByParcelId[p.id]?.datePurchased }
         })
       }
     }

@@ -34,6 +34,16 @@
       >
         Lands that allow anyone to channel or empty reservoirs
       </router-link>
+
+      <div style="margin: 15px 0 15px 40px">
+        -- OR --
+      </div>
+
+      <router-link
+        :to="{ name: 'lending-lands-whitelist' }"
+      >
+        Lands that allow a whitelist to channel or empty reservoirs
+      </router-link>
     </template>
     <router-view v-else></router-view>
   </div>
@@ -45,7 +55,7 @@ import { useRouter } from 'vue-router'
 
 const redirectOldRoute = function (to, next) {
   // redirect old path /lending/lands?address=OWNER_ADDRESS
-  if (to.query?.address) {
+  if (to.name === 'lending-lands' && to.query?.address) {
     next({
       name: 'lending-lands-owner',
       params: {

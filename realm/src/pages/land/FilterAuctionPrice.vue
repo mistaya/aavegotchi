@@ -35,6 +35,20 @@
         </label>
       </div>
     </div>
+
+    <div
+      v-if="showInfo"
+      style="margin: 15px 10px 10px 0px; display: flex; font-size: 0.9em; font-style: italic;"
+    >
+      <SiteIcon
+        name="info"
+        style="flex: 0 0 auto; margin-right: 5px;"
+      />
+      <div style="flex: 1 1 auto">
+        Only parcels currently up for GBM Auction will be displayed when this filter is active.
+      </div>
+    </div>
+
   </details>
 </template>
 
@@ -102,7 +116,8 @@ export { getFilter, getDefaultValue }
 
 export default {
   props: {
-    modelValue: { type: Object, default: () => getDefaultValue() }
+    modelValue: { type: Object, default: () => getDefaultValue() },
+    showInfo: { type: Boolean, default: false }
   },
   setup (props, ctx) {
     const rangeChanged = function (type, bound, value) {
