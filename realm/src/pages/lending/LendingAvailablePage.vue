@@ -6,6 +6,17 @@
       <div style="margin-bottom: 20px;">
         <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
           <SiteIcon name="warning-triangle" />
+          <div style="font-size: 1.5em;">
+            Warning: channeling now <b>burns kinship</b> of the gotchi.
+            <br>You <b>cannot channel borrowed gotchis</b> until the devs finish deploying the new update (see Discord announcements).
+            Then channeling will only be allowed for new lendings if the owner has chosen to enable it.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
+          <SiteIcon name="warning-triangle" />
           <div>
             Warning: channeling <b>spillover</b> will only occur during the Saturday hangouts (2pm - 4pm UTC). See the announcements in Discord for details.
           </div>
