@@ -754,6 +754,7 @@ export default {
 
             timeCreated
             timeAgreed
+            timeEnded
             borrower
             completed
           }
@@ -817,7 +818,6 @@ export default {
             claimedFOMO
             claimedALPHA
             claimedKEK
-            actualPeriod
           }
         }`
 
@@ -912,11 +912,12 @@ export default {
         // N.B. sometimes earningsForListing is missing for completed lendings
         const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
         const createdDate = new Date(item.listing.timeCreated * 1000)
-        const agreedDate = new Date(item.listing.timeAgreed * 1000)
-        const actualFinishTimestamp = (!isComplete || !earningsForListing)
+        const agreedTimestamp = item.listing.timeAgreed * 1000
+        const agreedDate = new Date(agreedTimestamp)
+        const actualFinishTimestamp = !isComplete
           ? ((item.listing.timeAgreed - 0) + (item.listing.period - 0)) * 1000
-          // for finished listings, use the actual period
-          : ((item.listing.timeAgreed - 0) + (earningsForListing.actualPeriod - 0)) * 1000
+          // for finished listings, use the timeEnded
+          : ((item.listing.timeEnded - 0) * 1000)
         const actualFinishDate = new Date(actualFinishTimestamp)
         const balancesForGotchi = balances.value[item.gotchi.escrow]
         const totalAlchemica = {}
@@ -964,8 +965,8 @@ export default {
             .plus(totalAlchemica.KEK.times(ghstPrices.value.KEK))
           : new BigNumber(0)
 
-        const actualPeriod = (isComplete && earningsForListing) ? (earningsForListing.actualPeriod - 0) : (Date.now() / 1000) - (item.listing.timeAgreed - 0)
-        const actualPeriodIsZero = actualPeriod - 0 === 0
+        const actualPeriod = isComplete ? (actualFinishTimestamp - agreedTimestamp) / 1000 : (Date.now() - agreedTimestamp) / 1000
+        const actualPeriodIsZero = actualPeriod === 0
         totalAlchemica.SUM_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.SUM.dividedBy(actualPeriod / (60 * 60))
         totalAlchemica.NORMALIZED_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.NORMALIZED.dividedBy(actualPeriod / (60 * 60))
         totalAlchemica.NORMALIZED_GHST_PER_HOUR = actualPeriodIsZero ? bigNumZero : totalAlchemica.NORMALIZED_GHST.dividedBy(actualPeriod / (60 * 60))

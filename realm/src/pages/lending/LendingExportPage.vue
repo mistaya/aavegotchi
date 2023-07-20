@@ -284,6 +284,7 @@ export default {
 
           timeCreated
           timeAgreed
+          timeEnded
           lastClaimed
           completed
 
@@ -324,6 +325,9 @@ export default {
                       periodHours: item.period / (60 * 60),
                       timeAgreed: item.timeAgreed ? new Date(item.timeAgreed * 1000) : null,
                       timeCreated: item.timeCreated ? new Date(item.timeCreated * 1000) : null,
+                      timeEnded: item.timeEnded ? new Date(item.timeEnded * 1000) : null,
+                      actualPeriod: item.timeEnded && item.timeAgreed ? (item.timeEnded - 0) - (item.timeAgreed - 0) : null,
+                      actualPeriodHours: item.timeEnded && item.timeAgreed ? ((item.timeEnded - 0) - (item.timeAgreed - 0)) / (60 * 60) : null,
                       lastClaimed: (item.lastClaimed - 0) ? new Date(item.lastClaimed * 1000) : null,
                       upfrontCost: new BigNumber(item.upfrontCost).div(10e17).toString()
                     }
@@ -362,8 +366,6 @@ export default {
         const query = `{
           gotchiLendings(first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
             id
-            actualPeriod,
-            endTimestamp
             claimedFUD
             claimedFOMO
             claimedALPHA
@@ -393,8 +395,6 @@ export default {
                   fetchedLendings.map(item => {
                     const {
                       id,
-                      endTimestamp,
-                      actualPeriod,
                       claimedFUD,
                       claimedFOMO,
                       claimedALPHA,
@@ -403,9 +403,6 @@ export default {
                     return [
                       id,
                       {
-                        timeEnded: endTimestamp && endTimestamp !== '0' ? new Date(endTimestamp * 1000) : null,
-                        actualPeriod: actualPeriod !== '0' ? actualPeriod : null,
-                        actualPeriodHours: actualPeriod !== '0' ? actualPeriod / (60 * 60) : null,
                         claimedFUD: new BigNumber(claimedFUD).div(10e17).toString(),
                         claimedFOMO: new BigNumber(claimedFOMO).div(10e17).toString(),
                         claimedALPHA: new BigNumber(claimedALPHA).div(10e17).toString(),
