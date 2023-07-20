@@ -295,6 +295,7 @@ export default {
           splitBorrower
           splitOwner
           whitelistId
+          channellingAllowed
         }}
         `
         fetch(SUBGRAPH_URL, {

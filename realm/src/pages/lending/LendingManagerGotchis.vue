@@ -163,7 +163,7 @@
         v-model:page="tablePaging.page"
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numFilteredGotchis"
-        :scrollingBreakpoint="2000"
+        :scrollingBreakpoint="2090"
         :class="{
           'table-includes-listed': tableFilters.isListed,
           'table-includes-lended': tableFilters.isLended
@@ -176,6 +176,7 @@
             <th class="col-about--lended">Lended?</th>
             <th class="col-about--listed col-about--lended">Listing ID</th>
             <th class="col-about--listed col-about--lended">Listing Posted</th>
+            <th class="col-about--listed col-about--lended">Borrower Can Channel</th>
             <th class="col-about--lended">Lending Started</th>
             <th
               class="col-about--lended"
@@ -348,6 +349,11 @@
                 v-if="row.createdDate"
                 :date="row.createdDate"
               />
+            </td>
+            <td class="col-about--listed col-about--lended">
+              <template v-if="row.listing">
+                {{ row.listing.channellingAllowed  ? 'Yes' : 'No' }}
+              </template>
             </td>
             <td class="col-about--lended">
               <DateFriendly
@@ -688,6 +694,7 @@ export default {
             splitOwner
             splitBorrower
             splitOther
+            channellingAllowed
 
             thirdPartyAddress
             whitelistId

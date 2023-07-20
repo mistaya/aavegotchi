@@ -242,7 +242,7 @@
         v-model:pageSize="tablePaging.pageSize"
         :numResults="numGotchis"
         itemsLabel="borrowings"
-        :scrollingBreakpoint="2300"
+        :scrollingBreakpoint="2400"
         bordered
         class="lending-borrower-table"
       >
@@ -296,7 +296,7 @@
               Owner
             </th>
             <th
-              colspan="5"
+              colspan="6"
               class="with-left-border"
             >
               Lending Details
@@ -353,6 +353,9 @@
             </th>
             <th class="with-left-border">
               Listing ID
+            </th>
+            <th>
+              Borrower Can Channel
             </th>
             <th>Upfront GHST</th>
             <th>Borrower %</th>
@@ -602,6 +605,9 @@
               </a>
             </td>
             <td>
+              {{ row.listing.channellingAllowed ? 'Yes' : 'No' }}
+            </td>
+            <td>
               {{ friendlyGhst(row.listing.upfrontCost) }}
             </td>
             <td>
@@ -741,6 +747,7 @@ export default {
             splitOwner
             splitBorrower
             splitOther
+            channellingAllowed
 
             thirdPartyAddress
             whitelistId

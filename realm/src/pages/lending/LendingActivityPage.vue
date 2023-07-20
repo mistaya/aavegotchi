@@ -141,7 +141,7 @@
             v-model:pageSize="tablePaging.pageSize"
             :numResults="results.length"
             itemsLabel="listings"
-            :scrollingBreakpoint="1500"
+            :scrollingBreakpoint="1600"
           >
             <template #headers>
               <tr>
@@ -156,6 +156,7 @@
                 <th v-if="withWhitelist">
                   Whitelist
                 </th>
+                <th>Borrower Can Channel</th>
                 <th>Kinship</th>
                 <th>Last Channeled</th>
                 <th>Gotchi</th>
@@ -205,6 +206,9 @@
                 </td>
                 <td v-if="withWhitelist">
                   {{ result.whitelistId }}
+                </td>
+                <td>
+                  {{ result.channellingAllowed ? 'Yes' : 'No' }}
                 </td>
                 <td>
                   {{ result.gotchiKinship }}
@@ -329,6 +333,7 @@ export default {
         splitOther
         splitBorrower
         splitOwner
+        channellingAllowed
         gotchiTokenId
         gotchiKinship
         whitelistId

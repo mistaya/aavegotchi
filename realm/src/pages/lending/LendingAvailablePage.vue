@@ -473,7 +473,7 @@
                   {{ result.whitelistId }}
                 </td>
                 <td
-                  v-if="!channelingDetails[result.id].channellingAllowed"
+                  v-if="!channelingDetails?.[result.id]?.channellingAllowed"
                   class="with-left-border channel-not-allowed"
                   colspan="3"
                 >
