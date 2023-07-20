@@ -5,7 +5,7 @@
       <div style="margin-bottom: 30px;">
         Here you can see recently-agreed lendings from
         <a
-          href="https://app.aavegotchi.com/lending"
+          href="https://dapp.aavegotchi.com/lending/aavegotchis"
           target="_blank"
           rel="noopener"
         >
