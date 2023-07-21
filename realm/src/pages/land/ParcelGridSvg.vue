@@ -61,7 +61,7 @@ export default {
     parcelWidth: { type: Number, required: true },
     parcelHeight: { type: Number, required: true },
     tiles: { type: Array, required: true },
-    aaltar: { type: Object, required: true },
+    aaltar: { type: Object, default: null },
     installations: { type: Array, required: true },
     fullscreen: { type: Boolean, default: false }
   },
