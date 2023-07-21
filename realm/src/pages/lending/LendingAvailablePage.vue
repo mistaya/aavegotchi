@@ -753,9 +753,11 @@ export default {
         orderQuery = `, orderBy: "${sort.column}", orderDirection: "${sort.direction}"`
       }
 
+      // TODO remove temporary timeCreated workaround when subgraph is fixed
       const query = `
       {gotchiLendings(first: ${fetchPageSize.value} ${orderQuery}, where: {
-        timeAgreed: 0,
+        timeAgreed: null,
+        timeCreated_not: null,
         cancelled: false,
         ${upfrontQuery}
         ${borrowerSplitQuery}
