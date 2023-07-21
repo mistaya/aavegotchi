@@ -6,10 +6,10 @@
       <div style="margin-bottom: 20px;">
         <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
           <SiteIcon name="warning-triangle" />
-          <div style="font-size: 1.5em;">
+          <div>
             Warning: channeling now <b>burns kinship</b> of the gotchi.
-            <br>You <b>cannot channel borrowed gotchis</b> until the devs finish deploying the new update (see Discord announcements).
-            Then channeling will only be allowed for new lendings if the owner has chosen to enable it.
+            <br>Channeling is only allowed for new lendings if the owner has chosen to enable it.
+            <br>Old lendings that existed before the update can't channel.
           </div>
         </div>
       </div>
@@ -195,20 +195,6 @@
                 </div>
               </summary>
               <div style="margin-top: 12px;">
-
-                <div style="margin-bottom: 20px;">
-                  <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
-                    <SiteIcon name="warning-triangle" />
-                    <div>
-                      Warning: sometime soon (June/July 2023?), channeling will start to consume kinship.
-                      <br>Lenders will decide whether to allow borrowers to channel the gotchi when they <i>create</i> the lending.
-                      <br><b>By default, borrowers will not be allowed to channel gotchis.</b>
-                      <br>Be careful with long-duration lendings: once this change goes live, you will NOT be able to channel a gotchi on a pre-existing lending.
-                      <br>So you may not be able to get the total GHST profit calculated below.
-                    </div>
-                  </div>
-                </div>
-
                 <label>
                   <input
                     v-model="filters2.onlyChannelable"
