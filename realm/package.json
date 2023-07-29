@@ -11,6 +11,7 @@
     "imagemin3": "imagemin public/to_min --out-dir=public/to_min/result"
   },
   "dependencies": {
+    "@pelith/ethers-multicall": "^0.2.2",
     "a11y-dialog": "^7.5.0",
     "bignumber.js": "^9.0.1",
     "body-scroll-lock": "^4.0.0-beta.0",

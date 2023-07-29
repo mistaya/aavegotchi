@@ -8,6 +8,7 @@ const fetchEthGotchiOwners = require('./eth/fetchEthGotchiOwners.js')
 const fetchVaultGotchiOwners = require('./vault/fetchVaultGotchiOwners.js')
 // eslint-disable-next-line no-unused-vars
 const fetchGotchiImages = require('./images/fetchGotchiImages.js')
+const fetchLendingsFromContract = require('./lendings/fetchGotchiLendingsFromContract.js')
 
 // Snapshot blocks
 const SEASONS = {
@@ -270,9 +271,10 @@ const SEASONS = {
     rnd3: {
       rfCalc: 'js1',
       wearableSets: '2023-03-01',
+      useLendingsFromContract: true,
       blocks: {
-        polygon: 0, // Jul-27-2023
-        eth: 0
+        polygon: 45581955, // Jul-27-2023
+        eth: 17784859
       }
     },
     rnd4: {
@@ -292,11 +294,11 @@ const SEASON = SEASONS.szn6
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn6/rewards.json'
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6
 // - round
-const ROUND = SEASON.rnd2
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn6/rnd2.json'
-const GOTCHIS_FILENAME = 'rnd2Gotchis'
+const ROUND = SEASON.rnd3
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn6/rnd3.json'
+const GOTCHIS_FILENAME = 'rnd3Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r2'
+const GOTCHI_IMAGES_FOLDER = './r3'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -418,13 +420,36 @@ const fetchRoundData = async function () {
   console.log(`Written result to ${GOTCHIS_FILENAME}.json`)
 }
 
+const fetchLendings = async function () {
+  if (SEASON.checkLendings && (SEASON.useLendingsFromContract || ROUND.useLendingsFromContract)) {
+    console.log('Fetching lendings from contract')
+    const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
+    const gotchiIds = gotchis.map(gotchi => gotchi.id)
+    fetchLendingsFromContract({ gotchiIds, fileName: `${GOTCHIS_FILENAME}_lendings.json`, blockNumber: ROUND.blocks.polygon })
+  }
+}
+
 const fetchGotchiOwners = async function () {
   const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
   // First look up lent-out gotchis
   const gotchiIds = gotchis.map(gotchi => gotchi.id)
   let gotchiIdToLending = {}
   if (SEASON.checkLendings) {
-    gotchiIdToLending = await fetchGotchiLendings(gotchiIds, ROUND.blocks.polygon)
+    if (SEASON.useLendingsFromContract || ROUND.useLendingsFromContract) {
+      try {
+        gotchiIdToLending = await readJsonFile(`${GOTCHIS_FILENAME}_lendings.json`)
+        // the file contains all gotchis: filter it down to only those with lendings
+        gotchiIdToLending = Object.fromEntries(
+          Object.entries(gotchiIdToLending).filter(([gotchiId, lending]) => !!lending)
+        )
+      } catch (e) {
+        console.error('Fetch the lendings from the contract first using fetchLendings()')
+        return
+      }
+    } else {
+      console.log('Fetching lendings from subgraph')
+      gotchiIdToLending = await fetchGotchiLendings(gotchiIds, ROUND.blocks.polygon)
+    }
     console.log(`Found ${Object.keys(gotchiIdToLending).length} lent-out gotchis`)
 
     // If the gotchi has an active lending, those details contain the borrower/lender/originalOwner (handles Vault)
@@ -522,6 +547,7 @@ const manuallyCalculateBRS = async function () {
 
 const runAll = async function () {
   await fetchRoundData()
+  await fetchLendings()
   await fetchGotchiOwners()
   await manuallyCalculateBRS()
 }
@@ -529,11 +555,12 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-// runAll()
+runAll()
 // fetchRoundData()
+// fetchLendings()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
+// fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
 
 // ----------------------------------------------------
