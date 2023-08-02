@@ -13,7 +13,7 @@ const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber }
   const fetchedIds = Object.keys(lendingsByGotchiId)
   const gotchisToFetch = gotchiIds.filter(id => !fetchedIds.includes(id))
   console.log(`There are total ${gotchiIds.length} to look up lendings for.`)
-  console.log(`There are ${gotchiIds.length} already fetched, fetching remaining ${gotchisToFetch.length} gotchi lendings`)
+  console.log(`There are ${fetchedIds.length} already fetched, fetching remaining ${gotchisToFetch.length} gotchi lendings`)
 
   const BATCH_SIZE = 2000
 

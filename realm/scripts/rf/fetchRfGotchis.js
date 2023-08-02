@@ -268,6 +268,7 @@ const SEASONS = {
         eth: 17685029
       }
     },
+    // subgraph lendings data is incomplete and buggy after the kinship burning upgrade
     rnd3: {
       rfCalc: 'js1',
       wearableSets: '2023-03-01',
@@ -280,6 +281,7 @@ const SEASONS = {
     rnd4: {
       rfCalc: 'js1',
       wearableSets: '2023-03-01',
+      useLendingsFromContract: true,
       blocks: {
         polygon: 0, // Aug-10-2023
         eth: 0
@@ -555,12 +557,12 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-runAll()
+// runAll()
 // fetchRoundData()
 // fetchLendings()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-// fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
+fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
 
 // ----------------------------------------------------
