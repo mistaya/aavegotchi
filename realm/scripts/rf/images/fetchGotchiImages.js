@@ -7,9 +7,9 @@ const gotchiHideDefaultBgSvg = `
     </style>
 `
 const hideDefaultBg = function (svgText) {
-  // simple hack, assumes there is a <g class="gotchi-eyeColor" in the SVG
+  // simple hack, assumes there is a <g class="gotchi-shadow" in the SVG
   // This might break in future
-  const insertionPoint = '<g class="gotchi-eyeColor'
+  const insertionPoint = '<g class="gotchi-shadow'
   return svgText.replace(insertionPoint, `${gotchiHideDefaultBgSvg}${insertionPoint}`)
 }
 const tweakSvg = function (svgText) {
