@@ -283,8 +283,8 @@ const SEASONS = {
       wearableSets: '2023-03-01',
       useLendingsFromContract: true,
       blocks: {
-        polygon: 0, // Aug-10-2023
-        eth: 0
+        polygon: 46139600, // Aug-10-2023
+        eth: 17884944
       }
     }
   }
@@ -296,11 +296,11 @@ const SEASON = SEASONS.szn6
 const SEASON_REWARDS_FILE = '../../public/data/rf/szn6/rewards.json'
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6
 // - round
-const ROUND = SEASON.rnd3
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn6/rnd3.json'
-const GOTCHIS_FILENAME = 'rnd3Gotchis'
+const ROUND = SEASON.rnd4
+const ROUND_WINNERS_FILE = '../../public/data/rf/szn6/rnd4.json'
+const GOTCHIS_FILENAME = 'rnd4Gotchis'
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r3'
+const GOTCHI_IMAGES_FOLDER = './r4'
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -427,7 +427,7 @@ const fetchLendings = async function () {
     console.log('Fetching lendings from contract')
     const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
     const gotchiIds = gotchis.map(gotchi => gotchi.id)
-    fetchLendingsFromContract({ gotchiIds, fileName: `${GOTCHIS_FILENAME}_lendings.json`, blockNumber: ROUND.blocks.polygon })
+    await fetchLendingsFromContract({ gotchiIds, fileName: `${GOTCHIS_FILENAME}_lendings.json`, blockNumber: ROUND.blocks.polygon })
   }
 }
 
