@@ -369,6 +369,65 @@ const SEASONS = {
         tiebreakerTraitIndex: 3
       }
     }
+  },
+  '7': {
+    id: '7',
+    aboutUrl: 'https://blog.aavegotchi.com/farming-frenzy-announcing-a-new-season-of-rarity-farming/',
+    startDate: new Date('2023-10-31T14:00Z'),
+    endDate: new Date('2023-12-26T14:00Z'),
+    ghstTotal: 1_500_000,
+    leaderboards: [
+      {
+        id: 'rarity',
+        label: 'Rarity',
+        percent: 70,
+        tiebreaker: 'kinship'
+      },
+      {
+        id: 'kinship',
+        label: 'Kinship',
+        percent: 20,
+        tiebreaker: 'xp'
+      },
+      {
+        id: 'xp',
+        label: 'XP',
+        percent: 10,
+        tiebreaker: 'trait'
+      }
+    ],
+    numRounds: 4,
+    numWinners: 7500,
+    rounds: {
+      '1': {
+        id: '1',
+        jsonUrl: `${BASE_DATA_URL}/szn7/rnd1Gotchis.json`,
+        endDate: new Date('2023-11-14T14:00Z'),
+        blockNumber: 49935600,
+        tiebreakerTraitIndex: 0
+      } /* ,
+      '2': {
+        id: '2',
+        jsonUrl: `${BASE_DATA_URL}/szn7/rnd2Gotchis.json`,
+        endDate: new Date('2023-11-28T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 1
+      },
+      '3': {
+        id: '3',
+        jsonUrl: `${BASE_DATA_URL}/szn7/rnd3Gotchis.json`,
+        endDate: new Date('2023-12-12T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 2
+      },
+      '4': {
+        id: '4',
+        jsonUrl: `${BASE_DATA_URL}/szn7/rnd4Gotchis.json`,
+        endDate: new Date('2023-12-26T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 3
+      } */
+    }
   }
 }
 

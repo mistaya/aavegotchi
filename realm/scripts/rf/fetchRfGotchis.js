@@ -247,8 +247,6 @@ const SEASONS = {
       }
     }
   },
-  // S6: new wearable sets from DAO/Forge to be introduced later in the season?
-  // New wearable sets JS algorithm is in the works: will it be used?
   szn6: {
     checkVault: true,
     checkLendings: true,
@@ -287,20 +285,61 @@ const SEASONS = {
         eth: 17884944
       }
     }
+  },
+  // S7: new wearable sets from DAO/Forge to be introduced later in the season?
+  szn7: {
+    checkVault: true,
+    checkLendings: true,
+    rnd1: {
+      rfCalc: 'js2', // set-finding code now tiebreaks with higher number of wearables in set
+      wearableSets: '2023-03-01',
+      blocks: {
+        polygon: 49935600, // Nov-14-2023
+        eth: 18570600
+      }
+    },
+    rnd2: {
+      rfCalc: 'js2',
+      wearableSets: '2023-03-01',
+      blocks: {
+        polygon: 0, // Nov-28-2023
+        eth: 0
+      }
+    },
+    rnd3: {
+      rfCalc: 'js2',
+      wearableSets: '2023-03-01',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Dec-12-2023
+        eth: 0
+      }
+    },
+    rnd4: {
+      rfCalc: 'js2',
+      wearableSets: '2023-03-01',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Dec-26-2023
+        eth: 0
+      }
+    }
   }
 }
 
 // Params for this run
 // - season
-const SEASON = SEASONS.szn6
-const SEASON_REWARDS_FILE = '../../public/data/rf/szn6/rewards.json'
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6
+const SEASON_NUM = 7
+const SEASON = SEASONS[`szn${SEASON_NUM}`]
+const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7
 // - round
-const ROUND = SEASON.rnd4
-const ROUND_WINNERS_FILE = '../../public/data/rf/szn6/rnd4.json'
-const GOTCHIS_FILENAME = 'rnd4Gotchis'
+const ROUND_NUM = 1
+const ROUND = SEASON[`rnd${ROUND_NUM}`]
+const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
+const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
 // eslint-disable-next-line no-unused-vars
-const GOTCHI_IMAGES_FOLDER = './r4'
+const GOTCHI_IMAGES_FOLDER = `./r${ROUND_NUM}`
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
@@ -512,10 +551,11 @@ const manuallyCalculateBRS = async function () {
   // Manually recalculate this: this introduces risk of getting a different result from the official one.
   // Different rarity farming seasons used different approaches for calculating rarity.
   const useJs1 = ROUND.rfCalc === 'js1'
+  const useJs2 = ROUND.rfCalc === 'js2'
   const useSubgraph = ROUND.rfCalc === 'subgraph'
   const useBest = ROUND.rfCalc === 'best'
   console.log('Using RF calculation approach', ROUND.rfCalc)
-  if (!useJs1 && !useSubgraph && !useBest) {
+  if (!useJs1 && !useJs2 && !useSubgraph && !useBest) {
     console.error('Invalid RF calculation specified', ROUND.rfCalc)
   }
   for (const gotchi of gotchis) {
@@ -536,6 +576,12 @@ const manuallyCalculateBRS = async function () {
       gotchi.withSetsNumericTraitsRF = resultJS1.numericTraits
       gotchi.withSetsRarityScoreRF = resultJS1.rarityScore
       gotchi.equippedSetNameRF = resultJS1.wearableSetName
+    } else if (useJs2) {
+      // reproduce the RF JS2 calculation
+      const resultJS2 = await setHelpers.calculateJS2(ROUND.wearableSets, gotchi)
+      gotchi.withSetsNumericTraitsRF = resultJS2.numericTraits
+      gotchi.withSetsRarityScoreRF = resultJS2.rarityScore
+      gotchi.equippedSetNameRF = resultJS2.wearableSetName
     } else if (useBest) {
       // use the best calc
       gotchi.withSetsNumericTraitsRF = gotchi.withSetsNumericTraitsBest

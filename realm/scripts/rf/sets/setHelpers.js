@@ -72,6 +72,49 @@ const getRFWearableSets = function (originalWearableSets, equippedWearables) {
   return foundSets
 }
 
+// Code from https://github.com/aavegotchi/aavegotchi-contracts/blob/master/scripts/raritySortHelpers.ts
+// From 14 Nov 2023: added sort by number of wearables in set
+const getRFWearableSets2 = function (originalWearableSets, equippedWearables) {
+  const foundSets = []
+
+  const getEquipmentIds = (acc, value) => {
+    if (Number(value) > 0) {
+      acc.push(Number(value))
+    }
+    return acc
+  }
+
+  const equippedIds = equippedWearables?.reduce(getEquipmentIds, [])
+
+  for (const wearableSet of originalWearableSets) {
+    const setWearableIds = wearableSet.wearableIds.reduce(getEquipmentIds, [])
+    if (
+      setWearableIds.every((wearableId) =>
+        equippedIds?.includes(wearableId)
+      )
+    ) {
+      const setFound = {
+        name: wearableSet.name,
+        wearableIds: setWearableIds,
+        traitsBonuses: wearableSet.traitsBonuses.map((v) => Number(v)),
+        allowedCollaterals: wearableSet.allowedCollaterals.map((v) =>
+          Number(v)
+        )
+      }
+
+      foundSets.push(setFound)
+    }
+  }
+
+  foundSets.sort(function (a, b) {
+    return b.traitsBonuses[0] - a.traitsBonuses[0]
+  })
+
+  foundSets.sort((a, b) => b.wearableIds.length - a.wearableIds.length)
+
+  return foundSets
+}
+
 const findWearableSetUsingRFApproach = async function (wearableSetsDate, equippedWearables) {
   const { wearableSets } = await getWearableSets(wearableSetsDate)
   const originalWearableSets = wearableSets.map(set => set.original)
@@ -92,12 +135,31 @@ const findWearableSetUsingRFApproach = async function (wearableSetsDate, equippe
   return bestWearableSet
 }
 
+const findWearableSetUsingRF2Approach = async function (wearableSetsDate, equippedWearables) {
+  const { wearableSets } = await getWearableSets(wearableSetsDate)
+  const originalWearableSets = wearableSets.map(set => set.original)
+  let bestWearableSet = null
+  const rfSetsSorted = getRFWearableSets2(originalWearableSets, equippedWearables)
+  if (rfSetsSorted.length) {
+    const bestOfficialSet = rfSetsSorted[0]
+    bestWearableSet = {
+      name: bestOfficialSet.name,
+      rarityScoreModifier: bestOfficialSet.traitsBonuses[0],
+      traitModifiers: bestOfficialSet.traitsBonuses.slice(1)
+    }
+  }
+
+  return bestWearableSet
+}
+
 const calculateBestTraitsWithSet = async function (wearableSetsDate, originalTraits, equippedWearables, approach) {
   let bestWearableSet = null
   if (approach === 'best') {
     bestWearableSet = await findBestWearableSet(wearableSetsDate, equippedWearables)
   } else if (approach === 'js1') {
     bestWearableSet = await findWearableSetUsingRFApproach(wearableSetsDate, equippedWearables)
+  } else if (approach === 'js2') {
+    bestWearableSet = await findWearableSetUsingRF2Approach(wearableSetsDate, equippedWearables)
   } else {
     console.error('calculateBestTraitsWithSet needs an approach')
     return
@@ -127,5 +189,8 @@ module.exports = {
   },
   calculateJS1: async function (wearableSetsDate, gotchi) {
     return calculateBestTraitsWithSet(wearableSetsDate, gotchi.numericTraits, gotchi.equippedWearables, 'js1')
+  },
+  calculateJS2: async function (wearableSetsDate, gotchi) {
+    return calculateBestTraitsWithSet(wearableSetsDate, gotchi.numericTraits, gotchi.equippedWearables, 'js2')
   }
 }
