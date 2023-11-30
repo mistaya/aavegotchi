@@ -370,7 +370,7 @@ const realm = {
     }
     const promises = []
     promises.push(contract.getRealmAlchemica(parcelId))
-    const nRounds = 4
+    const nRounds = 5
     for (let roundId = 0; roundId < nRounds; roundId++) {
       promises.push(contract.getRoundBaseAlchemica(parcelId, roundId))
       promises.push(contract.getRoundAlchemica(parcelId, roundId))
