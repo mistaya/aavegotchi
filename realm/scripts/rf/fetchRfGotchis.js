@@ -317,11 +317,11 @@ const SEASONS = {
     },
     rnd4: {
       rfCalc: 'js2',
-      wearableSets: '2023-03-01',
+      wearableSets: '2023-12-27', // More Forge sets added
       useLendingsFromContract: true,
       blocks: {
-        polygon: 0, // Dec-26-2023
-        eth: 0
+        polygon: 51580651, // Dec-26-2023
+        eth: 18870329
       }
     }
   }
@@ -334,7 +334,7 @@ const SEASON = SEASONS[`szn${SEASON_NUM}`]
 const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7
 // - round
-const ROUND_NUM = 3
+const ROUND_NUM = 4 // Remember to delete any old lendings json from previous seasons
 const ROUND = SEASON[`rnd${ROUND_NUM}`]
 const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
 const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
@@ -603,12 +603,12 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-// runAll()
+runAll()
 // fetchRoundData()
 // fetchLendings()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
+// fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
 
 // ----------------------------------------------------
