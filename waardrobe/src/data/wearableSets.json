@@ -2735,5 +2735,163 @@
             -1,
             0
         ]
+    },
+    {
+        "id": 158,
+        "name": "VRF Lord",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            52,
+            17,
+            113,
+            385
+        ],
+        "traitsBonuses": [
+            8,
+            3,
+            0,
+            0,
+            2
+        ]
+    },
+    {
+        "id": 159,
+        "name": "ROFL Tamer",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            53,
+            156,
+            387,
+            386
+        ],
+        "traitsBonuses": [
+            8,
+            -3,
+            0,
+            0,
+            -2
+        ]
+    },
+    {
+        "id": 160,
+        "name": "Jacob Maarley",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            366,
+            113,
+            385,
+            387
+        ],
+        "traitsBonuses": [
+            8,
+            1,
+            0,
+            3,
+            -1
+        ]
+    },
+    {
+        "id": 161,
+        "name": "Degen Gamblooor",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            260,
+            53,
+            17,
+            52
+        ],
+        "traitsBonuses": [
+            8,
+            -2,
+            0,
+            0,
+            3
+        ]
+    },
+    {
+        "id": 162,
+        "name": "Starlet",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            370,
+            371,
+            372
+        ],
+        "traitsBonuses": [
+            1,
+            1,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 163,
+        "name": "Engagement Farmer",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            373,
+            374,
+            375
+        ],
+        "traitsBonuses": [
+            3,
+            0,
+            0,
+            -2,
+            0
+        ]
+    },
+    {
+        "id": 164,
+        "name": "Gotchidator",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            376,
+            377,
+            378
+        ],
+        "traitsBonuses": [
+            3,
+            0,
+            1,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 165,
+        "name": "Gotchidator",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            376,
+            377,
+            379
+        ],
+        "traitsBonuses": [
+            3,
+            0,
+            1,
+            -1,
+            0
+        ]
+    },
+    {
+        "id": 166,
+        "name": "Sandbox Seb",
+        "allowedCollaterals": [],
+        "wearableIds": [
+            380,
+            381,
+            382,
+            383
+        ],
+        "traitsBonuses": [
+            4,
+            1,
+            -1,
+            0,
+            0
+        ]
     }
 ]
