@@ -472,28 +472,28 @@ export default {
       let lastScore = 100000
       let countWrongOrder = 0
       for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
-        if (gotchi.withSetsRarityScoreRF > lastScore) {
+        if ((gotchi.withSetsRarityScoreRF - 0) > lastScore) {
           console.error(`Gotchi ${gotchi.name} at rank ${ranking} out of order (${gotchi.withSetsRarityScoreRF} is more than ${lastScore}). ${gotchi.equippedSetNameRF}`, gotchi)
           countWrongOrder++
         }
         // log the score used by ranking as the 'last score'
-        lastScore = gotchi.withSetsRarityScoreRF
+        lastScore = gotchi.withSetsRarityScoreRF - 0
       }
       console.log(`${countWrongOrder} gotchis out of order`)
       */
 
       /*
       // Check to see if the best-possible-rarity-score matches the final order
-      let lastScore = 100000
+      lastScore = 100000
       for (const { gotchi, ranking } of mapByLeaderboard.rarity) {
-        if (gotchi.withSetsRarityScoreBest > lastScore) {
+        if ((gotchi.withSetsRarityScoreBest - 0) > lastScore) {
           console.error(`Gotchi at rank ${ranking} out of order (${gotchi.withSetsRarityScoreBest} is more than ${lastScore}). ${gotchi.equippedSetNameBest}`, gotchi)
         }
-        if (gotchi.withSetsRarityScoreRF > gotchi.withSetsRarityScoreBest) {
+        if ((gotchi.withSetsRarityScoreRF - 0) > gotchi.withSetsRarityScoreBest) {
           console.warn(`Gotchi at rank ${ranking} has HIGHER RF Rarity than expected`, gotchi)
         }
         // log the score used by ranking as the 'last score'
-        lastScore = gotchi.withSetsRarityScoreRF
+        lastScore = gotchi.withSetsRarityScoreRF - 0
       }
       */
       return mapByLeaderboard

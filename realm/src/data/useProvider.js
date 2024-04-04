@@ -2,8 +2,8 @@ import { ethers } from 'ethers'
 import { Provider } from 'ethers-multicall'
 
 // const RPC_URL = 'https://rpc.ankr.com/polygon'
-// const RPC_URL = 'https://rpc-mainnet.matic.quiknode.pro'
-const RPC_URL = 'https://polygon-rpc.com'
+const RPC_URL = 'https://rpc-mainnet.matic.quiknode.pro'
+// const RPC_URL = 'https://polygon-rpc.com'
 
 let provider = null
 let multicallProvider = null

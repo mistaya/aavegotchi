@@ -324,17 +324,58 @@ const SEASONS = {
         eth: 18870329
       }
     }
+  },
+  // S8
+  szn8: {
+    checkVault: true,
+    checkLendings: true,
+    rnd1: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 55253790, // Mar-30-2024
+        eth: 19547371
+      }
+    },
+    rnd2: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Apr-13-2024
+        eth: 0
+      }
+    },
+    rnd3: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Apr-27-2024
+        eth: 0
+      }
+    },
+    rnd4: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // May-11-2024
+        eth: 0
+      }
+    }
   }
 }
 
 // Params for this run
 // - season
-const SEASON_NUM = 7
+const SEASON_NUM = 8
 const SEASON = SEASONS[`szn${SEASON_NUM}`]
 const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8
 // - round
-const ROUND_NUM = 4 // Remember to delete any old lendings json from previous seasons
+const ROUND_NUM = 1 // Remember to delete any old lendings json from previous seasons
 const ROUND = SEASON[`rnd${ROUND_NUM}`]
 const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
 const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
@@ -603,12 +644,12 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-runAll()
+// runAll()
 // fetchRoundData()
 // fetchLendings()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-// fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
+fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
 
 // ----------------------------------------------------
