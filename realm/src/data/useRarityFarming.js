@@ -467,17 +467,17 @@ const SEASONS = {
       '1': {
         id: '1',
         jsonUrl: `${BASE_DATA_URL}/szn8/rnd1Gotchis.json`,
-        endDate: new Date('2024-03-30T14:00Z'),
+        endDate: new Date('2024-03-30T14:30Z'),
         blockNumber: 55253790,
         tiebreakerTraitIndex: 0
-      }/* ,
+      },
       '2': {
         id: '2',
         jsonUrl: `${BASE_DATA_URL}/szn8/rnd2Gotchis.json`,
-        endDate: new Date('2024-04-13T14:00Z'),
-        blockNumber: 50494489,
+        endDate: new Date('2024-04-13T14:30Z'),
+        blockNumber: 55777712,
         tiebreakerTraitIndex: 1
-      },
+      }/* ,
       '3': {
         id: '3',
         jsonUrl: `${BASE_DATA_URL}/szn8/rnd3Gotchis.json`,
