@@ -3,11 +3,11 @@ const { ethers } = require('ethers')
 const { Provider, Contract } = require('@pelith/ethers-multicall') // this fork of ethers-multicall supports blockTag
 
 // https://chainlist.org/chain/137
-// const provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
+const provider = new ethers.providers.JsonRpcProvider('https://polygon-rpc.com/')
 // const provider = new ethers.providers.JsonRpcProvider('https://matic-mainnet.chainstacklabs.com')
 // const provider = new ethers.providers.JsonRpcProvider('https://rpc.ankr.com/polygon')
 // const provider = new ethers.providers.JsonRpcProvider('https://rpc-mainnet.matic.quiknode.pro')
-const provider = new ethers.providers.JsonRpcProvider('https://1rpc.io/matic')
+// const provider = new ethers.providers.JsonRpcProvider('https://1rpc.io/matic')
 // provide chainId so we don't need to call init
 const multicallProvider = new Provider(provider, 137)
 

@@ -477,21 +477,21 @@ const SEASONS = {
         endDate: new Date('2024-04-13T14:30Z'),
         blockNumber: 55777712,
         tiebreakerTraitIndex: 1
-      }/* ,
+      },
       '3': {
         id: '3',
         jsonUrl: `${BASE_DATA_URL}/szn8/rnd3Gotchis.json`,
-        endDate: new Date('2024-04-27T14:00Z'),
-        blockNumber: 51047500,
+        endDate: new Date('2024-04-27T14:30Z'),
+        blockNumber: 56315278,
         tiebreakerTraitIndex: 2
       },
       '4': {
         id: '4',
         jsonUrl: `${BASE_DATA_URL}/szn8/rnd4Gotchis.json`,
-        endDate: new Date('2024-05-11T14:00Z'),
-        blockNumber: 51580651,
+        endDate: new Date('2024-05-11T14:30Z'),
+        blockNumber: 56845067,
         tiebreakerTraitIndex: 3
-      } */
+      }
     }
   }
 }
