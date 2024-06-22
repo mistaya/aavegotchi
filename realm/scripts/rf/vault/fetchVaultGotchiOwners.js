@@ -18,6 +18,7 @@ const fetchVaultGotchiOwners = async function (gotchiIds, polygonBlock) {
   */
 
   // Alternate approach using subgraph.
+  // Deprecated, no replacement available
   const VAULT_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/gotchi-vault'
 
   return new Promise((resolve, reject) => {

@@ -127,6 +127,7 @@ export default function useAuctions (auctionId) {
       const lastBidTime = mostRecentAuction.value?.lastBidTime || 0
       const startTimeForQuery = auctionInfo.startTime / 1000
       const endTimeForQuery = auctionInfo.endTime / 1000
+      // WARNING: this old subgraph is no longer supported, would need to change this code for any future auctions
       fetch(REALM_SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
