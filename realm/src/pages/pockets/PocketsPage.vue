@@ -8,7 +8,6 @@
       <DataFetcherGotchis />
       <DataFetcherGotchiBalances />
       <DataFetcherEthereumGotchiOwners />
-      <DataFetcherVaultOwners />
       <DataFetcherPrices />
     </div>
 
@@ -390,12 +389,10 @@ import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
 import useEthereumGotchiOwners from '@/data/useEthereumGotchiOwners'
-import useVaultOwners from '@/data/useVaultOwners'
 import DataFetcherGotchis from './DataFetcherGotchis.vue'
 import DataFetcherGotchiBalances from './DataFetcherGotchiBalances.vue'
 import DataFetcherPrices from './DataFetcherPrices.vue'
 import DataFetcherEthereumGotchiOwners from './DataFetcherEthereumGotchiOwners.vue'
-import DataFetcherVaultOwners from './DataFetcherVaultOwners.vue'
 import CryptoIcons from '@/common/CryptoIcons.vue'
 import CryptoIcon from '@/common/CryptoIcon.vue'
 import DateFriendly from '@/common/DateFriendly.vue'
@@ -411,7 +408,6 @@ export default {
     DataFetcherGotchiBalances,
     DataFetcherPrices,
     DataFetcherEthereumGotchiOwners,
-    DataFetcherVaultOwners,
     CryptoIcons,
     CryptoIcon,
     DateFriendly,
@@ -444,11 +440,6 @@ export default {
     } = useGotchiBalances()
 
     const {
-      ownersByGotchi: vaultOwners,
-      fetchStatus: vaultOwnersFetchStatus
-    } = useVaultOwners()
-
-    const {
       ownersByGotchi: ethereumGotchiOwners,
       fetchStatus: ethereumGotchiOwnersFetchStatus
     } = useEthereumGotchiOwners()
@@ -459,7 +450,6 @@ export default {
     }
 
     const hasEthereumGotchiOwners = computed(() => ethereumGotchiOwnersFetchStatus.value.loaded)
-    const hasVaultOwners = computed(() => vaultOwnersFetchStatus.value.loaded)
 
     const gotchisData = computed(() => {
       return gotchis.value.map(g => {
@@ -494,7 +484,7 @@ export default {
       )
     })
 
-    // owners may be the true owner or the vault/ethereum
+    // owners may be the true owner or ethereum
     const ownersByGotchi = computed(() => {
       return Object.fromEntries(
         gotchisData.value.map(g => [g.id, g.lender || g.owner])
@@ -502,8 +492,6 @@ export default {
     })
 
     const trueOwnersByGotchi = computed(() => {
-      const checkVaultOwner = hasVaultOwners.value
-      const vaultOwnerFor = vaultOwners.value
       const checkEthereumOwner = hasEthereumGotchiOwners.value
       const ethereumOwnerFor = ethereumGotchiOwners.value
       return Object.fromEntries(
@@ -511,10 +499,10 @@ export default {
           if (g.lender) {
             return [g.id, g.originalOwner || g.lender]
           }
-          // Not borrowed: look up ethereum/vault owners
+          // Not borrowed: look up ethereum owners
           return [
             g.id,
-            (checkVaultOwner && vaultOwnerFor[g.id]) || (checkEthereumOwner && ethereumOwnerFor[g.id]) || g.owner
+            (checkEthereumOwner && ethereumOwnerFor[g.id]) || g.owner
           ]
         })
       )

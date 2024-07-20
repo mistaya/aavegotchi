@@ -532,7 +532,6 @@ const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 const OWNER_SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 const LENDING_SUBGRAPH_URL = apis.LENDING_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
-const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
 
 export default {
   components: {
@@ -546,13 +545,11 @@ export default {
   props: {
     address: { type: String, default: null },
     thirdPartyAddress: { type: String, default: null },
-    vaultOwnerAddress: { type: String, default: null },
     originalOwnerAddress: { type: String, default: null }
   },
   setup (props) {
     const addressLc = computed(() => props.address?.toLowerCase())
     const thirdPartyAddressLc = computed(() => props.thirdPartyAddress?.toLowerCase())
-    const vaultOwnerAddressLc = computed(() => props.vaultOwnerAddress?.toLowerCase())
     const originalOwnerAddressLc = computed(() => props.originalOwnerAddress?.toLowerCase())
 
     const {
@@ -663,10 +660,9 @@ export default {
       let lastIdNum = 0
       let fetchedListings = []
 
-      const lenderQuery = props.address && !props.vaultOwnerAddress ? `, lender: "${addressLc.value}"` : ''
+      const lenderQuery = props.address ? `, lender: "${addressLc.value}"` : ''
       const thirdPartyQuery = props.thirdPartyAddress ? `, thirdPartyAddress: "${thirdPartyAddressLc.value}"` : ''
-      const originalOwnerQuery = props.originalOwnerAddress && !props.vaultOwnerAddress ? `, originalOwner: "${originalOwnerAddressLc.value}"` : ''
-      const vaultOwnerQuery = props.vaultOwnerAddress ? `, originalOwner: "${vaultOwnerAddressLc.value}", lender: "${VAULT_ADDRESS}"` : ''
+      const originalOwnerQuery = props.originalOwnerAddress ? `, originalOwner: "${originalOwnerAddressLc.value}"` : ''
 
       const fetchFromSubgraph = function () {
         const query = `{
@@ -677,7 +673,6 @@ export default {
             ${lenderQuery}
             ${thirdPartyQuery}
             ${originalOwnerQuery}
-            ${vaultOwnerQuery}
           }) {
             id
             gotchi {

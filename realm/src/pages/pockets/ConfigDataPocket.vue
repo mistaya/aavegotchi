@@ -5,7 +5,6 @@
     <ConfigDataGotchis />
     <ConfigDataGotchiRewards />
     <ConfigDataGotchiGhst />
-    <ConfigDataVaultOwners />
     <ConfigDataEthereumGotchiOwners />
   </div>
 </template>
@@ -14,7 +13,6 @@
 import ConfigDataGotchis from './ConfigDataGotchis.vue'
 import ConfigDataGotchiRewards from './ConfigDataGotchiRewards.vue'
 import ConfigDataGotchiGhst from './ConfigDataGotchiGhst.vue'
-import ConfigDataVaultOwners from './ConfigDataVaultOwners.vue'
 import ConfigDataEthereumGotchiOwners from './ConfigDataEthereumGotchiOwners.vue'
 
 export default {
@@ -22,7 +20,6 @@ export default {
     ConfigDataGotchis,
     ConfigDataGotchiRewards,
     ConfigDataGotchiGhst,
-    ConfigDataVaultOwners,
     ConfigDataEthereumGotchiOwners
   }
 }

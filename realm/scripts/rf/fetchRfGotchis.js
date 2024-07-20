@@ -5,7 +5,6 @@ const setHelpers = require('./sets/setHelpers.js')
 
 const fetchGotchiLendings = require('./lendings/fetchGotchiLendings.js')
 const fetchEthGotchiOwners = require('./eth/fetchEthGotchiOwners.js')
-const fetchVaultGotchiOwners = require('./vault/fetchVaultGotchiOwners.js')
 // eslint-disable-next-line no-unused-vars
 const fetchGotchiImages = require('./images/fetchGotchiImages.js')
 const fetchLendingsFromContract = require('./lendings/fetchGotchiLendingsFromContract.js')
@@ -366,6 +365,7 @@ const SEASONS = {
       }
     }
   }
+  // S9: disable checkVault because the subgraph is no longer available
 }
 
 // Params for this run
@@ -383,7 +383,6 @@ const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
 const GOTCHI_IMAGES_FOLDER = `./r${ROUND_NUM}`
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
-const VAULT_ADDRESS = '0xdd564df884fd4e217c9ee6f65b4ba6e5641eac63'
 
 const SUBGRAPH_URL = 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api'
 const FETCH_PAGE_SIZE = 1000
@@ -534,7 +533,7 @@ const fetchGotchiOwners = async function () {
     }
     console.log(`Found ${Object.keys(gotchiIdToLending).length} lent-out gotchis`)
 
-    // If the gotchi has an active lending, those details contain the borrower/lender/originalOwner (handles Vault)
+    // If the gotchi has an active lending, those details contain the borrower/lender/originalOwner
     for (const gotchi of gotchis) {
       const lending = gotchiIdToLending[gotchi.id]
       if (!lending) { continue }
@@ -547,9 +546,8 @@ const fetchGotchiOwners = async function () {
   }
 
   // For non-lent-out gotchis:
-  // Find owners of gotchis bridged to Ethereum or in the Vault
+  // Find owners of gotchis bridged to Ethereum
   const ethGotchis = []
-  const vaultGotchis = []
   for (const gotchi of gotchis) {
     if (gotchiIdToLending[gotchi.id]) {
       // lent-out gotchi already dealt with
@@ -557,8 +555,6 @@ const fetchGotchiOwners = async function () {
     }
     if (gotchi.owner === ETH_BRIDGE_ADDRESS) {
       ethGotchis.push(gotchi)
-    } else if (gotchi.owner === VAULT_ADDRESS) {
-      vaultGotchis.push(gotchi)
     }
   }
 
@@ -570,16 +566,6 @@ const fetchGotchiOwners = async function () {
     }
   } else {
     console.log('Not fetching ETH gotchi owners!')
-  }
-
-  if (SEASON.checkVault) {
-    console.log(`Find ${vaultGotchis.length} Vault gotchi owners`)
-    const gotchiIdToVaultOwner = await fetchVaultGotchiOwners(vaultGotchis.map(g => g.id), ROUND.blocks.polygon)
-    for (const gotchi of vaultGotchis) {
-      gotchi.realOwner = gotchiIdToVaultOwner[gotchi.id] || ''
-    }
-  } else {
-    console.log('Not fetching Vault gotchi owners!')
   }
 
   await writeJsonFile(`${GOTCHIS_FILENAME}.json`, gotchis)
