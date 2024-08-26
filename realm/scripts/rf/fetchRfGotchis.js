@@ -364,18 +364,58 @@ const SEASONS = {
         eth: 19847394
       }
     }
-  }
+  },
   // S9: disable checkVault because the subgraph is no longer available
+  szn9: {
+    checkVault: false,
+    checkLendings: true,
+    rnd1: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27', // TODO will these be updated?
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 60983872, // Aug-24-2024
+        eth: 20598921
+      }
+    },
+    rnd2: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Sep-07-2024
+        eth: 0
+      }
+    },
+    rnd3: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Sep-21-2024
+        eth: 0
+      }
+    },
+    rnd4: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        polygon: 0, // Oct-05-2024
+        eth: 0
+      }
+    }
+  }
 }
 
 // Params for this run
 // - season
-const SEASON_NUM = 8
+const SEASON_NUM = 9
 const SEASON = SEASONS[`szn${SEASON_NUM}`]
 const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8,9
 // - round
-const ROUND_NUM = 3 // Remember to delete any old lendings json from previous seasons
+const ROUND_NUM = 1 // Remember to delete any old lendings json from previous seasons
 const ROUND = SEASON[`rnd${ROUND_NUM}`]
 const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
 const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
@@ -630,12 +670,12 @@ const runAll = async function () {
 //  Uncomment One of the below functions to run
 // ----------------------------------------------------
 
-// runAll()
+runAll()
 // fetchRoundData()
 // fetchLendings()
 // fetchGotchiOwners()
 // manuallyCalculateBRS()
 
-fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
+// fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
 
 // ----------------------------------------------------

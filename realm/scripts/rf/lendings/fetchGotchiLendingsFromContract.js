@@ -15,7 +15,7 @@ const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber }
   console.log(`There are total ${gotchiIds.length} to look up lendings for.`)
   console.log(`There are ${fetchedIds.length} already fetched, fetching remaining ${gotchisToFetch.length} gotchi lendings`)
 
-  const BATCH_SIZE = 2000
+  const BATCH_SIZE = 500
 
   for (let i = 0; i < gotchisToFetch.length; i += BATCH_SIZE) {
     const batchGotchis = gotchisToFetch.slice(i, i + BATCH_SIZE)
