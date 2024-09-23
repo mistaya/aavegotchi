@@ -6882,6 +6882,192 @@
         ]
     },
     {
+        "id": 404,
+        "name": "Granny Glasses",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -1,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 405,
+        "name": "Freckles",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 406,
+        "name": "Common Stohn",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 407,
+        "name": "Based Shades",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 408,
+        "name": "Rasta Glasses",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 409,
+        "name": "Braces",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -1,
+            1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
         "id": 41,
         "name": "Trezor Wallet",
         "rarityScoreModifier": 2,
@@ -6908,6 +7094,254 @@
             -1,
             0,
             0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 410,
+        "name": "Uncommon Stohn",
+        "rarityScoreModifier": 2,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            0,
+            1,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 411,
+        "name": "Aloha Flowers",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            -3,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 412,
+        "name": "Baable Gum",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            3,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 413,
+        "name": "Rare Stohn",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            0,
+            2,
+            1,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 414,
+        "name": "Cheap Mask",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            2,
+            2,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 415,
+        "name": "Wild Fungi",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -2,
+            -2,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 416,
+        "name": "Kawaii Mouth",
+        "rarityScoreModifier": 20,
+        "slotPositions": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            0,
+            0,
+            -5,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 417,
+        "name": "Baby Licky",
+        "rarityScoreModifier": 20,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            2,
+            0,
+            0,
+            -3,
             0,
             0
         ]
