@@ -2,21 +2,7 @@
     <footer class="site-banner site-banner--secondary">
         <div class="footer__sig">
             By <b style="font-family: monospace;">eitri</b>
-            (discord /
-            <a
-                href="https://twitter.com/eittri"
-                rel="nofollow noopener noreferrer"
-                class="site-banner__link"
-                title="eittri on twitter"
-            >
-                <span class="sr-only">
-                    twitter
-                </span>
-                <SiteIcon
-                    name="twitter"
-                    class="footer__twitter-icon"
-                />
-            </a>)
+            (discord)
             - feedback welcome!
         </div>
         <div>
@@ -79,11 +65,6 @@ export default {
   }
   .footer__donate {
     padding-right: 22px;
-  }
-
-  .footer__twitter-icon {
-    position: relative;
-    top: 2px;
   }
 
   .footer__mug {

@@ -30,7 +30,6 @@ import zoomInSvg from '!!raw-loader!@/assets/icons/icon-zoom-in.svg'
 import checkSvg from '!!raw-loader!@/assets/icons/icon-check.svg'
 import warningTriangleSvg from '!!raw-loader!@/assets/icons/icon-warning-triangle.svg'
 import infoSvg from '!!raw-loader!@/assets/icons/icon-info-empty.svg'
-import twitterSvg from '!!raw-loader!@/assets/icons/icon-twitter.svg'
 import clockSvg from '!!raw-loader!@/assets/icons/icon-clock.svg'
 import sunSvg from '!!raw-loader!@/assets/icons/icon-sun.svg'
 import moonSvg from '!!raw-loader!@/assets/icons/icon-moon.svg'
@@ -52,7 +51,6 @@ const icons = [
   { id: 'check', svg: checkSvg },
   { id: 'warning-triangle', svg: warningTriangleSvg },
   { id: 'info', svg: infoSvg },
-  { id: 'twitter', svg: twitterSvg },
   { id: 'clock', svg: clockSvg },
   { id: 'sun', svg: sunSvg },
   { id: 'moon', svg: moonSvg },
