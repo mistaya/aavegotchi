@@ -130,7 +130,7 @@
               :aria-pressed="`${dashboardDisplayMode === 'minimum'}`"
               @click="dashboardDisplayMode = 'minimum'"
             >
-              Minimum (locked)
+              Original Minimum
             </SiteButton>
             Collateral
           </div>
@@ -252,7 +252,7 @@
               />
             </th>
             <th>
-              Minimum Collateral
+              Original Minimum Collateral
               <SortToggle
                 v-if="hasPrices"
                 :sort="gotchisSort.column === 'minimumStake' ? gotchisSort.direction : null"
@@ -456,7 +456,7 @@ export default {
         const collateral = collaterals[g.collateral.toLowerCase()]
         const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : new BigNumber(0)
         const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : new BigNumber(0)
-        const excessStake = stakedAmount.minus(minimumStake)
+        const excessStake = stakedAmount.isGreaterThan(minimumStake) ? stakedAmount.minus(minimumStake) : new BigNumber(0)
         const owner = g.owner?.id
         return {
           id: g.id,
