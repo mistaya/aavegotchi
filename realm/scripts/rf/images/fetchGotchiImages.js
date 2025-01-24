@@ -44,7 +44,15 @@ const fetchGotchiImages = async function ({ fileName, folderName }) {
       gotchi.numericTraits,
       gotchi.equippedWearables
     ])
-    const svgsByGotchiId = await diamond.getPreviewAavegotchisSideSvgs(batchGotchiParams)
+    let svgsByGotchiId = null
+    try {
+      svgsByGotchiId = await diamond.getPreviewAavegotchisSideSvgs(batchGotchiParams)
+    } catch (e) {
+      // retry
+      console.log('Error, retrying')
+      await new Promise((resolve, reject) => setTimeout(resolve, 5000))
+      svgsByGotchiId = await diamond.getPreviewAavegotchisSideSvgs(batchGotchiParams)
+    }
     for (const gotchiId in svgsByGotchiId) {
       const svgs = svgsByGotchiId[gotchiId]
       const svgText = tweakSvg(svgs[0])
