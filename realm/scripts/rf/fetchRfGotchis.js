@@ -417,16 +417,16 @@ const SEASONS = {
         polygon: 66930990, // 2025-01-20T14:00Z
         eth: 21666164
       }
-    } /*,
+    },
     rnd2: {
       rfCalc: 'js2',
       wearableSets: '2023-12-27',
       useLendingsFromContract: true,
       blocks: {
-        polygon: 0, // 2025-02-03T14:00Z
-        eth: 0
+        polygon: 67490569, // 2025-02-03T14:00Z
+        eth: 21766438
       }
-    },
+    } /*,
     rnd3: {
       rfCalc: 'js2',
       wearableSets: '2023-12-27',
@@ -455,7 +455,7 @@ const SEASON = SEASONS[`szn${SEASON_NUM}`]
 const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
 const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8,9,10
 // - round
-const ROUND_NUM = 1 // Remember to delete any old lendings json from previous seasons
+const ROUND_NUM = 2 // Remember to delete any old lendings json from previous seasons
 const ROUND = SEASON[`rnd${ROUND_NUM}`]
 const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
 const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
