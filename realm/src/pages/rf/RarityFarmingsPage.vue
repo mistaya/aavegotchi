@@ -12,7 +12,7 @@
           :to="{ name: 'rf', params: { season: seasonId, round: roundId } }"
           class="site-banner__link"
         >
-          <span class="sr-only">Season {{ seasonId }}</span> Round {{ roundId }}
+          <span class="sr-only">Season {{ seasonId }} </span>Round {{ roundId }}
         </router-link>
       </div>
     </div>
