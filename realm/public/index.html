@@ -19,21 +19,21 @@
     <meta name="msapplication-TileColor" content="#9f00a7">
     <meta name="theme-color" content="#ffffff">
     <script>
-      function trackView (url, referrer, websiteId) {
+      function trackView (url) {
         if (window.umami) {
-          window.umami.trackView(url, referrer, websiteId)
+          window.umami.track(props => ({ ...props, url }))
         }
       }
-      function trackEvent (eventValue, eventData, url, websiteId) {
+      function trackEvent (eventValue, eventData) {
         if (window.umami) {
-          window.umami.trackEvent(eventValue, eventData, url, websiteId)
+          window.umami.track(eventValue, eventData)
         }
       }
       function onUmamiLoaded () {
         trackView(document.location.pathname);
       }
     </script>
-    <script async defer data-website-id="9fbe07b7-107b-4a28-a8f7-75f04a03aa82" data-domains="www.aadventure.io" data-auto-track="false" src="https://u.aadventure.io/umami.js" onload="onUmamiLoaded"></script>
+    <script async defer data-website-id="9fbe07b7-107b-4a28-a8f7-75f04a03aa82" data-domains="www.aadventure.io" data-auto-track="false" src="https://u2.aadventure.io/script.js" onload="onUmamiLoaded"></script>
   </head>
   <body>
     <noscript>
