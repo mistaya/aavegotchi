@@ -348,6 +348,12 @@ export default {
 
       const fetchFromSubgraph = function () {
         const idsToFetch = lendingIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
+
+        if (idsToFetch.length === 0) {
+          setLoaded()
+          return
+        }
+
         const query = `{
           gotchiLendings(first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
             id
