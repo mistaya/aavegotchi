@@ -5,7 +5,8 @@ import apis from '@/data/apis'
 import auction1JsonUrl from './auctions/assetAuction1.json'
 import auction2JsonUrl from './auctions/assetAuction2.json'
 
-const REALM_SUBGRAPH_URL = apis.REALM_AUCTIONS_SUBGRAPH
+// no replacement subgraph available, was originally used for Land Auctions 1 and 2
+const REALM_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
 const FETCH_PAGE_SIZE = 1000
 
 // startTime and endTime are compatible with JS Date; divide by 1000 before using in graph query
