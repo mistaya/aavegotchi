@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
-import apis from '@/data/apis'
 import auction1JsonUrl from './auctions/assetAuction1.json'
 import auction2JsonUrl from './auctions/assetAuction2.json'
 
