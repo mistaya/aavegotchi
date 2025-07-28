@@ -11,6 +11,13 @@
       <DataFetcherPrices />
     </div>
 
+    <div
+      class="site-alertbox site-alertbox--info site-alertbox--compact"
+      style="margin-top: 20px"
+    >
+     Gotchi "Spirit Force" was a Polygon-only feature (it was not migrated to Base). The final owner of the gotchi on Polygon can still withdraw any remaining Spirit Force and GHST rewards there.
+    </div>
+
     <template v-if="gotchisFetchStatus.loaded">
       <div class="dashboard">
 
