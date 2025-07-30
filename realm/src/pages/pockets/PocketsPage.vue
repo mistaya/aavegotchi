@@ -7,7 +7,7 @@
     <div>
       <DataFetcherGotchis />
       <DataFetcherGotchiBalances />
-      <DataFetcherEthereumGotchiOwners />
+      <DataFetcherEthereumGotchiOwners v-if="enableEthereumGotchiOwners" />
       <DataFetcherPrices />
     </div>
 
@@ -392,6 +392,7 @@
 import { ref, computed, watch } from 'vue'
 import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
+import useNetwork from '@/environment/useNetwork'
 import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
@@ -424,6 +425,8 @@ export default {
     SortToggle
   },
   setup () {
+    const { isPolygonNetwork } = useNetwork()
+
     const dashboardDisplayMode = ref('all') // or 'minimum'
 
     const {
@@ -446,6 +449,8 @@ export default {
       lastFetchDate: ghstLastFetchDate
     } = useGotchiBalances()
 
+    const enableEthereumGotchiOwners = computed(() => isPolygonNetwork.value)
+    // ethereum gotchi owners data loads from cache initially so it's fine to do even if we don't need it
     const {
       ownersByGotchi: ethereumGotchiOwners,
       fetchStatus: ethereumGotchiOwnersFetchStatus
@@ -499,7 +504,7 @@ export default {
     })
 
     const trueOwnersByGotchi = computed(() => {
-      const checkEthereumOwner = hasEthereumGotchiOwners.value
+      const checkEthereumOwner = enableEthereumGotchiOwners.value && hasEthereumGotchiOwners.value
       const ethereumOwnerFor = ethereumGotchiOwners.value
       return Object.fromEntries(
         gotchisData.value.map(g => {
@@ -751,6 +756,7 @@ export default {
     })
 
     return {
+      enableEthereumGotchiOwners,
       gotchisFetchStatus,
       dashboardDisplayMode,
       collateralTotalsWithPriceOrdered,
