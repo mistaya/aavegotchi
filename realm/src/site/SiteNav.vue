@@ -1,8 +1,13 @@
 <template>
   <header class="site-header site-banner">
-    <ColorSchemeToggle
-      class="site-header__color-scheme"
-    />
+    <div class="site-header__toggles">
+      <SiteNetwork
+        class="site-header__network"
+      />
+      <ColorSchemeToggle
+        class="site-header__color-scheme"
+      />
+    </div>
     <nav>
       <router-link
         :to="{ name: 'citaadel' }"
@@ -46,10 +51,12 @@
 
 <script>
 import ColorSchemeToggle from './ColorSchemeToggle.vue'
+import SiteNetwork from './SiteNetwork.vue'
 
 export default {
   components: {
-    ColorSchemeToggle
+    ColorSchemeToggle,
+    SiteNetwork
   }
 }
 </script>
@@ -62,7 +69,12 @@ export default {
     display: inline-block;
     margin: 5px 15px;
   }
-  .site-header__color-scheme {
+  .site-header__toggles {
     float: right;
+    margin-top: 8px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    column-gap: 15px;
   }
 </style>

@@ -31,12 +31,6 @@ export default {
 </script>
 
 <style scoped>
-  .color-scheme-toggle {
-    height: 24px;
-    margin-top: 5px;
-    margin-right: 10px;
-  }
-
   .color-scheme-icon {
     flex: 0 0 auto;
     color: var(--site-banner-text-color);

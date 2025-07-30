@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useSiteHead from '@/site/useSiteHead'
 import usePageLoading from './usePageLoading'
+import useNetwork from '@/environment/useNetwork'
 import NotFoundPage from './NotFoundPage.vue'
 
 const { pageLoading, pageLazyLoadError } = usePageLoading()
+const { baseAllowed, polygonAllowed } = useNetwork()
 
 const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/pages/land/CitaadelPage.vue')
 const CitaadelMainPage = () => import(/* webpackChunkName: "citaadel-main" */ '@/pages/land/CitaadelMainPage.vue')
@@ -54,7 +56,8 @@ const routes = [
           head: {
             title: 'The Citaadel',
             description: 'Filter and explore the Citaadel map and Baazaar parcel listings from the Aavegotchi Realm'
-          }
+          },
+          networks: ['polygon']
         }
       },
       // redirect from old channeling page to spillover
@@ -72,7 +75,8 @@ const routes = [
           head: {
             title: 'Spillover Activity',
             description: 'See recent channelings/harvestings in the Citaadel'
-          }
+          },
+          networks: ['polygon']
         }
       },
       {
@@ -85,7 +89,8 @@ const routes = [
             title: 'Parcel Details',
             description: 'View details about a parcel'
           },
-          analyticsUrl: '/citaadel/parcel/ID'
+          analyticsUrl: '/citaadel/parcel/ID',
+          networks: ['polygon']
         }
       }
     ]
@@ -104,7 +109,8 @@ const routes = [
           head: {
             title: 'Land Auction',
             description: 'Filter and explore the Land parcels that were/are up for auction from the Aavegotchi Realm'
-          }
+          },
+          networks: []
         }
       }
     ]
@@ -117,7 +123,8 @@ const routes = [
       head: {
         title: 'Gotchi Pockets',
         description: 'Examine the contents of gotchi pockets: spirit force and GHST'
-      }
+      },
+      networks: ['base', 'polygon']
     }
   },
   {
@@ -129,7 +136,8 @@ const routes = [
       head: {
         title: 'Wearable Sets',
         description: 'Full details of all wearable sets, grouped by gotchi types'
-      }
+      },
+      networks: []
     }
   },
   {
@@ -154,7 +162,8 @@ const routes = [
           head: {
             title: 'Rarity Farming',
             description: 'See historical rarity farming leaderboard results'
-          }
+          },
+          networks: []
         }
       }
     ]
@@ -172,7 +181,8 @@ const routes = [
           head: {
             title: 'Gotchi Lending Listings',
             description: 'Filter and explore the gotchis available for lending'
-          }
+          },
+          networks: ['polygon']
         }
       },
       {
@@ -183,7 +193,8 @@ const routes = [
           head: {
             title: 'Gotchi Lending Activity',
             description: 'See recently-agreed gotchi lendings'
-          }
+          },
+          networks: ['polygon']
         }
       },
       {
@@ -197,7 +208,8 @@ const routes = [
           head: {
             title: 'Gotchi Borrower',
             description: 'Overview of your borrowed gotchis'
-          }
+          },
+          networks: ['polygon']
         }
       },
       {
@@ -213,7 +225,8 @@ const routes = [
           head: {
             title: 'Gotchi Lending Manager',
             description: 'Management overview of your gotchi lendings'
-          }
+          },
+          networks: ['polygon']
         }
       },
       {
@@ -230,7 +243,8 @@ const routes = [
           head: {
             title: 'Lands',
             description: 'Overview of lands with their channeling and harvesting status'
-          }
+          },
+          networks: ['polygon']
         },
         children: [
           {
@@ -243,7 +257,8 @@ const routes = [
                 title: 'Lands',
                 description: 'Overview of your lands with their channeling and harvesting status'
               },
-              analyticsUrl: '/lending/lands/owner/ADDRESS'
+              analyticsUrl: '/lending/lands/owner/ADDRESS',
+              networks: ['polygon']
             }
           },
           {
@@ -254,7 +269,8 @@ const routes = [
               head: {
                 title: 'Lands open to public',
                 description: 'Overview of lands with public access to channeling and harvesting'
-              }
+              },
+              networks: ['polygon']
             }
           },
           {
@@ -269,7 +285,8 @@ const routes = [
               head: {
                 title: 'Lands open to whitelist',
                 description: 'Overview of lands with whitelist access to channeling and harvesting'
-              }
+              },
+              networks: ['polygon']
             }
           }
         ]
@@ -282,7 +299,8 @@ const routes = [
           head: {
             title: 'Gotchi Lending Exports',
             description: 'Export gotchi lendings data'
-          }
+          },
+          networks: ['polygon']
         }
       }
     ]
@@ -374,6 +392,14 @@ router.afterEach((to, from) => {
   } else {
     window.trackView(to.path)
   }
+})
+
+// Networks allowed
+router.beforeResolve((to, from, next) => {
+  const networks = to.meta?.networks
+  polygonAllowed.value = networks?.includes('polygon') || false
+  baseAllowed.value = networks?.includes('base') || false
+  next()
 })
 
 // Production website can produce routing errors when new versions are deployed

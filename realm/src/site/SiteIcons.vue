@@ -35,6 +35,8 @@ import sunSvg from '!!raw-loader!@/assets/icons/icon-sun.svg'
 import moonSvg from '!!raw-loader!@/assets/icons/icon-moon.svg'
 import channelSvg from '!!raw-loader!@/assets/icons/icon-channel.svg'
 import homeSvg from '!!raw-loader!@/assets/icons/icon-home.svg'
+import networkBaseSvg from '!!raw-loader!@/assets/icons/icon-network-base.svg'
+import networkPolygonSvg from '!!raw-loader!@/assets/icons/icon-network-polygon.svg'
 
 const icons = [
   { id: 'copy', svg: copySvg },
@@ -55,7 +57,9 @@ const icons = [
   { id: 'sun', svg: sunSvg },
   { id: 'moon', svg: moonSvg },
   { id: 'channel', svg: channelSvg },
-  { id: 'home', svg: homeSvg }
+  { id: 'home', svg: homeSvg },
+  { id: 'network-base', svg: networkBaseSvg },
+  { id: 'network-polygon', svg: networkPolygonSvg }
 ]
 icons.forEach(icon => {
   icon.viewBox = icon.svg.match(/viewBox="([^"]+)"/)?.[1]
