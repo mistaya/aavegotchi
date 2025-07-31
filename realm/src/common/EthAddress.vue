@@ -26,6 +26,19 @@
         </span>
         <SiteIcon name="open-window" />
       </a>
+      <a
+        v-if="basescan"
+        :href="`https://basescan.org/address/${address}${basescan === 'erc20' ? '#tokentxns' : ''}`"
+        target="_blank"
+        rel="nofollow noopener noreferrer"
+        title="open in basescan"
+        class="basescan"
+      >
+        <span class="sr-only">
+          basescan
+        </span>
+        <SiteIcon name="open-window" />
+      </a>
     </div>
   </span>
 </template>
@@ -42,6 +55,7 @@ export default {
   props: {
     address: { type: String, required: true },
     polygonscan: { type: [Boolean, String], default: false },
+    basescan: { type: [Boolean, String], default: false },
     icon: { type: Boolean, default: false },
     shortest: { type: Boolean, default: false }
   },
@@ -71,14 +85,17 @@ export default {
     margin: 0 3px 0 5px;
     font-family: monospace;
   }
-  .polygonscan {
+  .polygonscan,
+  .basescan {
     margin-left: 5px;
   }
-  .polygonscan > img {
+  .polygonscan > img,
+  .basescan > img {
     width: 15px;
     height: 15px;
   }
-  .polygonscan:hover {
+  .polygonscan:hover,
+  .basescan:hover {
     filter: drop-shadow(1px 1px 1px var(--site-link-underline-color--hover));
   }
 </style>

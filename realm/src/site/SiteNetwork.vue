@@ -31,7 +31,7 @@
     v-else-if="showPolygon"
     class="site-network"
   >
-    <SiteIcon name="polygon" />
+    <SiteIcon name="network-polygon" />
     <span class="site-network__name">
       Polygon
     </span>

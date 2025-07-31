@@ -3,7 +3,7 @@
     class="site-card"
     style="margin: 15px; padding: 0px 15px 10px 15px"
   >
-    <h2>Ethereum Gotchi Owners</h2>
+    <h2>Ethereum Gotchi Owners [POLYGON ONLY]</h2>
 
     <form @submit.prevent="fetchOwners">
       <div style="margin-top: 10px">

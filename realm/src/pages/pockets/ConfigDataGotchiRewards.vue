@@ -3,7 +3,7 @@
     class="site-card"
     style="margin: 15px; padding: 0px 15px 10px 15px"
   >
-    <h2>Gotchi AAVE Rewards</h2>
+    <h2>Gotchi AAVE Rewards [POLYGON ONLY]</h2>
 
     <p>
       The unclaimed AAVE rewards balance has to be queried directly from the AAVE contract, it's not available in the subgraph.

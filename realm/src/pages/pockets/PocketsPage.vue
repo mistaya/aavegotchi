@@ -4,7 +4,7 @@
 
     <h1>Gotchi Pockets</h1>
 
-    <div>
+    <div :key="selectedNetwork">
       <DataFetcherGotchis />
       <DataFetcherGotchiBalances />
       <DataFetcherEthereumGotchiOwners v-if="enableEthereumGotchiOwners" />
@@ -15,7 +15,7 @@
       class="site-alertbox site-alertbox--info site-alertbox--compact"
       style="margin-top: 20px"
     >
-     Gotchi "Spirit Force" was a Polygon-only feature (it was not migrated to Base). The final owner of the gotchi on Polygon can still withdraw any remaining Spirit Force and GHST rewards there.
+     Gotchi "Spirit Force" or "collateral" was a Polygon-only feature (it was not migrated to Base). The final owner of the gotchi on Polygon can still withdraw any remaining Spirit Force and GHST rewards there.
     </div>
 
     <template v-if="gotchisFetchStatus.loaded">
@@ -85,7 +85,7 @@
         </div>
 
         <div
-          v-if="hasPrices"
+          v-if="enableStakedCollateral && hasPrices"
           class="dashboard-row"
         >
           <div class="dashboard-metric site-card">
@@ -117,7 +117,10 @@
           </div>
         </div>
 
-        <div class="dashboard-controls">
+        <div
+          v-if="enableStakedCollateral"
+          class="dashboard-controls"
+        >
           <div class="dashboard-controls__modes">
             Show totals for
             <SiteButton
@@ -143,7 +146,10 @@
           </div>
         </div>
 
-        <div class="dashboard-row">
+        <div
+          v-if="enableStakedCollateral"
+          class="dashboard-row"
+        >
           <div
             v-for="item in collateralTotalsWithPriceOrdered"
             :key="item.collateral.id"
@@ -258,7 +264,7 @@
                 @update:sort="gotchisSort.column = $event ? 'collateral' : null; gotchisSort.direction = $event"
               />
             </th>
-            <th>
+            <th v-if="enableStakedCollateral">
               Original Minimum Collateral
               <SortToggle
                 v-if="hasPrices"
@@ -266,7 +272,7 @@
                 @update:sort="gotchisSort.column = $event ? 'minimumStake' : null; gotchisSort.direction = $event"
               />
             </th>
-            <th>
+            <th v-if="enableStakedCollateral">
               Staked Collateral
               <SortToggle
                 v-if="hasPrices"
@@ -274,7 +280,7 @@
                 @update:sort="gotchisSort.column = $event ? 'stakedAmount' : null; gotchisSort.direction = $event"
               />
             </th>
-            <th>
+            <th v-if="enableStakedCollateral">
               Excess Collateral
               <SortToggle
                 v-if="hasPrices"
@@ -343,7 +349,7 @@
             <td>
               {{ gotchi.collateral }}
             </td>
-            <td>
+            <td v-if="enableStakedCollateral">
               <NumberDisplay :number="gotchi.minimumStake" />
               <span class="usd-value">(<NumberDisplay
                 v-if="hasPrices"
@@ -351,7 +357,7 @@
                 usd
               />)</span>
             </td>
-            <td>
+            <td v-if="enableStakedCollateral">
               <NumberDisplay :number="gotchi.stakedAmount" />
               <span class="usd-value">(<NumberDisplay
                 v-if="hasPrices"
@@ -359,7 +365,7 @@
                 usd
               />)</span>
             </td>
-            <td>
+            <td v-if="enableStakedCollateral">
               <NumberDisplay :number="gotchi.excessStake" />
               <span class="usd-value">(<NumberDisplay
                 v-if="hasPrices"
@@ -379,7 +385,11 @@
               </td>
             </template>
             <td>
-              <EthAddress :address="gotchi.escrow" polygonscan />
+              <EthAddress
+                :address="gotchi.escrow"
+                :polygonscan="isPolygonNetwork"
+                :basescan="!isPolygonNetwork"
+              />
             </td>
           </tr>
         </template>
@@ -425,7 +435,7 @@ export default {
     SortToggle
   },
   setup () {
-    const { isPolygonNetwork } = useNetwork()
+    const { selectedNetwork, isPolygonNetwork } = useNetwork()
 
     const dashboardDisplayMode = ref('all') // or 'minimum'
 
@@ -456,7 +466,8 @@ export default {
       fetchStatus: ethereumGotchiOwnersFetchStatus
     } = useEthereumGotchiOwners()
 
-    // Fetch collateral prices if necessary
+    const enableStakedCollateral = computed(() => isPolygonNetwork.value)
+    // Fetch token prices if necessary
     if (!pricesFetchStatus.value.loaded && canSubmitPricesFetch.value) {
       fetchPrices()
     }
@@ -466,9 +477,18 @@ export default {
     const gotchisData = computed(() => {
       return gotchis.value.map(g => {
         const collateral = collaterals[g.collateral.toLowerCase()]
-        const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : new BigNumber(0)
-        const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : new BigNumber(0)
-        const excessStake = stakedAmount.isGreaterThan(minimumStake) ? stakedAmount.minus(minimumStake) : new BigNumber(0)
+        let stakedCollateralData = {}
+        if (enableStakedCollateral.value) {
+          const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : new BigNumber(0)
+          const minimumStake = collateral ? new BigNumber(g.minimumStake).dividedBy(collateral.factor) : new BigNumber(0)
+          const excessStake = stakedAmount.isGreaterThan(minimumStake) ? stakedAmount.minus(minimumStake) : new BigNumber(0)
+          stakedCollateralData = {
+            stakedAmount,
+            minimumStake,
+            excessStake
+          }
+        }
+
         const owner = g.owner?.id
         return {
           id: g.id,
@@ -480,9 +500,7 @@ export default {
           originalOwner: g.originalOwner,
           collateralId: collateral.id,
           collateral: collateral?.label || g.collateral,
-          stakedAmount,
-          minimumStake,
-          excessStake,
+          ...stakedCollateralData,
           escrow: g.escrow
         }
       })
@@ -714,13 +732,13 @@ export default {
           }
           return totals
         },
-        balanceTokens.map(() => new BigNumber(0))
+        balanceTokens.value.map(() => new BigNumber(0))
       )
 
       const numGotchis = loadedBalancesDetails.value.numGotchis
 
       const statsByTokenIndex = Object.fromEntries(
-        balanceTokens.map((token, tokenIndex) => {
+        balanceTokens.value.map((token, tokenIndex) => {
           const total = totalByToken[tokenIndex]
           const mean = total.dividedBy(numGotchis)
           let usdTotal = null
@@ -755,8 +773,31 @@ export default {
       return sortableByGotchi
     })
 
+    watch(
+      () => isPolygonNetwork.value,
+      () => {
+        // Reset to page 1 of table
+        gotchisPaging.value.page = 0
+
+        if (!isPolygonNetwork.value) {
+          // switched to Base
+          // If sorting by staked collateral, reset the sort
+          const { column } = gotchisSort.value
+          if (['stakedAmount', 'minimumStake', 'excessStake'].includes(column)) {
+            gotchisSort.value = {
+              column: '',
+              direction: 'asc'
+            }
+          }
+        }
+      }
+    )
+
     return {
+      selectedNetwork,
+      isPolygonNetwork,
       enableEthereumGotchiOwners,
+      enableStakedCollateral,
       gotchisFetchStatus,
       dashboardDisplayMode,
       collateralTotalsWithPriceOrdered,

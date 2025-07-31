@@ -346,7 +346,8 @@ const routes = [
       head: {
         title: 'Configure Data: Gotchi Pockets',
         description: 'Admin page for fetching data'
-      }
+      },
+      networks: ['base', 'polygon']
     }
   },
   {

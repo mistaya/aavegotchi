@@ -22,3 +22,35 @@ export default function () {
     baseAllowed
   }
 }
+
+const useNetworkCachedItem = function ({ initItem }) {
+  let initializedPolygon = false
+  let itemForPolygon = null
+  let initializedBase = false
+  let itemForBase = null
+
+  const getItemForNetwork = function (network) {
+    if (network === NETWORKS.polygon) {
+      if (!initializedPolygon) {
+        itemForPolygon = initItem(network)
+        initializedPolygon = true
+      }
+      return itemForPolygon
+    }
+    if (network === NETWORKS.base) {
+      if (!initializedBase) {
+        itemForBase = initItem(network)
+        initializedBase = true
+      }
+      return itemForBase
+    }
+  }
+
+  return {
+    getItemForNetwork
+  }
+}
+
+export {
+  useNetworkCachedItem
+}
