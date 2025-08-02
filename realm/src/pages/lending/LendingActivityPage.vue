@@ -5,7 +5,7 @@
       <div style="margin-bottom: 30px;">
         Here you can see recently-agreed lendings from
         <a
-          href="https://dapp.aavegotchi.com/lending/aavegotchis"
+          :href="isPolygonNetwork ? 'https://polygon.aavegotchi.com/lending/aavegotchis' : 'https://dapp.aavegotchi.com/lending/aavegotchis'"
           target="_blank"
           rel="noopener"
         >
@@ -172,7 +172,7 @@
               >
                 <td>
                   <a
-                    :href="`https://app.aavegotchi.com/lending/${result.id}`"
+                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/lending/${result.id}` : `https://dapp.aavegotchi.com/lending/aavegotchis?id=${result.id}`"
                     rel="noopener"
                     target="_blank"
                   >
@@ -220,7 +220,7 @@
                 />
                 <td>
                   <a
-                    :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
+                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}` : `https://dapp.aavegotchi.com/u/${result.originalOwner || result.lender}/inventory?itemType=aavegotchis&chainId=8453&id=${result.gotchiTokenId}`"
                     rel="noopener"
                     target="_blank"
                   >
@@ -261,6 +261,7 @@
 import BigNumber from 'bignumber.js'
 import { ref, computed, watch } from 'vue'
 import apis from '@/data/apis'
+import useNetwork from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import DateFriendly from '@/common/DateFriendly.vue'
@@ -268,8 +269,6 @@ import EthAddress from '@/common/EthAddress.vue'
 import SiteTable from '@/site/SiteTable.vue'
 import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
 import LendingLastChanneledCell from './LendingLastChanneledCell.vue'
-
-const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
 
 export default {
   components: {
@@ -280,6 +279,8 @@ export default {
     LendingLastChanneledCell
   },
   setup () {
+    const { isPolygonNetwork } = useNetwork()
+
     const {
       fetchGotchiChannelingStatuses,
       gotchiChannelingStatuses,
@@ -345,6 +346,8 @@ export default {
     const fetchLendings = function () {
       const [isStale, setLoaded, setError] = setLoading()
 
+      const SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+
       fetch(SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
@@ -376,7 +379,7 @@ export default {
       () => status.value.loaded,
       loaded => {
         if (loaded) {
-          fetchGotchiChannelingStatuses(results.value.map(result => result.gotchiTokenId))
+          fetchGotchiChannelingStatuses.value(results.value.map(result => result.gotchiTokenId))
         }
       }
     )
@@ -384,7 +387,7 @@ export default {
     fetchLendings()
 
     watch(
-      () => query.value,
+      () => [isPolygonNetwork.value, query.value],
       fetchLendings
     )
 
@@ -413,6 +416,7 @@ export default {
     }
 
     return {
+      isPolygonNetwork,
       tablePaging,
       fetchPageSize,
       withWhitelist,

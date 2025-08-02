@@ -414,7 +414,7 @@
               >
                 <td style="padding: 0 15px;">
                   <a
-                    :href="`https://app.aavegotchi.com/lending/${result.id}`"
+                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/lending/${result.id}` : `https://dapp.aavegotchi.com/lending/aavegotchis?id=${result.id}`"
                     rel="noopener"
                     target="_blank"
                     style="white-space: nowrap;"
@@ -463,7 +463,12 @@
                   class="with-left-border channel-not-allowed"
                   colspan="3"
                 >
-                  Not allowed
+                  <template v-if="!channelingDetails">
+                    Data unavailable
+                  </template>
+                  <template v-else>
+                    Not allowed
+                  </template>
                 </td>
                 <template v-else>
                   <td
@@ -537,7 +542,7 @@
                 </template>
                 <td class="with-left-border">
                   <a
-                    :href="`https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}`"
+                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}` : `https://dapp.aavegotchi.com/u/${result.originalOwner || result.lender}/inventory?itemType=aavegotchis&chainId=8453&id=${result.gotchiTokenId}`"
                     rel="noopener"
                     target="_blank"
                   >
@@ -583,6 +588,7 @@ import orderBy from 'lodash.orderby'
 import { ref, computed, watch } from 'vue'
 
 import apis from '@/data/apis'
+import useNetwork from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useTokenPricesAavegotchi from '@/data/useTokenPricesAavegotchi'
@@ -607,8 +613,6 @@ const TOKEN_ADDRESSES = {
   GHST: tokensList.find(({ label }) => label === 'GHST').id
 }
 
-const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
-
 export default {
   components: {
     CryptoIcon,
@@ -623,6 +627,8 @@ export default {
     LendingLastChanneledFetchStatus
   },
   setup () {
+    const { isPolygonNetwork } = useNetwork()
+
     const { ghstPrices, fetchStatus: pricesStatus, fetchPrices } = useTokenPricesAavegotchi()
     fetchPrices()
 
@@ -656,12 +662,12 @@ export default {
       hours: '',
       kinship: '',
       noWhitelist: true,
-      allAlchemica: true,
+      allAlchemica: false,
       tokens: {
-        FUD: true,
-        FOMO: true,
-        ALPHA: true,
-        KEK: true,
+        FUD: false,
+        FOMO: false,
+        ALPHA: false,
+        KEK: false,
         GHST: false
       }
     })
@@ -700,7 +706,7 @@ export default {
         const upfrontNum = f.upfrontMax - 0
         if (!Number.isNaN(upfrontNum)) {
           const upfrontBigNum = new BigNumber(upfrontNum).times(10e17)
-          upfrontQuery = `, upfrontCost_lte: "${upfrontBigNum}"`
+          upfrontQuery = `, upfrontCost_lte: "${upfrontBigNum.toFixed()}"`
         }
       }
       const borrowerSplitNum = f.borrowerSplit - 0
@@ -744,7 +750,7 @@ export default {
       {gotchiLendings(first: ${fetchPageSize.value} ${orderQuery}, where: {
         timeAgreed: null,
         timeCreated_not: null,
-        cancelled: false,
+        cancelled: false
         ${upfrontQuery}
         ${borrowerSplitQuery}
         ${periodQuery}
@@ -775,6 +781,8 @@ export default {
 
     const fetchLendings = function () {
       const [isStale, setLoaded, setError] = setLoading()
+
+      const SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
 
       fetch(SUBGRAPH_URL, {
         method: 'POST',
@@ -812,7 +820,7 @@ export default {
       () => status.value.loaded,
       loaded => {
         if (loaded) {
-          fetchGotchiChannelingStatuses(results.value.filter(result => result.channellingAllowed).map(result => result.gotchiTokenId))
+          fetchGotchiChannelingStatuses.value(results.value.filter(result => result.channellingAllowed).map(result => result.gotchiTokenId))
         }
       }
     )
@@ -820,7 +828,7 @@ export default {
     fetchLendings()
 
     watch(
-      () => query.value,
+      () => [isPolygonNetwork.value, query.value],
       fetchLendings
     )
 
@@ -931,6 +939,7 @@ export default {
     }
 
     return {
+      isPolygonNetwork,
       fetchPageSize,
       filters,
       filters2,

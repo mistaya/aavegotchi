@@ -182,7 +182,7 @@ const routes = [
             title: 'Gotchi Lending Listings',
             description: 'Filter and explore the gotchis available for lending'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       },
       {
@@ -194,7 +194,7 @@ const routes = [
             title: 'Gotchi Lending Activity',
             description: 'See recently-agreed gotchi lendings'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       },
       {
@@ -209,7 +209,7 @@ const routes = [
             title: 'Gotchi Borrower',
             description: 'Overview of your borrowed gotchis'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       },
       {
@@ -226,7 +226,7 @@ const routes = [
             title: 'Gotchi Lending Manager',
             description: 'Management overview of your gotchi lendings'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       },
       {
@@ -300,7 +300,7 @@ const routes = [
             title: 'Gotchi Lending Exports',
             description: 'Export gotchi lendings data'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       }
     ]

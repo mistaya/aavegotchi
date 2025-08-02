@@ -39,7 +39,22 @@
         </div>
       </div>
 
-      <div style="margin-bottom: 30px;">
+      <div
+        v-if="earningsStatus.error"
+        style="margin-bottom: 30px;"
+      >
+        <div class="site-alertbox site-alertbox--warning">
+          <SiteIcon name="warning-triangle" />
+          <div>
+            There was an error fetching gotchis' earnings.
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="isPolygonNetwork"
+        style="margin-bottom: 30px;"
+      >
         <div class="site-alertbox site-alertbox--warning">
           <SiteIcon name="warning-triangle" />
           <div>
@@ -174,12 +189,11 @@ import isValid from 'date-fns/isValid'
 import parseISO from 'date-fns/parseISO'
 
 import apis from '@/data/apis'
+import useNetwork from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import LendingsExport from './LendingsExport.vue'
 import SiteIcon from '@/site/SiteIcon.vue'
 
-const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
-const LENDING_SUBGRAPH_URL = apis.LENDING_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 export default {
@@ -188,13 +202,16 @@ export default {
     SiteIcon
   },
   setup () {
-    const { status: lendingsStatus, setLoading: setLendingsLoading } = useStatus()
-    const { status: earningsStatus, setLoading: setEarningsLoading } = useStatus()
+    const { isPolygonNetwork } = useNetwork()
+
+    const { status: lendingsStatus, setLoading: setLendingsLoading, reset: resetLendingsStatus } = useStatus()
+    const { status: earningsStatus, setLoading: setEarningsLoading, reset: resetEarningsStatus } = useStatus()
 
     const status = computed(() => ({
       loading: lendingsStatus.value.loading || earningsStatus.value.loading,
-      error: lendingsStatus.value.error || earningsStatus.value.error,
-      loaded: lendingsStatus.value.loaded && earningsStatus.value.loaded
+      error: lendingsStatus.value.error,
+      loaded: lendingsStatus.value.loaded &&
+        (earningsStatus.value.loaded || earningsStatus.value.error) // allow earnings fetch to fail
     }))
 
     const lendings = ref([])
@@ -216,6 +233,8 @@ export default {
     })
 
     const fetchLendings = function () {
+      const SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+
       const [isStale, setLoaded, setError] = setLendingsLoading()
       let lastIdNum = 0
       let fetchedLendings = []
@@ -341,7 +360,15 @@ export default {
     }
 
     const fetchEarnings = function () {
+      const LENDING_SUBGRAPH_URL = isPolygonNetwork.value ? apis.LENDING_SUBGRAPH : null
+
       const [isStale, setLoaded, setError] = setEarningsLoading()
+      if (!LENDING_SUBGRAPH_URL) {
+        earnings.value = {}
+        setError('no LENDING_SUBGRAPH_URL available to fetch earnings')
+        return
+      }
+
       let fetchedLendings = []
       const lendingIds = lendings.value.map(({ id }) => id)
       let nextIndex = 0
@@ -436,13 +463,35 @@ export default {
       fetchLendings()
     }
 
+    const clearLendings = function () {
+      lendings.value = []
+      resetLendingsStatus()
+    }
+
+    const clearEarnings = function () {
+      earnings.value = {}
+      resetEarningsStatus()
+    }
+
+    const clearData = function () {
+      clearLendings()
+      clearEarnings()
+    }
+
+    watch(
+      () => isPolygonNetwork.value,
+      clearData
+    )
+
     return {
+      isPolygonNetwork,
       filters,
       filtersEmpty,
       fetchData,
       status,
       lendings,
-      earnings
+      earnings,
+      earningsStatus
     }
   }
 }

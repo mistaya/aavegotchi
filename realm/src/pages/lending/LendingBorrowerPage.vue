@@ -23,7 +23,7 @@
       <div>
         <a
           v-if="hasValidAddress"
-          :href="`https://app.aavegotchi.com/aavegotchis/${encodeURIComponent(address)}`"
+          :href="isPolygonNetwork ? `https://polygon.aavegotchi.com/u/${encodeURIComponent(address)}/inventory?itemType=aavegotchis` : `https://dapp.aavegotchi.com/u/${encodeURIComponent(address)}/inventory?itemType=aavegotchis`"
           rel="noopener"
           target="_blank"
         >
@@ -67,6 +67,7 @@
 <script>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import useNetwork from '@/environment/useNetwork'
 import EthAddress from '@/common/EthAddress.vue'
 import LendingBorrowerGotchis from './LendingBorrowerGotchis.vue'
 
@@ -79,6 +80,8 @@ export default {
     address: { type: String, default: null }
   },
   setup (props) {
+    const { isPolygonNetwork } = useNetwork()
+
     const router = useRouter()
     const urlNoAddress = router.resolve({ name: 'lending-borrower' }).href
 
@@ -102,6 +105,7 @@ export default {
     }
 
     return {
+      isPolygonNetwork,
       urlNoAddress,
       clearAddress,
       inputAddress,

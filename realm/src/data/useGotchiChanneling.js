@@ -1,5 +1,6 @@
 import format from 'date-fns/format'
 import { ref, computed, watch } from 'vue'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useReactiveDate from '@/environment/useReactiveDate'
@@ -26,15 +27,18 @@ const utcMidnight = computed(() => {
 
 const utcMidnightTimestampMs = computed(() => utcMidnight.value - 0)
 
-const SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
-const FETCH_PAGE_SIZE = 1000
-
 export {
   utcMidnight,
   utcMidnightTimestampMs
 }
 
-export default function () {
+const { selectedNetwork, isPolygonNetwork } = useNetwork()
+
+const useGotchiChannelingForNetwork = function (network) {
+  // TODO waiting on GOTCHIVERSE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = isPolygonNetwork.value ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const FETCH_PAGE_SIZE = 1000
+
   const { status: fetchStatus, setLoading, reset } = useStatus()
   const gotchiChannelingStatuses = ref({
     dates: {}, // keys: gotchiId
@@ -131,6 +135,26 @@ export default function () {
 
     fetchStatusesFromSubgraph()
   }
+
+  return {
+    fetchGotchiChannelingStatuses,
+    fetchStatus,
+    lastFetchDate,
+    gotchiChannelingStatuses,
+    resetResult
+  }
+}
+
+const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useGotchiChannelingForNetwork(network) })
+
+export default function useGotchiChanneling () {
+  // use the currently selected network, which can change over time
+  const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
+  const fetchGotchiChannelingStatuses = computed(() => resultToUse.value.fetchGotchiChannelingStatuses)
+  const fetchStatus = computed(() => resultToUse.value.fetchStatus.value)
+  const lastFetchDate = computed(() => resultToUse.value.lastFetchDate.value)
+  const gotchiChannelingStatuses = computed(() => resultToUse.value.gotchiChannelingStatuses.value)
+  const resetResult = computed(() => resultToUse.value.resetResult)
 
   return {
     fetchGotchiChannelingStatuses,

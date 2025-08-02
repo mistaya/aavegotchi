@@ -46,8 +46,18 @@ const useNetworkCachedItem = function ({ initItem }) {
     }
   }
 
+  const initializedItemForNetwork = function (network) {
+    if (network === NETWORKS.polygon) {
+      return initializedPolygon
+    }
+    if (network === NETWORKS.base) {
+      return initializedBase
+    }
+  }
+
   return {
-    getItemForNetwork
+    getItemForNetwork,
+    initializedItemForNetwork
   }
 }
 
