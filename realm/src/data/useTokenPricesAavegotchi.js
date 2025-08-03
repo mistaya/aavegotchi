@@ -1,12 +1,12 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
-import moreTokens from './pockets/tokens.json'
+import allTokens from './pockets/tokens'
 
 const TOKEN_LABELS = ['GHST', 'FUD', 'FOMO', 'ALPHA', 'KEK']
 const usdPrices = ref({})
 const ghstPrices = ref({})
 
-const tokens = Object.values(moreTokens).filter(token => TOKEN_LABELS.includes(token.label))
+const tokens = TOKEN_LABELS.map(label => allTokens.polygon.tokensByLabel[label]).filter(t => t)
 const tokenIdsForCoingeckoUrl = tokens.map(c => encodeURIComponent(c.coingeckoId)).join(',')
 const API_URL_COINGECKO = 'https://api.coingecko.com/api/v3/simple/price'
 const CACHE_TIME_SECONDS = 300

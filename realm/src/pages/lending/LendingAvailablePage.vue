@@ -602,16 +602,7 @@ import SiteTable from '@/site/SiteTable.vue'
 import SortToggle from '@/common/SortToggle.vue'
 import LendingLandsIconLink from './LendingLandsIconLink.vue'
 import LendingLastChanneledFetchStatus from './LendingLastChanneledFetchStatus.vue'
-import tokens from '@/data/pockets/tokens.json'
-
-const tokensList = Object.values(tokens)
-const TOKEN_ADDRESSES = {
-  FUD: tokensList.find(({ label }) => label === 'FUD').id,
-  FOMO: tokensList.find(({ label }) => label === 'FOMO').id,
-  ALPHA: tokensList.find(({ label }) => label === 'ALPHA').id,
-  KEK: tokensList.find(({ label }) => label === 'KEK').id,
-  GHST: tokensList.find(({ label }) => label === 'GHST').id
-}
+import tokens from '@/data/pockets/tokens'
 
 export default {
   components: {
@@ -628,6 +619,17 @@ export default {
   },
   setup () {
     const { isPolygonNetwork } = useNetwork()
+
+    const tokenAddresses = computed(() => {
+      const tokensByLabel = isPolygonNetwork.value ? tokens.polygon.tokensByLabel : tokens.base.tokensByLabel
+      return {
+        FUD: tokensByLabel.FUD?.id,
+        FOMO: tokensByLabel.FOMO?.id,
+        ALPHA: tokensByLabel.ALPHA?.id,
+        KEK: tokensByLabel.KEK?.id,
+        GHST: tokensByLabel.GHST?.id
+      }
+    })
 
     const { ghstPrices, fetchStatus: pricesStatus, fetchPrices } = useTokenPricesAavegotchi()
     fetchPrices()
@@ -728,15 +730,16 @@ export default {
       }
       let tokensToShare = []
       if (f.allAlchemica) {
-        tokensToShare = [TOKEN_ADDRESSES.FUD, TOKEN_ADDRESSES.FOMO, TOKEN_ADDRESSES.ALPHA, TOKEN_ADDRESSES.KEK]
+        tokensToShare = [tokenAddresses.value.FUD, tokenAddresses.value.FOMO, tokenAddresses.value.ALPHA, tokenAddresses.value.KEK]
       } else {
         // custom selection of tokens
         for (const token of Object.keys(f.tokens)) {
           if (f.tokens[token]) {
-            tokensToShare.push(TOKEN_ADDRESSES[token])
+            tokensToShare.push(tokenAddresses.value[token])
           }
         }
       }
+      tokensToShare = tokensToShare.filter(t => t) // only include known tokens for the selected network
       const tokensQuery = tokensToShare.length > 0 ? `, tokensToShare_contains: ${JSON.stringify(tokensToShare)}` : ''
 
       let orderQuery = ', orderBy: "timeCreated", orderDirection: "desc"'
@@ -899,7 +902,7 @@ export default {
           const spilloverMultiplier = 2 * (50 - ((channelingSettings.value.aaltarLevel - 1) * 5)) / 100
           let ghstPerChannel = 0
           for (const token in BASE_CHANNELING) {
-            if (tokensToShareMap[TOKEN_ADDRESSES[token]]) {
+            if (tokensToShareMap[tokenAddresses.value[token]]) {
               ghstPerChannel += BASE_CHANNELING[token] * kinshipMultiplier * (1 - spilloverMultiplier) * ghstPrices.value[token]
             }
           }
@@ -943,7 +946,7 @@ export default {
       fetchPageSize,
       filters,
       filters2,
-      TOKEN_ADDRESSES,
+      tokenAddresses,
       fetchLendings,
       status,
       setLoading,

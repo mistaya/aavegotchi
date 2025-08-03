@@ -2,6 +2,7 @@
   <svg
     xmlns="http://www.w3.org/2000/svg"
     class="symbol"
+    :data-label="label"
     :style="{
       '--icon-size': `${size}px`
     }"
@@ -12,11 +13,11 @@
 
 <script>
 import { computed } from 'vue'
-import collaterals from '@/data/pockets/collaterals.json'
-import tokens from '@/data/pockets/tokens.json'
+import tokens from '@/data/pockets/tokens'
 
+// this only picks one network's address per label, but that's ok as SVG symbols exist for all addresses
 const ADDRESS_BY_LABEL = Object.fromEntries(
-  Object.values(collaterals).concat(Object.values(tokens)).map(({ id, label }) => [label, id])
+  tokens.polygon.collaterals.concat(tokens.polygon.tokens).concat(tokens.base.tokens).map(({ id, label }) => [label, id])
 )
 
 export default {

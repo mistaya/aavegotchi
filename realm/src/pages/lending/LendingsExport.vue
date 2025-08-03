@@ -11,8 +11,9 @@
 
 <script>
 import { formatISO9075 } from 'date-fns'
-import { ref, onUnmounted } from 'vue'
-import tokens from '@/data/pockets/tokens.json'
+import { ref, computed, onUnmounted } from 'vue'
+import useNetwork from '@/environment/useNetwork'
+import tokens from '@/data/pockets/tokens'
 
 export default {
   props: {
@@ -20,6 +21,8 @@ export default {
     earningsById: { type: Object, required: true }
   },
   setup (props) {
+    const { isPolygonNetwork } = useNetwork()
+
     // TODO extract common code to share with ParcelsExport
     const exportLinkRef = ref(null)
 
@@ -42,14 +45,16 @@ export default {
     }
     onUnmounted(cleanupTextFile)
 
-    const tokensList = Object.values(tokens)
-    const TOKEN_ADDRESSES = {
-      FUD: tokensList.find(({ label }) => label === 'FUD').id,
-      FOMO: tokensList.find(({ label }) => label === 'FOMO').id,
-      ALPHA: tokensList.find(({ label }) => label === 'ALPHA').id,
-      KEK: tokensList.find(({ label }) => label === 'KEK').id,
-      GHST: tokensList.find(({ label }) => label === 'GHST').id
-    }
+    const tokenAddresses = computed(() => {
+      const tokensByLabel = isPolygonNetwork.value ? tokens.polygon.tokensByLabel : tokens.base.tokensByLabel
+      return {
+        FUD: tokensByLabel.FUD?.id,
+        FOMO: tokensByLabel.FOMO?.id,
+        ALPHA: tokensByLabel.ALPHA?.id,
+        KEK: tokensByLabel.KEK?.id,
+        GHST: tokensByLabel.GHST?.id
+      }
+    })
 
     const headers = [
       'id',
@@ -114,11 +119,11 @@ export default {
           earnings?.claimedFOMO || '',
           earnings?.claimedALPHA || '',
           earnings?.claimedKEK || '',
-          tokensToShare.includes(TOKEN_ADDRESSES.FUD) ? 'Y' : '',
-          tokensToShare.includes(TOKEN_ADDRESSES.FOMO) ? 'Y' : '',
-          tokensToShare.includes(TOKEN_ADDRESSES.ALPHA) ? 'Y' : '',
-          tokensToShare.includes(TOKEN_ADDRESSES.KEK) ? 'Y' : '',
-          tokensToShare.includes(TOKEN_ADDRESSES.GHST) ? 'Y' : '',
+          tokensToShare.includes(tokenAddresses.value.FUD) ? 'Y' : '',
+          tokensToShare.includes(tokenAddresses.value.FOMO) ? 'Y' : '',
+          tokensToShare.includes(tokenAddresses.value.ALPHA) ? 'Y' : '',
+          tokensToShare.includes(tokenAddresses.value.KEK) ? 'Y' : '',
+          tokensToShare.includes(tokenAddresses.value.GHST) ? 'Y' : '',
           item.originalOwner,
           item.gotchiKinship,
           item.channellingAllowed ? 'Y' : ''

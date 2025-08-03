@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import useStatus from '@/data/useStatus'
 import useGotchis from '@/data/useGotchis'
 import useAaveContract from '@/data/useAaveContract'
-import collaterals from './pockets/collaterals.json'
+import tokens from './pockets/tokens'
 import initialRewardsUrl from './pockets/assetGotchiRewards.json'
 
 // Fetch all unclaimed Polygon AAVE rewards for gotchis
@@ -37,7 +37,7 @@ const setRewards = function (rewardsByGotchi, fetchDate = null) {
   lastFetchDate.value = fetchDate || new Date()
 }
 
-const polygonGotchis = computed(() => gotchis.value.filter(gotchi => gotchi.escrow && collaterals[gotchi.collateral]?.polygon))
+const polygonGotchis = computed(() => gotchis.value.filter(gotchi => gotchi.escrow && tokens.polygon.collateralsByAddress[gotchi.collateral]?.label?.startsWith('am')))
 
 const loadedRewardsDetails = computed(() => {
   return {

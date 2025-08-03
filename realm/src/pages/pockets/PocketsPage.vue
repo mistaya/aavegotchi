@@ -418,7 +418,7 @@ import EthAddress from '@/common/EthAddress.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 import SiteTable from '@/site/SiteTable.vue'
 import SortToggle from '@/common/SortToggle.vue'
-import collaterals from '@/data/pockets/collaterals.json'
+import tokens from '@/data/pockets/tokens.js'
 
 export default {
   components: {
@@ -483,7 +483,7 @@ export default {
 
     const gotchisData = computed(() => {
       return gotchis.value.map(g => {
-        const collateral = collaterals[g.collateral.toLowerCase()]
+        const collateral = tokens.polygon.collateralsByAddress[g.collateral.toLowerCase()]
         let stakedCollateralData = {}
         if (enableStakedCollateral.value) {
           const stakedAmount = collateral ? new BigNumber(g.stakedAmount).dividedBy(collateral.factor) : new BigNumber(0)
@@ -620,7 +620,7 @@ export default {
 
     const collateralTotals = computed(() => {
       const collateralsMap = Object.fromEntries(
-        Object.values(collaterals).map(collateral => {
+        tokens.polygon.collaterals.map(collateral => {
           const numGotchis = 0
           const total = new BigNumber(0)
           const totalLocked = new BigNumber(0)
