@@ -311,7 +311,7 @@
           >
             <td>
               <a
-                :href="`https://app.aavegotchi.com/gotchi/${gotchi.id}`"
+                :href="`https://${isPolygonNetwork ? 'polygon' : 'dapp'}.aavegotchi.com/u/${trueOwnersByGotchi[gotchi.id] || ownersByGotchi[gotchi.id]}/inventory?itemType=aavegotchis&chainId=8453&id=${gotchi.id}`"
                 target="_blank"
               >
                 {{ gotchi.id }}
