@@ -467,10 +467,17 @@ export default {
     } = useEthereumGotchiOwners()
 
     const enableStakedCollateral = computed(() => isPolygonNetwork.value)
-    // Fetch token prices if necessary
-    if (!pricesFetchStatus.value.loaded && canSubmitPricesFetch.value) {
-      fetchPrices()
-    }
+
+    watch(
+      () => isPolygonNetwork.value,
+      () => {
+        // Fetch token prices if necessary
+        if (!pricesFetchStatus.value.loaded && canSubmitPricesFetch.value) {
+          fetchPrices.value()
+        }
+      },
+      { immediate: true }
+    )
 
     const hasEthereumGotchiOwners = computed(() => ethereumGotchiOwnersFetchStatus.value.loaded)
 

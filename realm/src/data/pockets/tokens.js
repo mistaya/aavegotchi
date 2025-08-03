@@ -1,4 +1,5 @@
 import tokensList from './tokensList.json'
+import collateralsList from './collateralsList.json'
 
 const polygonTokens = []
 const baseTokens = []
@@ -22,7 +23,10 @@ export default {
   polygon: {
     tokens: polygonTokens,
     tokensByAddress: Object.fromEntries(polygonTokens.map(token => [token.id, token])),
-    tokensByLabel: Object.fromEntries(polygonTokens.map(token => [token.label, token]))
+    tokensByLabel: Object.fromEntries(polygonTokens.map(token => [token.label, token])),
+    collaterals: collateralsList,
+    collateralsByAddress: Object.fromEntries(collateralsList.map(token => [token.id, token])),
+    collateralsByLabel: Object.fromEntries(collateralsList.map(token => [token.label, token]))
   },
   base: {
     tokens: baseTokens,
