@@ -5,7 +5,7 @@
       withoutViewModes
     >
       <template #sidebar>
-        <h1>Spillover events (last {{ RECENT_MINUTES }} minutes)</h1>
+        <h1>Spillover events (last {{ recentMinutes }} minutes)</h1>
 
         <div style="margin-bottom: 20px; margin-right: 20px;">
           <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
@@ -116,7 +116,6 @@ import CitaadelMap from './CitaadelMap.vue'
 import MapConfig, { getDefaultValue as getDefaultMapConfigValue } from './MapConfig.vue'
 
 const POLL_SECONDS = 5
-const RECENT_MINUTES = 3
 const N_EVENTS = 30
 
 export default {
@@ -131,7 +130,7 @@ export default {
   },
   setup () {
     const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
-    const { fetchStatus: spilloverFetchStatus, channelings, claimed, fetchSpillover } = useRecentSpillover(RECENT_MINUTES)
+    const { recentMinutes, fetchStatus: spilloverFetchStatus, channelings, claimed, fetchSpillover } = useRecentSpillover()
 
     const recentEventsAnnotated = computed(() => {
       if (!channelings.value || !claimed.value || !parcelsFetchStatus.value.loaded) { return [] }
@@ -165,11 +164,15 @@ export default {
       })
     })
 
-    const fetchingInterval = setInterval(fetchSpillover, POLL_SECONDS * 1000)
+    const fetchData = function () {
+      fetchSpillover.value()
+    }
+    // No need to watch for network changes, since we are frequently polling and replacing data
+    const fetchingInterval = setInterval(fetchData, POLL_SECONDS * 1000)
     onUnmounted(() => {
       clearInterval(fetchingInterval)
     })
-    fetchSpillover()
+    fetchData()
 
     const mapConfig = ref({
       ...getDefaultMapConfigValue(),
@@ -184,7 +187,7 @@ export default {
     })
 
     return {
-      RECENT_MINUTES,
+      recentMinutes,
       spilloverFetchStatus,
       recentEventsAnnotated,
       N_EVENTS,

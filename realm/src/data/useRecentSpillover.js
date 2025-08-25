@@ -1,11 +1,14 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import apis from '@/data/apis'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
 import INSTALLATIONS from './parcels/installations.json'
 
-const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
+const { selectedNetwork, NETWORKS } = useNetwork()
+
 const FETCH_PAGE_SIZE = 1000
+const DEFAULT_RECENT_MINUTES = 3
 
 const findAaltar = function (equippedInstallations) {
   if (!equippedInstallations) { return null }
@@ -18,7 +21,10 @@ const findAaltar = function (equippedInstallations) {
   return null
 }
 
-export default function (recentMinutes) {
+const useRecentSpilloverForNetwork = function (network) {
+  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+
+  const recentMinutes = ref(DEFAULT_RECENT_MINUTES)
   const channelings = ref([])
   const claimed = ref([])
   const { status: fetchStatus, setLoading } = useStatus()
@@ -28,7 +34,7 @@ export default function (recentMinutes) {
 
     const nowMs = Date.now()
     // const nowMs = new Date('2022-06-03T00:00Z') - 0
-    const startTimestamp = Math.floor((nowMs - (recentMinutes * 60 * 1000)) / 1000)
+    const startTimestamp = Math.floor((nowMs - (recentMinutes.value * 60 * 1000)) / 1000)
 
     let lastIdChanneling = null
     let lastIdClaimed = null
@@ -184,6 +190,32 @@ export default function (recentMinutes) {
   }
 
   return {
+    recentMinutes,
+    fetchStatus,
+    channelings,
+    claimed,
+    fetchSpillover
+  }
+}
+
+const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useRecentSpilloverForNetwork(network) })
+
+export default function useRecentSpillover (network = null) {
+  // if network is specified, only return that one
+  if (network) {
+    return getItemForNetwork(network)
+  }
+
+  // by default, use the currently selected network, which can change over time
+  const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
+  const recentMinutes = computed(() => resultToUse.value.recentMinutes.value)
+  const channelings = computed(() => resultToUse.value.channelings.value)
+  const claimed = computed(() => resultToUse.value.claimed.value)
+  const fetchStatus = computed(() => resultToUse.value.fetchStatus.value)
+  const fetchSpillover = computed(() => resultToUse.value.fetchSpillover)
+
+  return {
+    recentMinutes,
     fetchStatus,
     channelings,
     claimed,

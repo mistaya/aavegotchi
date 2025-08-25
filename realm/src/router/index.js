@@ -76,7 +76,7 @@ const routes = [
             title: 'Spillover Activity',
             description: 'See recent channelings/harvestings in the Citaadel'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       },
       {
