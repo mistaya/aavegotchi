@@ -1,9 +1,11 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import apis from '@/data/apis'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import INSTALLATIONS from '@/data/parcels/installations.json'
 
-const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
+const { selectedNetwork, NETWORKS } = useNetwork()
+
 const FETCH_PAGE_SIZE = 1000
 
 const PARCEL_SIZE_LABELS = {
@@ -14,7 +16,17 @@ const PARCEL_SIZE_LABELS = {
   '4': 'partner'
 }
 
-export default function ({ landsQueryWhere }) {
+const useLendingLandsForNetwork = function (network) {
+  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+
+  let landsQueryWhere = null
+
+  const initLandsQuery = function (computedQuery) {
+    if (computedQuery && !landsQueryWhere) {
+      landsQueryWhere = computedQuery
+    }
+  }
+
   const { status, setLoading, reset } = useStatus()
   const lands = ref(null)
 
@@ -28,7 +40,11 @@ export default function ({ landsQueryWhere }) {
     let lastIdNum = 0
     let parcels = []
     const fetchLandsFromSubgraph = function () {
-      // console.log('fetchLandsFromSubgraph', landsQueryWhere.value)
+      // console.log('fetchLandsFromSubgraph', landsQueryWhere?.value)
+      if (!landsQueryWhere) {
+        console.error('landsQueryWhere is not set, cannot fetch lands')
+        return
+      }
       fetch(GOTCHIVERSE_SUBGRAPH_URL, {
         method: 'POST',
         body: JSON.stringify({
@@ -154,6 +170,38 @@ export default function ({ landsQueryWhere }) {
 
     fetchLandsFromSubgraph()
   }
+
+  return {
+    initLandsQuery,
+    fetchLands,
+    status,
+    lands,
+    resetLands
+  }
+}
+
+export default function useLendingLands ({ network = null, landsQueryWhere }) {
+  // We don't want a global cache of lending lands, because this is used on pages with different landsQueryWhere
+  // instead just cache network-specific versions for the current page/useLendingLands invocation
+
+  const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useLendingLandsForNetwork(network) })
+  const getLendingLandsForNetwork = function ({ network, landsQueryWhere }) {
+    const item = getItemForNetwork(selectedNetwork.value)
+    item.initLandsQuery(landsQueryWhere)
+    return item
+  }
+
+  // if network is specified, only return that one
+  if (network) {
+    return getLendingLandsForNetwork({ network, landsQueryWhere })
+  }
+
+  // by default, use the currently selected network, which can change over time
+  const resultToUse = computed(() => getLendingLandsForNetwork({ network: selectedNetwork.value, landsQueryWhere }))
+  const lands = computed(() => resultToUse.value.lands.value)
+  const status = computed(() => resultToUse.value.status.value)
+  const fetchLands = computed(() => resultToUse.value.fetchLands)
+  const resetLands = computed(() => resultToUse.value.resetLands)
 
   return {
     fetchLands,

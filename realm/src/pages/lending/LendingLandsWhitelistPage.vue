@@ -160,6 +160,7 @@
 <script>
 import debounce from 'lodash.debounce'
 import { ref, computed, watch } from 'vue'
+import useNetwork from '@/environment/useNetwork'
 import { useRouter } from 'vue-router'
 import useWhitelistsWithAddress from './useWhitelistsWithAddress'
 import useLendingLands from './useLendingLands'
@@ -175,6 +176,8 @@ export default {
     queryAddress: { type: String, default: null }
   },
   setup (props) {
+    const { isPolygonNetwork } = useNetwork()
+
     const router = useRouter()
 
     const whitelistForm = ref({
@@ -202,20 +205,21 @@ export default {
       // after the debounce delay, recheck the address
       const address = validAddressInWhitelist.value
       if (address) {
-        fetchWhitelists({ address })
+        fetchWhitelists.value({ address })
       } else {
-        resetWhitelists()
+        resetWhitelists.value()
       }
     }, 500)
 
     watch(
-      () => validAddressInWhitelist.value,
+      () => [isPolygonNetwork.value, validAddressInWhitelist.value],
       () => {
-        // immediately clear any old results when the address changes
-        resetWhitelists()
+        // immediately clear any old results when the network or address changes
+        resetWhitelists.value()
         // delay the actual fetch
         debouncedFetchWhitelists()
-      }
+      },
+      { immediate: true }
     )
 
     // URL params sync: from URL to form
@@ -262,6 +266,9 @@ export default {
         }
       `
     })
+    // to debug/find whitelisted lands, temporarily change query above:
+    //   whitelistId_not: null
+
     const { fetchLands, status, lands, resetLands } = useLendingLands({
       landsQueryWhere
     })
@@ -269,9 +276,9 @@ export default {
     const debouncedFetchLands = debounce(function () {
       // after the debounce delay, recheck the query
       if (landsQueryWhere.value) {
-        fetchLands()
+        fetchLands.value()
       } else {
-        resetLands()
+        resetLands.value()
       }
       // URL params sync: valid queries from form to URL
       // This will trigger the params watcher, but it should detect that the params are the same
@@ -286,10 +293,10 @@ export default {
     }, 500)
 
     watch(
-      () => landsQueryWhere.value,
+      () => [isPolygonNetwork.value, landsQueryWhere.value],
       () => {
-        // immediately clear any old results when the query changes
-        resetLands()
+        // immediately clear any old results when the network or query changes
+        resetLands.value()
         // delay the actual fetch
         debouncedFetchLands()
       },

@@ -53,7 +53,7 @@
 
       <SiteButton
         type="button"
-        @click="fetchLands"
+        @click="fetchData"
       >
         Refresh data
       </SiteButton>
@@ -72,7 +72,8 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
+import useNetwork from '@/environment/useNetwork'
 import useLendingLands from './useLendingLands'
 import useLandsForTable from './useLandsForTable'
 import LendingLandsTable from './LendingLandsTable.vue'
@@ -82,6 +83,8 @@ export default {
     LendingLandsTable
   },
   setup (props) {
+    const { isPolygonNetwork } = useNetwork()
+
     const landsQueryWhere = computed(() => `
         accessRights_: {
           actionRight_in: [0, 1],
@@ -92,7 +95,15 @@ export default {
       landsQueryWhere
     })
 
-    fetchLands()
+    const fetchData = function () {
+      fetchLands.value()
+    }
+
+    watch(
+      () => isPolygonNetwork.value,
+      fetchData,
+      { immediate: true }
+    )
 
     const { tableFilters, tableSort, tablePaging, tickerTimestamp, numFilteredLands, rowsToDisplay } = useLandsForTable({
       lands,
@@ -127,7 +138,7 @@ export default {
     })
 
     return {
-      fetchLands,
+      fetchData,
       status,
       numFilteredLands,
       tableFilters,

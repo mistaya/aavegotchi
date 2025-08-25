@@ -244,7 +244,7 @@ const routes = [
             title: 'Lands',
             description: 'Overview of lands with their channeling and harvesting status'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         },
         children: [
           {
@@ -258,7 +258,7 @@ const routes = [
                 description: 'Overview of your lands with their channeling and harvesting status'
               },
               analyticsUrl: '/lending/lands/owner/ADDRESS',
-              networks: ['polygon']
+              networks: ['base', 'polygon']
             }
           },
           {
@@ -270,7 +270,7 @@ const routes = [
                 title: 'Lands open to public',
                 description: 'Overview of lands with public access to channeling and harvesting'
               },
-              networks: ['polygon']
+              networks: ['base', 'polygon']
             }
           },
           {
@@ -286,7 +286,7 @@ const routes = [
                 title: 'Lands open to whitelist',
                 description: 'Overview of lands with whitelist access to channeling and harvesting'
               },
-              networks: ['polygon']
+              networks: ['base', 'polygon']
             }
           }
         ]
