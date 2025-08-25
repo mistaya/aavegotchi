@@ -35,7 +35,6 @@ export {
 const { selectedNetwork, isPolygonNetwork } = useNetwork()
 
 const useGotchiChannelingForNetwork = function (network) {
-  // TODO waiting on GOTCHIVERSE_BASE_SUBGRAPH
   const SUBGRAPH_URL = isPolygonNetwork.value ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
   const FETCH_PAGE_SIZE = 1000
 
