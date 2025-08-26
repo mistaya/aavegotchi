@@ -238,6 +238,7 @@ export default {
     sizeNum: { type: String, required: true }
   },
   setup (props) {
+    // console.log('ParcelDetailsAlchemica setup')
     const {
       fetchStatus,
       current,
@@ -246,7 +247,14 @@ export default {
       fetchAlchemica
     } = useParcelAlchemicaSingleFromContract()
 
-    fetchAlchemica(props.id, props.sizeNum - 0)
+    const fetchData = function () {
+      // console.log('ParcelDetailsAlchemica fetchData')
+      fetchAlchemica.value(props.id, props.sizeNum - 0)
+    }
+
+    // Do not watch for network change to refetch data, as the parent will cause a new instance of this component to be created
+    // TODO check this always happens
+    fetchData()
 
     const hasBoosts = computed(() => {
       if (!fetchStatus.value.loaded) { return false }

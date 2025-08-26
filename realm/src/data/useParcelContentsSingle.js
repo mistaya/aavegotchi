@@ -1,13 +1,17 @@
 import { ref, computed } from 'vue'
 import apis from '@/data/apis'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import INSTALLATIONS from './parcels/installations.json'
 import TILES from './parcels/tiles.json'
 
-const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
-export default function () {
+const { selectedNetwork, NETWORKS } = useNetwork()
+
+const useParcelContentsSingleForNetwork = function (network) {
+  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+
   const aaltar = ref(null)
   const installations = ref([])
   const tiles = ref([])
@@ -27,6 +31,7 @@ export default function () {
   }
 
   const fetchContents = function (parcelId) {
+    console.log('useParcelContentsSingle fetchContents', parcelId, network)
     resetContents()
     const [isStale, setLoaded, setError] = setLoading()
 
@@ -178,5 +183,27 @@ export default function () {
     fetchStatus,
     fetchContents,
     lastFetchDate
+  }
+}
+
+const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useParcelContentsSingleForNetwork(network) })
+
+export default function useParcelContentsSingle (network = null) {
+  // use the currently selected network, which can change over time
+  const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
+  const aaltar = computed(() => resultToUse.value.aaltar.value)
+  const installations = computed(() => resultToUse.value.installations.value)
+  const tiles = computed(() => resultToUse.value.tiles.value)
+  const lastActivity = computed(() => resultToUse.value.lastActivity.value)
+  const fetchStatus = computed(() => resultToUse.value.fetchStatus.value)
+  const fetchContents = computed(() => resultToUse.value.fetchContents)
+
+  return {
+    fetchStatus,
+    aaltar,
+    installations,
+    tiles,
+    lastActivity,
+    fetchContents
   }
 }

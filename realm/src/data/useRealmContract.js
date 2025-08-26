@@ -1,14 +1,15 @@
 import { ethers } from 'ethers'
 import { useProvider } from './useProvider'
+import addresses from '@/data/addresses'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import BigNumber from 'bignumber.js'
 
-let provider = null
-const contractAddress = '0x1D0360BaC7299C86Ec8E99d0c1C9A95FEfaF2a11'
+// Automatically use the contract on the currently selected network
+const { selectedNetwork, NETWORKS } = useNetwork()
 
-let contract = null
-
-const initContract = function () {
-  provider = useProvider()
+const initContract = function (network) {
+  const provider = useProvider(network)
+  const contractAddress = selectedNetwork.value === NETWORKS.polygon ? addresses.POLYGON.REALM_DIAMOND : addresses.BASE.REALM_DIAMOND
   // ABI: only need functions we want to call
   const abi = [
     {
@@ -286,18 +287,22 @@ const initContract = function () {
       type: 'function'
     }
   ]
-  contract = new ethers.Contract(
+  return new ethers.Contract(
     contractAddress,
     abi,
     provider
   )
 }
 
+const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => initContract(network) })
+
+const getContract = function () {
+  return getItemForNetwork(selectedNetwork.value)
+}
+
 const realm = {
   getLastChanneled: async function (gotchiId) {
-    if (!contract) {
-      initContract()
-    }
+    const contract = getContract()
     return contract.getLastChanneled(gotchiId).then(
       result => {
         return result - 0 // result is a BigNumber
@@ -306,9 +311,7 @@ const realm = {
     )
   },
   getParcelLastChanneled: async function (parcelId) {
-    if (!contract) {
-      initContract()
-    }
+    const contract = getContract()
     return contract.getParcelLastChanneled(parcelId).then(
       result => {
         return result - 0 // result is a BigNumber
@@ -317,9 +320,7 @@ const realm = {
     )
   },
   getParcelsAccessRights: async function (parcelIds, actionIds) {
-    if (!contract) {
-      initContract()
-    }
+    const contract = getContract()
     const promises = []
     for (const actionId of actionIds) {
       const actionIdsForParcels = parcelIds.map(id => actionId)
@@ -334,9 +335,7 @@ const realm = {
     })
   },
   getParcelGrid: async function (id, sizeNumber) {
-    if (!contract) {
-      initContract()
-    }
+    const contract = getContract()
     const FUNCTION_NAMES = [
       'getHumbleGrid', 'getReasonableGrid', 'getSpaciousVerticalGrid', 'getSpaciousHorizontalGrid', 'getPaartnerGrid'
     ]
@@ -365,9 +364,7 @@ const realm = {
     )
   },
   getParcelAlchemica: async function (parcelId) {
-    if (!contract) {
-      initContract()
-    }
+    const contract = getContract()
     const promises = []
     promises.push(contract.getRealmAlchemica(parcelId))
     const nRounds = 10

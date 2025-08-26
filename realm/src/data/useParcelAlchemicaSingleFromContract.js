@@ -1,8 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { ref, computed } from 'vue'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import useRealmContract from '@/data/useRealmContract'
 
+const { selectedNetwork } = useNetwork()
+
+// the realm contract automatically changes to match the current network
 const realm = useRealmContract()
 
 const MEAN_ALCHEMICA = [
@@ -55,7 +59,8 @@ const meanAlchemicaForRound = function (roundNum, sizeNum) {
   }
 }
 
-export default function () {
+// Implementation here is the same, but we still store separate data for each network
+const useParcelAlchemicaSingleForNetwork = function (network) {
   const current = ref(null)
   const rounds = ref([])
   const totals = ref(null)
@@ -73,6 +78,7 @@ export default function () {
   }
 
   const fetchAlchemica = function (parcelId, sizeNum) {
+    console.log('fetchAlchemica', parcelId, network)
     resetAlchemica()
     const [isStale, setLoaded, setError] = setLoading()
     realm.getParcelAlchemica(parcelId).then(async result => {
@@ -173,5 +179,25 @@ export default function () {
     fetchStatus,
     fetchAlchemica,
     lastFetchDate
+  }
+}
+
+const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useParcelAlchemicaSingleForNetwork(network) })
+
+export default function useParcelAlchemicaSingle () {
+  // use the currently selected network, which can change over time
+  const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
+  const current = computed(() => resultToUse.value.current.value)
+  const rounds = computed(() => resultToUse.value.rounds.value)
+  const totals = computed(() => resultToUse.value.totals.value)
+  const fetchStatus = computed(() => resultToUse.value.fetchStatus.value)
+  const fetchAlchemica = computed(() => resultToUse.value.fetchAlchemica)
+
+  return {
+    current,
+    rounds,
+    totals,
+    fetchStatus,
+    fetchAlchemica
   }
 }

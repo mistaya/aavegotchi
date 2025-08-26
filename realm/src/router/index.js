@@ -90,7 +90,7 @@ const routes = [
             description: 'View details about a parcel'
           },
           analyticsUrl: '/citaadel/parcel/ID',
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       }
     ]

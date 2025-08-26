@@ -239,6 +239,7 @@ export default {
     includeFarming: { type: Boolean, default: false }
   },
   setup (props) {
+    // console.log('ParcelDetailsInstallations setup')
     const {
       fetchStatus,
       aaltar,
@@ -248,7 +249,14 @@ export default {
       fetchContents
     } = useParcelContentsSingle()
 
-    fetchContents(props.id, props.sizeNum)
+    const fetchData = function () {
+      // console.log('ParcelDetailsInstallations fetchData')
+      fetchContents.value(props.id, props.sizeNum)
+    }
+
+    // Do not watch for network change to refetch data, as the parent will cause a new instance of this component to be created
+    // TODO check this always happens
+    fetchData()
 
     const groupWithCounts = function (items) {
       const groupedById = {}

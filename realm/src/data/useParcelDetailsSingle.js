@@ -1,11 +1,14 @@
 import { ref, computed } from 'vue'
 import apis from '@/data/apis'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import { annotateParcelDetails } from './parcelUtils'
 
-const GOTCHIVERSE_SUBGRAPH_URL = apis.GOTCHIVERSE_SUBGRAPH
+const { selectedNetwork, NETWORKS } = useNetwork()
 
-export default function useParcelDetails (id) {
+const useParcelDetailsForNetwork = function (network, id) {
+  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+
   const parcelDetails = ref({})
 
   const resetDetails = function () {
@@ -111,6 +114,27 @@ export default function useParcelDetails (id) {
       setError('There was an error fetching the parcel details')
     })
   }
+
+  return {
+    parcelDetails,
+    canSubmitFetch,
+    fetchStatus,
+    fetchDetails,
+    lastFetchDate
+  }
+}
+
+export default function useParcelDetailsSingle (id) {
+  // do not globally cache, as this is parameterised with parcel id
+  const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useParcelDetailsForNetwork(network, id) })
+
+  // by default, use the currently selected network, which can change over time
+  const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
+  const parcelDetails = computed(() => resultToUse.value.parcelDetails.value)
+  const canSubmitFetch = computed(() => resultToUse.value.canSubmitFetch.value)
+  const fetchStatus = computed(() => resultToUse.value.fetchStatus.value)
+  const fetchDetails = computed(() => resultToUse.value.fetchDetails)
+  const lastFetchDate = computed(() => resultToUse.value.lastFetchDate.value)
 
   return {
     parcelDetails,

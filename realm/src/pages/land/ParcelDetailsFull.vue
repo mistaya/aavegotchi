@@ -37,7 +37,7 @@
       >
         <span>Listed on Baazaar:</span>
         <a
-          :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${parcelListing.id}`"
+          :href="`https://${isPolygonNetwork ? 'polygon' : 'dapp'}.aavegotchi.com/baazaar/parcels?id=${parcelListing.id}`"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -59,12 +59,12 @@
         </div>
       </template>
       <div
-        v-else-if="gbmListingFetchStatus.loaded && parcelGBMListing"
+        v-else-if="gbmListingFetchStatus.loaded && parcelGBMListing && !isPolygonNetwork"
         style="margin-bottom: 10px;"
       >
         <span>GBM Auction:</span>
         <a
-          :href="`https://dapp.aavegotchi.com/auction?contract=${parcelGBMListing.contractAddress}&id=${parcelGBMListing.id}`"
+          :href="`https://dapp.aavegotchi.com/auction?status=live&itemType=parcels&id=${parcelGBMListing.id}&chainId=8453`"
           target="_blank"
           style="margin-left: 5px;"
         >Last Bid
@@ -101,7 +101,7 @@
       >
         <span>Last Baazaar Sale:</span>
         <a
-          :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${lastBaazaarSale.id}`"
+          :href="`https://${lastBaazaarSale.network === 'polygon' ? 'polygon' : 'dapp'}.aavegotchi.com/baazaar/parcels?id=${lastBaazaarSale.id}`"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -111,6 +111,9 @@
         </a>
         <span style="margin-left: 5px">
           (<DateFriendly :date="lastBaazaarSale.datePurchased" enableToggle />)
+        </span>
+        <span v-if="lastBaazaarSale.network === 'polygon'">
+          on Polygon
         </span>
       </div>
 
@@ -128,7 +131,10 @@
       >
         <span>Last GBM Sale:</span>
         <a
-          :href="`https://dapp.aavegotchi.com/auction?contract=${lastGBMSale.contractAddress}&id=${lastGBMSale.id}`"
+          :href="lastGBMSale.network === 'polygon' ?
+            `https://polygon.aavegotchi.com/activity?p=auction&itemType=parcels&id=${lastGBMSale.id}&chainId=137` :
+               `https://dapp.aavegotchi.com/activity?p=auction&itemType=parcels&id=${lastGBMSale.id}&chainId=8453`
+          "
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -138,6 +144,9 @@
         </a>
         <span style="margin-left: 5px">
           (<DateFriendly :date="lastGBMSale.datePurchased" enableToggle />)
+        </span>
+        <span v-if="lastBaazaarSale.network === 'polygon'">
+          on Polygon
         </span>
       </div>
 
@@ -207,6 +216,8 @@
 </template>
 
 <script>
+import { watch } from 'vue'
+import useNetwork from '@/environment/useNetwork'
 import useParcelDetailsSingle from '@/data/useParcelDetailsSingle'
 import useParcelBaazaarListingSingle from '@/data/useParcelBaazaarListingSingle'
 import useParcelBaazaarLastSaleSingle from '@/data/useParcelBaazaarLastSaleSingle'
@@ -240,43 +251,54 @@ export default {
       return {}
     }
 
+    const { isPolygonNetwork } = useNetwork()
+
     const {
       parcelDetails,
       fetchStatus,
       fetchDetails
     } = useParcelDetailsSingle(props.parcelId)
 
-    fetchDetails(props.parcelId)
-
     const {
       parcelListing,
       fetchStatus: listingFetchStatus,
       fetchListing
     } = useParcelBaazaarListingSingle(props.parcelId)
-    fetchListing(props.parcelId)
 
     const {
       parcelLastSale: lastBaazaarSale,
       fetchStatus: lastBaazaarSaleFetchStatus,
       fetchLastSale: fetchLastBaazaarSale
     } = useParcelBaazaarLastSaleSingle(props.parcelId)
-    fetchLastBaazaarSale(props.parcelId)
 
     const {
       parcelListing: parcelGBMListing,
       fetchStatus: gbmListingFetchStatus,
       fetchListing: fetchGBMListing
     } = useParcelGBMListingSingle(props.parcelId)
-    fetchGBMListing(props.parcelId)
 
     const {
       parcelLastSale: lastGBMSale,
       fetchStatus: lastGBMSaleFetchStatus,
       fetchLastSale: fetchLastGBMSale
     } = useParcelGBMLastSaleSingle(props.parcelId)
-    fetchLastGBMSale(props.parcelId)
+
+    const fetchData = function () {
+      fetchDetails.value(props.parcelId)
+      fetchListing.value(props.parcelId)
+      fetchLastBaazaarSale(props.parcelId)
+      fetchGBMListing.value(props.parcelId)
+      fetchLastGBMSale(props.parcelId)
+    }
+
+    watch(
+      () => isPolygonNetwork.value,
+      fetchData,
+      { immediate: true }
+    )
 
     return {
+      isPolygonNetwork,
       fetchStatus,
       parcelDetails,
       listingFetchStatus,

@@ -5,5 +5,6 @@ export default {
   GOTCHIVERSE_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/gotchiverse-matic/api',
   GOTCHIVERSE_BASE_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/gotchiverse-base/api',
   ETHEREUM_GOTCHIS_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-ethereum/api',
-  GBM_AUCTIONS_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-gbm-baazaar-matic/api'
+  GBM_AUCTIONS_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-gbm-baazaar-matic/api',
+  GBM_AUCTIONS_BASE_SUBGRAPH: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-gbm-baazaar-base/api'
 }

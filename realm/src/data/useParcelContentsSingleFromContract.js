@@ -4,6 +4,8 @@ import useRealmContract from '@/data/useRealmContract'
 import INSTALLATIONS from './parcels/installations.json'
 import TILES from './parcels/tiles.json'
 
+// Not currently in use, instead it's being fetched from subgraph
+
 const realm = useRealmContract()
 
 export default function () {

@@ -1,11 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { ref, computed } from 'vue'
 import apis from '@/data/apis'
+import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 
-const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
+const { selectedNetwork, NETWORKS } = useNetwork()
 
-export default function useParcelBaazaarListingSingle (id) {
+const useParcelBaazaarListingSingleForNetwork = function (network, id) {
+  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+
   const parcelListing = ref(null)
 
   const resetListing = function () {
@@ -59,6 +62,7 @@ export default function useParcelBaazaarListingSingle (id) {
           const priceInGhst = (new BigNumber(listing.priceInWei)).dividedBy(10e17)
           setListing({
             id: listing.id,
+            network,
             priceInGhst,
             priceInGhstJsNum: priceInGhst.toNumber(),
             dateCreated: new Date(listing.timeCreated * 1000)
@@ -74,6 +78,27 @@ export default function useParcelBaazaarListingSingle (id) {
       setError('There was an error fetching the parcel baazaar listing')
     })
   }
+
+  return {
+    parcelListing,
+    canSubmitFetch,
+    fetchStatus,
+    fetchListing,
+    lastFetchDate
+  }
+}
+
+export default function useParcelBaazaarListingSingle (id) {
+  // do not globally cache, as this is parameterised with parcel id
+  const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useParcelBaazaarListingSingleForNetwork(network, id) })
+
+  // by default, use the currently selected network, which can change over time
+  const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
+  const parcelListing = computed(() => resultToUse.value.parcelListing.value)
+  const canSubmitFetch = computed(() => resultToUse.value.canSubmitFetch.value)
+  const fetchStatus = computed(() => resultToUse.value.fetchStatus.value)
+  const fetchListing = computed(() => resultToUse.value.fetchListing)
+  const lastFetchDate = computed(() => resultToUse.value.lastFetchDate.value)
 
   return {
     parcelListing,
