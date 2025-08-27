@@ -136,7 +136,7 @@ const useGotchisForNetwork = function (network) {
   // Use cached results just for development
   const [isStale, setLoaded, setError] = setLoading()
   const initialGotchisUrl = network === NETWORKS.polygon ? initialGotchisUrlPolygon : initialGotchisUrlBase
-  const initialGotchisTimestamp = network === NETWORKS.polygon ? 1753998510438 : 1753967023033
+  const initialGotchisTimestamp = network === NETWORKS.polygon ? 1756326492595 : 1756326492595
   fetch(initialGotchisUrl)
     .then(response => response.json())
     .then(json => {

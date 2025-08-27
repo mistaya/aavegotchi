@@ -136,7 +136,7 @@ const useGotchiBalancesForNetwork = function (network) {
   // Use cached initial results
   const [isStale, setLoaded, setError] = setLoading()
   const initialBalancesUrl = network === NETWORKS.polygon ? initialBalancesUrlPolygon : initialBalancesUrlBase
-  const initialBalancesTimestamp = network === NETWORKS.polygon ? 1753998510438 : 1753967023033
+  const initialBalancesTimestamp = network === NETWORKS.polygon ? 1756326492595 : 1756326492595
   fetch(initialBalancesUrl)
     .then(response => response.json())
     .then(json => {
