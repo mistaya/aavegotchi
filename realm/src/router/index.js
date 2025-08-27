@@ -359,7 +359,8 @@ const routes = [
       head: {
         title: 'Configure Data: Wearable Sets',
         description: 'Admin page for fetching data'
-      }
+      },
+      networks: ['base']
     }
   },
   {

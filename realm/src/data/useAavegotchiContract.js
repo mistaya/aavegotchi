@@ -1,13 +1,14 @@
 import { ethers } from 'ethers'
 import { useProvider } from './useProvider'
+import addresses from '@/data/addresses'
 
 let provider = null
-const contractAddress = '0x86935F11C86623deC8a25696E1C19a8659CbF95d'
+const contractAddress = addresses.base.AAVEGOTCHI_DIAMOND
 
 let contract = null
 
 const initContract = function () {
-  provider = useProvider()
+  provider = useProvider('base')
   // ABI: only need functions we want to call
   const abi = [
     {

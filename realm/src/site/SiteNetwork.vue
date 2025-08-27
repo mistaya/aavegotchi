@@ -36,6 +36,15 @@
       Polygon
     </span>
   </div>
+  <div
+    v-else-if="showBase"
+    class="site-network"
+  >
+    <SiteIcon name="network-base" />
+    <span class="site-network__name">
+      Base
+    </span>
+  </div>
 </template>
 
 <script>
@@ -49,11 +58,13 @@ export default {
     const showToggle = computed(() => polygonAllowed.value && baseAllowed.value)
 
     const showPolygon = computed(() => polygonAllowed.value && !baseAllowed.value)
+    const showBase = computed(() => !polygonAllowed.value && baseAllowed.value)
     return {
       NETWORKS,
       selectedNetwork,
       showToggle,
-      showPolygon
+      showPolygon,
+      showBase
     }
   }
 }
