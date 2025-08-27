@@ -37,7 +37,7 @@
       >
         <span>Listed on Baazaar:</span>
         <a
-          :href="`https://${isPolygonNetwork ? 'polygon' : 'dapp'}.aavegotchi.com/baazaar/parcels?id=${parcelListing.id}`"
+          :href="getBaazaarParcelUrl({ listingId: parcelListing.id, network: parcelListing.network })"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -64,7 +64,7 @@
       >
         <span>GBM Auction:</span>
         <a
-          :href="`https://dapp.aavegotchi.com/auction?status=live&itemType=parcels&id=${parcelGBMListing.id}&chainId=8453`"
+          :href="getGBMParcelUrl({ listingId: parcelGBMListing.id, network: parcelGBMListing.network })"
           target="_blank"
           style="margin-left: 5px;"
         >Last Bid
@@ -101,7 +101,7 @@
       >
         <span>Last Baazaar Sale:</span>
         <a
-          :href="`https://${lastBaazaarSale.network === 'polygon' ? 'polygon' : 'dapp'}.aavegotchi.com/baazaar/parcels?id=${lastBaazaarSale.id}`"
+          :href="getBaazaarParcelUrl({ listingId: lastBaazaarSale.id, network: lastBaazaarSale.network })"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -131,10 +131,7 @@
       >
         <span>Last GBM Sale:</span>
         <a
-          :href="lastGBMSale.network === 'polygon' ?
-            `https://polygon.aavegotchi.com/activity?p=auction&itemType=parcels&id=${lastGBMSale.id}&chainId=137` :
-               `https://dapp.aavegotchi.com/activity?p=auction&itemType=parcels&id=${lastGBMSale.id}&chainId=8453`
-          "
+          :href="getGBMParcelUrl({ listingId: lastGBMSale.id, network: lastGBMSale.network, isFinished: true })"
           target="_blank"
           style="margin-left: 5px;"
         >
@@ -145,7 +142,7 @@
         <span style="margin-left: 5px">
           (<DateFriendly :date="lastGBMSale.datePurchased" enableToggle />)
         </span>
-        <span v-if="lastBaazaarSale.network === 'polygon'">
+        <span v-if="lastGBMSale.network === 'polygon'">
           on Polygon
         </span>
       </div>
@@ -223,6 +220,7 @@ import useParcelBaazaarListingSingle from '@/data/useParcelBaazaarListingSingle'
 import useParcelBaazaarLastSaleSingle from '@/data/useParcelBaazaarLastSaleSingle'
 import useParcelGBMListingSingle from '@/data/useParcelGBMListingSingle'
 import useParcelGBMLastSaleSingle from '@/data/useParcelGBMLastSaleSingle'
+import { getBaazaarParcelUrl, getGBMParcelUrl } from '@/data/urlUtils'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
@@ -308,7 +306,9 @@ export default {
       gbmListingFetchStatus,
       parcelGBMListing,
       lastGBMSaleFetchStatus,
-      lastGBMSale
+      lastGBMSale,
+      getBaazaarParcelUrl,
+      getGBMParcelUrl
     }
   }
 }

@@ -119,7 +119,7 @@
                 class="parcel-baazaar-listing parcel-baazaar-listing--current"
               >
                 <a
-                  :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${listingsByParcelId[parcel.id].id}`"
+                  :href="getBaazaarParcelUrl({ listingId: listingsByParcelId[parcel.id].id, network: listingsByParcelId[parcel.id].network })"
                   target="_blank"
                 >
                   <span>
@@ -138,7 +138,7 @@
                 class="parcel-baazaar-listing parcel-baazaar-listing--current"
               >
                 <a
-                  :href="`https://dapp.aavegotchi.com/auction?contract=${gbmListingsByParcelId[parcel.id].contractAddress}&id=${gbmListingsByParcelId[parcel.id].id}`"
+                  :href="getGBMParcelUrl({ listingId: gbmListingsByParcelId[parcel.id].id, network: gbmListingsByParcelId[parcel.id].network})"
                   target="_blank"
                 >
                   <span>
@@ -159,7 +159,7 @@
                 class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
               >
                 <a
-                  :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${salesByParcelId[parcel.id].id}`"
+                  :href="getBaazaarParcelUrl({ listingId: salesByParcelId[parcel.id].id, network: salesByParcelId[parcel.id].network })"
                   target="_blank"
                 >
                   <span>
@@ -178,7 +178,7 @@
                 class="parcel-baazaar-listing parcel-baazaar-listing--last-sold"
               >
                 <a
-                  :href="`https://dapp.aavegotchi.com/auction?contract=${gbmSalesByParcelId[parcel.id].contractAddress}&id=${gbmSalesByParcelId[parcel.id].id}`"
+                  :href="getGBMParcelUrl({ listingId: gbmSalesByParcelId[parcel.id].id, network: gbmSalesByParcelId[parcel.id].network, isFinished: true })"
                   target="_blank"
                 >
                   <span>
@@ -208,6 +208,7 @@
 <script>
 import { ref, computed, watch } from 'vue'
 import { sort } from 'fast-sort'
+import { getBaazaarParcelUrl, getGBMParcelUrl } from '@/data/urlUtils'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthIcon from '@/common/EthIcon.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
@@ -343,7 +344,9 @@ export default {
       paging,
       LIST_PARCELS_ORDERS,
       listParcelsOrder,
-      listParcelsToDisplay
+      listParcelsToDisplay,
+      getBaazaarParcelUrl,
+      getGBMParcelUrl
     }
   }
 }

@@ -184,7 +184,7 @@
                       Borrower does <b>not</b> use the vortex, and receives alchemica at the end of the lending.
                     </li>
                     <li>
-                      Borrower uses the vortex, but the withdrawal is delayed for more than 5 minutes. Pixelcraft sends the alchemica directly to the borrower's wallet, not the gotchi pocket. This is particularly likely to happen at the end of a Saturday spillover event, or when polygon gas is high.
+                      Borrower uses the vortex, but the withdrawal is delayed for more than 5 minutes. Pixelcraft sends the alchemica directly to the borrower's wallet, not the gotchi pocket. This is particularly likely to happen at the end of a Saturday spillover event, or when network gas is high.
                     </li>
                   </ul>
                 </div>

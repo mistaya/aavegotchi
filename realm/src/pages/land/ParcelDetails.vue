@@ -116,7 +116,7 @@
     <div v-if="listing">
       <span class="parcel-details__label">Listed (Baazaar) at:</span>
       <a
-        :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${listing.id}`"
+        :href="getBaazaarParcelUrl({ listingId: listing.id, network: listing.network})"
         target="_blank"
       >
         <NumberDisplay :number="listing.priceInGhst" />
@@ -130,7 +130,7 @@
     <div v-if="gbmListing">
       <span class="parcel-details__label">GBM Auction: Last Bid</span>
       <a
-        :href="`https://dapp.aavegotchi.com/auction?contract=${gbmListing.contractAddress}&id=${gbmListing.id}`"
+        :href="getGBMParcelUrl({ listingId: gbmListing.id, network: gbmListing.network })"
         target="_blank"
       >
         <NumberDisplay :number="gbmListing.highestBidGhst" />
@@ -146,7 +146,7 @@
     <div v-if="lastSale">
       <span class="parcel-details__label">Last sold (Baazaar):</span>
       <a
-        :href="`https://dapp.aavegotchi.com/baazaar/parcels?id=${lastSale.id}`"
+        :href="getBaazaarParcelUrl({ listingId: lastSale.id, network: lastSale.network })"
         target="_blank"
       >
         <NumberDisplay :number="lastSale.priceInGhst" />
@@ -160,7 +160,7 @@
     <div v-if="lastGBMSale">
       <span class="parcel-details__label">Last sold (GBM Auction):</span>
       <a
-        :href="`https://dapp.aavegotchi.com/auction?contract=${lastGBMSale.contractAddress}&id=${lastGBMSale.id}`"
+        :href="getGBMParcelUrl({ listingId: lastGBMSale.id, network: lastGBMSale.network, isFinished: true })"
         target="_blank"
       >
         <NumberDisplay :number="lastGBMSale.highestBidGhst" />
@@ -192,13 +192,13 @@
     </div>
 
     <ParcelDetailsInstallations
-      :key="`installations_${parcel.id}`"
+      :key="`installations_${parcel.id}_${selectedNetwork}`"
       :id="parcel.id"
       :sizeNum="parcel.size"
     />
 
     <ParcelDetailsAlchemica
-      :key="`alchemica_${parcel.id}`"
+      :key="`alchemica_${parcel.id}_${selectedNetwork}`"
       :id="parcel.id"
       :sizeNum="parcel.size"
     />
@@ -211,9 +211,11 @@
 </template>
 
 <script>
+import useNetwork from '@/environment/useNetwork'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
+import { getBaazaarParcelUrl, getGBMParcelUrl } from '@/data/urlUtils'
 import FlagSelectedIcon from './FlagSelectedIcon.vue'
 import ParcelBoosts from './ParcelBoosts.vue'
 import ParcelDetailsInstallations from './ParcelDetailsInstallations.vue'
@@ -241,6 +243,15 @@ export default {
     auctionPrice: { type: String, default: null },
     owner: { type: String, default: null },
     flagSelected: { type: Boolean, default: null }
+  },
+  setup (props) {
+    const { selectedNetwork } = useNetwork()
+
+    return {
+      selectedNetwork,
+      getBaazaarParcelUrl,
+      getGBMParcelUrl
+    }
   }
 }
 </script>

@@ -31,7 +31,7 @@ const useParcelContentsSingleForNetwork = function (network) {
   }
 
   const fetchContents = function (parcelId) {
-    console.log('useParcelContentsSingle fetchContents', parcelId, network)
+    // console.log('useParcelContentsSingle fetchContents', parcelId, network)
     resetContents()
     const [isStale, setLoaded, setError] = setLoading()
 

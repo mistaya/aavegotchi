@@ -31,7 +31,7 @@
       v-if="!disableFetch && canSubmitFetch"
       type="button"
       style="margin-left: 10px;"
-      @click="fetch"
+      @click="fetch()"
     >
       Fetch
     </SiteButton>

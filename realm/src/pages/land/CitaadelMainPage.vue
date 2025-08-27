@@ -531,6 +531,7 @@
 
 <script>
 import { ref, computed, watch, nextTick } from 'vue'
+import useNetwork from '@/environment/useNetwork'
 import useParcels from '@/data/useParcels'
 import useBaazaarListings from '@/data/useBaazaarListings'
 import useParcelGBMListings from '@/data/useParcelGBMListings'
@@ -607,6 +608,8 @@ export default {
     InputColor
   },
   setup () {
+    const { selectedNetwork } = useNetwork()
+
     const {
       listingsByParcelId,
       salesByParcelId,
@@ -759,17 +762,17 @@ export default {
     }
     const prereqOwners = function () {
       if (!ownersFetchStatus.value.loaded && !ownersFetchStatus.value.loading) {
-        fetchOwners()
+        fetchOwners.value()
       }
     }
     const prereqContents = function () {
       if (!contentsFetchStatus.value.loaded && !contentsFetchStatus.value.loading) {
-        fetchContents()
+        fetchContents.value()
       }
     }
     watch(
-      () => colorScheme.value.colorBy,
-      colorBy => {
+      () => [colorScheme.value.colorBy, selectedNetwork.value],
+      ([colorBy, network]) => {
         if (['baazaarPrice', 'lastPrice'].includes(colorBy)) {
           // these color schemes require baazaar listings
           // make sure it's fetched at least once

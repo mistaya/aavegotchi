@@ -96,19 +96,19 @@
             None
           </template>
         </div>
+
+        <ParcelDetailsInstallations
+          :key="`installations_${parcel.fullParcel.id}_${selectedNetwork}`"
+          :id="parcel.fullParcel.id"
+          :sizeNum="parcel.fullParcel.size"
+        />
+
+        <ParcelDetailsAlchemica
+          :key="`alchemica_${parcel.fullParcel.id}_${selectedNetwork}`"
+          :id="parcel.fullParcel.id"
+          :sizeNum="parcel.fullParcel.size"
+        />
       </template>
-
-      <ParcelDetailsInstallations
-        :key="`installations_${parcel.fullParcel.id}`"
-        :id="parcel.fullParcel.id"
-        :sizeNum="parcel.fullParcel.size"
-      />
-
-      <ParcelDetailsAlchemica
-        :key="`alchemica_${parcel.fullParcel.id}`"
-        :id="parcel.fullParcel.id"
-        :sizeNum="parcel.fullParcel.size"
-      />
 
       <div
         class="parcel-coords"
@@ -127,6 +127,7 @@
 
 <script>
 import { computed } from 'vue'
+import useNetwork from '@/environment/useNetwork'
 import PAARTNER_DETAILS from '@/data/parcels/paartners.json'
 import PAARTNER_PARCELS from '@/data/parcels/paartnerParcels.json'
 import useParcels from '@/data/useParcels'
@@ -144,6 +145,8 @@ export default {
     paartner: { type: String, required: true }
   },
   setup (props) {
+    const { selectedNetwork } = useNetwork()
+
     const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
 
     const paartnerDetails = computed(() => {
@@ -169,6 +172,7 @@ export default {
     })
 
     return {
+      selectedNetwork,
       paartnerDetails,
       parcel
     }

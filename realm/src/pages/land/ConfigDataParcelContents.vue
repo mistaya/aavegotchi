@@ -3,9 +3,9 @@
     class="site-card"
     style="margin: 15px; padding: 0px 15px 10px 15px"
   >
-    <h2>Parcel Owners</h2>
+    <h2>Parcel Contents</h2>
 
-    <form @submit.prevent="forceFetchOwners">
+    <form @submit.prevent="forceFetchContents">
       <div style="margin-top: 10px">
         <SiteButton
           type="submit"
@@ -26,7 +26,7 @@
       Polygon parcels are frozen so can be cached.
     </div>
 
-    <h3>All Parcel Owners Data ({{ numParcels }} parcels)</h3>
+    <h3>All Parcel Contents Data ({{ numParcels }} parcels)</h3>
 
     <div style="margin-bottom: 10px;">
       <SiteButton
@@ -41,7 +41,7 @@
 
     <textarea
       v-if="showJson"
-      :value="ownersJson"
+      :value="contentsJson"
       style="width: 100%; min-height: 100px;"
     />
   </section>
@@ -49,26 +49,30 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useParcelOwners from '@/data/useParcelOwners'
+import useParcelContents from '@/data/useParcelContents'
 
 export default {
   setup (props) {
     const {
-      ownersByParcelId,
+      installationsByParcelId,
+      tilesByParcelId,
       canSubmitFetch,
       fetchStatus,
-      forceFetchOwners
-    } = useParcelOwners()
-    const numParcels = computed(() => Object.keys(ownersByParcelId.value).length)
+      forceFetchContents
+    } = useParcelContents()
+    const numParcels = computed(() => Object.keys(installationsByParcelId.value).length)
     const showJson = ref(false)
-    const ownersJson = computed(() => JSON.stringify(ownersByParcelId.value, null, 4))
+    const contentsJson = computed(() => JSON.stringify({
+      installations: installationsByParcelId.value,
+      tiles: tilesByParcelId.value
+    }, null, 4))
     return {
       numParcels,
       canSubmitFetch,
-      forceFetchOwners,
+      forceFetchContents,
       fetchStatus,
       showJson,
-      ownersJson
+      contentsJson
     }
   }
 }

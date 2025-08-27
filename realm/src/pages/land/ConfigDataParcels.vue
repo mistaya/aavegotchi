@@ -36,6 +36,9 @@
           Error: {{ status.errorMessage }}
         </span>
       </div>
+      <div style="margin-top: 10px">
+        This fetches from the Base subgraph.
+      </div>
     </form>
 
     <h3>All Parcel Data</h3>
@@ -77,7 +80,7 @@ import useStatus from '@/data/useStatus'
 import useParcels from '@/data/useParcels'
 import groupBy from 'lodash.groupby'
 
-const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
+const SUBGRAPH_URL = apis.CORE_BASE_SUBGRAPH // apis.CORE_MATIC_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 export default {

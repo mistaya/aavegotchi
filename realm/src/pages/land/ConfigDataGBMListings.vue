@@ -3,7 +3,7 @@
     class="site-card"
     style="margin: 15px; padding: 0px 15px 10px 15px"
   >
-    <h2>Baazaar Listings</h2>
+    <h2>GBM Listings</h2>
 
     <form @submit.prevent="forceFetchListings">
       <div style="margin-top: 10px">
@@ -26,7 +26,7 @@
       Polygon listings are frozen so can be cached.
     </div>
 
-    <h3>All Baazaar Listings Data ({{ numListings }} parcels currently listed, {{ numSales }} parcels with sold prices)</h3>
+    <h3>All GBM Listings Data ({{ numListings }} parcels currently listed, {{ numSales }} parcels with sold prices)</h3>
 
     <div style="margin-bottom: 10px;">
       <SiteButton
@@ -63,7 +63,7 @@
 
 <script>
 import { ref, computed } from 'vue'
-import useBaazaarListings from '@/data/useBaazaarListings'
+import useParcelGBMListings from '@/data/useParcelGBMListings'
 
 export default {
   setup (props) {
@@ -73,7 +73,7 @@ export default {
       canSubmitFetch,
       fetchStatus,
       forceFetchListings
-    } = useBaazaarListings()
+    } = useParcelGBMListings()
     const numListings = computed(() => Object.keys(listingsByParcelId.value).length)
     const numSales = computed(() => Object.keys(salesByParcelId.value).length)
     const showJson = ref(false)
@@ -81,10 +81,10 @@ export default {
     const salesJson = computed(() => JSON.stringify(salesByParcelId.value, null, 4))
     const combinedJson = computed(() => {
       const listings = Object.fromEntries(
-        Object.entries(listingsByParcelId.value).map(([id, item]) => [id, { ...item, priceInGhstJsNum: undefined }])
+        Object.entries(listingsByParcelId.value).map(([id, item]) => [id, { ...item, highestBidGhstJsNum: undefined }])
       )
       const sales = Object.fromEntries(
-        Object.entries(salesByParcelId.value).map(([id, item]) => [id, { ...item, priceInGhstJsNum: undefined }])
+        Object.entries(salesByParcelId.value).map(([id, item]) => [id, { ...item, highestBidGhstJsNum: undefined }])
       )
       return JSON.stringify({ listings, sales }, null, 4)
     })

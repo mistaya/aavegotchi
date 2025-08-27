@@ -5,11 +5,11 @@ import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import BigNumber from 'bignumber.js'
 
 // Automatically use the contract on the currently selected network
-const { selectedNetwork, NETWORKS } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const initContract = function (network) {
   const provider = useProvider(network)
-  const contractAddress = selectedNetwork.value === NETWORKS.polygon ? addresses.POLYGON.REALM_DIAMOND : addresses.BASE.REALM_DIAMOND
+  const contractAddress = addresses[selectedNetwork.value].REALM_DIAMOND
   // ABI: only need functions we want to call
   const abi = [
     {

@@ -57,7 +57,7 @@ const routes = [
             title: 'The Citaadel',
             description: 'Filter and explore the Citaadel map and Baazaar parcel listings from the Aavegotchi Realm'
           },
-          networks: ['polygon']
+          networks: ['base', 'polygon']
         }
       },
       // redirect from old channeling page to spillover
@@ -324,7 +324,8 @@ const routes = [
       head: {
         title: 'Configure Data: Realm',
         description: 'Admin page for fetching data'
-      }
+      },
+      networks: ['base', 'polygon']
     }
   },
   {

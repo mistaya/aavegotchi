@@ -78,7 +78,7 @@ const useParcelAlchemicaSingleForNetwork = function (network) {
   }
 
   const fetchAlchemica = function (parcelId, sizeNum) {
-    console.log('fetchAlchemica', parcelId, network)
+    // console.log('fetchAlchemica', parcelId, network)
     resetAlchemica()
     const [isStale, setLoaded, setError] = setLoading()
     realm.getParcelAlchemica(parcelId).then(async result => {

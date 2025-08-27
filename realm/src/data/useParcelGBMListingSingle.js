@@ -12,7 +12,7 @@ const { selectedNetwork, NETWORKS } = useNetwork()
 
 const useParcelGBMListingSingleForBase = function (id) {
   const SUBGRAPH_URL = apis.GBM_AUCTIONS_BASE_SUBGRAPH
-  const PARCELS_CONTRACT_ADDRESS = addresses.BASE.REALM_PARCELS
+  const PARCELS_CONTRACT_ADDRESS = addresses.base.REALM_PARCELS
 
   const parcelListing = ref(null)
 

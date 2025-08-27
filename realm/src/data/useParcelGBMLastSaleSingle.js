@@ -9,7 +9,7 @@ const { selectedNetwork, NETWORKS } = useNetwork()
 
 const useParcelGBMLastSaleSingleForNetwork = function (network, id) {
   const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GBM_AUCTIONS_SUBGRAPH : apis.GBM_AUCTIONS_BASE_SUBGRAPH
-  const REALM_CONTRACT_ADDRESS = network === NETWORKS.polygon ? addresses.POLYGON.REALM_PARCELS : addresses.BASE.REALM_PARCELS
+  const REALM_CONTRACT_ADDRESS = addresses[selectedNetwork.value].REALM_PARCELS
 
   const parcelLastSale = ref(null)
 
