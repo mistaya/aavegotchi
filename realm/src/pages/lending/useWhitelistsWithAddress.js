@@ -5,10 +5,10 @@ import useStatus from '@/data/useStatus'
 
 const FETCH_PAGE_SIZE = 1000
 
-const { selectedNetwork, NETWORKS } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const useWhitelistsForNetwork = function (network) {
-  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].CORE_SUBGRAPH
 
   const { status, setLoading, reset } = useStatus()
   const whitelists = ref(null)
@@ -24,7 +24,7 @@ const useWhitelistsForNetwork = function (network) {
       return
     }
     const [isStale, setLoaded, setError] = setLoading()
-    fetch(GOTCHIVERSE_SUBGRAPH_URL, {
+    fetch(SUBGRAPH_URL, {
       method: 'POST',
       body: JSON.stringify({
         query: `{

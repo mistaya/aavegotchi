@@ -7,7 +7,7 @@ import useStatus from '@/data/useStatus'
 const { selectedNetwork, NETWORKS } = useNetwork()
 
 const useParcelBaazaarLastSaleSingleForNetwork = function (network, id) {
-  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].CORE_SUBGRAPH
 
   const parcelLastSale = ref(null)
 

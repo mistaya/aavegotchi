@@ -10,7 +10,7 @@ const useParcelContentsForNetwork = function (network) {
   const installationsByParcelId = ref({})
   const tilesByParcelId = ref({})
 
-  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].GOTCHIVERSE_SUBGRAPH
   const FETCH_PAGE_SIZE = 1000
 
   const resetContents = function () {

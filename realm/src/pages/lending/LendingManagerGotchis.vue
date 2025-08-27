@@ -565,7 +565,7 @@ export default {
     const thirdPartyAddressLc = computed(() => props.thirdPartyAddress?.toLowerCase())
     const originalOwnerAddressLc = computed(() => props.originalOwnerAddress?.toLowerCase())
 
-    const { isPolygonNetwork } = useNetwork()
+    const { isPolygonNetwork, selectedNetwork } = useNetwork()
 
     const {
       fetchGotchiChannelingStatuses,
@@ -618,7 +618,7 @@ export default {
         return
       }
 
-      const OWNER_SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+      const OWNER_SUBGRAPH_URL = apis[selectedNetwork.value].CORE_SUBGRAPH
       // gotchisOwned returns both owned and borrowed gotchis
       // gotchisBorrowed is an array of gotchi IDs
       fetch(OWNER_SUBGRAPH_URL, {
@@ -718,7 +718,7 @@ export default {
           }
         }`
 
-        const SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+        const SUBGRAPH_URL = apis[selectedNetwork.value].CORE_SUBGRAPH
 
         fetch(SUBGRAPH_URL, {
           method: 'POST',

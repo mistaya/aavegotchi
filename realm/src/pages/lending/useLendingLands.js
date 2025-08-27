@@ -4,7 +4,7 @@ import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import INSTALLATIONS from '@/data/parcels/installations.json'
 
-const { selectedNetwork, NETWORKS } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const FETCH_PAGE_SIZE = 1000
 
@@ -17,7 +17,7 @@ const PARCEL_SIZE_LABELS = {
 }
 
 const useLendingLandsForNetwork = function (network) {
-  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const GOTCHIVERSE_SUBGRAPH_URL = apis[network].GOTCHIVERSE_SUBGRAPH
 
   let landsQueryWhere = null
 

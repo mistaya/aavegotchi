@@ -8,8 +8,8 @@ import useStatus from '@/data/useStatus'
 const { selectedNetwork, NETWORKS } = useNetwork()
 
 const useParcelGBMLastSaleSingleForNetwork = function (network, id) {
-  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GBM_AUCTIONS_SUBGRAPH : apis.GBM_AUCTIONS_BASE_SUBGRAPH
-  const REALM_CONTRACT_ADDRESS = addresses[selectedNetwork.value].REALM_PARCELS
+  const SUBGRAPH_URL = apis[network].GBM_AUCTIONS_SUBGRAPH
+  const REALM_CONTRACT_ADDRESS = addresses[network].REALM_PARCELS
 
   const parcelLastSale = ref(null)
 

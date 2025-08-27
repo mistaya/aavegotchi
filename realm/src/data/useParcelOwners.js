@@ -11,7 +11,7 @@ const { selectedNetwork, NETWORKS } = useNetwork()
 const useParcelOwnersForNetwork = function (network) {
   const ownersByParcelId = ref({})
 
-  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const GOTCHIVERSE_SUBGRAPH_URL = apis[network].GOTCHIVERSE_SUBGRAPH
   const FETCH_PAGE_SIZE = 1000
 
   const resetOwners = function () {

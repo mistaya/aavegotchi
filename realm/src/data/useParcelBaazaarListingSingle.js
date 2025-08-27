@@ -4,10 +4,10 @@ import apis from '@/data/apis'
 import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 
-const { selectedNetwork, NETWORKS } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const useParcelBaazaarListingSingleForNetwork = function (network, id) {
-  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].CORE_SUBGRAPH
 
   const parcelListing = ref(null)
 

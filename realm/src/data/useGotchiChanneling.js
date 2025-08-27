@@ -32,10 +32,10 @@ export {
   utcMidnightTimestampMs
 }
 
-const { selectedNetwork, isPolygonNetwork } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const useGotchiChannelingForNetwork = function (network) {
-  const SUBGRAPH_URL = isPolygonNetwork.value ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].GOTCHIVERSE_SUBGRAPH
   const FETCH_PAGE_SIZE = 1000
 
   const { status: fetchStatus, setLoading, reset } = useStatus()

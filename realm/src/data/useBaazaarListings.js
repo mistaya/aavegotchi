@@ -13,7 +13,7 @@ const useParcelBaazaarListingsForNetwork = function (network) {
   const listingsByParcelId = ref({})
   const salesByParcelId = ref({})
 
-  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].CORE_SUBGRAPH
   const FETCH_PAGE_SIZE = 1000
 
   const resetListings = function () {

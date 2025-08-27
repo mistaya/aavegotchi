@@ -11,7 +11,7 @@ const { selectedNetwork, NETWORKS } = useNetwork()
 // So we only need to fetch listings when on Base
 
 const useParcelGBMListingSingleForBase = function (id) {
-  const SUBGRAPH_URL = apis.GBM_AUCTIONS_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis.base.GBM_AUCTIONS_SUBGRAPH
   const PARCELS_CONTRACT_ADDRESS = addresses.base.REALM_PARCELS
 
   const parcelListing = ref(null)

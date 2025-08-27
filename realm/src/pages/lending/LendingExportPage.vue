@@ -202,7 +202,7 @@ export default {
     SiteIcon
   },
   setup () {
-    const { isPolygonNetwork } = useNetwork()
+    const { isPolygonNetwork, selectedNetwork } = useNetwork()
 
     const { status: lendingsStatus, setLoading: setLendingsLoading, reset: resetLendingsStatus } = useStatus()
     const { status: earningsStatus, setLoading: setEarningsLoading, reset: resetEarningsStatus } = useStatus()
@@ -233,7 +233,7 @@ export default {
     })
 
     const fetchLendings = function () {
-      const SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+      const SUBGRAPH_URL = apis[selectedNetwork.value].CORE_SUBGRAPH
 
       const [isStale, setLoaded, setError] = setLendingsLoading()
       let lastIdNum = 0

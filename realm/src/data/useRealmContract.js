@@ -9,7 +9,7 @@ const { selectedNetwork } = useNetwork()
 
 const initContract = function (network) {
   const provider = useProvider(network)
-  const contractAddress = addresses[selectedNetwork.value].REALM_DIAMOND
+  const contractAddress = addresses[network].REALM_DIAMOND
   // ABI: only need functions we want to call
   const abi = [
     {

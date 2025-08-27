@@ -14,9 +14,9 @@ const useParcelBaazaarListingsForNetwork = function (network) {
   const listingsByParcelId = ref({})
   const salesByParcelId = ref({})
 
-  const SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GBM_AUCTIONS_SUBGRAPH : apis.GBM_AUCTIONS_BASE_SUBGRAPH
+  const SUBGRAPH_URL = apis[network].GBM_AUCTIONS_SUBGRAPH
   const FETCH_PAGE_SIZE = 1000
-  const REALM_CONTRACT_ADDRESS = addresses[selectedNetwork.value].REALM_PARCELS
+  const REALM_CONTRACT_ADDRESS = addresses[network].REALM_PARCELS
 
   const resetListings = function () {
     listingsByParcelId.value = {}

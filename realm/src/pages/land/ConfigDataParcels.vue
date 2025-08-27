@@ -80,7 +80,7 @@ import useStatus from '@/data/useStatus'
 import useParcels from '@/data/useParcels'
 import groupBy from 'lodash.groupby'
 
-const SUBGRAPH_URL = apis.CORE_BASE_SUBGRAPH // apis.CORE_MATIC_SUBGRAPH
+const SUBGRAPH_URL = apis.base.CORE_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
 
 export default {

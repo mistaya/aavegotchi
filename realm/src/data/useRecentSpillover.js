@@ -5,7 +5,7 @@ import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
 import INSTALLATIONS from './parcels/installations.json'
 
-const { selectedNetwork, NETWORKS } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const FETCH_PAGE_SIZE = 1000
 const DEFAULT_RECENT_MINUTES = 3
@@ -22,7 +22,7 @@ const findAaltar = function (equippedInstallations) {
 }
 
 const useRecentSpilloverForNetwork = function (network) {
-  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const GOTCHIVERSE_SUBGRAPH_URL = apis[network].GOTCHIVERSE_SUBGRAPH
 
   const recentMinutes = ref(DEFAULT_RECENT_MINUTES)
   const channelings = ref([])

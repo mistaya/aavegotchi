@@ -4,10 +4,10 @@ import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import { annotateParcelDetails } from './parcelUtils'
 
-const { selectedNetwork, NETWORKS } = useNetwork()
+const { selectedNetwork } = useNetwork()
 
 const useParcelDetailsForNetwork = function (network, id) {
-  const GOTCHIVERSE_SUBGRAPH_URL = network === NETWORKS.polygon ? apis.GOTCHIVERSE_SUBGRAPH : apis.GOTCHIVERSE_BASE_SUBGRAPH
+  const GOTCHIVERSE_SUBGRAPH_URL = apis[network].GOTCHIVERSE_SUBGRAPH
 
   const parcelDetails = ref({})
 

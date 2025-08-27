@@ -9,7 +9,7 @@ import initialWearables from './wearables/wearables.json'
 // Use cached results
 const wearables = ref(initialWearables)
 
-const SUBGRAPH_URL = apis.CORE_MATIC_SUBGRAPH
+const SUBGRAPH_URL = apis.base.CORE_SUBGRAPH
 
 const { status: fetchStatus, setLoading } = useStatus()
 

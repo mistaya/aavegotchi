@@ -701,7 +701,7 @@ export default {
   setup (props) {
     const addressLc = computed(() => props.address?.toLowerCase())
 
-    const { isPolygonNetwork } = useNetwork()
+    const { isPolygonNetwork, selectedNetwork } = useNetwork()
 
     const {
       fetchGotchiChannelingStatuses,
@@ -737,7 +737,7 @@ export default {
     fetchPrices()
 
     const fetchBorrowedGotchis = function () {
-      const SUBGRAPH_URL = isPolygonNetwork.value ? apis.CORE_MATIC_SUBGRAPH : apis.CORE_BASE_SUBGRAPH
+      const SUBGRAPH_URL = apis[selectedNetwork.value].CORE_SUBGRAPH
 
       const [isStale, setLoaded, setError] = setBorrowedGotchisLoading()
       let lastIdNum = 0
