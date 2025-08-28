@@ -1,3 +1,4 @@
+import { watch } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import useSiteHead from '@/site/useSiteHead'
 import usePageLoading from './usePageLoading'
@@ -5,7 +6,7 @@ import useNetwork from '@/environment/useNetwork'
 import NotFoundPage from './NotFoundPage.vue'
 
 const { pageLoading, pageLazyLoadError } = usePageLoading()
-const { baseAllowed, polygonAllowed } = useNetwork()
+const { baseAllowed, polygonAllowed, selectedNetwork } = useNetwork()
 
 const CitaadelPage = () => import(/* webpackChunkName: "citaadel-page" */ '@/pages/land/CitaadelPage.vue')
 const CitaadelMainPage = () => import(/* webpackChunkName: "citaadel-main" */ '@/pages/land/CitaadelMainPage.vue')
@@ -385,13 +386,26 @@ router.beforeResolve((to, from, next) => {
 })
 
 // Analytics
-router.afterEach((to, from) => {
-  if (to.meta.analyticsUrl) {
-    window.trackView(to.meta.analyticsUrl)
-  } else {
-    window.trackView(to.path)
+const trackViewFromRoute = function (route) {
+  let urlToLog = route.meta.analyticsUrl || route.path
+  if (route.meta.networks?.length) {
+    urlToLog += `?network=${selectedNetwork.value}`
   }
+  window.trackView(urlToLog)
+}
+
+router.afterEach((to, from) => {
+  trackViewFromRoute(to)
 })
+
+watch(
+  () => selectedNetwork.value,
+  () => {
+    if (router.currentRoute?.value?.meta?.networks?.length) {
+      trackViewFromRoute(router.currentRoute.value)
+    }
+  }
+)
 
 // Networks allowed
 router.beforeResolve((to, from, next) => {
