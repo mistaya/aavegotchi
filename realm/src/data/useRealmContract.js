@@ -13,48 +13,6 @@ const initContract = function (network) {
   // ABI: only need functions we want to call
   const abi = [
     {
-      inputs:
-      [
-        {
-          internalType: 'uint256',
-          name: '_gotchiId',
-          type: 'uint256'
-        }
-      ],
-      name: 'getLastChanneled',
-      outputs:
-      [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
-      inputs:
-      [
-        {
-          internalType: 'uint256',
-          name: '_parcelId',
-          type: 'uint256'
-        }
-      ],
-      name: 'getParcelLastChanneled',
-      outputs:
-      [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function'
-    },
-    {
       inputs: [
         {
           internalType: 'uint256[]',
@@ -301,24 +259,6 @@ const getContract = function () {
 }
 
 const realm = {
-  getLastChanneled: async function (gotchiId) {
-    const contract = getContract()
-    return contract.getLastChanneled(gotchiId).then(
-      result => {
-        return result - 0 // result is a BigNumber
-      },
-      error => { throw error }
-    )
-  },
-  getParcelLastChanneled: async function (parcelId) {
-    const contract = getContract()
-    return contract.getParcelLastChanneled(parcelId).then(
-      result => {
-        return result - 0 // result is a BigNumber
-      },
-      error => { throw error }
-    )
-  },
   getParcelsAccessRights: async function (parcelIds, actionIds) {
     const contract = getContract()
     const promises = []

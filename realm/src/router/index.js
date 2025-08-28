@@ -31,7 +31,6 @@ const LendingLandsOwnerPage = () => import(/* webpackChunkName: "lending-lands-o
 const LendingLandsWhitelistPage = () => import(/* webpackChunkName: "lending-lands-whitelist" */ '@/pages/lending/LendingLandsWhitelistPage.vue')
 const LendingLandsPublicPage = () => import(/* webpackChunkName: "lending-lands-public" */ '@/pages/lending/LendingLandsPublicPage.vue')
 const LendingExportPage = () => import(/* webpackChunkName: "lending-export" */ '@/pages/lending/LendingExportPage.vue')
-const TempPlayground = () => import(/* webpackChunkName: "temp-playground" */ '@/pages/playground/TempPlayground.vue')
 
 const { headData } = useSiteHead()
 
@@ -308,12 +307,9 @@ const routes = [
   {
     path: '/playground',
     name: 'playground',
-    component: TempPlayground,
-    meta: {
-      head: {
-        title: 'Temporary Playground',
-        description: ''
-      }
+    // things on the old playground are now found in the lending pages
+    redirect: {
+      name: 'lending-index'
     }
   },
   {
