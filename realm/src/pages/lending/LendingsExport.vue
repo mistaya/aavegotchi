@@ -18,7 +18,7 @@ import tokens from '@/data/pockets/tokens'
 export default {
   props: {
     lendings: { type: Array, required: true },
-    earningsById: { type: Object, required: true }
+    earningsById: { type: Object, default: null }
   },
   setup (props) {
     const { isPolygonNetwork } = useNetwork()
@@ -56,44 +56,62 @@ export default {
       }
     })
 
-    const headers = [
-      'id',
-      'gotchiId',
-      'gotchiName',
-      'lender',
-      'borrower',
-      'thirdPartyAddress',
-      'splitOwner',
-      'splitBorrower',
-      'splitOther',
-      'periodSeconds',
-      'periodHours',
-      'upfrontCost',
-      'whitelistId',
-      'timeCreated',
-      'timeAgreed',
-      'lastClaimed',
-      'completed',
-      'timeEnded',
-      'actualPeriodSeconds',
-      'actualPeriodHours',
-      'claimedFUD',
-      'claimedFOMO',
-      'claimedALPHA',
-      'claimedKEK',
-      'shareFUD',
-      'shareFOMO',
-      'shareALPHA',
-      'shareKEK',
-      'shareGHST',
-      'originalOwner',
-      'gotchiKinship',
-      'channellingAllowed'
-    ]
+    const earningsEnabled = computed(() => !!props.earningsById)
+
+    const headers = computed(() => {
+      const earningsHeaders = earningsEnabled.value
+        ? [
+          'claimedFUD',
+          'claimedFOMO',
+          'claimedALPHA',
+          'claimedKEK'
+        ]
+        : []
+      return [
+        'id',
+        'gotchiId',
+        'gotchiName',
+        'lender',
+        'borrower',
+        'thirdPartyAddress',
+        'splitOwner',
+        'splitBorrower',
+        'splitOther',
+        'periodSeconds',
+        'periodHours',
+        'upfrontCost',
+        'whitelistId',
+        'timeCreated',
+        'timeAgreed',
+        'lastClaimed',
+        'completed',
+        'timeEnded',
+        'actualPeriodSeconds',
+        'actualPeriodHours',
+        ...earningsHeaders,
+        'shareFUD',
+        'shareFOMO',
+        'shareALPHA',
+        'shareKEK',
+        'shareGHST',
+        'originalOwner',
+        'gotchiKinship',
+        'channellingAllowed'
+      ]
+    })
     const getRows = function () {
       return props.lendings.map(item => {
-        const earnings = props.earningsById[item.id]
         const tokensToShare = item.tokensToShare
+        let earningsRows = []
+        if (earningsEnabled.value) {
+          const earnings = props.earningsById?.[item.id]
+          earningsRows = [
+            earnings?.claimedFUD || '',
+            earnings?.claimedFOMO || '',
+            earnings?.claimedALPHA || '',
+            earnings?.claimedKEK || ''
+          ]
+        }
         return [
           item.id,
           item.gotchiTokenId,
@@ -115,10 +133,7 @@ export default {
           (item.timeEnded && formatISO9075(item.timeEnded)) || '',
           item.actualPeriod || '',
           item.actualPeriodHours || '',
-          earnings?.claimedFUD || '',
-          earnings?.claimedFOMO || '',
-          earnings?.claimedALPHA || '',
-          earnings?.claimedKEK || '',
+          ...earningsRows,
           tokensToShare.includes(tokenAddresses.value.FUD) ? 'Y' : '',
           tokensToShare.includes(tokenAddresses.value.FOMO) ? 'Y' : '',
           tokensToShare.includes(tokenAddresses.value.ALPHA) ? 'Y' : '',
@@ -133,7 +148,7 @@ export default {
 
     const onExportLinkClicked = () => {
       // Run this just-in-time when the link is clicked
-      exportLinkRef.value.href = makeCSVFileUrl([headers].concat(getRows()))
+      exportLinkRef.value.href = makeCSVFileUrl([headers.value].concat(getRows()))
     }
 
     return {

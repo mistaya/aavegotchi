@@ -157,7 +157,13 @@
           <summary>
             About this data
           </summary>
-          The FUD, FOMO, ALPHA, KEK in the table shows what's visible on the blockchain: the total amount claimed plus any amount in the gotchi pocket (withdrawn).
+          The FUD, FOMO, ALPHA, KEK in the table shows what's visible on the blockchain:
+          <template v-if="earningsEnabled">
+            the total amount claimed plus any amount in the gotchi pocket (withdrawn).
+          </template>
+          <template v-else>
+            the amount in the gotchi pocket (withdrawn). (Claimed earnings data is not available on Base.)
+          </template>
           <br>We can't yet see alchemica that has been collected in-game but not withdrawn through a vortex, or withdrawals that are stuck in a queue and haven't been sent yet.
           <br>This data is gathered from several sources, so may not be totally up-to-date.
           <br>
@@ -228,7 +234,7 @@
       </div>
 
       <div
-        v-if="earningsStatus.error"
+        v-if="earningsEnabled && earningsStatus.error"
         style="margin-top: 20px; font-size: 0.9em;"
       >
         <div class="site-alertbox site-alertbox--warning">
@@ -447,7 +453,17 @@
                   :class="{
                     'zero-value': row.totalAlchemica[type].isZero()
                   }"
-                  :title="(!row.listing.completed && (!row.earnedAlchemica[type].isZero() || (row.escrowAlchemica[type] && !row.escrowAlchemica[type].isZero()))) ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type] || 0}` : null"
+                  :title="
+                    (
+                      earningsEnabled &&
+                      !row.listing.completed &&
+                      (
+                        !row.earnedAlchemica[type].isZero() ||
+                        (row.escrowAlchemica[type] && !row.escrowAlchemica[type].isZero())
+                      )
+                    )
+                    ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type] || 0}` : null
+                  "
                 >
                   {{ row.totalAlchemica[type] }}
                 </div>
@@ -715,6 +731,7 @@ export default {
 
     const { status: earningsStatus, setLoading: setEarningsLoading } = useStatus()
     const earnings = ref({})
+    const earningsEnabled = computed(() => isPolygonNetwork.value)
 
     const { ghstPrices, fetchStatus: pricesStatus, fetchPrices } = useTokenPricesAavegotchi()
 
@@ -729,7 +746,11 @@ export default {
       loading: borrowedGotchisStatus.value.loading || earningsStatus.value.loading || balancesStatus.value.loading || pricesStatus.value.loading,
       error: borrowedGotchisStatus.value.error,
       loaded: borrowedGotchisStatus.value.loaded &&
-        (earningsStatus.value.loaded || earningsStatus.value.error) && // allow earnings fetch to fail
+        (
+          earningsEnabled.value
+            ? (earningsStatus.value.loaded || earningsStatus.value.error) // allow earnings fetch to fail
+            : true
+        ) &&
         (balancesStatus.value.loaded || balancesStatus.value.error) && // allow balances fetch to fail
         (pricesStatus.value.loaded || pricesStatus.value.error) // allow prices fetch to fail
     }))
@@ -824,6 +845,7 @@ export default {
     }
 
     const fetchEarnings = function () {
+      if (!earningsEnabled.value) { return }
       const LENDING_SUBGRAPH_URL = isPolygonNetwork.value ? apis.LENDING_SUBGRAPH : null
 
       const [isStale, setLoaded, setError] = setEarningsLoading()
@@ -945,10 +967,11 @@ export default {
 
     const tableGotchis = computed(() => {
       if (!status.value.loaded) { return [] }
+      const includeEarnings = earningsEnabled.value
       const rows = borrowedGotchis.value.map(item => {
         const isComplete = item.listing.completed
         // N.B. sometimes earningsForListing is missing for completed lendings
-        const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
+        const earningsForListing = includeEarnings && item.listing ? earnings.value[item.listing.id] : null
         const createdDate = new Date(item.listing.timeCreated * 1000)
         const agreedTimestamp = item.listing.timeAgreed * 1000
         const agreedDate = new Date(agreedTimestamp)
@@ -1183,6 +1206,7 @@ export default {
     return {
       isPolygonNetwork,
       status,
+      earningsEnabled,
       earningsStatus,
       balancesStatus,
       pricesStatus,

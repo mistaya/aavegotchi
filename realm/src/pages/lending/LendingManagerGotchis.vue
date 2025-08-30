@@ -89,9 +89,18 @@
           <summary>
             About this data
           </summary>
-          The FUD, FOMO, ALPHA, KEK in the table shows what's visible on the blockchain: the total amount claimed plus any amount in the gotchi pocket (withdrawn).
+          The FUD, FOMO, ALPHA, KEK in the table shows what's visible on the blockchain:
+          <template v-if="earningsEnabled">
+            the total amount claimed plus any amount in the gotchi pocket (withdrawn).
+          </template>
+          <template v-else>
+            the amount in the gotchi pocket (withdrawn). (Claimed earnings data is not available on Base.)
+          </template>
           <br>We can't yet see alchemica that has been collected in-game but not withdrawn through a vortex, or withdrawals that are stuck in a queue and haven't been sent yet. So your scholars may be more active than this shows!
-          <br>This data is gathered from several sources, so may not be totally up-to-date. Thanks to sudeep#3648 on discord for the claimed-alchemica subgraph!
+          <br>This data is gathered from several sources, so may not be totally up-to-date.
+          <template v-if="earningsEnabled">
+            Thanks to sudeep#3648 on discord for the claimed-alchemica subgraph!
+          </template>
           <br>
           <br>The 'Total' column is the same collected alchemica converted to a FUD-equivalent amount, as a single measure for comparison/sorting. This is done by using the intrinsic rarity of each alchemica type, <i>not</i> their market price: i.e. 1 FOMO = 2 FUD; 1 ALPHA = 4 FUD; 1 KEK = 10 FUD.
         </details>
@@ -146,7 +155,7 @@
         </div>
       </div>
       <div
-        v-if="earningsStatus.error"
+        v-if="earningsEnabled && earningsStatus.error"
         style="margin-top: 20px; font-size: 0.9em;"
       >
         <div class="site-alertbox site-alertbox--warning">
@@ -395,7 +404,18 @@
                   :class="{
                     'zero-value': row.totalAlchemica[type].isZero()
                   }"
-                  :title="(!row.earnedAlchemica[type].isZero() || (row.escrowAlchemica[type] && !row.escrowAlchemica[type].isZero())) ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type]}` : null"
+                  :title="
+                  (
+                    earningsEnabled &&
+                    (
+                      !row.earnedAlchemica[type].isZero() ||
+                      (
+                        row.escrowAlchemica[type] &&
+                        !row.escrowAlchemica[type].isZero()
+                      )
+                    )
+                  )
+                  ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type]}` : null"
                 >
                   {{ row.totalAlchemica[type] }}
                 </div>
@@ -582,6 +602,7 @@ export default {
 
     const { status: earningsStatus, setLoading: setEarningsLoading } = useStatus()
     const earnings = ref({})
+    const earningsEnabled = computed(() => isPolygonNetwork.value)
 
     const {
       setAddresses: setBalancesAddresses,
@@ -591,10 +612,14 @@ export default {
     } = useAddressBalances({ tokenLabels: ['FUD', 'FOMO', 'ALPHA', 'KEK'] })
 
     const status = computed(() => ({
-      loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading || earningsStatus.value.loading || balancesStatus.value.loading,
+      loading: ownedGotchisStatus.value.loading || listingsStatus.value.loading || (earningsEnabled.value && earningsStatus.value.loading) || balancesStatus.value.loading,
       error: ownedGotchisStatus.value.error || listingsStatus.value.error,
       loaded: ownedGotchisStatus.value.loaded && listingsStatus.value.loaded &&
-        (earningsStatus.value.loaded || earningsStatus.value.error) && // allow earnings fetch to fail
+        (
+          earningsEnabled.value
+            ? (earningsStatus.value.loaded || earningsStatus.value.error) // allow earnings fetch to fail
+            : true
+        ) &&
         (balancesStatus.value.loaded || balancesStatus.value.error) // allow balances fetch to fail
     }))
 
@@ -778,6 +803,7 @@ export default {
     }
 
     const fetchEarnings = function () {
+      if (!earningsEnabled.value) { return }
       const LENDING_SUBGRAPH_URL = isPolygonNetwork.value ? apis.LENDING_SUBGRAPH : null
 
       const [isStale, setLoaded, setError] = setEarningsLoading()
@@ -911,6 +937,7 @@ export default {
       const ownedUnlistedGotchis = ownedGotchis.value.filter(item => !listedGotchiIds.includes(item.gotchi.id))
       const allGotchis = ownedUnlistedGotchis.concat(listedGotchis.value)
       const fetchTimestampSeconds = fetchTimestamp.value / 1000
+      const includeEarnings = earningsEnabled.value
       const rows = allGotchis.map(item => {
         const isListed = item.listing && (item.listing.timeAgreed === '0' || item.listing.timeAgreed === null)
         const isLended = item.listing && item.listing.timeAgreed > 0
@@ -927,7 +954,7 @@ export default {
           ? item.listing.lastClaimed * 1000
           // if not lended, make up a 'far past' timestamp to help with sorting listed and unlisted gotchis
           : (isListed ? Number.MIN_SAFE_INTEGER + 1 : Number.MIN_SAFE_INTEGER)
-        const earningsForListing = item.listing ? earnings.value[item.listing.id] : null
+        const earningsForListing = includeEarnings && item.listing ? earnings.value[item.listing.id] : null
         const balancesForGotchi = balances.value[item.gotchi.escrow]
         const totalAlchemica = {}
         const bigNumZero = new BigNumber(0)
@@ -1108,6 +1135,7 @@ export default {
     return {
       isPolygonNetwork,
       status,
+      earningsEnabled,
       earningsStatus,
       balancesStatus,
       ownedGotchis,

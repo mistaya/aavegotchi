@@ -9,7 +9,10 @@
         <br>All the following filters are optional, though please be considerate of the subgraphs if you're exporting a lot :)
       </div>
 
-      <div style="margin-bottom: 15px;">
+      <div
+        v-if="earningsEnabled"
+        style="margin-bottom: 15px;"
+      >
         <div class="site-alertbox site-alertbox--warning">
           <SiteIcon name="warning-triangle" />
           <div>
@@ -40,7 +43,7 @@
       </div>
 
       <div
-        v-if="earningsStatus.error"
+        v-if="earningsEnabled && earningsStatus.error"
         style="margin-bottom: 30px;"
       >
         <div class="site-alertbox site-alertbox--warning">
@@ -168,7 +171,7 @@
           <br>
           <LendingsExport
             :lendings="lendings"
-            :earningsById="earnings"
+            :earningsById="earningsEnabled ? earnings : null"
           />
 
           <br>
@@ -206,12 +209,17 @@ export default {
 
     const { status: lendingsStatus, setLoading: setLendingsLoading, reset: resetLendingsStatus } = useStatus()
     const { status: earningsStatus, setLoading: setEarningsLoading, reset: resetEarningsStatus } = useStatus()
+    const earningsEnabled = computed(() => isPolygonNetwork.value)
 
     const status = computed(() => ({
-      loading: lendingsStatus.value.loading || earningsStatus.value.loading,
+      loading: lendingsStatus.value.loading || (earningsEnabled.value && earningsStatus.value.loading),
       error: lendingsStatus.value.error,
       loaded: lendingsStatus.value.loaded &&
-        (earningsStatus.value.loaded || earningsStatus.value.error) // allow earnings fetch to fail
+        (
+          earningsEnabled.value
+            ? (earningsStatus.value.loaded || earningsStatus.value.error) // allow earnings fetch to fail
+            : true
+        )
     }))
 
     const lendings = ref([])
@@ -360,6 +368,7 @@ export default {
     }
 
     const fetchEarnings = function () {
+      if (!earningsEnabled.value) { return }
       const LENDING_SUBGRAPH_URL = isPolygonNetwork.value ? apis.LENDING_SUBGRAPH : null
 
       const [isStale, setLoaded, setError] = setEarningsLoading()
@@ -490,6 +499,7 @@ export default {
       fetchData,
       status,
       lendings,
+      earningsEnabled,
       earnings,
       earningsStatus
     }
