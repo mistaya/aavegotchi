@@ -3,12 +3,12 @@ import diamondAbi from "./diamondAbi.json";
 
 import { ethers } from "ethers";
 
-const provider = new ethers.providers.JsonRpcProvider("https://polygon-rpc.com/");
+const provider = new ethers.providers.JsonRpcProvider("https://base-rpc.publicnode.com");
 
 let contract = null;
 
 const initContract = function () {
-    const diamondAddress = "0x86935F11C86623deC8a25696E1C19a8659CbF95d";
+    const diamondAddress = "0xA99c4B08201F2913Db8D28e71d020c4298F29dBF";
     contract = new ethers.Contract(
         diamondAddress,
         diamondAbi,

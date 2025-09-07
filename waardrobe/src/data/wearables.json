@@ -1125,7 +1125,7 @@
             false,
             false,
             true,
-            true,
+            false,
             false,
             false,
             false,
@@ -1218,7 +1218,7 @@
             false,
             false,
             true,
-            true,
+            false,
             false,
             false,
             false,
@@ -7347,6 +7347,68 @@
         ]
     },
     {
+        "id": 418,
+        "name": "Based Shirt",
+        "rarityScoreModifier": 1,
+        "slotPositions": [
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            -1,
+            0,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 419,
+        "name": "Base App",
+        "rarityScoreModifier": 5,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            0,
+            0,
+            0,
+            3,
+            0,
+            0
+        ]
+    },
+    {
         "id": 42,
         "name": "Eagle Mask",
         "rarityScoreModifier": 5,
@@ -7372,6 +7434,37 @@
             1,
             0,
             2,
+            0,
+            0,
+            0
+        ]
+    },
+    {
+        "id": 420,
+        "name": "Jesse Pollak Hair",
+        "rarityScoreModifier": 10,
+        "slotPositions": [
+            false,
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        ],
+        "traitModifiers": [
+            2,
+            -2,
+            0,
             0,
             0,
             0
