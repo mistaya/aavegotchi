@@ -186,7 +186,7 @@ export default function useLendingLands ({ network = null, landsQueryWhere }) {
 
   const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useLendingLandsForNetwork(network) })
   const getLendingLandsForNetwork = function ({ network, landsQueryWhere }) {
-    const item = getItemForNetwork(selectedNetwork.value)
+    const item = getItemForNetwork(network)
     item.initLandsQuery(landsQueryWhere)
     return item
   }

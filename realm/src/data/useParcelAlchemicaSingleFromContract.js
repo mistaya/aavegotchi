@@ -60,6 +60,7 @@ const meanAlchemicaForRound = function (roundNum, sizeNum) {
 }
 
 // Implementation here is the same, but we still store separate data for each network
+// eslint-disable-next-line no-unused-vars
 const useParcelAlchemicaSingleForNetwork = function (network) {
   const current = ref(null)
   const rounds = ref([])

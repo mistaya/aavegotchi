@@ -188,7 +188,7 @@ const useParcelContentsSingleForNetwork = function (network) {
 
 const { getItemForNetwork } = useNetworkCachedItem({ initItem: (network) => useParcelContentsSingleForNetwork(network) })
 
-export default function useParcelContentsSingle (network = null) {
+export default function useParcelContentsSingle () {
   // use the currently selected network, which can change over time
   const resultToUse = computed(() => getItemForNetwork(selectedNetwork.value))
   const aaltar = computed(() => resultToUse.value.aaltar.value)

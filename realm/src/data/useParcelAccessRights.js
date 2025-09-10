@@ -22,7 +22,7 @@ const ACTION_TYPES = [0, 1]
 
 export default function () {
   const { status: fetchStatus, setLoading, reset } = useStatus()
-  const ACCESS_RIGHTS_TEMPLATE = ACTION_TYPES.map(type => ({}))
+  const ACCESS_RIGHTS_TEMPLATE = ACTION_TYPES.map(() => ({}))
   const parcelAccessRights = ref([...ACCESS_RIGHTS_TEMPLATE]) // store one object per action type, with keys = parcel ID
 
   const lastFetchDate = ref(null)

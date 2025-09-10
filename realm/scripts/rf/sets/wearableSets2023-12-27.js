@@ -1,6 +1,6 @@
 // from https://github.com/aavegotchi/aavegotchi-contracts/blob/master/scripts/wearableSets.ts
 
-module.exports = wearableSetArrays = [
+module.exports = [
   {
     setId: 0,
     name: "Infantry",

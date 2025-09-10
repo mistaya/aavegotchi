@@ -772,7 +772,7 @@ export default {
     }
     watch(
       () => [colorScheme.value.colorBy, selectedNetwork.value],
-      ([colorBy, network]) => {
+      ([colorBy]) => {
         if (['baazaarPrice', 'lastPrice'].includes(colorBy)) {
           // these color schemes require baazaar listings
           // make sure it's fetched at least once
@@ -954,7 +954,7 @@ export default {
           return whalePxScale.value(whalesPx.value[owner] || 0)
         }
       } else if (colorBy === 'highlight') {
-        getColor = parcel => colorScheme.value.highlight
+        getColor = () => colorScheme.value.highlight
       }
       const myMatchingParcels = parcelsMatchingMyFilters.value.result
       const colorMyParcels = mapConfig.value.colorMyParcels

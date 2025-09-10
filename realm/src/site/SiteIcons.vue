@@ -14,7 +14,6 @@
 </template>
 
 <script>
-/* eslint import/no-webpack-loader-syntax: off */
 /* Icons from https://iconoir.com/ */
 import copySvg from '!!raw-loader!@/assets/icons/icon-copy.svg'
 import cancelSvg from '!!raw-loader!@/assets/icons/icon-cancel.svg'

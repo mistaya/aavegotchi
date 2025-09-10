@@ -706,7 +706,7 @@ export default {
             this.hammer.get('pinch').set({ enable: true })
 
             // Handle double tap
-            this.hammer.on('doubletap', function (ev) {
+            this.hammer.on('doubletap', function () {
               instance.zoomIn()
             })
 

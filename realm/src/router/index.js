@@ -394,6 +394,7 @@ const trackViewFromRoute = function (route) {
   window.trackView(urlToLog)
 }
 
+// eslint-disable-next-line no-unused-vars
 router.afterEach((to, from) => {
   trackViewFromRoute(to)
 })

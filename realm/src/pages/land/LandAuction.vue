@@ -664,7 +664,7 @@ export default {
           return whalePxScale.value(whalesPx.value[parcelAuctions.value[parcel.id].highestBidder] || 0)
         }
       } else if (colorBy === 'highlight') {
-        getColor = parcel => colorScheme.value.highlight
+        getColor = () => colorScheme.value.highlight
       }
       const colorNotInAuction = mapConfig.value.colorNotInAuction
       const parcelsToColor = filters.value.includeNonAuctionParcels ? allDisplayableParcels : parcelsInAuction

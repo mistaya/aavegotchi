@@ -38,11 +38,11 @@ export default {
     onMounted(() => {
       if (dialogRef.value) {
         dialog = new A11yDialog(dialogRef.value)
-        dialog.on('show', (element, event) => {
+        dialog.on('show', (event) => {
           disableBodyScroll(dialogContentRef.value)
           emit('update:isOpen', true)
         })
-        dialog.on('hide', (element, event) => {
+        dialog.on('hide', (event) => {
           enableBodyScroll(dialogContentRef.value)
           emit('update:isOpen', false)
         })
