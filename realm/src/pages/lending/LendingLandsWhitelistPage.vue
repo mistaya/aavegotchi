@@ -73,7 +73,7 @@
                 v-for="(whitelist, index) in whitelistsWithAddress"
               >
                 <template v-if="whitelist.name">
-                  {{ whitelist.name }} (#{{ whitelist.id}}){{ (index === whitelistsWithAddress.length - 1) ? '' : ',&nbsp;' }}
+                  {{ whitelist.name }} (#{{ whitelist.id }}){{ (index === whitelistsWithAddress.length - 1) ? '' : ',&nbsp;' }}
                 </template>
                 <template v-else>
                   #{{ whitelist.id }}{{ (index === whitelistsWithAddress.length - 1) ? '' : ',&nbsp;' }}
@@ -93,7 +93,6 @@
     </template>
 
     <div v-if="status.loaded">
-
       <fieldset
         class="table-filters"
         style="margin-bottom: 30px;"

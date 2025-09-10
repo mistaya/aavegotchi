@@ -27,9 +27,9 @@
       </h2>
       <template v-if="address">
         (<a
-            :href="urlNoAddress"
-            @click.prevent="clearAddress"
-          >Use another address</a>)
+          :href="urlNoAddress"
+          @click.prevent="clearAddress"
+        >Use another address</a>)
       </template>
     </div>
     <template v-if="address || thirdPartyAddress || originalOwnerAddress">

@@ -1,43 +1,43 @@
 <template>
-    <footer class="site-banner site-banner--secondary">
-        <div class="footer__sig">
-            By <b style="font-family: monospace;">eitri</b>
-            (discord)
-            - feedback welcome!
-        </div>
-        <div>
-            <a
-                href="https://github.com/mistaya/aavegotchi/tree/main/realm"
-                rel="nofollow noopener noreferrer"
-                class="site-banner__link"
-            >
-                Source code
-            </a>
-        </div>
-        <div>
-            <a
-                href="https://polygonscan.com/address/0xaf4fe811ffa1bf1f7de8fdaa9f706487c882aed0"
-                rel="nofollow noopener noreferrer"
-                class="site-banner__link footer__donate"
-            >
-                Donate
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 13 15"
-                    class="footer__mug"
-                    alt="gotchi mug"
-                >
-                    <g fill="#d3cadf" class="footer__mug-steam">
-                        <path d="M2,0h1v1H2V0z"/><path d="M3,1h1v1H3V1z"/><path d="M4,2h1v1H4V2z"/><path d="M3,3h1v1H3V3z"/><path d="M2 4h1v2H2V4zm4-4h1v1H6V0z"/><path d="M7,1h1v1H7V1z"/><path d="M8,2h1v1H8V2z"/><path d="M7,3h1v1H7V3z"/><path d="M6,4h1v2H6V4z"/>
-                    </g>
-                    <g fill="#64438e">
-                        <path d="M0,5v9h1v1h8v-1h1v-2h2v-1h-2V8h2V7h-2V5H0z"/><path d="M12,8v3h1V8H12z"/>
-                    </g>
-                    <path d="M1 14h8V6H1v8z" fill="#fff"/><path d="M8,6v8h1V6H8z" fill="#d3cadf"/><path d="M7.1 8.3v-.9H5.4v.9h-.8v-.9H2.9v.9H2v1.8h.9v.9h.8v.9h.9v.9h.9v-.9h.8V11h.9v-.9H8V8.3h-.9z" fill="#fa34f3"/><path d="M4.6 11.9h.9v.9h-.9v-.9z" fill="#7e18f8"/><path d="M3.7 11v.9h2.6V11H3.7h0z" fill="#8f17f9"/><path d="M2.9 10.1v.9h4.3v-.9H2.9z" fill="#ac15f9"/><path d="M2 9.2v.9h6v-.9H2z" fill="#cf15f9"/><path d="M7.1 8.3v-.9H5.4v.9h-.8v-.9H2.9v.9H2v.9h6v-.9h-.9z" fill="#fa34f3"/>
-                </svg>
-            </a>
-        </div>
-    </footer>
+  <footer class="site-banner site-banner--secondary">
+    <div class="footer__sig">
+      By <b style="font-family: monospace;">eitri</b>
+      (discord)
+      - feedback welcome!
+    </div>
+    <div>
+      <a
+        href="https://github.com/mistaya/aavegotchi/tree/main/realm"
+        rel="nofollow noopener noreferrer"
+        class="site-banner__link"
+      >
+        Source code
+      </a>
+    </div>
+    <div>
+      <a
+        href="https://polygonscan.com/address/0xaf4fe811ffa1bf1f7de8fdaa9f706487c882aed0"
+        rel="nofollow noopener noreferrer"
+        class="site-banner__link footer__donate"
+      >
+        Donate
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 13 15"
+          class="footer__mug"
+          alt="gotchi mug"
+        >
+          <g fill="#d3cadf" class="footer__mug-steam">
+            <path d="M2,0h1v1H2V0z"/><path d="M3,1h1v1H3V1z"/><path d="M4,2h1v1H4V2z"/><path d="M3,3h1v1H3V3z"/><path d="M2 4h1v2H2V4zm4-4h1v1H6V0z"/><path d="M7,1h1v1H7V1z"/><path d="M8,2h1v1H8V2z"/><path d="M7,3h1v1H7V3z"/><path d="M6,4h1v2H6V4z"/>
+          </g>
+          <g fill="#64438e">
+            <path d="M0,5v9h1v1h8v-1h1v-2h2v-1h-2V8h2V7h-2V5H0z"/><path d="M12,8v3h1V8H12z"/>
+          </g>
+          <path d="M1 14h8V6H1v8z" fill="#fff"/><path d="M8,6v8h1V6H8z" fill="#d3cadf"/><path d="M7.1 8.3v-.9H5.4v.9h-.8v-.9H2.9v.9H2v1.8h.9v.9h.8v.9h.9v.9h.9v-.9h.8V11h.9v-.9H8V8.3h-.9z" fill="#fa34f3"/><path d="M4.6 11.9h.9v.9h-.9v-.9z" fill="#7e18f8"/><path d="M3.7 11v.9h2.6V11H3.7h0z" fill="#8f17f9"/><path d="M2.9 10.1v.9h4.3v-.9H2.9z" fill="#ac15f9"/><path d="M2 9.2v.9h6v-.9H2z" fill="#cf15f9"/><path d="M7.1 8.3v-.9H5.4v.9h-.8v-.9H2.9v.9H2v.9h6v-.9h-.9z" fill="#fa34f3"/>
+        </svg>
+      </a>
+    </div>
+  </footer>
 </template>
 
 <script>

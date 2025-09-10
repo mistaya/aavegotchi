@@ -15,12 +15,11 @@
       class="site-alertbox site-alertbox--info site-alertbox--compact"
       style="margin-top: 20px"
     >
-     Gotchi "Spirit Force" or "collateral" was a Polygon-only feature (it was not migrated to Base). The final owner of the gotchi on Polygon can still withdraw any remaining Spirit Force and GHST rewards there.
+      Gotchi "Spirit Force" or "collateral" was a Polygon-only feature (it was not migrated to Base). The final owner of the gotchi on Polygon can still withdraw any remaining Spirit Force and GHST rewards there.
     </div>
 
     <template v-if="gotchisFetchStatus.loaded">
       <div class="dashboard">
-
         <div
           class="dashboard-row"
           style="margin-bottom: 50px;"
@@ -71,9 +70,9 @@
                   />
                   /
                 </template>
-                  <NumberDisplay
-                    :number="balanceTotals[tokenIndex].mean"
-                  />
+                <NumberDisplay
+                  :number="balanceTotals[tokenIndex].mean"
+                />
                 {{ token.label }})
                 <br>
                 <br>
@@ -103,10 +102,10 @@
               in <NumberDisplay :number="grandTotals.numGotchisWithPrice" /> gotchis
               <br>
               (average
-                <NumberDisplay
-                  :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
-                  usd
-                />)
+              <NumberDisplay
+                :number="dashboardDisplayMode == 'all' ? grandTotals.meanUsd : grandTotals.meanUsdLocked"
+                usd
+              />)
             </div>
             <div
               v-if="grandTotals.numGotchisWithoutPrice > 0"
@@ -184,10 +183,10 @@
               <template v-if="hasPrices && item.hasPrice">
                 <br>
                 (average
-                  <NumberDisplay
-                    :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
-                    usd
-                  />)
+                <NumberDisplay
+                  :number="dashboardDisplayMode == 'all' ? item.meanUsd : item.meanUsdLocked"
+                  usd
+                />)
               </template>
             </div>
           </div>
@@ -334,12 +333,12 @@
                   icon
                 />
               </div>
-               <EthAddress
+              <EthAddress
                 :address="ownersByGotchi[gotchi.id]"
                 icon
                 style="margin-left: 20px;"
               />
-               <EthAddress
+              <EthAddress
                 v-if="trueOwnersByGotchi[gotchi.id] && trueOwnersByGotchi[gotchi.id] !== ownersByGotchi[gotchi.id]"
                 :address="trueOwnersByGotchi[gotchi.id]"
                 icon

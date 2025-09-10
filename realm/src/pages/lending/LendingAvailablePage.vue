@@ -232,7 +232,9 @@
                 <div style="margin-top: 15px; font-size: 0.9em; line-height: 1.5;">
                   These only filter/sort the {{ results.length }} results we've <i>already fetched</i>.
                   <br>If you want to find more,
-                  <template v-if="fetchPageSize < 1000">increase the maximum number of results to fetch, or </template>
+                  <template v-if="fetchPageSize < 1000">
+                    increase the maximum number of results to fetch, or
+                  </template>
                   try different Search Filters earlier.
                 </div>
                 <details
@@ -322,7 +324,9 @@
             style="margin-top: 20px"
           >
             No channelable gotchis found out of {{ results.length }} listings.
-            <br>Try <template v-if="fetchPageSize < 1000">increasing the maximum number of results to fetch, or </template>
+            <br>Try <template v-if="fetchPageSize < 1000">
+              increasing the maximum number of results to fetch, or
+            </template>
             changing the earlier Search Filters to fetch more.
           </div>
 
@@ -344,8 +348,12 @@
                 >
                   Lending Details
                 </th>
-                <th colspan="3" class="with-left-border">Channeling</th>
-                <th colspan="4" class="with-left-border">Gotchi</th>
+                <th colspan="3" class="with-left-border">
+                  Channeling
+                </th>
+                <th colspan="4" class="with-left-border">
+                  Gotchi
+                </th>
               </tr>
               <tr>
                 <th>Listing ID</th>

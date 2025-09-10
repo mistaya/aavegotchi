@@ -40,7 +40,7 @@
             :value="roadSize.id"
             @change="roadSizesChanged(mySelectRoadSizes)"
           />
-            {{ roadSize.label }}
+          {{ roadSize.label }}
         </label>
       </div>
     </div>

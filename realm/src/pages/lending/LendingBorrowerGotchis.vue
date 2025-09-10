@@ -325,7 +325,9 @@
           </tr>
           <tr>
             <th>Gotchi</th>
-            <th class="with-left-border">Started</th>
+            <th class="with-left-border">
+              Started
+            </th>
             <th style="min-width: 120px">
               Finishes
               <SortToggle
@@ -333,7 +335,9 @@
                 @update:sort="tableSort.column = $event ? 'actualFinishTimestamp' : null; tableSort.direction = $event"
               />
             </th>
-            <th class="with-left-border">Agreed</th>
+            <th class="with-left-border">
+              Agreed
+            </th>
             <th>Actual</th>
             <th
               v-for="(type, index) in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
@@ -462,7 +466,7 @@
                         (row.escrowAlchemica[type] && !row.escrowAlchemica[type].isZero())
                       )
                     )
-                    ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type] || 0}` : null
+                      ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type] || 0}` : null
                   "
                 >
                   {{ row.totalAlchemica[type] }}

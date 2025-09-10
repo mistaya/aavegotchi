@@ -4,14 +4,16 @@
     class="parcel-boosts"
   >
     <template
-      v-for="([num, label])  in [[fudNum, 'FUD'], [fomoNum, 'FOMO'], [alphaNum, 'ALPHA'], [kekNum, 'KEK']]"
+      v-for="([num, label]) in [[fudNum, 'FUD'], [fomoNum, 'FOMO'], [alphaNum, 'ALPHA'], [kekNum, 'KEK']]"
       :key="label"
     >
       <li
         v-if="num"
         class="parcel-boost"
         :class="`parcel-boost--${label.toLowerCase()}`"
-      >{{ num }} {{ label }}</li>
+      >
+        {{ num }} {{ label }}
+      </li>
     </template>
   </ul>
 </template>

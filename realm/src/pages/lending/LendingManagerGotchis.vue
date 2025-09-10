@@ -192,12 +192,24 @@
         <template #headers>
           <tr>
             <th>Gotchi</th>
-            <th class="col-about--listed">Listed?</th>
-            <th class="col-about--lended">Lended?</th>
-            <th class="col-about--listed col-about--lended">Listing ID</th>
-            <th class="col-about--listed col-about--lended">Listing Posted</th>
-            <th class="col-about--listed col-about--lended">Borrower Can Channel</th>
-            <th class="col-about--lended">Lending Started</th>
+            <th class="col-about--listed">
+              Listed?
+            </th>
+            <th class="col-about--lended">
+              Lended?
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Listing ID
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Listing Posted
+            </th>
+            <th class="col-about--listed col-about--lended">
+              Borrower Can Channel
+            </th>
+            <th class="col-about--lended">
+              Lending Started
+            </th>
             <th
               class="col-about--lended"
               style="min-width: 120px"
@@ -372,7 +384,7 @@
             </td>
             <td class="col-about--listed col-about--lended">
               <template v-if="row.listing">
-                {{ row.listing.channellingAllowed  ? 'Yes' : 'No' }}
+                {{ row.listing.channellingAllowed ? 'Yes' : 'No' }}
               </template>
             </td>
             <td class="col-about--lended">
@@ -405,17 +417,17 @@
                     'zero-value': row.totalAlchemica[type].isZero()
                   }"
                   :title="
-                  (
-                    earningsEnabled &&
                     (
-                      !row.earnedAlchemica[type].isZero() ||
+                      earningsEnabled &&
                       (
-                        row.escrowAlchemica[type] &&
-                        !row.escrowAlchemica[type].isZero()
+                        !row.earnedAlchemica[type].isZero() ||
+                        (
+                          row.escrowAlchemica[type] &&
+                          !row.escrowAlchemica[type].isZero()
+                        )
                       )
                     )
-                  )
-                  ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type]}` : null"
+                      ? `Claimed: ${row.earnedAlchemica[type]}, Pocket: ${row.escrowAlchemica[type]}` : null"
                 >
                   {{ row.totalAlchemica[type] }}
                 </div>

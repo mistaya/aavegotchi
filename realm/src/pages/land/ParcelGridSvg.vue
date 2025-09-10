@@ -1,53 +1,53 @@
 <template>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      :viewBox="`0 0 ${parcelWidth} ${parcelHeight}`"
-      class="parcel-grid"
-      :style="{
-        'width': size ? `${size.width}px` : undefined,
-        'height': size ? `${size.height}px` : undefined,
-      }"
-    >
-      <!-- workaround white gaps between tiles by making a slightly offset copy -->
-      <image
-        v-for="{ type, grid } in tiles"
-        :key="`tile-copy__${type.id}`"
-        :x="grid.x + 0.01"
-        :y="grid.y + 0.01"
-        :width="type.width"
-        :height="type.height"
-        :href="`/map/tile_${type.id}.png`"
-      />
-      <!-- tiles -->
-      <image
-        v-for="{ type, grid } in tiles"
-        :key="`tile__${type.id}`"
-        :x="grid.x"
-        :y="grid.y"
-        :width="type.width"
-        :height="type.height"
-        :href="`/map/tile_${type.id}.png`"
-      />
-      <!-- installations -->
-      <image
-        v-for="{ type, grid } in installationsSorted"
-        :key="`installation${type.id}`"
-        :x="type.image && type.image.baseOffsetLeft ? grid.x - (type.width * (type.image.baseOffsetLeft / type.image.baseWidth)) : grid.x"
-        :y="type.image && type.image.baseOffsetTop ? grid.y - (type.height * (type.image.baseOffsetTop / type.image.baseHeight)) : grid.y"
-        :width="type.image ? type.width * (type.image.width / type.image.baseWidth) : type.width"
-        :height="type.image ? type.height * (type.image.height / type.image.baseHeight) : type.height"
-        :href="`/map/installation_${type.id}.png`"
-      />
-      <!-- aaltar -->
-      <image
-        v-if="aaltar"
-        :x="aaltar.type.image && aaltar.type.image.baseOffsetLeft ? aaltar.grid.x - (aaltar.type.width * (aaltar.type.image.baseOffsetLeft / aaltar.type.image.baseWidth)) : aaltar.grid.x"
-        :y="aaltar.type.image && aaltar.type.image.baseOffsetTop ? aaltar.grid.y - (aaltar.type.height * (aaltar.type.image.baseOffsetTop / aaltar.type.image.baseHeight)) : aaltar.grid.y"
-        :width="aaltar.type.image ? aaltar.type.width * (aaltar.type.image.width / aaltar.type.image.baseWidth) : aaltar.type.width"
-        :height="aaltar.type.image ? aaltar.type.height * (aaltar.type.image.height / aaltar.type.image.baseHeight) : aaltar.type.height"
-        :href="`/map/installation_${aaltar.type.id}.png`"
-      />
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    :viewBox="`0 0 ${parcelWidth} ${parcelHeight}`"
+    class="parcel-grid"
+    :style="{
+      'width': size ? `${size.width}px` : undefined,
+      'height': size ? `${size.height}px` : undefined,
+    }"
+  >
+    <!-- workaround white gaps between tiles by making a slightly offset copy -->
+    <image
+      v-for="{ type, grid } in tiles"
+      :key="`tile-copy__${type.id}`"
+      :x="grid.x + 0.01"
+      :y="grid.y + 0.01"
+      :width="type.width"
+      :height="type.height"
+      :href="`/map/tile_${type.id}.png`"
+    />
+    <!-- tiles -->
+    <image
+      v-for="{ type, grid } in tiles"
+      :key="`tile__${type.id}`"
+      :x="grid.x"
+      :y="grid.y"
+      :width="type.width"
+      :height="type.height"
+      :href="`/map/tile_${type.id}.png`"
+    />
+    <!-- installations -->
+    <image
+      v-for="{ type, grid } in installationsSorted"
+      :key="`installation${type.id}`"
+      :x="type.image && type.image.baseOffsetLeft ? grid.x - (type.width * (type.image.baseOffsetLeft / type.image.baseWidth)) : grid.x"
+      :y="type.image && type.image.baseOffsetTop ? grid.y - (type.height * (type.image.baseOffsetTop / type.image.baseHeight)) : grid.y"
+      :width="type.image ? type.width * (type.image.width / type.image.baseWidth) : type.width"
+      :height="type.image ? type.height * (type.image.height / type.image.baseHeight) : type.height"
+      :href="`/map/installation_${type.id}.png`"
+    />
+    <!-- aaltar -->
+    <image
+      v-if="aaltar"
+      :x="aaltar.type.image && aaltar.type.image.baseOffsetLeft ? aaltar.grid.x - (aaltar.type.width * (aaltar.type.image.baseOffsetLeft / aaltar.type.image.baseWidth)) : aaltar.grid.x"
+      :y="aaltar.type.image && aaltar.type.image.baseOffsetTop ? aaltar.grid.y - (aaltar.type.height * (aaltar.type.image.baseOffsetTop / aaltar.type.image.baseHeight)) : aaltar.grid.y"
+      :width="aaltar.type.image ? aaltar.type.width * (aaltar.type.image.width / aaltar.type.image.baseWidth) : aaltar.type.width"
+      :height="aaltar.type.image ? aaltar.type.height * (aaltar.type.image.height / aaltar.type.image.baseHeight) : aaltar.type.height"
+      :href="`/map/installation_${aaltar.type.id}.png`"
+    />
+  </svg>
 </template>
 <script>
 import { computed } from 'vue'

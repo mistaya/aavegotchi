@@ -59,7 +59,7 @@
             :value="district"
             @change="selectMultipleChanged(mySelectMultiple)"
           />
-            {{ district }}
+          {{ district }}
         </label>
       </span>
 

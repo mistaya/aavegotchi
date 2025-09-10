@@ -1,31 +1,31 @@
 <template>
-    <details>
-      <summary>
+  <details>
+    <summary>
+      <label>
+        <input
+          type="checkbox"
+          :checked="allChildrenChecked"
+          @change="toggleAll($event.target.checked)"
+        >
+        {{ parentLabel }}
+      </label>
+    </summary>
+    <div style="margin-left: 30px">
+      <div
+        v-for="child in children"
+        :key="child.id"
+      >
         <label>
           <input
             type="checkbox"
-            :checked="allChildrenChecked"
-            @change="toggleAll($event.target.checked)"
-          >
-          {{ parentLabel }}
+            :checked="modelValue.includes(child.id)"
+            @change="onChildChange(child.id, $event.target.checked)"
+          />
+          {{ child.label }}
         </label>
-      </summary>
-      <div style="margin-left: 30px">
-        <div
-          v-for="child in children"
-          :key="child.id"
-        >
-          <label>
-            <input
-              type="checkbox"
-              :checked="modelValue.includes(child.id)"
-              @change="onChildChange(child.id, $event.target.checked)"
-            />
-            {{ child.label }}
-          </label>
-        </div>
       </div>
-    </details>
+    </div>
+  </details>
 </template>
 
 <script>

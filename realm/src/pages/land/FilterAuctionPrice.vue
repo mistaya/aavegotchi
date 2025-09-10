@@ -48,7 +48,6 @@
         Only parcels currently up for GBM Auction will be displayed when this filter is active.
       </div>
     </div>
-
   </details>
 </template>
 

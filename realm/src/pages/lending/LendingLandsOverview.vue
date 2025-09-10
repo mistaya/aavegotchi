@@ -8,7 +8,6 @@
     </template>
 
     <div v-if="status.loaded">
-
       <fieldset
         class="table-filters"
         style="margin-bottom: 30px;"

@@ -22,7 +22,6 @@
       </div>
     </template>
     <template v-else-if="fetchStatus.loaded">
-
       <template v-if="listingFetchStatus.error">
         <div class="site-alertbox site-alertbox--warning">
           <SiteIcon name="warning-triangle" />

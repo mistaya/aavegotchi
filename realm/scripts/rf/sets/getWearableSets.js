@@ -1,18 +1,11 @@
 const { readJsonFile } = require('../../fileUtils.js')
 
-// eslint-disable-next-line camelcase
 const wearableSets2021_01_03 = require('./wearableSets2021-01-03-extended.js')
-// eslint-disable-next-line camelcase
 const wearableSets2021_05_15 = require('./wearableSets2021-05-15.js')
-// eslint-disable-next-line camelcase
 const wearableSets2021_11_06 = require('./wearableSets2021-11-06.js')
-// eslint-disable-next-line camelcase
 const wearableSets2022_03_11 = require('./wearableSets2022-03-11.js')
-// eslint-disable-next-line camelcase
 const wearableSets2022_08_03 = require('./wearableSets2022-08-03.js')
-// eslint-disable-next-line camelcase
 const wearableSets2023_03_01 = require('./wearableSets2023-03-01.js')
-// eslint-disable-next-line camelcase
 const wearableSets2023_12_27 = require('./wearableSets2023-12-27.js')
 
 const wearableSetsByDate = {

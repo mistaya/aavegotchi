@@ -5,7 +5,6 @@ const setHelpers = require('./sets/setHelpers.js')
 
 const fetchGotchiLendings = require('./lendings/fetchGotchiLendings.js')
 const fetchEthGotchiOwners = require('./eth/fetchEthGotchiOwners.js')
-// eslint-disable-next-line no-unused-vars
 const fetchGotchiImages = require('./images/fetchGotchiImages.js')
 const fetchLendingsFromContract = require('./lendings/fetchGotchiLendingsFromContract.js')
 

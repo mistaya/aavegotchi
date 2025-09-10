@@ -49,7 +49,7 @@
                   </template>
                   <span class="parcel-name">{{ event.parcel.parcelHash }}</span>
                   <span class="parcel-coords"> (D{{ event.parcelCoordinates.districtId }}
-                  {{ event.parcelCoordinates.x }}, {{ event.parcelCoordinates.y }})</span>,
+                    {{ event.parcelCoordinates.x }}, {{ event.parcelCoordinates.y }})</span>,
                   spillover:
                   <br>
                   <div

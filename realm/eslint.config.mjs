@@ -2,8 +2,8 @@ import js from "@eslint/js";
 import pluginVue from 'eslint-plugin-vue';
 import globals from "globals";
 
-export default [
-  js.configs.recommended,
+export default
+[  js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   ...pluginVue.configs['flat/strongly-recommended'],
   {
@@ -29,8 +29,14 @@ export default [
       }],
       "vue/attribute-hyphenation": ["off"],
       "vue/html-self-closing": ["off"],
+      "vue/multiline-html-element-content-newline": ["warn", {
+        ignores: ["template"]
+      }],
       "vue/max-attributes-per-line": ["off"],
-      "vue/html-closing-bracket-spacing": ["off"]
+      "vue/html-closing-bracket-spacing": ["off"],
+      "vue/singleline-html-element-content-newline": ["off"],
+      "vue/v-on-event-hyphenation": ["off"],
+      "vue/require-explicit-emits": ["off"]
     }
   },
   {

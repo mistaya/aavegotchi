@@ -208,11 +208,11 @@
               </a>
             </td>
             <td v-if="showImages">
-            <img
-              :src="`/resources/rf/s${season}/r${round}/${row.gotchi.id}.svg`"
-              alt=""
-              style="width: 100px; height: 100px"
-            />
+              <img
+                :src="`/resources/rf/s${season}/r${round}/${row.gotchi.id}.svg`"
+                alt=""
+                style="width: 100px; height: 100px"
+              />
             </td>
 
             <!-- For debugging Rarity/Set issues -->
@@ -304,7 +304,7 @@
               </div>
             </td>
             <td v-if="showExtended">
-              {{ row.gotchi.hauntId}}
+              {{ row.gotchi.hauntId }}
             </td>
             <td v-if="showExtended">
               <EthAddress

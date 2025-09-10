@@ -1,217 +1,217 @@
 <template>
-    <div>
-      <div v-if="fetchStatus.loading || fetchStatus.error">
+  <div>
+    <div v-if="fetchStatus.loading || fetchStatus.error">
+      <span class="parcel-details__label">
+        Alchemica:
+      </span>
+      <span v-if="fetchStatus.loading">
+        loading...
+      </span>
+      <div v-if="fetchStatus.error">
+        Error fetching parcel alchemica.
+      </div>
+    </div>
+    <div v-if="fetchStatus.loaded">
+      <div style="margin-top: 10px">
         <span class="parcel-details__label">
-          Alchemica:
+          Current Alchemica:
         </span>
-        <span v-if="fetchStatus.loading">
-          loading...
-        </span>
-        <div v-if="fetchStatus.error">
-          Error fetching parcel alchemica.
+        <template v-if="!rounds[0]?.isSurveyed">
+          Unsurveyed
+        </template>
+        <div
+          v-else
+          style="margin-left: 8px;"
+        >
+          <div
+            v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+            :key="token"
+          >
+            <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
+              <CryptoIcon
+                :label="token"
+                style="margin-right: 5px"
+              />
+              <NumberDisplay
+                :number="current[token]"
+              />
+            </div>
+          </div>
+          <div>
+            Total FUD-equiv:
+            <NumberDisplay
+              :number="current.NORMALIZED"
+            />
+          </div>
         </div>
       </div>
-      <div v-if="fetchStatus.loaded">
 
-        <div style="margin-top: 10px">
-          <span class="parcel-details__label">
-            Current Alchemica:
-          </span>
-          <template v-if="!rounds[0]?.isSurveyed">
-            Unsurveyed
-          </template>
-          <div
-            v-else
-            style="margin-left: 8px;"
-          >
-            <div
-              v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
-              :key="token"
-            >
-              <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
-                <CryptoIcon
-                  :label="token"
-                  style="margin-right: 5px"
+      <div
+        v-if="rounds[0]?.isSurveyed"
+        style="margin-top: 15px;"
+      >
+        <span class="parcel-details__label">
+          Survey results:
+        </span>
+        <a
+          href="#"
+          style="display: inline-flex; gap: 5px; align-items: center; font-size: 0.85em"
+          @click.prevent="surveyPopupIsOpen = true"
+        >
+          <SiteIcon name="info" />
+          about
+        </a>
+
+        <SiteDialog
+          v-model:isOpen="surveyPopupIsOpen"
+        >
+          <div class="parcel-details__info-modal-content">
+            <div style="display: flex; align-items: center">
+              <h2 style="flex: 1 1 auto; margin-left: 10px;">
+                Alchemica Surveys
+              </h2>
+              <SiteButton
+                class="parcel-details__info-modal-close"
+                @click="surveyPopupIsOpen = false"
+              >
+                Close
+              </SiteButton>
+            </div>
+            <div class="parcel-details__info-modal-container">
+              <p>
+                Parcels can be surveyed for alchemica every round.
+                Act 1 contains 10 rounds, over about 2 years.
+                25% of the alchemica will be discovered in Round 1, and the remaining 75% will be split over rounds 2-10.
+              </p>
+              <p>
+                Most parcels will get about 70-90% of the mean (average) alchemica - this is better than it sounds, it's the most common. The distribution of alchemica is asymmetric: rare lucky high amounts make the mean higher than 'normal'.
+              </p>
+              <p style="text-align: center;">
+                <img
+                  src="./alchemica-distribution.png"
+                  style="max-width: 100%; opacity: 0.9"
                 />
+              </p>
+              <p>
+                Although each survey is random, it only picks between 18 possible results shown on the graph above (scaled by parcel size &amp; alchemica type).
+                See the
+                <a
+                  href="https://docs.gotchiverse.io/gameplay/farming/farming-your-parcel"
+                  rel="noopener"
+                  target="_blank"
+                >
+                  Gotchiverse docs
+                </a>
+                for more info.
+              </p>
+            </div>
+          </div>
+        </SiteDialog>
+
+        <div style="margin-left: 10px;">
+          <div
+            v-if="hasBoosts"
+            style="margin-top: 10px"
+          >
+            <label>
+              <input
+                v-model="includeBoosts"
+                type="checkbox"
+              />
+              Include boosts in amounts
+            </label>
+          </div>
+          <div
+            v-for="round in rounds"
+            :key="round.id"
+            style="margin-top: 10px"
+          >
+            <div>
+              <span class="parcel-details__label">
+                Round {{ round.id + 1 }}
+              </span>
+              <span v-if="!round.isSurveyed">
+                Unsurveyed
+              </span>
+              <span
+                v-else
+                class="survey-score"
+              >
+                ({{ round.combinedMeanX.times(100).integerValue() }}% average)
+              </span>
+            </div>
+            <div
+              v-if="round.isSurveyed"
+              style="margin-left: 8px;"
+            >
+              <div
+                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+                :key="token"
+              >
+                <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
+                  <CryptoIcon
+                    :label="token"
+                    style="margin-right: 5px"
+                  />
+                  <NumberDisplay
+                    :number="round[includeBoosts ? 'withBoost' : 'base'][token]"
+                  />
+
+                  <span
+                    style="margin-left: 10px;"
+                    class="survey-score"
+                  >
+                    ({{ round.baseMeanX[token].times(100).integerValue() }}%)
+                  </span>
+                </div>
+              </div>
+              <div>
+                Total FUD-equiv:
                 <NumberDisplay
-                  :number="current[token]"
+                  :number="round[includeBoosts ? 'withBoost' : 'base'].NORMALIZED"
                 />
               </div>
-            </div>
-            <div>
-              Total FUD-equiv:
-              <NumberDisplay
-                  :number="current.NORMALIZED"
-                />
             </div>
           </div>
         </div>
 
-        <div
-          v-if="rounds[0]?.isSurveyed"
-          style="margin-top: 15px;"
-        >
-          <span class="parcel-details__label">
-            Survey results:
-          </span>
-          <a
-            href="#"
-            style="display: inline-flex; gap: 5px; align-items: center; font-size: 0.85em"
-            @click.prevent="surveyPopupIsOpen = true"
+        <div style="margin-left: 10px;">
+          <div
+            v-if="totals.numRoundsSurveyed > 1"
+            style="margin-top: 10px"
           >
-            <SiteIcon name="info" />
-            about
-          </a>
-
-          <SiteDialog
-            v-model:isOpen="surveyPopupIsOpen"
-          >
-            <div class="parcel-details__info-modal-content">
-              <div style="display: flex; align-items: center">
-                <h2 style="flex: 1 1 auto; margin-left: 10px;">Alchemica Surveys</h2>
-                <SiteButton
-                  class="parcel-details__info-modal-close"
-                  @click="surveyPopupIsOpen = false"
-                >
-                  Close
-                </SiteButton>
-              </div>
-              <div class="parcel-details__info-modal-container">
-                <p>
-                  Parcels can be surveyed for alchemica every round.
-                  Act 1 contains 10 rounds, over about 2 years.
-                  25% of the alchemica will be discovered in Round 1, and the remaining 75% will be split over rounds 2-10.
-                </p>
-                <p>
-                  Most parcels will get about 70-90% of the mean (average) alchemica - this is better than it sounds, it's the most common. The distribution of alchemica is asymmetric: rare lucky high amounts make the mean higher than 'normal'.
-                </p>
-                <p style="text-align: center;">
-                  <img
-                    src="./alchemica-distribution.png"
-                    style="max-width: 100%; opacity: 0.9"
+            <div>
+              <span class="parcel-details__label">
+                Combined total for {{ totals.numRoundsSurveyed }} surveyed rounds:
+              </span>
+              <span
+                class="survey-score"
+              >
+                ({{ totals.combinedMeanX.times(100).integerValue() }}% average)
+              </span>
+            </div>
+            <div
+              style="margin-left: 8px;"
+            >
+              <div
+                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+                :key="token"
+              >
+                <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
+                  <CryptoIcon
+                    :label="token"
+                    style="margin-right: 5px"
                   />
-                </p>
-                <p>
-                  Although each survey is random, it only picks between 18 possible results shown on the graph above (scaled by parcel size &amp; alchemica type).
-                  See the
-                  <a
-                    href="https://docs.gotchiverse.io/gameplay/farming/farming-your-parcel"
-                    rel="noopener"
-                    target="_blank"
-                  >
-                    Gotchiverse docs
-                  </a>
-                  for more info.
-                </p>
-              </div>
-            </div>
-          </SiteDialog>
-
-          <div style="margin-left: 10px;">
-            <div
-              v-if="hasBoosts"
-              style="margin-top: 10px"
-            >
-              <label>
-                <input
-                  v-model="includeBoosts"
-                  type="checkbox"
-                />
-                Include boosts in amounts
-              </label>
-            </div>
-            <div
-              v-for="round in rounds"
-              :key="round.id"
-              style="margin-top: 10px"
-            >
-              <div>
-                <span class="parcel-details__label">
-                  Round {{ round.id + 1 }}
-                </span>
-                <span v-if="!round.isSurveyed">
-                  Unsurveyed
-                </span>
-                <span
-                  v-else
-                  class="survey-score"
-                >
-                  ({{ round.combinedMeanX.times(100).integerValue() }}% average)
-                </span>
-              </div>
-              <div
-                v-if="round.isSurveyed"
-                style="margin-left: 8px;"
-              >
-                <div
-                  v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
-                  :key="token"
-                >
-                  <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
-                    <CryptoIcon
-                      :label="token"
-                      style="margin-right: 5px"
-                    />
-                    <NumberDisplay
-                      :number="round[includeBoosts ? 'withBoost' : 'base'][token]"
-                    />
-
-                    <span
-                      style="margin-left: 10px;"
-                      class="survey-score"
-                    >
-                      ({{ round.baseMeanX[token].times(100).integerValue() }}%)
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  Total FUD-equiv:
                   <NumberDisplay
-                      :number="round[includeBoosts ? 'withBoost' : 'base'].NORMALIZED"
-                    />
-                </div>
-              </div>
-            </div>
-          </div>
+                    :number="totals[includeBoosts ? 'withBoost' : 'base'][token]"
+                  />
 
-          <div style="margin-left: 10px;">
-            <div
-              v-if="totals.numRoundsSurveyed > 1"
-              style="margin-top: 10px"
-            >
-              <div>
-                <span class="parcel-details__label">
-                  Combined total for {{ totals.numRoundsSurveyed }} surveyed rounds:
-                </span>
-                <span
-                  class="survey-score"
-                >
-                  ({{ totals.combinedMeanX.times(100).integerValue() }}% average)
-                </span>
-              </div>
-              <div
-                style="margin-left: 8px;"
-              >
-                <div
-                  v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
-                  :key="token"
-                >
-                  <div style="display: flex; align-items: center; margin: 5px 10px 5px 0;">
-                    <CryptoIcon
-                      :label="token"
-                      style="margin-right: 5px"
-                    />
-                    <NumberDisplay
-                      :number="totals[includeBoosts ? 'withBoost' : 'base'][token]"
-                    />
-
-                    <span
-                      style="margin-left: 10px;"
-                      class="survey-score"
-                    >
-                      ({{ totals.baseMeanX[token].times(100).integerValue() }}%)
-                    </span>
-                  </div>
+                  <span
+                    style="margin-left: 10px;"
+                    class="survey-score"
+                  >
+                    ({{ totals.baseMeanX[token].times(100).integerValue() }}%)
+                  </span>
                 </div>
               </div>
             </div>
@@ -219,6 +219,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 <script>
 import { ref, computed } from 'vue'

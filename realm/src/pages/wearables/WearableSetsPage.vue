@@ -22,11 +22,19 @@
           <thead>
             <tr>
               <th class="sets-table__header"></th>
-              <th class="sets-table__header">Set Bonus</th>
+              <th class="sets-table__header">
+                Set Bonus
+              </th>
               <th class="sets-table__header sets-table__header--image"></th>
-              <th class="sets-table__header sets-table__header--wearables">Items</th>
-              <th class="sets-table__header">Total Modifiers</th>
-              <th class="sets-table__header">Total BRS bonus</th>
+              <th class="sets-table__header sets-table__header--wearables">
+                Items
+              </th>
+              <th class="sets-table__header">
+                Total Modifiers
+              </th>
+              <th class="sets-table__header">
+                Total BRS bonus
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -34,8 +42,12 @@
               v-for="set in wearableSets"
               :key="set.id"
             >
-              <td class="sets-table__cell sets-table__cell--name">{{ set.name }}</td>
-              <td class="sets-table__cell sets-table__cell--set-bonus">{{ set.traitBonusesText }}</td>
+              <td class="sets-table__cell sets-table__cell--name">
+                {{ set.name }}
+              </td>
+              <td class="sets-table__cell sets-table__cell--set-bonus">
+                {{ set.traitBonusesText }}
+              </td>
               <td class="sets-table__cell sets-table__cell--image">
                 <img
                   :src="`/wearablesets/${set.key}.png`"
@@ -51,12 +63,16 @@
                     :key="wearable.name"
                   >
                     {{ wearable.name }}
-                    ({{ wearable.rarity}}; {{ wearable.traitModifiersText }})
+                    ({{ wearable.rarity }}; {{ wearable.traitModifiersText }})
                   </li>
                 </ul>
               </td>
-              <td class="sets-table__cell sets-table__cell--total-bonuses">{{ set.totalTraitBonusesText }} </td>
-              <td class="sets-table__cell sets-table__cell--total">{{ set.totalBRSBonus }}</td>
+              <td class="sets-table__cell sets-table__cell--total-bonuses">
+                {{ set.totalTraitBonusesText }}
+              </td>
+              <td class="sets-table__cell sets-table__cell--total">
+                {{ set.totalBRSBonus }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -94,11 +110,11 @@
                       <span class="set-summary">
                         <span class="set-summary__rarity-markers rarity-markers">
                           <span
-                             v-for="wearable in set.wearables"
-                             :key="wearable.id"
-                             class="rarity-marker"
-                             :class="`rarity-marker--${wearable.rarity.toLowerCase()}`"
-                             :title="`${wearable.name} (${wearable.rarity})`"
+                            v-for="wearable in set.wearables"
+                            :key="wearable.id"
+                            class="rarity-marker"
+                            :class="`rarity-marker--${wearable.rarity.toLowerCase()}`"
+                            :title="`${wearable.name} (${wearable.rarity})`"
                           ></span>
                         </span>
                         <span class="set-summary__total">

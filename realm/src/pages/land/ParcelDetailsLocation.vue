@@ -1,18 +1,18 @@
 <template>
-    <div>
-      <div style="display: none;">
-        Coordinates:
-        ({{ parcel.coordinateX }},
-        {{ parcel.coordinateY }})
-      </div>
-      <template v-if="gotchiverseCoords">
-        Gotchiverse Coords:
-        D{{ gotchiverseCoords.districtId }}
-        {{ gotchiverseCoords.x }},
-        {{ gotchiverseCoords.y }}
-      </template>
-      <br>Dimensions: {{ parcel.width }} x {{ parcel.height }}
+  <div>
+    <div style="display: none;">
+      Coordinates:
+      ({{ parcel.coordinateX }},
+      {{ parcel.coordinateY }})
     </div>
+    <template v-if="gotchiverseCoords">
+      Gotchiverse Coords:
+      D{{ gotchiverseCoords.districtId }}
+      {{ gotchiverseCoords.x }},
+      {{ gotchiverseCoords.y }}
+    </template>
+    <br>Dimensions: {{ parcel.width }} x {{ parcel.height }}
+  </div>
 </template>
 
 <script>

@@ -25,7 +25,7 @@
               :value="option.id"
               @change="selectionModeChanged(typeEntry, $event.target.value)"
             />
-              {{ option.label }}
+            {{ option.label }}
           </label>
         </div>
       </div>

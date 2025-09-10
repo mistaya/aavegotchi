@@ -1,215 +1,217 @@
 <template>
-    <div>
-      <div v-if="fetchStatus.loading || fetchStatus.error">
-        <span class="parcel-details__label">
-          Contents:
-        </span>
-        <span v-if="fetchStatus.loading">
-          loading...
-        </span>
-        <div v-if="fetchStatus.error">
-          Error fetching parcel contents.
-        </div>
+  <div>
+    <div v-if="fetchStatus.loading || fetchStatus.error">
+      <span class="parcel-details__label">
+        Contents:
+      </span>
+      <span v-if="fetchStatus.loading">
+        loading...
+      </span>
+      <div v-if="fetchStatus.error">
+        Error fetching parcel contents.
       </div>
-      <div v-if="fetchStatus.loaded">
-        <div
-          v-if="aaltar || tiles.length || installations.length"
-          style="margin-top: 8px"
-        >
-          <ParcelGridSvg
-            :parcelWidth="parcelWidth"
-            :parcelHeight="parcelHeight"
-            :tiles="tiles"
-            :aaltar="aaltar"
-            :installations="installations"
-            style="max-height: 250px;"
-          />
-          <div style="margin-bottom: 15px;">
-            <a
-              href="#"
-              @click.prevent="parcelGridPopupIsOpen = true"
-            >
-              View in popup
-            </a>
-          </div>
+    </div>
+    <div v-if="fetchStatus.loaded">
+      <div
+        v-if="aaltar || tiles.length || installations.length"
+        style="margin-top: 8px"
+      >
+        <ParcelGridSvg
+          :parcelWidth="parcelWidth"
+          :parcelHeight="parcelHeight"
+          :tiles="tiles"
+          :aaltar="aaltar"
+          :installations="installations"
+          style="max-height: 250px;"
+        />
+        <div style="margin-bottom: 15px;">
+          <a
+            href="#"
+            @click.prevent="parcelGridPopupIsOpen = true"
+          >
+            View in popup
+          </a>
+        </div>
 
-          <SiteDialog
-            v-model:isOpen="parcelGridPopupIsOpen"
-          >
-            <div class="parcel-details__grid-modal-content">
-              <SiteButton
-                class="parcel-details__grid-modal-close"
-                @click="parcelGridPopupIsOpen = false"
-              >
-                Close
-              </SiteButton>
-              <div class="parcel-details__grid-modal-grid-container">
-                <ParcelGridSvg
-                  :parcelWidth="parcelWidth"
-                  :parcelHeight="parcelHeight"
-                  :tiles="tiles"
-                  :aaltar="aaltar"
-                  :installations="installations"
-                  fullscreen
-                />
-              </div>
-            </div>
-          </SiteDialog>
-        </div>
-        <div style="margin-bottom: 8px;">
-          <span class="parcel-details__label">
-            Aaltar:
-          </span>
-          <template v-if="!aaltar">
-            None
-          </template>
-          <template v-else>
-            {{ aaltar.type.label }}
-            <div
-              v-if="lastActivity && lastActivity.lastChanneledDate"
-              class="parcel-details__last-activity"
-            >(<template v-if="aaltarCooldown"
-              >Ready
-                <template v-if="aaltarCooldown.isReady">now</template>
-                <DateFriendly
-                  v-else-if="aaltarCooldown.date"
-                  :date="aaltarCooldown.date"
-                  enableToggle
-                />;
-              </template>
-              Last channeled
-              <DateFriendly
-                :date="lastActivity.lastChanneledDate"
-                enableToggle
-              />)
-            </div>
-          </template>
-        </div>
-        <div style="margin-bottom: 8px;">
-          <span class="parcel-details__label">
-            Installations:
-          </span>
-          <template v-if="!groupedInstallations.length">
-            None
-          </template>
-          <template v-else>
-            <div
-              v-if="lastActivity && lastActivity.lastClaimedDate"
-              class="parcel-details__last-activity"
+        <SiteDialog
+          v-model:isOpen="parcelGridPopupIsOpen"
+        >
+          <div class="parcel-details__grid-modal-content">
+            <SiteButton
+              class="parcel-details__grid-modal-close"
+              @click="parcelGridPopupIsOpen = false"
             >
-              (<template v-if="reservoirCooldown"
-              >Ready
-                <template v-if="reservoirCooldown.isReady">now</template>
-                <DateFriendly
-                  v-else-if="reservoirCooldown.date"
-                  :date="reservoirCooldown.date"
-                  enableToggle
-                />;
-              </template>
-              Last emptied reservoir
-              <DateFriendly
-                :date="lastActivity.lastClaimedDate"
-                enableToggle
-              />)
+              Close
+            </SiteButton>
+            <div class="parcel-details__grid-modal-grid-container">
+              <ParcelGridSvg
+                :parcelWidth="parcelWidth"
+                :parcelHeight="parcelHeight"
+                :tiles="tiles"
+                :aaltar="aaltar"
+                :installations="installations"
+                fullscreen
+              />
             </div>
-            <ul class="parcel-details__installations">
-              <li
-                v-for="installation in groupedInstallations"
-                :key="installation.type.id"
-              >
-                {{ installation.count }}x {{ installation.type.label }}
-              </li>
-            </ul>
+          </div>
+        </SiteDialog>
+      </div>
+      <div style="margin-bottom: 8px;">
+        <span class="parcel-details__label">
+          Aaltar:
+        </span>
+        <template v-if="!aaltar">
+          None
+        </template>
+        <template v-else>
+          {{ aaltar.type.label }}
+          <div
+            v-if="lastActivity && lastActivity.lastChanneledDate"
+            class="parcel-details__last-activity"
+          >(<template
+            v-if="aaltarCooldown"
+          >Ready
+            <template v-if="aaltarCooldown.isReady">now</template>
+            <DateFriendly
+              v-else-if="aaltarCooldown.date"
+              :date="aaltarCooldown.date"
+              enableToggle
+            />;
           </template>
+            Last channeled
+            <DateFriendly
+              :date="lastActivity.lastChanneledDate"
+              enableToggle
+            />)
+          </div>
+        </template>
+      </div>
+      <div style="margin-bottom: 8px;">
+        <span class="parcel-details__label">
+          Installations:
+        </span>
+        <template v-if="!groupedInstallations.length">
+          None
+        </template>
+        <template v-else>
+          <div
+            v-if="lastActivity && lastActivity.lastClaimedDate"
+            class="parcel-details__last-activity"
+          >
+            (<template
+              v-if="reservoirCooldown"
+            >Ready
+              <template v-if="reservoirCooldown.isReady">now</template>
+              <DateFriendly
+                v-else-if="reservoirCooldown.date"
+                :date="reservoirCooldown.date"
+                enableToggle
+              />;
+            </template>
+            Last emptied reservoir
+            <DateFriendly
+              :date="lastActivity.lastClaimedDate"
+              enableToggle
+            />)
+          </div>
+          <ul class="parcel-details__installations">
+            <li
+              v-for="installation in groupedInstallations"
+              :key="installation.type.id"
+            >
+              {{ installation.count }}x {{ installation.type.label }}
+            </li>
+          </ul>
+        </template>
+      </div>
+      <div style="margin-bottom: 8px;">
+        <span class="parcel-details__label">
+          Tiles:
+        </span>
+        <template v-if="!groupedTiles.length">
+          None
+        </template>
+        <template v-else>
+          <ul class="parcel-details__installations">
+            <li
+              v-for="tile in groupedTiles"
+              :key="tile.type.id"
+            >
+              {{ tile.count }}x {{ tile.type.label }}
+            </li>
+          </ul>
+        </template>
+      </div>
+      <div
+        v-if="includeFarming && farmingDetails"
+        style="margin-bottom: 8px;"
+      >
+        <span class="parcel-details__label">
+          Farming:
+        </span>
+        <div class="parcel-details__farming">
+          <span>Harvest rate (daily):</span>
+          <div class="parcel-details__farming-alchemica">
+            <div
+              v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+              :key="token"
+              v-show="farmingDetails.totalHarvestRate[token] > 0"
+            >
+              <CryptoIcon
+                :label="token"
+                style="margin-right: 5px"
+              />
+              <NumberDisplay
+                :number="farmingDetails.totalHarvestRate[token]"
+              />
+            </div>
+          </div>
         </div>
-        <div style="margin-bottom: 8px;">
-          <span class="parcel-details__label">
-            Tiles:
-          </span>
-          <template v-if="!groupedTiles.length">
-            None
-          </template>
-          <template v-else>
-            <ul class="parcel-details__installations">
-              <li
-                v-for="tile in groupedTiles"
-                :key="tile.type.id"
-              >
-                {{ tile.count }}x {{ tile.type.label }}
-              </li>
-            </ul>
-          </template>
+        <div class="parcel-details__farming">
+          <span>Reservoir capacity:</span>
+          <div class="parcel-details__farming-alchemica">
+            <div
+              v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+              :key="token"
+              v-show="farmingDetails.totalReservoirCapacity[token] > 0"
+            >
+              <CryptoIcon
+                :label="token"
+                style="margin-right: 5px"
+              />
+              <NumberDisplay
+                :number="farmingDetails.totalReservoirCapacity[token]"
+              />
+            </div>
+          </div>
         </div>
         <div
-          v-if="includeFarming && farmingDetails"
-          style="margin-bottom: 8px;"
+          v-if="farmingUnclaimedAlchemica"
+          class="parcel-details__farming"
         >
-          <span class="parcel-details__label">
-            Farming:
-          </span>
-          <div class="parcel-details__farming">
-            <span>Harvest rate (daily):</span>
-            <div class="parcel-details__farming-alchemica">
-              <div
-                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
-                :key="token"
-                v-show="farmingDetails.totalHarvestRate[token] > 0"
-              >
-                <CryptoIcon
-                  :label="token"
-                  style="margin-right: 5px"
-                />
-                <NumberDisplay
-                  :number="farmingDetails.totalHarvestRate[token]"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="parcel-details__farming">
-            <span>Reservoir capacity:</span>
-            <div class="parcel-details__farming-alchemica">
-              <div
-                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
-                :key="token"
-                v-show="farmingDetails.totalReservoirCapacity[token] > 0"
-              >
-                <CryptoIcon
-                  :label="token"
-                  style="margin-right: 5px"
-                />
-                <NumberDisplay
-                  :number="farmingDetails.totalReservoirCapacity[token]"
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="farmingUnclaimedAlchemica"
-            class="parcel-details__farming"
-          >
-            <span>Alchemica to claim:</span>
-            <div class="parcel-details__farming-alchemica">
-              <div
-                v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
-                :key="token"
-                v-show="farmingDetails.totalReservoirCapacity[token] > 0"
-              >
-                <CryptoIcon
-                  :label="token"
-                  style="margin-right: 5px"
-                />
-                <NumberDisplay
-                  :number="farmingUnclaimedAlchemica[token]"
-                  :style="{
-                    'font-weight': farmingDetails.totalReservoirCapacity[token] > 0 && farmingUnclaimedAlchemica[token] === farmingDetails.totalReservoirCapacity[token] ? 'bold': undefined
-                  }"
-                />
-              </div>
+          <span>Alchemica to claim:</span>
+          <div class="parcel-details__farming-alchemica">
+            <div
+              v-for="token in ['FUD', 'FOMO', 'ALPHA', 'KEK']"
+              :key="token"
+              v-show="farmingDetails.totalReservoirCapacity[token] > 0"
+            >
+              <CryptoIcon
+                :label="token"
+                style="margin-right: 5px"
+              />
+              <NumberDisplay
+                :number="farmingUnclaimedAlchemica[token]"
+                :style="{
+                  'font-weight': farmingDetails.totalReservoirCapacity[token] > 0 && farmingUnclaimedAlchemica[token] === farmingDetails.totalReservoirCapacity[token] ? 'bold': undefined
+                }"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 <script>
 import { ref, computed } from 'vue'
