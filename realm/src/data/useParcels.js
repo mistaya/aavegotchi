@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import { annotateParcelDetails } from './parcelUtils'
-import parcelsUrl from './parcels/assetParcels.json'
 
 const { status: fetchStatus, setLoading } = useStatus()
 
@@ -17,13 +16,13 @@ const initParcels = function () {
     return
   }
   const [isStale, setLoaded, setError] = setLoading()
-  fetch(parcelsUrl)
-    .then(response => response.json())
-    .then(json => {
+  import(/* webpackChunkName: "assetParcels" */ '@/data/parcels/assetParcels.json')
+    .then(({ default: json }) => {
       if (isStale()) { return }
       parcelsById.value = json
       setLoaded()
-    }).catch(error => {
+    })
+    .catch((error) => {
       console.error(error)
       setError('Error loading parcels')
     })

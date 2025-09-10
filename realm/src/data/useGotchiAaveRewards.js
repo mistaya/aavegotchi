@@ -4,7 +4,6 @@ import useStatus from '@/data/useStatus'
 import useGotchis from '@/data/useGotchis'
 import useAaveContract from '@/data/useAaveContract'
 import tokens from './pockets/tokens'
-import initialRewardsUrl from './pockets/assetGotchiRewards.json'
 
 // Fetch all unclaimed Polygon AAVE rewards for gotchis
 // This has to be done through the AAVE contract, because
@@ -80,6 +79,7 @@ const fetchRewards = function () {
       nextGotchiIndex += BATCH_SIZE
     }
 
+    // eslint-disable-next-line no-unused-vars
     Promise.allSettled(requests).then(results => {
       if (isStale()) { return }
       setLoaded()
@@ -89,21 +89,26 @@ const fetchRewards = function () {
 
 // Use cached initial results
 const [isStale, setLoaded, setError] = setLoading()
-fetch(initialRewardsUrl)
-  .then(response => response.json())
-  .then(json => {
-    if (isStale()) { return }
-    // store rewards as BigNumber
-    const initialRewards = {}
-    for (var key in json) {
-      initialRewards[key] = new BigNumber(json[key])
-    }
-    setRewards(initialRewards, new Date(1667233687066))
-    setLoaded()
-  }).catch(error => {
-    console.error(error)
-    setError('Error loading initial gotchis')
-  })
+
+const handleInitialResult = function ({ default: json }) {
+  if (isStale()) { return }
+  // store rewards as BigNumber
+  const initialRewards = {}
+  for (var key in json) {
+    initialRewards[key] = new BigNumber(json[key])
+  }
+  setRewards(initialRewards, new Date(1667233687066))
+  setLoaded()
+}
+
+const handleInitialError = function (error) {
+  console.error(error)
+  setError('Error loading initial gotchis')
+}
+
+import(/* webpackChunkName: "assetGotchiRewards" */ '@/data/pockets/assetGotchiRewards.json')
+  .then(handleInitialResult)
+  .catch(handleInitialError)
 
 export default function useGotchiAaveRewards () {
   return {

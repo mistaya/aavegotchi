@@ -1,8 +1,6 @@
 import { ref, computed } from 'vue'
 import useStatus from '@/data/useStatus'
 import BigNumber from 'bignumber.js'
-import auction1JsonUrl from './auctions/assetAuction1.json'
-import auction2JsonUrl from './auctions/assetAuction2.json'
 
 // no replacement subgraph available, was originally used for Land Auctions 1 and 2
 const REALM_SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/aavegotchi/aavegotchi-realm-matic'
@@ -12,7 +10,6 @@ const FETCH_PAGE_SIZE = 1000
 const AUCTIONS = {
   '1': {
     id: 1,
-    jsonUrl: auction1JsonUrl,
     days: '28 - 31 Oct 2021',
     startTime: 1635418800000, // before auction start time
     endTime: 1635710400000, // after last hammer-time parcel auction ends
@@ -29,7 +26,6 @@ const AUCTIONS = {
   },
   '2': {
     id: 2,
-    jsonUrl: auction2JsonUrl,
     days: '2-5 Dec 2021',
     startTime: 1638446400000, // before auction start time
     endTime: 1638734400000, // after last hammer-time parcel auction ends
@@ -39,23 +35,6 @@ const AUCTIONS = {
       maxX: 6336
     },
     hasOldDistricts: false,
-    display: {
-      viewBox: '6600 1000 2500 4400',
-      aspectRatio: 10 / 8
-    }
-  },
-  '3': {
-    id: 3,
-    jsonUrl: auction2JsonUrl,
-    days: '2-5 Dec 2021 (TODO)',
-    startTime: 1638446400000, // before auction start time
-    endTime: 1638734400000, // after last hammer-time parcel auction ends
-    districts: ['1', '7', '8', '9', '10', '11', '12', '27', '28', '29', '30'],
-    district1Bounds: {
-      minX: 5200,
-      maxX: 6336
-    },
-    hasOldDistricts: true,
     display: {
       viewBox: '6600 1000 2500 4400',
       aspectRatio: 10 / 8
@@ -106,18 +85,29 @@ export default function useAuctions (auctionId) {
 
   const fetchInitialAuctions = function () {
     const [isStale, setLoaded, setError] = setLoading()
-    fetch(auctionInfo.jsonUrl)
-      .then(response => response.json())
-      .then(json => {
-        if (isStale()) { console.log('Stale request, ignoring'); return }
-        auctionsByParcelId.value = json
-        const mostRecentAuctionTime = mostRecentAuction.value?.lastBidTime
-        lastFetchDate.value = mostRecentAuctionTime ? new Date(mostRecentAuctionTime * 1000) : new Date()
-        setLoaded()
-      }).catch(error => {
-        console.error(error)
-        setError('There was an error fetching auction parcels')
-      })
+
+    const handleInitialResult = function ({ default: json }) {
+      if (isStale()) { return }
+      auctionsByParcelId.value = json
+      const mostRecentAuctionTime = mostRecentAuction.value?.lastBidTime
+      lastFetchDate.value = mostRecentAuctionTime ? new Date(mostRecentAuctionTime * 1000) : new Date()
+      setLoaded()
+    }
+
+    const handleInitialError = function (error) {
+      console.error(error)
+      setError('There was an error fetching auction parcels')
+    }
+
+    if (auctionInfo.id === 1) {
+      import(/* webpackChunkName: "assetAuction1" */ '@/data/auctions/assetAuction1.json')
+        .then(handleInitialResult)
+        .catch(handleInitialError)
+    } else if (auctionInfo.id === 2) {
+      import(/* webpackChunkName: "assetAuction2" */ '@/data/auctions/assetAuction2.json')
+        .then(handleInitialResult)
+        .catch(handleInitialError)
+    }
   }
 
   const fetchAuctions = function () {

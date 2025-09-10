@@ -1,7 +1,6 @@
 import { ref, computed } from 'vue'
 import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
-import initialOwnersUrl from './pockets/assetEthereumGotchiOwners.json'
 
 const SUBGRAPH_URL = apis.ETHEREUM_GOTCHIS_SUBGRAPH
 const FETCH_PAGE_SIZE = 1000
@@ -81,16 +80,21 @@ const fetchOwners = function () {
 
 // Use cached initial results
 const [isStale, setLoaded, setError] = setLoading()
-fetch(initialOwnersUrl)
-  .then(response => response.json())
-  .then(json => {
-    if (isStale()) { return }
-    setOwnersByGotchi(json, new Date(1756326492595))
-    setLoaded()
-  }).catch(error => {
-    console.error(error)
-    setError('Error loading initial ethereum gotchi owners')
-  })
+
+const handleInitialResult = function ({ default: json }) {
+  if (isStale()) { return }
+  setOwnersByGotchi(json, new Date(1756326492595))
+  setLoaded()
+}
+
+const handleInitialError = function (error) {
+  console.error(error)
+  setError('Error loading initial ethereum gotchi owners')
+}
+
+import(/* webpackChunkName: "assetEthereumGotchiOwners" */ '@/data/pockets/assetEthereumGotchiOwners.json')
+  .then(handleInitialResult)
+  .catch(handleInitialError)
 
 export default function () {
   return {

@@ -2,7 +2,6 @@ import { ref, computed } from 'vue'
 import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
-import polygonContentsUrl from './parcels/assetPolygonContents.json'
 
 const { selectedNetwork, NETWORKS } = useNetwork()
 
@@ -45,15 +44,15 @@ const useParcelContentsForNetwork = function (network) {
     if (network === NETWORKS.polygon && !forceFetch) {
       if (!lastFetchDate.value) {
         const [isStale, setLoaded, setError] = setLoading()
-        fetch(polygonContentsUrl)
-          .then(response => response.json())
-          .then(json => {
+        import(/* webpackChunkName: "assetPolygonContents" */ '@/data/parcels/assetPolygonContents.json')
+          .then(({ default: json }) => {
             if (isStale()) { return }
             resetContents()
             setContentsFromAsset(json)
             lastFetchDate.value = new Date()
             setLoaded()
-          }).catch(error => {
+          })
+          .catch((error) => {
             console.error(error)
             setError('Error loading cached polygon parcel contents')
           })

@@ -2,8 +2,6 @@ import { ref, computed } from 'vue'
 import apis from '@/data/apis'
 import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
-import initialGotchisUrlPolygon from './pockets/assetGotchisPolygon.json'
-import initialGotchisUrlBase from './pockets/assetGotchisBase.json'
 
 const { selectedNetwork, NETWORKS } = useNetwork()
 
@@ -135,18 +133,29 @@ const useGotchisForNetwork = function (network) {
 
   // Use cached results just for development
   const [isStale, setLoaded, setError] = setLoading()
-  const initialGotchisUrl = network === NETWORKS.polygon ? initialGotchisUrlPolygon : initialGotchisUrlBase
-  const initialGotchisTimestamp = network === NETWORKS.polygon ? 1756326492595 : 1756326492595
-  fetch(initialGotchisUrl)
-    .then(response => response.json())
-    .then(json => {
-      if (isStale()) { return }
-      setGotchis(json, new Date(initialGotchisTimestamp))
-      setLoaded()
-    }).catch(error => {
-      console.error(error)
-      setError('Error loading initial gotchis')
-    })
+
+  const initialGotchisTimestamp = network === NETWORKS.polygon ? 1756326492595 : 1757459356214
+
+  const handleInitialResult = function ({ default: gotchis }) {
+    if (isStale()) { return }
+    setGotchis(gotchis, new Date(initialGotchisTimestamp))
+    setLoaded()
+  }
+
+  const handleInitialError = function (error) {
+    console.error(error)
+    setError('Error loading initial gotchis')
+  }
+
+  if (network === NETWORKS.polygon) {
+    import(/* webpackChunkName: "assetGotchisPolygon" */ '@/data/pockets/assetGotchisPolygon.json')
+      .then(handleInitialResult)
+      .catch(handleInitialError)
+  } else {
+    import(/* webpackChunkName: "assetGotchisBase" */ '@/data/pockets/assetGotchisBase.json')
+      .then(handleInitialResult)
+      .catch(handleInitialError)
+  }
 
   return {
     gotchis,

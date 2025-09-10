@@ -5,8 +5,6 @@ import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
 import useGotchis from '@/data/useGotchis'
 import useERC20Contract from '@/data/useERC20Contract'
-import initialBalancesUrlPolygon from './pockets/assetGotchiBalancesPolygon.json'
-import initialBalancesUrlBase from './pockets/assetGotchiBalancesBase.json'
 import tokens from './pockets/tokens'
 
 const { selectedNetwork, NETWORKS } = useNetwork()
@@ -137,26 +135,37 @@ const useGotchiBalancesForNetwork = function (network) {
 
   // Use cached initial results
   const [isStale, setLoaded, setError] = setLoading()
-  const initialBalancesUrl = network === NETWORKS.polygon ? initialBalancesUrlPolygon : initialBalancesUrlBase
-  const initialBalancesTimestamp = network === NETWORKS.polygon ? 1756326492595 : 1756326492595
-  fetch(initialBalancesUrl)
-    .then(response => response.json())
-    .then(json => {
-      if (isStale()) { return }
-      // store values as BigNumber
-      const initialBalances = {}
-      for (const gotchiId in json) {
-        const balances = initialBalances[gotchiId] = []
-        for (const item of json[gotchiId]) {
-          balances.push(new BigNumber(item))
-        }
+
+  const initialBalancesTimestamp = network === NETWORKS.polygon ? 1757464300864 : 1757463364453
+
+  const handleInitialResult = function ({ default: json }) {
+    if (isStale()) { return }
+    // store values as BigNumber
+    const initialBalances = {}
+    for (const gotchiId in json) {
+      const balances = initialBalances[gotchiId] = []
+      for (const item of json[gotchiId]) {
+        balances.push(new BigNumber(item))
       }
-      setBalances(initialBalances, new Date(initialBalancesTimestamp))
-      setLoaded()
-    }).catch(error => {
-      console.error(error)
-      setError('Error loading initial gotchi balances')
-    })
+    }
+    setBalances(initialBalances, new Date(initialBalancesTimestamp))
+    setLoaded()
+  }
+
+  const handleInitialError = function (error) {
+    console.error(error)
+    setError('Error loading initial gotchi balances')
+  }
+
+  if (network === NETWORKS.polygon) {
+    import(/* webpackChunkName: "assetGotchiBalancesPolygon" */ '@/data/pockets/assetGotchiBalancesPolygon.json')
+      .then(handleInitialResult)
+      .catch(handleInitialError)
+  } else {
+    import(/* webpackChunkName: "assetGotchiBalancesBase" */ '@/data/pockets/assetGotchiBalancesBase.json')
+      .then(handleInitialResult)
+      .catch(handleInitialError)
+  }
 
   return {
     balances,

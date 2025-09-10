@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import apis from '@/data/apis'
 import addresses from '@/data/addresses'
 import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
-import polygonListingsUrl from './parcels/assetPolygonGBMListings.json'
 
 // We need to fetch all listings in full to get accurate info.
 
@@ -109,15 +108,15 @@ const useParcelBaazaarListingsForNetwork = function (network) {
     if (network === NETWORKS.polygon && !forceFetch) {
       if (!lastFetchDate.value) {
         const [isStale, setLoaded, setError] = setLoading()
-        fetch(polygonListingsUrl)
-          .then(response => response.json())
-          .then(json => {
+        import(/* webpackChunkName: "assetPolygonGBMListings" */ '@/data/parcels/assetPolygonGBMListings.json')
+          .then(({ default: json }) => {
             if (isStale()) { return }
             resetListings()
             setListingsFromAsset(json)
             lastFetchDate.value = new Date()
             setLoaded()
-          }).catch(error => {
+          })
+          .catch((error) => {
             console.error(error)
             setError('Error loading cached polygon GBM listings')
           })

@@ -2,7 +2,6 @@ import { ref, computed } from 'vue'
 import apis from '@/data/apis'
 import useStatus from '@/data/useStatus'
 import useNetwork, { useNetworkCachedItem } from '@/environment/useNetwork'
-import polygonOwnersUrl from './parcels/assetPolygonOwners.json'
 
 const { selectedNetwork, NETWORKS } = useNetwork()
 
@@ -39,15 +38,15 @@ const useParcelOwnersForNetwork = function (network) {
     if (network === NETWORKS.polygon && !forceFetch) {
       if (!lastFetchDate.value) {
         const [isStale, setLoaded, setError] = setLoading()
-        fetch(polygonOwnersUrl)
-          .then(response => response.json())
-          .then(json => {
+        import(/* webpackChunkName: "assetPolygonOwners" */ '@/data/parcels/assetPolygonOwners.json')
+          .then(({ default: json }) => {
             if (isStale()) { return }
             resetOwners()
             setOwnersFromAsset(json)
             lastFetchDate.value = new Date()
             setLoaded()
-          }).catch(error => {
+          })
+          .catch((error) => {
             console.error(error)
             setError('Error loading cached polygon parcel owners')
           })
