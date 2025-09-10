@@ -414,7 +414,7 @@
               >
                 <td style="padding: 0 15px;">
                   <a
-                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/lending/${result.id}` : `https://dapp.aavegotchi.com/lending/aavegotchis?id=${result.id}`"
+                    :href="getLendingListingUrl({ network: selectedNetwork, listingId: result.id })"
                     rel="noopener"
                     target="_blank"
                     style="white-space: nowrap;"
@@ -542,7 +542,7 @@
                 </template>
                 <td class="with-left-border">
                   <a
-                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}` : `https://dapp.aavegotchi.com/u/${result.originalOwner || result.lender}/inventory?itemType=aavegotchis&chainId=8453&id=${result.gotchiTokenId}`"
+                    :href="getGotchiUrl({ network: selectedNetwork, gotchiId: result.gotchiTokenId, ownerAddress: result.originalOwner || result.lender })"
                     rel="noopener"
                     target="_blank"
                   >
@@ -589,6 +589,7 @@ import { ref, computed, watch } from 'vue'
 
 import apis from '@/data/apis'
 import useNetwork from '@/environment/useNetwork'
+import { getGotchiUrl, getLendingListingUrl } from '@/data/urlUtils'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useTokenPricesAavegotchi from '@/data/useTokenPricesAavegotchi'
@@ -801,7 +802,7 @@ export default {
           }
           const responseJson = await response.json()
           if (responseJson.data?.gotchiLendings) {
-            results.value = responseJson.data.gotchiLendings.map((lending, index) => ({
+            results.value = responseJson.data.gotchiLendings.map((lending) => ({
               ...lending,
               tokensToShareMap: Object.fromEntries(
                 lending.tokensToShare.map(tokenAddress => [tokenAddress, true])
@@ -942,6 +943,7 @@ export default {
     }
 
     return {
+      selectedNetwork,
       isPolygonNetwork,
       fetchPageSize,
       filters,
@@ -964,6 +966,8 @@ export default {
       pricesStatus,
       ghstPrices,
       rowsToDisplay,
+      getGotchiUrl,
+      getLendingListingUrl,
       friendlyGhst,
       friendlyDuration
     }

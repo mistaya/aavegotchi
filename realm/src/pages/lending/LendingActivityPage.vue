@@ -5,7 +5,7 @@
       <div style="margin-bottom: 30px;">
         Here you can see recently-agreed lendings from
         <a
-          :href="isPolygonNetwork ? 'https://polygon.aavegotchi.com/lending/aavegotchis' : 'https://dapp.aavegotchi.com/lending/aavegotchis'"
+          :href="getLendingsUrl({ network: selectedNetwork })"
           target="_blank"
           rel="noopener"
         >
@@ -172,7 +172,7 @@
               >
                 <td>
                   <a
-                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/lending/${result.id}` : `https://dapp.aavegotchi.com/lending/aavegotchis?id=${result.id}`"
+                    :href="getLendingListingUrl({ network: selectedNetwork, listingId: result.id })"
                     rel="noopener"
                     target="_blank"
                   >
@@ -220,7 +220,7 @@
                 />
                 <td>
                   <a
-                    :href="isPolygonNetwork ? `https://app.aavegotchi.com/gotchi/${result.gotchiTokenId}` : `https://dapp.aavegotchi.com/u/${result.originalOwner || result.lender}/inventory?itemType=aavegotchis&chainId=8453&id=${result.gotchiTokenId}`"
+                    :href="getGotchiUrl({ network: selectedNetwork, gotchiId: result.gotchiTokenId, ownerAddress: result.originalOwner || result.lender })"
                     rel="noopener"
                     target="_blank"
                   >
@@ -263,6 +263,7 @@ import { ref, computed, watch } from 'vue'
 import apis from '@/data/apis'
 import useNetwork from '@/environment/useNetwork'
 import useStatus from '@/data/useStatus'
+import { getGotchiUrl, getLendingsUrl, getLendingListingUrl } from '@/data/urlUtils'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import DateFriendly from '@/common/DateFriendly.vue'
 import EthAddress from '@/common/EthAddress.vue'
@@ -416,6 +417,7 @@ export default {
     }
 
     return {
+      selectedNetwork,
       isPolygonNetwork,
       tablePaging,
       fetchPageSize,
@@ -433,6 +435,9 @@ export default {
       lastFetchChannelingStatusDate,
       gotchiChannelingStatuses,
       rowsToDisplay,
+      getGotchiUrl,
+      getLendingsUrl,
+      getLendingListingUrl,
       friendlyDuration,
       friendlyGhst
     }

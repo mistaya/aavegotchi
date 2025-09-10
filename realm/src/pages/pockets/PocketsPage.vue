@@ -311,7 +311,7 @@
           >
             <td>
               <a
-                :href="`https://${isPolygonNetwork ? 'polygon' : 'dapp'}.aavegotchi.com/u/${trueOwnersByGotchi[gotchi.id] || ownersByGotchi[gotchi.id]}/inventory?itemType=aavegotchis&chainId=8453&id=${gotchi.id}`"
+                :href="getGotchiUrl({ network: selectedNetwork, gotchiId: gotchi.id, ownerAddress: trueOwnersByGotchi[gotchi.id] || ownersByGotchi[gotchi.id] })"
                 target="_blank"
               >
                 {{ gotchi.id }}
@@ -403,6 +403,7 @@ import { ref, computed, watch } from 'vue'
 import orderBy from 'lodash.orderby'
 import BigNumber from 'bignumber.js'
 import useNetwork from '@/environment/useNetwork'
+import { getGotchiUrl } from '@/data/urlUtils'
 import useTokenPrices from '@/data/useTokenPrices'
 import useGotchis from '@/data/useGotchis'
 import useGotchiBalances from '@/data/useGotchiBalances'
@@ -803,6 +804,7 @@ export default {
     return {
       selectedNetwork,
       isPolygonNetwork,
+      getGotchiUrl,
       enableEthereumGotchiOwners,
       enableStakedCollateral,
       gotchisFetchStatus,

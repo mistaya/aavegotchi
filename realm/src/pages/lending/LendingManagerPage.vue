@@ -41,7 +41,7 @@
         style="line-height: 2em;"
       >
         <a
-          :href="isPolygonNetwork ? `https://polygon.aavegotchi.com/u/${encodeURIComponent(address)}/inventory?itemType=aavegotchis` : `https://dapp.aavegotchi.com/u/${encodeURIComponent(address)}/inventory?itemType=aavegotchis`"
+          :href="getOwnersGotchisUrl({ network: selectedNetwork, ownerAddress: address })"
           rel="noopener"
           target="_blank"
           style="white-space: nowrap; margin-right: 20px;"
@@ -145,6 +145,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import useNetwork from '@/environment/useNetwork'
+import { getOwnersGotchisUrl } from '@/data/urlUtils'
 import EthAddress from '@/common/EthAddress.vue'
 import LendingManagerGotchis from './LendingManagerGotchis.vue'
 
@@ -159,7 +160,7 @@ export default {
     originalOwnerAddress: { type: String, default: null }
   },
   setup (props) {
-    const { isPolygonNetwork } = useNetwork()
+    const { isPolygonNetwork, selectedNetwork } = useNetwork()
 
     const router = useRouter()
     const urlNoAddress = router.resolve({ name: 'lending-manager' }).href
@@ -204,6 +205,7 @@ export default {
     }
 
     return {
+      selectedNetwork,
       isPolygonNetwork,
       urlNoAddress,
       clearAddress,
@@ -213,7 +215,8 @@ export default {
       enterAddress,
       enterThirdPartyAddress,
       enterOriginalOwnerAddress,
-      hasValidAddress
+      hasValidAddress,
+      getOwnersGotchisUrl
     }
   }
 }

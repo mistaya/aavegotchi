@@ -336,7 +336,7 @@
           >
             <td>
               <a
-                :href="isPolygonNetwork ? `https://app.aavegotchi.com/gotchi/${row.gotchi.id}` : `https://dapp.aavegotchi.com/u/${row.listing?.originalOwner || row.listing?.lender || address}/inventory?itemType=aavegotchis&chainId=8453&id=${row.gotchi.id}`"
+                :href="getGotchiUrl({ network: selectedNetwork, gotchiId: row.gotchi.id, ownerAddress: row.listing?.originalOwner || row.listing?.lender || address })"
                 rel="noopener"
                 target="_blank"
               >
@@ -357,7 +357,7 @@
             <td class="col-about--listed col-about--lended">
               <a
                 v-if="row.listing"
-                :href="isPolygonNetwork ? `https://app.aavegotchi.com/lending/${row.listing.id}` : `https://dapp.aavegotchi.com/lending/aavegotchis?id=${row.listing.id}`"
+                :href="getLendingListingUrl({ network: selectedNetwork, listingId: row.listing.id })"
                 rel="noopener"
                 target="_blank"
               >
@@ -554,6 +554,7 @@ import { ref, computed, watch } from 'vue'
 
 import apis from '@/data/apis'
 import useNetwork from '@/environment/useNetwork'
+import { getGotchiUrl, getLendingListingUrl } from '@/data/urlUtils'
 import useStatus from '@/data/useStatus'
 import useGotchiChanneling from '@/data/useGotchiChanneling'
 import useAddressBalances from '@/data/useAddressBalances'
@@ -1133,6 +1134,7 @@ export default {
     }
 
     return {
+      selectedNetwork,
       isPolygonNetwork,
       status,
       earningsEnabled,
@@ -1145,6 +1147,8 @@ export default {
       tableFilters,
       whitelistIds,
       rowsToDisplay,
+      getGotchiUrl,
+      getLendingListingUrl,
       friendlyDuration,
       friendlyGhst,
       fetchData,
