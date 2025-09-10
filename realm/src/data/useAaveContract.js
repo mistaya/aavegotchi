@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Contract } from 'ethers-multicall'
+import { ethers } from 'ethers'
 import { useMulticallProvider } from './useProvider'
 
 let multicallProvider = null
@@ -38,9 +38,10 @@ const initContract = function () {
       type: 'function'
     }
   ]
-  contract = new Contract(
+  contract = new ethers.Contract(
     contractAddress,
-    abi
+    abi,
+    multicallProvider
   )
 }
 
@@ -53,9 +54,9 @@ const aave = {
     // console.log('Get aave rewards balances', gotchis)
     const contractCalls = gotchis.map(gotchi => contract.getRewardsBalance([gotchi.collateral], gotchi.escrow))
 
-    const results = await multicallProvider.all(contractCalls)
+    const results = await Promise.all(contractCalls)
     // console.log({ results })
-    // ethers returns the result as its own BigNumber - convert it
+    // ethers returns the result as a native BigNumber - convert it
     const resultsByGotchiId = Object.fromEntries(
       results.map((result, index) => [gotchis[index]?.id, new BigNumber(result.toString()).div(10e17)])
     )

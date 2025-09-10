@@ -17,8 +17,12 @@ const lastFetchDate = ref(new Date(1660228532931))
 const setWearableSets = function (wearableSetsArray, fetchDate = null) {
   wearableSets.value = wearableSetsArray.map(w => ({
     ...w,
+    allowedCollaterals: w.allowedCollaterals.map(n => Number(n)), // convert from BigInt
+    traitsBonuses: w.traitsBonuses.map(n => Number(n)), // convert from BigInt
+    wearableIds: w.wearableIds.map(n => Number(n)), // convert from BigInt
     name: w.name.trim() // bugfix: some wearable sets have trailing spaces
   }))
+  console.log(wearableSets.value)
   lastFetchDate.value = fetchDate || new Date()
 }
 

@@ -1,7 +1,7 @@
-import { Contract } from 'ethers-multicall'
+import { ethers } from 'ethers'
 
-export default function useERC20Contract (contractAddress) {
-  const contract = new Contract(
+export default function useERC20Contract (contractAddress, provider) {
+  const contract = new ethers.Contract(
     contractAddress,
     // ABI: only need functions we want to call
     [
@@ -13,7 +13,8 @@ export default function useERC20Contract (contractAddress) {
         stateMutability: 'view',
         type: 'function'
       }
-    ]
+    ],
+    provider
   )
   return contract
 }

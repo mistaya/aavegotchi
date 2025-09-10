@@ -1,16 +1,24 @@
 import { ethers } from 'ethers'
-import { Provider, setMulticallAddress } from 'ethers-multicall'
+import { MulticallWrapper } from 'ethers-multicall-provider'
 import { useNetworkCachedItem } from '@/environment/useNetwork'
 
 // https://chainlist.org/
 const RPC_URL = {
-  polygon: 'https://polygon-rpc.com',
+  // polygon: 'https://polygon-rpc.com',
+  polygon: 'https://polygon-bor-rpc.publicnode.com',
+  // base: 'https://base.drpc.org'
   // base: 'https://1rpc.io/base'
+  // base: 'https://0xrpc.io/base'
+  // base: 'https://base.llamarpc.com'
   base: 'https://base-rpc.publicnode.com'
+}
+const CHAIN_ID = {
+  polygon: 137,
+  base: 8453
 }
 
 const { getItemForNetwork: getProviderForNetwork } = useNetworkCachedItem({
-  initItem: (network) => new ethers.providers.JsonRpcProvider(RPC_URL[network])
+  initItem: (network) => new ethers.JsonRpcProvider(RPC_URL[network], null, { staticNetwork: ethers.Network.from(CHAIN_ID[network]) })
 })
 
 const useProvider = function (network) {
@@ -20,17 +28,8 @@ const useProvider = function (network) {
   return getProviderForNetwork(network)
 }
 
-const CHAIN_ID = {
-  polygon: 137,
-  base: 8453
-}
-
-// tell ethers-multicall where the multicall contract is on Base
-setMulticallAddress(CHAIN_ID.base, '0xcA11bde05977b3631167028862bE2a173976CA11')
-
 const { getItemForNetwork: getMulticallProviderForNetwork } = useNetworkCachedItem({
-  // provide chainId so we don't need to call init
-  initItem: (network) => new Provider(useProvider(network), CHAIN_ID[network])
+  initItem: (network) => MulticallWrapper.wrap(useProvider(network))
 })
 
 const useMulticallProvider = function (network) {

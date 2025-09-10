@@ -263,7 +263,7 @@ const realm = {
     const contract = getContract()
     const promises = []
     for (const actionId of actionIds) {
-      const actionIdsForParcels = parcelIds.map(id => actionId)
+      const actionIdsForParcels = parcelIds.map(() => actionId)
       const promise = contract.getParcelsAccessRights(parcelIds, actionIdsForParcels)
       promises.push(promise)
     }

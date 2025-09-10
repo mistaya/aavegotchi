@@ -25,7 +25,7 @@ const useGotchiBalancesForNetwork = function (network) {
     const token = tokensByLabelForNetwork[tokenLabel]
     if (token) {
       balanceTokens.push(token)
-      balanceContracts.push(useERC20Contract(token.id))
+      balanceContracts.push(useERC20Contract(token.id, multicallProvider))
     }
   }
 
@@ -60,6 +60,10 @@ const useGotchiBalancesForNetwork = function (network) {
   })
 
   const requestBalancesForGotchis = async function (gotchis, delayMs) {
+    // pause to avoid overloading RPC
+    await new Promise((resolve, reject) => setTimeout(resolve, delayMs))
+
+    console.log(`requesting balances for ${gotchis.length} gotchis`)
     const contractCalls = gotchis.map(gotchi => {
       const calls = []
       for (const contract of balanceContracts) {
@@ -68,11 +72,8 @@ const useGotchiBalancesForNetwork = function (network) {
       return calls
     }).flat()
 
-    // pause to avoid overloading RPC
-    await new Promise((resolve, reject) => setTimeout(resolve, delayMs))
-
-    const results = await multicallProvider.all(contractCalls)
-    // ethers returns the result as its own BigNumber - convert it
+    const results = await Promise.all(contractCalls)
+    // ethers returns the result as a native BigNumber - convert it
     const resultsByGotchiId = {}
     // there will be N token calls per gotchi
     const numTokens = balanceContracts.length
@@ -99,10 +100,10 @@ const useGotchiBalancesForNetwork = function (network) {
       if (isStale()) { return }
 
       let nextGotchiIndex = 0
-      const BATCH_SIZE = Math.floor(800 / balanceTokens.length)
+      const BATCH_SIZE = Math.floor(600 / balanceTokens.length)
       const requests = []
-      console.log(`fetch balances using batch size ${BATCH_SIZE})`)
-      const requestsPerSecond = 5
+      console.log(`fetch balances using batch size ${BATCH_SIZE}`)
+      const requestsPerSecond = 1
       let delayMs = 0
       while (nextGotchiIndex < gotchisWithEscrow.value.length) {
         const gotchis = gotchisWithEscrow.value.slice(nextGotchiIndex, nextGotchiIndex + BATCH_SIZE)
@@ -126,6 +127,7 @@ const useGotchiBalancesForNetwork = function (network) {
         delayMs += 1000 / requestsPerSecond
       }
 
+      // eslint-disable-next-line no-unused-vars
       Promise.allSettled(requests).then(results => {
         if (isStale()) { return }
         setLoaded()

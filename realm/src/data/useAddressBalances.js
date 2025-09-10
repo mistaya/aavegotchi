@@ -23,7 +23,7 @@ export default function useAddressBalances ({ tokenLabels, addresses }) {
         .filter(item => !!item)
     })
 
-    const tokenContracts = computed(() => tokenDetails.value.map(token => useERC20Contract(token.id)))
+    const tokenContracts = computed(() => tokenDetails.value.map(token => useERC20Contract(token.id, multicallProvider)))
 
     const balances = ref({})
 
@@ -50,8 +50,8 @@ export default function useAddressBalances ({ tokenLabels, addresses }) {
         return calls
       }).flat()
 
-      const results = await multicallProvider.all(contractCalls)
-      // ethers returns the result as its own BigNumber - convert it
+      const results = await Promise.all(contractCalls)
+      // ethers returns the result as a native BigNumber - convert it
       const resultsByAddress = {}
       // there will be N token calls per address
       const numTokens = tokenContracts.value.length
@@ -70,7 +70,7 @@ export default function useAddressBalances ({ tokenLabels, addresses }) {
     }
 
     const fetchBalances = function () {
-      console.log('fetchBalances', network)
+      // console.log('fetchBalances', network)
       clearBalances()
       const [isStale, setLoaded, setError] = setLoading()
       if (tokenDetails.value.length === 0) {
@@ -80,13 +80,14 @@ export default function useAddressBalances ({ tokenLabels, addresses }) {
       }
 
       // Give the UI a chance to display the loading state before we start fetching
-      setTimeout(() => {
+      setTimeout(async () => {
         if (isStale()) { return }
 
         let nextAddressIndex = 0
         const BATCH_SIZE = Math.floor(800 / tokenDetails.value.length)
         const requests = []
-        console.log(`fetch balances using batch size ${BATCH_SIZE}`)
+        // console.log(`fetch balances using batch size ${BATCH_SIZE} for ${balanceAddresses.value.length} addresses`)
+
         while (nextAddressIndex < balanceAddresses.value.length) {
           const addressesToFetch = balanceAddresses.value.slice(nextAddressIndex, nextAddressIndex + BATCH_SIZE)
           console.log('fetch balances for addresses', addressesToFetch[0], 'to', addressesToFetch[addressesToFetch.length - 1])
@@ -107,6 +108,10 @@ export default function useAddressBalances ({ tokenLabels, addresses }) {
           )
 
           nextAddressIndex += BATCH_SIZE
+
+          // delay to allow multicall to send request
+          await new Promise((resolve, reject) => setTimeout(resolve, 500))
+          if (isStale()) { return }
         }
 
         Promise.allSettled(requests).then(results => {
