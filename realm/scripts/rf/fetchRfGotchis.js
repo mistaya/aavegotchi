@@ -445,26 +445,78 @@ const SEASONS = {
         eth: 21966811
       }
     }
+  },
+  // After base migration:
+  // * new subgraph and diamond to use
+  // * Eth gotchis no longer relevant: just omit blocks.eth and they'll be skipped
+  // * Vault no longer exists
+  // * kinship is now tweaked after fetching from subgraph
+  szn11: {
+    checkVault: false,
+    checkLendings: true,
+    network: 'base',
+    kinshipCalc: 'js1',
+    rnd1: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: 35275327,
+        date: new Date("2025-09-08T14:00Z")
+      }
+    },
+    rnd2: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: 0,
+        date: new Date("2025-09-22T14:00Z")
+      }
+    },
+    rnd3: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: 0,
+        date: new Date("2025-10-06T14:00Z")
+      }
+    },
+    rnd4: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: 0,
+        date: new Date("2025-10-20T14:00Z")
+      }
+    }
   }
 }
 
 // Params for this run
 // - season
-const SEASON_NUM = 10
+const SEASON_NUM = 11
 const SEASON = SEASONS[`szn${SEASON_NUM}`]
 const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8,9,10
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8,9,10,11
 // - round
-const ROUND_NUM = 4 // Remember to delete any old lendings json from previous seasons
+const ROUND_NUM = 1 // Remember to delete any old lendings json from previous seasons
 const ROUND = SEASON[`rnd${ROUND_NUM}`]
 const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
 const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
-// eslint-disable-next-line no-unused-vars
 const GOTCHI_IMAGES_FOLDER = `./r${ROUND_NUM}`
 
 const ETH_BRIDGE_ADDRESS = '0x86935f11c86623dec8a25696e1c19a8659cbf95d'
 
-const SUBGRAPH_URL = 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api'
+// - environment
+const NETWORK = SEASON.network || 'polygon'
+const SUBGRAPH_URLS = {
+  polygon: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api',
+  base: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-base/api'
+}
+const SUBGRAPH_URL = SUBGRAPH_URLS[NETWORK]
 const FETCH_PAGE_SIZE = 1000
 
 const fetchGotchis = function (gotchiIds) {
@@ -473,10 +525,10 @@ const fetchGotchis = function (gotchiIds) {
     let nextIndex = 0
     const fetchFromSubgraph = function () {
       const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
-      console.log(`Fetching batch of ${idsToFetch.length} gotchis... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${ROUND.blocks.polygon}`)
+      console.log(`Fetching batch of ${idsToFetch.length} gotchis... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${ROUND.blocks[NETWORK]}`)
       axios.post(SUBGRAPH_URL, {
         query: `{
-          aavegotchis(block: { number: ${ROUND.blocks.polygon} }, first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
+          aavegotchis(block: { number: ${ROUND.blocks[NETWORK]} }, first: ${FETCH_PAGE_SIZE}, where: { id_in: ${JSON.stringify(idsToFetch)} }) {
             id
             owner {
               id
@@ -586,7 +638,7 @@ const fetchLendings = async function () {
     console.log('Fetching lendings from contract')
     const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
     const gotchiIds = gotchis.map(gotchi => gotchi.id)
-    await fetchLendingsFromContract({ gotchiIds, fileName: `${GOTCHIS_FILENAME}_lendings.json`, blockNumber: ROUND.blocks.polygon })
+    await fetchLendingsFromContract({ gotchiIds, fileName: `${GOTCHIS_FILENAME}_lendings.json`, blockNumber: ROUND.blocks[NETWORK], network: NETWORK })
   }
 }
 
@@ -601,6 +653,7 @@ const fetchGotchiOwners = async function () {
         gotchiIdToLending = await readJsonFile(`${GOTCHIS_FILENAME}_lendings.json`)
         // the file contains all gotchis: filter it down to only those with lendings
         gotchiIdToLending = Object.fromEntries(
+          // eslint-disable-next-line no-unused-vars
           Object.entries(gotchiIdToLending).filter(([gotchiId, lending]) => !!lending)
         )
       } catch (e) {
@@ -609,7 +662,7 @@ const fetchGotchiOwners = async function () {
       }
     } else {
       console.log('Fetching lendings from subgraph')
-      gotchiIdToLending = await fetchGotchiLendings(gotchiIds, ROUND.blocks.polygon)
+      gotchiIdToLending = await fetchGotchiLendings(gotchiIds, ROUND.blocks[NETWORK], SUBGRAPH_URL)
     }
     console.log(`Found ${Object.keys(gotchiIdToLending).length} lent-out gotchis`)
 
@@ -652,8 +705,11 @@ const fetchGotchiOwners = async function () {
   console.log(`Written result to ${GOTCHIS_FILENAME}.json`)
 }
 
-const manuallyCalculateBRS = async function () {
+const manuallyCalculateBRSKinship = async function () {
   const gotchis = await readJsonFile(`${GOTCHIS_FILENAME}.json`)
+
+  // Rarity Score
+
   // The withSetsRarityScore from the graph seems to be buggy
   // Manually recalculate this: this introduces risk of getting a different result from the official one.
   // Different rarity farming seasons used different approaches for calculating rarity.
@@ -696,15 +752,63 @@ const manuallyCalculateBRS = async function () {
       gotchi.equippedSetNameRF = gotchi.equippedSetNameBest
     }
   }
+
+  // Kinship
+  const useKinshipJs1 = SEASON.kinshipCalc === 'js1'
+  if (!useKinshipJs1) {
+    console.log('Not doing any extra kinship calculations')
+    return
+  }
+  console.log('Using Kinship calculation approach', SEASON.kinshipCalc)
+
+  const blockTimeSec = (ROUND.blocks.date?.getTime() || 0) / 1000
+  for (const gotchi of gotchis) {
+    if (useKinshipJs1) {
+      // reproduce the RF Kinship JS1 calculation
+      gotchi.kinshipSubgraph = gotchi.kinship
+      gotchi.kinshipRF = gotchi.kinship = calculateCurrentKinshipJs1(gotchi.kinshipSubgraph, gotchi.lastInteracted, blockTimeSec)
+    }
+  }
+
   await writeJsonFile(`${GOTCHIS_FILENAME}_fixed.json`, gotchis)
   console.log(`Written result to ${GOTCHIS_FILENAME}_fixed.json`)
 }
 
+// copied from raritySortHelpers.ts
+function calculateCurrentKinshipJs1 (subgraphKinship, lastInteracted, blockTimestamp /* seconds */) {
+  // console.log('calculateCurrentKinshipJs1', subgraphKinship, lastInteracted, blockTimestamp)
+  // If no kinship or lastInteracted data, return the original value or "0"
+  if (!subgraphKinship || !lastInteracted) {
+    return subgraphKinship?.toString() || "0";
+  }
+
+  const kinshipValue = Number(subgraphKinship);
+  const lastInteractedTimestamp = Number(lastInteracted);
+
+  // If kinship is already 0, no further decay possible
+  if (kinshipValue <= 0) {
+    return "0";
+  }
+
+  const now = blockTimestamp; //|| Math.floor(Date.now() / 1000); // Current time in seconds
+  const timeElapsed = now - lastInteractedTimestamp;
+
+  // Each full 24-hour period (86400 seconds) reduces kinship by 1
+  const daysPassed = Math.floor(timeElapsed / 86400);
+
+  // Calculate current kinship (cannot go below 0)
+  const currentKinship = Math.max(0, kinshipValue - daysPassed);
+
+  return currentKinship.toString();
+}
+
+
+// eslint-disable-next-line no-unused-vars
 const runAll = async function () {
   await fetchRoundData()
   await fetchLendings()
   await fetchGotchiOwners()
-  await manuallyCalculateBRS()
+  await manuallyCalculateBRSKinship()
 }
 // ----------------------------------------------------
 //  Uncomment One of the below functions to run
@@ -714,8 +818,8 @@ const runAll = async function () {
 // fetchRoundData()
 // fetchLendings()
 // fetchGotchiOwners()
-// manuallyCalculateBRS()
+// manuallyCalculateBRSKinship()
 
-fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER })
+fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER, network: NETWORK })
 
 // ----------------------------------------------------

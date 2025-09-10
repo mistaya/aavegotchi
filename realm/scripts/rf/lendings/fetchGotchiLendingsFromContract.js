@@ -1,7 +1,8 @@
 const { readJsonFile, writeJsonFile } = require('../../fileUtils.js')
-const diamond = require('../diamond/diamond.js')
+const getDiamond = require('../diamond/diamond.js')
 
-const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber }) {
+const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber, network }) {
+  const diamond = await getDiamond(network)
   let lendingsByGotchiId = {}
   try {
     lendingsByGotchiId = await readJsonFile(fileName)
@@ -15,7 +16,7 @@ const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber }
   console.log(`There are total ${gotchiIds.length} to look up lendings for.`)
   console.log(`There are ${fetchedIds.length} already fetched, fetching remaining ${gotchisToFetch.length} gotchi lendings`)
 
-  const BATCH_SIZE = 500
+  const BATCH_SIZE = 100
 
   for (let i = 0; i < gotchisToFetch.length; i += BATCH_SIZE) {
     const batchGotchis = gotchisToFetch.slice(i, i + BATCH_SIZE)
@@ -28,7 +29,7 @@ const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber }
       if (batchLendingsByGotchiId[id]) {
         const lending = batchLendingsByGotchiId[id]
         lendingsByGotchiId[id] = {
-          id: lending.listingId,
+          id: Number(lending.listingId),
           gotchiTokenId: id,
           borrower: lending.borrower,
           lender: lending.lender,

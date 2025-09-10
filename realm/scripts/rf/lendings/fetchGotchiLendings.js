@@ -1,18 +1,17 @@
 const axios = require('axios')
 const FETCH_PAGE_SIZE = 1000
 
-const fetchGotchiLendings = async function (gotchiIds, polygonBlock) {
-  const LENDING_SUBGRAPH_URL = 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api'
+const fetchGotchiLendings = async function (gotchiIds, networkBlock, SUBGRAPH_URL) {
   return new Promise((resolve, reject) => {
     let results = []
     let nextIndex = 0
     const fetchFromSubgraph = function () {
       const idsToFetch = gotchiIds.slice(nextIndex, nextIndex + FETCH_PAGE_SIZE) // end index not included
-      console.log(`Fetching batch of ${idsToFetch.length} potential gotchi lendings... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${polygonBlock}`)
-      axios.post(LENDING_SUBGRAPH_URL, {
+      console.log(`Fetching batch of ${idsToFetch.length} potential gotchi lendings... ${nextIndex} to ${nextIndex + FETCH_PAGE_SIZE - 1} at block ${networkBlock}`)
+      axios.post(SUBGRAPH_URL, {
         query: `{
           gotchiLendings(
-            block: { number: ${polygonBlock} },
+            block: { number: ${networkBlock} },
             first: ${FETCH_PAGE_SIZE},
             where: {
               cancelled: false,

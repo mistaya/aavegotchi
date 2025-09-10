@@ -201,7 +201,7 @@
               {{ row.gotchi.name }}
               <br />
               <a
-                :href="`https://app.aavegotchi.com/gotchi/${row.gotchi.id}`"
+                :href="getGotchiUrl({ network: seasonInfo.network, gotchiId: row.gotchi.id, ownerAddress: row.gotchi.realOwner || row.gotchi.owner })"
                 target="_blank"
               >
                 {{ row.gotchi.id }}
@@ -307,7 +307,12 @@
               {{ row.gotchi.hauntId}}
             </td>
             <td v-if="showExtended">
-              <EthAddress :address="row.gotchi.escrow" shortest polygonscan />
+              <EthAddress
+                :address="row.gotchi.escrow"
+                shortest
+                :polygonscan="isPolygonNetwork"
+                :basescan="!isPolygonNetwork"
+              />
             </td>
           </tr>
         </template>
@@ -319,6 +324,7 @@
 <script>
 import { ref, computed, watch, nextTick } from 'vue'
 import useRarityFarming from '@/data/useRarityFarming'
+import { getGotchiUrl } from '@/data/urlUtils'
 import EthAddress from '@/common/EthAddress.vue'
 import NumberDisplay from '@/common/NumberDisplay.vue'
 import SiteButton from '@/site/SiteButton.vue'
@@ -343,6 +349,7 @@ export default {
     const debug = ref(false)
 
     const { seasonInfo, roundInfo, fetchStatus, winners } = useRarityFarming(props.season, props.round)
+    const isPolygonNetwork = computed(() => seasonInfo.network === 'polygon')
 
     const numUniqueWinners = computed(() => winners.value.length)
 
@@ -480,7 +487,7 @@ export default {
         lastScore = gotchi.withSetsRarityScoreRF - 0
       }
       console.log(`${countWrongOrder} gotchis out of order`)
-      */
+      /* */
 
       /*
       // Check to see if the best-possible-rarity-score matches the final order
@@ -496,6 +503,23 @@ export default {
         lastScore = gotchi.withSetsRarityScoreRF - 0
       }
       */
+
+      // Debug/Sanity check: check that rarity farming leaderboard is ordered by kinship (not checking tiebreaker)
+      /*
+      // Check that the calculated-for-rarity-farming rarity score matches the final order
+      let lastKinship = 100000
+      let countWrongKinshipOrder = 0
+      for (const { gotchi, ranking } of mapByLeaderboard.kinship) {
+        if ((gotchi.kinship - 0) > lastKinship) {
+          console.error(`Gotchi ${gotchi.name} at rank ${ranking} out of order (${gotchi.kinship} is more than ${lastKinship}).`, gotchi)
+          countWrongKinshipOrder++
+        }
+        // log the kinship used by ranking as the 'last kinship'
+        lastKinship = gotchi.kinship - 0
+      }
+      console.log(`${countWrongKinshipOrder} gotchis out of kinship order`)
+      /* */
+
       return mapByLeaderboard
     })
 
@@ -549,7 +573,9 @@ export default {
       showExtended,
       showDebugTable,
       seasonInfo,
+      isPolygonNetwork,
       roundInfo,
+      getGotchiUrl,
       tiebreakerLabel,
       fetchStatus,
       numUniqueWinners,

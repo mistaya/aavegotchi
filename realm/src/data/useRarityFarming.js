@@ -6,6 +6,7 @@ const BASE_DATA_URL = '/data/rf'
 const SEASONS = {
   '1': {
     id: '1',
+    network: 'polygon',
     aboutUrl: 'https://aavegotchi.medium.com/aavegotchi-rarity-farming-season-1-rewards-finalized-2db81e9f66e8',
     startDate: new Date('2021-04-20T14:00Z'),
     endDate: new Date('2021-06-15T14:00Z'),
@@ -65,6 +66,7 @@ const SEASONS = {
   },
   '2': {
     id: '2',
+    network: 'polygon',
     aboutUrl: 'https://aavegotchi.medium.com/rarity-farming-season-2-is-coming-dates-announced-7047896eb3ab',
     startDate: new Date('2021-10-12T14:00Z'),
     endDate: new Date('2021-12-07T14:00Z'),
@@ -136,6 +138,7 @@ const SEASONS = {
   },
   '3': {
     id: '3',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/aavegotchi-rarity-farming-season-3-is-coming/',
     startDate: new Date('2022-02-24T14:00Z'),
     endDate: new Date('2022-04-21T14:00Z'),
@@ -195,6 +198,7 @@ const SEASONS = {
   },
   '4': {
     id: '4',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/aavegotchi-rarity-farming-season-4-is-comng/',
     startDate: new Date('2022-07-28T14:00Z'),
     endDate: new Date('2022-04-21T14:00Z'),
@@ -254,6 +258,7 @@ const SEASONS = {
   },
   '5': {
     id: '5',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/aavegotchi-rarity-farming-season-5-is-coming/',
     startDate: new Date('2023-01-31T14:00Z'),
     endDate: new Date('2023-03-28T14:00Z'),
@@ -313,6 +318,7 @@ const SEASONS = {
   },
   '6': {
     id: '6',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/announcing-aavegotchi-rarity-farming-season-6/',
     startDate: new Date('2023-06-29T14:00Z'),
     endDate: new Date('2023-08-10T14:00Z'),
@@ -372,6 +378,7 @@ const SEASONS = {
   },
   '7': {
     id: '7',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/farming-frenzy-announcing-a-new-season-of-rarity-farming/',
     startDate: new Date('2023-10-31T14:00Z'),
     endDate: new Date('2023-12-26T14:00Z'),
@@ -431,6 +438,7 @@ const SEASONS = {
   },
   '8': {
     id: '8',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/rarity-farming-season-8/',
     startDate: new Date('2024-03-16T14:00Z'),
     endDate: new Date('2024-05-11T14:00Z'),
@@ -496,6 +504,7 @@ const SEASONS = {
   },
   '9': {
     id: '9',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/rarity-farming-season-9/',
     startDate: new Date('2024-08-10T14:00Z'),
     endDate: new Date('2024-10-05T14:00Z'),
@@ -561,6 +570,7 @@ const SEASONS = {
   },
   '10': {
     id: '10',
+    network: 'polygon',
     aboutUrl: 'https://blog.aavegotchi.com/rarity-farming-season-10/',
     startDate: new Date('2025-01-06T14:00Z'),
     endDate: new Date('2025-03-03T14:00Z'),
@@ -622,6 +632,72 @@ const SEASONS = {
         blockNumber: 68598650,
         tiebreakerTraitIndex: 3
       }
+    }
+  },
+  '11': {
+    id: '11',
+    network: 'base',
+    aboutUrl: 'https://blog.aavegotchi.com/rarity-farming-season-11-is-live-now-on-base/',
+    startDate: new Date('2025-08-25T14:00Z'),
+    endDate: new Date('2025-10-20T14:00Z'),
+    ghstTotal: 1_500_000,
+    leaderboards: [
+      {
+        id: 'rarity',
+        label: 'Rarity',
+        percent: 50,
+        tiebreaker: 'kinship'
+      },
+      {
+        id: 'kinship',
+        label: 'Kinship',
+        percent: 20,
+        tiebreaker: 'xp'
+      },
+      {
+        id: 'xp',
+        label: 'XP',
+        percent: 10,
+        tiebreaker: 'trait'
+      }/* ,
+      {
+        id: 'battler',
+        label: 'Gotchi Battler',
+        percent: 20,
+        tiebreaker: ''
+      } */
+    ],
+    numRounds: 4,
+    numWinners: 7500,
+    rounds: {
+      '1': {
+        id: '1',
+        jsonUrl: `${BASE_DATA_URL}/szn11/rnd1Gotchis.json`,
+        endDate: new Date('2025-09-08T14:00Z'),
+        blockNumber: 35275327,
+        tiebreakerTraitIndex: 0
+      } /*,
+      '2': {
+        id: '2',
+        jsonUrl: `${BASE_DATA_URL}/szn11/rnd2Gotchis.json`,
+        endDate: new Date('2025-09-22T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 1
+      },
+      '3': {
+        id: '3',
+        jsonUrl: `${BASE_DATA_URL}/szn11/rnd3Gotchis.json`,
+        endDate: new Date('2025-10-06T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 2
+      },
+      '4': {
+        id: '4',
+        jsonUrl: `${BASE_DATA_URL}/szn11/rnd4Gotchis.json`,
+        endDate: new Date('2025-10-20T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 3
+      } */
     }
   }
 }

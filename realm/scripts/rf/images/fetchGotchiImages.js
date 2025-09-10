@@ -1,5 +1,5 @@
 const { readJsonFile, writeTextFile, getDirectoryListing } = require('../../fileUtils.js')
-const diamond = require('../diamond/diamond.js')
+const getDiamond = require('../diamond/diamond.js')
 
 const gotchiHideDefaultBgSvg = `
     <style>
@@ -16,7 +16,8 @@ const tweakSvg = function (svgText) {
   return hideDefaultBg(svgText)
 }
 
-const fetchGotchiImages = async function ({ fileName, folderName }) {
+const fetchGotchiImages = async function ({ fileName, folderName, network }) {
+  const diamond = await getDiamond(network)
   const allGotchis = await readJsonFile(`${fileName}.json`)
   const existingFiles = await getDirectoryListing(folderName)
 
@@ -49,7 +50,7 @@ const fetchGotchiImages = async function ({ fileName, folderName }) {
       svgsByGotchiId = await diamond.getPreviewAavegotchisSideSvgs(batchGotchiParams)
     } catch (e) {
       // retry
-      console.log('Error, retrying')
+      console.log('Error, retrying', e)
       await new Promise((resolve, reject) => setTimeout(resolve, 5000))
       svgsByGotchiId = await diamond.getPreviewAavegotchisSideSvgs(batchGotchiParams)
     }
