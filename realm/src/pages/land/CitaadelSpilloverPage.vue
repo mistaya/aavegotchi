@@ -11,7 +11,12 @@
           <div class="site-alertbox site-alertbox--warning site-alertbox--compact">
             <SiteIcon name="warning-triangle" />
             <div>
-              Warning: channeling/harvesting spillover will only occur during the Saturday hangouts (2pm - 4pm UTC). See the announcements in Discord for details.
+              <template v-if="selectedNetwork === 'polygon'">
+                The Gotchiverse is closed on Polygon, so there are no longer any events.
+              </template>
+              <template v-else>
+                Warning: spillover is disabled on Base. See the announcements in Discord in case it is re-enabled in future.
+              </template>
             </div>
           </div>
         </div>
@@ -102,6 +107,7 @@
 <script>
 import { ref, computed, onUnmounted } from 'vue'
 import BigNumber from 'bignumber.js'
+import useNetwork from '@/environment/useNetwork'
 import useParcels from '@/data/useParcels'
 import useRecentSpillover from '@/data/useRecentSpillover'
 import { gotchiverseCoordsForParcel } from './gotchiverseCoordinates'
@@ -129,6 +135,7 @@ export default {
     PrereqParcels
   },
   setup () {
+    const { selectedNetwork } = useNetwork()
     const { parcelsById, fetchStatus: parcelsFetchStatus } = useParcels()
     const { recentMinutes, fetchStatus: spilloverFetchStatus, channelings, claimed, fetchSpillover } = useRecentSpillover()
 
@@ -187,6 +194,7 @@ export default {
     })
 
     return {
+      selectedNetwork,
       recentMinutes,
       spilloverFetchStatus,
       recentEventsAnnotated,
