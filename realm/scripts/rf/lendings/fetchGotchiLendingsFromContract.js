@@ -17,6 +17,7 @@ const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber, 
   console.log(`There are ${fetchedIds.length} already fetched, fetching remaining ${gotchisToFetch.length} gotchi lendings`)
 
   const BATCH_SIZE = 100
+  const delayMs = 1000
 
   for (let i = 0; i < gotchisToFetch.length; i += BATCH_SIZE) {
     const batchGotchis = gotchisToFetch.slice(i, i + BATCH_SIZE)
@@ -40,6 +41,8 @@ const fetchGotchiLendings = async function ({ gotchiIds, fileName, blockNumber, 
       }
     }
     await writeJsonFile(fileName, lendingsByGotchiId)
+    // pause to avoid overloading RPC
+    await new Promise((resolve, reject) => setTimeout(resolve, delayMs))
   }
   console.log(`Written gotchi lendings to ${fileName}`)
 }

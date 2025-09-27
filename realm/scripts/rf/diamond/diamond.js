@@ -10,12 +10,11 @@ const RPC = {
   // 'https://rpc-mainnet.matic.quiknode.pro'
   // 'https://polygon.llamarpc.com'
   base: 'https://base-rpc.publicnode.com'
+  // base: 'https://base.llamarpc.com'
   // Troubleshooting:
   // - contract error 'missing trie node' when attempting multicall means the node doesn't have historical (blockNumber) data available, so try another RPC
   // - too big, or gas limit exceeded: reduce the BATCH_SIZE in fetchGotchiLendingsFromContract or fetchGotchiImages
   // - gotchi images: can't parse result: try a different RPC
-  // https://base-rpc.publicnode.com
-  // https://base.llamarpc.com
 }
 
 // const CHAIN_ID = {
@@ -78,6 +77,10 @@ const initDiamond = async function (network) {
     },
 
     getGotchiLending: async function (gotchiIds, blockNumber) {
+      if (!gotchiIds.length) {
+        console.log(`contract multicall: getGotchiLending for ${gotchiIds.length} gotchis (skipping)`)
+        return {}
+      }
       const overrides = { blockTag: blockNumber }
       console.log(`contract multicall: getGotchiLending for ${gotchiIds.length} gotchis`)
       const contractCalls = gotchiIds.map(id =>
