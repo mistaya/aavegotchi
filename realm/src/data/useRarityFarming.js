@@ -690,14 +690,14 @@ const SEASONS = {
         endDate: new Date('2025-10-06T14:00Z'),
         blockNumber: 36484927,
         tiebreakerTraitIndex: 2
-      } /*,
+      } ,
       '4': {
         id: '4',
         jsonUrl: `${BASE_DATA_URL}/szn11/rnd4Gotchis.json`,
         endDate: new Date('2025-10-20T14:00Z'),
-        blockNumber: 0,
+        blockNumber: 37089750,
         tiebreakerTraitIndex: 3
-      } */
+      }
     }
   }
 }
