@@ -61,10 +61,11 @@ export default {
   },
   computed: {
     shortAddress () {
+      const address = this.address || ''
       if (this.shortest) {
-        return this.address.substring(0, 5)
+        return address.substring(0, 5)
       }
-      return `${this.address.substring(0, 5)}...${this.address.substring(this.address.length - 4)}`
+      return `${address.substring(0, 5)}...${address.substring(address.length - 4)}`
     }
   }
 }

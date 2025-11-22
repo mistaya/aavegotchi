@@ -41,21 +41,24 @@ export default {
     address: { type: String, required: true }
   },
   computed: {
+    addressLc () {
+      return this.address?.toLowerCase() || ''
+    },
     isSpecialAddress () {
-      return !!SPECIAL_ADDRESSES[this.address.toLowerCase()]
+      return !!SPECIAL_ADDRESSES[this.addressLc]
     },
     title () {
       if (this.isSpecialAddress) {
-        return SPECIAL_ADDRESSES[this.address.toLowerCase()].title
+        return SPECIAL_ADDRESSES[this.addressLc].title
       }
       return undefined
     },
     imgDataUrl () {
       if (this.isSpecialAddress) {
-        return SPECIAL_ADDRESSES[this.address.toLowerCase()].url
+        return SPECIAL_ADDRESSES[this.addressLc].url
       }
       const canvas = blockies.create({ // All options are optional
-        seed: this.address.toLowerCase(), // seed used to generate icon data, default: random
+        seed: this.addressLc, // seed used to generate icon data, default: random
         size: 10 // width/height of the icon in blocks, default: 8
       })
       return canvas.toDataURL()
