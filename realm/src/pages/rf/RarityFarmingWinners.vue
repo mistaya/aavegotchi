@@ -209,7 +209,7 @@
             </td>
             <td v-if="showImages">
               <img
-                :src="`/resources/rf/s${season}/r${round}/${row.gotchi.id}.svg`"
+                :src="`/${season > 11 ? 'resources2' : 'resources' }/rf/s${season}/r${round}/${row.gotchi.id}.svg`"
                 alt=""
                 style="width: 100px; height: 100px"
               />
