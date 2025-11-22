@@ -134,7 +134,7 @@ const useGotchisForNetwork = function (network) {
   // Use cached results just for development
   const [isStale, setLoaded, setError] = setLoading()
 
-  const initialGotchisTimestamp = network === NETWORKS.polygon ? 1756326492595 : 1757459356214
+  const initialGotchisTimestamp = network === NETWORKS.polygon ? 1763828822143 : 1763828822143
 
   const handleInitialResult = function ({ default: gotchis }) {
     if (isStale()) { return }
