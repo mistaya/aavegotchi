@@ -491,17 +491,61 @@ const SEASONS = {
         date: new Date("2025-10-20T14:00Z")
       }
     }
+  },
+  szn12: {
+    checkVault: false,
+    checkLendings: true,
+    network: 'base',
+    kinshipCalc: 'js1',
+    rnd1: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: 37694538,
+        date: new Date("2025-11-03T14:00Z")
+      }
+    },
+    /*
+    rnd2: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: 38299333,
+        date: new Date("2025-11-17T14:00Z")
+      }
+    },
+    rnd3: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: ,
+        date: new Date("2025-12-01T14:00Z")
+      }
+    },
+    rnd4: {
+      rfCalc: 'js2',
+      wearableSets: '2023-12-27',
+      useLendingsFromContract: true,
+      blocks: {
+        base: ,
+        date: new Date("2025-12-15T14:00Z")
+      }
+    }
+    */
   }
 }
 
 // Params for this run
 // - season
-const SEASON_NUM = 11
+const SEASON_NUM = 12
 const SEASON = SEASONS[`szn${SEASON_NUM}`]
 const SEASON_REWARDS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rewards.json`
-const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8,9,10,11
+const NUM_ROUNDS_REWARDS = 4 // change this to 1 for Season 1, 4 for Seasons 2,3,4,5,6,7,8,9,10,11,12
 // - round
-const ROUND_NUM = 4 // Remember to delete any old lendings json from previous seasons
+const ROUND_NUM = 1 // Remember to delete any old lendings json from previous seasons
 const ROUND = SEASON[`rnd${ROUND_NUM}`]
 const ROUND_WINNERS_FILE = `../../public/data/rf/szn${SEASON_NUM}/rnd${ROUND_NUM}.json`
 const GOTCHIS_FILENAME = `rnd${ROUND_NUM}Gotchis`
@@ -514,6 +558,8 @@ const NETWORK = SEASON.network || 'polygon'
 const SUBGRAPH_URLS = {
   polygon: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-matic/api',
   base: 'https://subgraph.satsuma-prod.com/tWYl5n5y04oz/aavegotchi/aavegotchi-core-base/api'
+  // polygon: 'https://api.goldsky.com/api/public/project_cmh3flagm0001r4p25foufjtt/subgraphs/aavegotchi-core-matic/prod/gn',
+  // base: 'https://api.goldsky.com/api/public/project_cmh3flagm0001r4p25foufjtt/subgraphs/aavegotchi-core-base/prod/gn'
 }
 const SUBGRAPH_URL = SUBGRAPH_URLS[NETWORK]
 const FETCH_PAGE_SIZE = 1000
@@ -815,10 +861,11 @@ const runAll = async function () {
 
 // runAll()
 // fetchRoundData()
-// fetchLendings()
+// fetchLendings()  // May have to change rpc in diamond.js, or batch size in fetchGotchiLendingsFromContract
 // fetchGotchiOwners()
 // manuallyCalculateBRSKinship()
 
+// May have to change rpc in diamond.js
 fetchGotchiImages({ fileName: GOTCHIS_FILENAME, folderName: GOTCHI_IMAGES_FOLDER, network: NETWORK })
 
 // ----------------------------------------------------

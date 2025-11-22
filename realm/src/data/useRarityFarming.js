@@ -699,6 +699,72 @@ const SEASONS = {
         tiebreakerTraitIndex: 3
       }
     }
+  },
+  '12': {
+    id: '12',
+    network: 'base',
+    aboutUrl: 'https://snapshot.org/#/s:aavegotchi.eth/proposal/0x67b64dbacac56cb850c74a3f1b3440d1e1fcbcc0ba3215e83c75c5419ea99d85',
+    startDate: new Date('2025-10-20T14:00Z'),
+    endDate: new Date('2025-12-15T14:00Z'),
+    ghstTotal: 1_500_000,
+    leaderboards: [
+      {
+        id: 'rarity',
+        label: 'Rarity',
+        percent: 50,
+        tiebreaker: 'kinship'
+      },
+      {
+        id: 'kinship',
+        label: 'Kinship',
+        percent: 20,
+        tiebreaker: 'xp'
+      },
+      {
+        id: 'xp',
+        label: 'XP',
+        percent: 10,
+        tiebreaker: 'trait'
+      }/* ,
+      {
+        id: 'battler',
+        label: 'Gotchi Battler',
+        percent: 20,
+        tiebreaker: ''
+      } */
+    ],
+    numRounds: 4,
+    numWinners: 7500,
+    rounds: {
+      '1': {
+        id: '1',
+        jsonUrl: `${BASE_DATA_URL}/szn12/rnd1Gotchis.json`,
+        endDate: new Date('2025-11-03T14:00Z'),
+        blockNumber: 37694538,
+        tiebreakerTraitIndex: 0
+      }/*,
+      '2': {
+        id: '2',
+        jsonUrl: `${BASE_DATA_URL}/szn12/rnd2Gotchis.json`,
+        endDate: new Date('2025-11-17T14:00Z'),
+        blockNumber: 38299333,
+        tiebreakerTraitIndex: 1
+      },
+      '3': {
+        id: '3',
+        jsonUrl: `${BASE_DATA_URL}/szn12/rnd3Gotchis.json`,
+        endDate: new Date('2025-12-01T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 2
+      } ,
+      '4': {
+        id: '4',
+        jsonUrl: `${BASE_DATA_URL}/szn12/rnd4Gotchis.json`,
+        endDate: new Date('2025-12-15T14:00Z'),
+        blockNumber: 0,
+        tiebreakerTraitIndex: 3
+      }*/
+    }
   }
 }
 

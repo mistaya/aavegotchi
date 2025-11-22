@@ -9,8 +9,9 @@ const RPC = {
   // 'https://rpc.ankr.com/polygon'
   // 'https://rpc-mainnet.matic.quiknode.pro'
   // 'https://polygon.llamarpc.com'
-  base: 'https://base-rpc.publicnode.com'
+  // base: 'https://base-rpc.publicnode.com'
   // base: 'https://base.llamarpc.com'
+  base: 'https://base.drpc.org'
   // Troubleshooting:
   // - contract error 'missing trie node' when attempting multicall means the node doesn't have historical (blockNumber) data available, so try another RPC
   // - too big, or gas limit exceeded: reduce the BATCH_SIZE in fetchGotchiLendingsFromContract or fetchGotchiImages
